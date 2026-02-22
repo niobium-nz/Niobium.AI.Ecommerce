@@ -1,6 +1,6 @@
 namespace Niobium.Ads
 {
-    public class AdsDiscovererOutput : MetaAdsSearchResponse
+    public class AdsDiscovererOutput : List<MetaAd>
     {
     }
 }

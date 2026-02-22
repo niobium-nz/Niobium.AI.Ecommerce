@@ -6,6 +6,10 @@ namespace Niobium.Ads.MCP
 
         public async Task InvokeAsync(HttpContext context, IConfiguration configuration)
         {
+#if DEBUG
+            await next(context);
+#endif
+
             var apikey = Environment.GetEnvironmentVariable("X_API_KEY");
             if (apikey == null)
             {
