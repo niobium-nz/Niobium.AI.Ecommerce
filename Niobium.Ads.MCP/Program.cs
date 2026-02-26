@@ -18,7 +18,11 @@ builder.Services
     .WithToolsFromAssembly();
 
 WebApplication app = builder.Build();
+
+#if !DEBUG
 app.UseMiddleware<ApiKeyMiddleware>();
+#endif
+
 app.MapControllers();
 app.MapMcp();
 app.Run();
