@@ -4,7 +4,7 @@ using OpenAI.Responses;
 
 namespace Niobium.Ads.Analyst
 {
-    internal class CompetitionScout(AIProjectClient client, ILogger<CompetitionScout> logger) : HostedAIAgent<CompetitionScoutInput, string>(client, logger)
+    internal class CompetitionScout(AIProjectClient client, ILogger<CompetitionScout> logger) : HostedAIAgent<CompetitionScoutInput, CompetitionScoutOutput>(client, logger)
     {
         public override string Name => nameof(CompetitionScout);
 

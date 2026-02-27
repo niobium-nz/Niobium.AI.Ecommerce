@@ -104,64 +104,139 @@ If MCP does NOT return enough per-ad content to test exclusions:
 - Reduce confidence.
 
 # Output Requirements:
-You MUST output a structured report with these sections and headings **in this exact order**:
+Emit JSON in below schema.
 
-1) **Run Context**
-- Query (exact)
-- Country (exact)
-- Category (if provided)
-- Context label (optional): summarize top `product_interpretations` in 1–2 lines, **without** changing the query.
-- Notes considered (if provided): list 1–3 most relevant notes.
+```json
+{
+  "description": "All counts are integers (use -1 for unknown). All ratings/confidence are integers 0–10 (use -1 for unknown). Higher = stronger/higher.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "raw_ads_discovered",
+    "exclusion_filtering",
+    "competition_signal"
+  ],
+  "properties": {
+    "raw_ads_discovered": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mcp_call_made",
+        "raw_ads_count",
+        "distinct_advertisers_count",
+        "notable_raw_patterns",
+        "snippets",
+        "limitations",
+        "mcp_error"
+      ],
+      "properties": {
+        "mcp_call_made": { "type": "boolean" },
 
-2) **Ads Discovered**
-- Raw ads count: number or "unknown"
-- Distinct advertisers/brands: number or "unknown"
-- Notable raw patterns:
-  - repeated advertiser names
-  - many unique brands
-  - reseller/affiliate signals (if detectable)
-- 1–3 short identifiers/snippets if available (no long quotes)
+        "raw_ads_count": {
+          "type": "integer",
+          "minimum": -1,
+          "description": ">=0 means known count; -1 means unknown/unavailable from Ads Library."
+        },
+        "distinct_advertisers_count": {
+          "type": "integer",
+          "minimum": -1,
+          "description": ">=0 means known count; -1 means unknown/unavailable from Ads Library."
+        },
 
-3) **Exclusion Filtering (If Provided)**
-- Exclusion terms provided: yes/no
-- Filtering possible with returned fields: yes/no
-- Excluded ads count: number/"unknown"
-- In-scope ads count: number/"unknown"
-- Top matched exclusion terms: list (0–5)
-- Brief note explaining what got filtered and why it mattered for scope
+        "notable_raw_patterns": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "snippets": {
+          "type": "array",
+          "maxItems": 3,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "limitations": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "mcp_error": {
+          "type": ["string", "null"],
+          "description": "Set when status='error' or Ads Library returned unusable data."
+        }
+      }
+    },
 
-4) **Competition Signal (for this Query in this Country)**
-- Rating: **High / Medium / Low / Unclear**
-- Evidence-based signals (bullets)
-- Inference (bullets) — keep minimal
-- Confidence: **High / Medium / Low**
-- One-sentence justification
+    "exclusion_filtering": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exclusion_terms_provided",
+        "filtering_possible",
+        "excluded_ads_count",
+        "in_scope_ads_count",
+        "top_matched_exclusion_terms",
+        "scope_note"
+      ],
+      "properties": {
+        "exclusion_terms_provided": { "type": "boolean" },
+        "filtering_possible": { "type": "boolean" },
 
-Operational definition (must be stated here):
-- Competition is higher when many in-scope ads and many distinct advertisers appear for this *tight-scope query*.
-- Competition is lower when few/no in-scope ads appear and advertiser diversity is low.
+        "excluded_ads_count": {
+          "type": "integer",
+          "minimum": -1,
+          "description": ">=0 means known excluded count; -1 means unknown (e.g., filtering not possible due to missing ad text fields)."
+        },
+        "in_scope_ads_count": {
+          "type": "integer",
+          "minimum": -1,
+          "description": ">=0 means known in-scope count; -1 means unknown (e.g., filtering not possible due to missing ad text fields)."
+        },
 
-5) **Demand Signal (Proxy, for this Query)**
-- Rating: **High / Medium / Low / Unclear**
-- Evidence-based signals (bullets)
-- Confidence: **High / Medium / Low**
-- One-sentence justification
-Note: Ads presence is a proxy for marketing activity, not guaranteed demand.
+        "top_matched_exclusion_terms": {
+          "type": "array",
+          "maxItems": 5,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "scope_note": { "type": "string", "minLength": 1 }
+      }
+    },
 
-6) **Result Payload (Machine-Readable Summary)**
-Provide a compact JSON object (no markdown fences) with exactly these keys:
-- `query`
-- `country`
-- `raw_ads_count`
-- `distinct_advertisers_count`
-- `excluded_ads_count`
-- `in_scope_ads_count`
-- `competition_rating`
-- `demand_proxy_rating`
-- `confidence`
-- `notes_used` (array; may be empty)
-- `exclusion_terms_used` (array; may be empty)
-- `limitations` (array of strings)
+    "competition_signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rating_0_to_10",
+        "evidence_signals",
+        "inference",
+        "confidence_0_to_10",
+        "justification",
+        "operational_definition"
+      ],
+      "properties": {
+        "rating_0_to_10": {
+          "type": "integer",
+          "minimum": -1,
+          "maximum": 10,
+          "description": "Competition strength for this query in this country. 0=very low, 10=very high, -1=unknown."
+        },
+        "evidence_signals": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "inference": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "confidence_0_to_10": {
+          "type": "integer",
+          "minimum": -1,
+          "maximum": 10,
+          "description": "Confidence in the competition rating. 0=very low confidence, 10=very high confidence, -1=unknown."
+        },
+        "justification": { "type": "string", "minLength": 1 },
+        "operational_definition": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
+```
 
 # Failure Mode:
 - If MCP errors or returns no usable data:

@@ -92,7 +92,7 @@ You MUST output a single structured object in **raw JSON** (no markdown fences) 
 
 ```json
 {
-  "title": "Product Normalizer & Tight-Scope Keyword Planner Output",
+  "description": "All counts are integers (use -1 for unknown). All ratings/confidence are integers 0–10 (use -1 for unknown). Higher = stronger/higher.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -156,8 +156,10 @@ You MUST output a single structured object in **raw JSON** (no markdown fences) 
           "items": { "type": "string" }
         },
         "confidence": {
-          "type": "string",
-          "enum": ["High", "Medium", "Low"]
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "0=very low, 10=very high."
         }
       }
     },
