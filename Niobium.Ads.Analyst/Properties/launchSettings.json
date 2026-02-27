@@ -3,10 +3,6 @@
     "Niobium.Ads.Analyst": {
       "commandName": "Project"
     },
-    "Niobium.Ads.Analyst.Deploy": {
-      "commandName": "Project",
-      "commandLineArgs": "deploy"
-    },
     "Container (Dockerfile)": {
       "commandName": "Docker"
     }

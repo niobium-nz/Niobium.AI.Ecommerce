@@ -15,8 +15,8 @@ namespace Niobium.Ads.Analyst
             ),
         ];
 
-        public override Task<KeywordsPlannerOutput?> RunAsync(string conversationID, KeywordsPlannerInput input, CancellationToken cancellationToken) 
-            => Task.FromResult<KeywordsPlannerOutput?>(new KeywordsPlannerOutput
+        public override Task<KeywordsPlannerOutput> RunAsync(string conversationID, KeywordsPlannerInput input, CancellationToken cancellationToken) 
+            => Task.FromResult(new KeywordsPlannerOutput
             {
                 CategoryFocus = input.CategoryFocus,
                 OptimizedKeywords = [

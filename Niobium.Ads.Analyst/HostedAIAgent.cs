@@ -23,12 +23,18 @@ namespace Niobium.Ads.Analyst
         //    return agentDefinition;
         //}
 
-        public virtual async Task<TOutput?> RunAsync(string conversationID, TInput input, CancellationToken cancellationToken)
+        public virtual async Task<TOutput> RunAsync(string conversationID, TInput input, CancellationToken cancellationToken)
         {
             var request = input is string str ? str : JsonSerializer.Serialize(input, SerializationOptions.SnakeCase);
             var responseJSON = await base.RunAsync(conversationID, request, cancellationToken);
-            return string.IsNullOrWhiteSpace(responseJSON) ? null
+            if (typeof(TOutput) == typeof(string))
+            {
+                return responseJSON as TOutput ?? throw new AgentException($"Expected string output but got null. Response JSON: {responseJSON}");
+            }
+
+            TOutput? result = string.IsNullOrWhiteSpace(responseJSON) ? null
                 : JsonSerializer.Deserialize<TOutput>(responseJSON!, SerializationOptions.SnakeCase);
+            return result ?? throw new AgentException($"Failed to deserialize agent response into {typeof(TOutput).Name}. Response JSON: {responseJSON}");
         }
     }
 
@@ -37,6 +43,8 @@ namespace Niobium.Ads.Analyst
         private ProjectResponsesClient? _agent;
 
         protected virtual string Model => Models.GPT_5_2;
+
+        protected virtual ResponseReasoningEffortLevel? Reasoning => null;
 
         protected virtual IEnumerable<ResponseTool> Tools { get; } = [];
 
@@ -60,6 +68,14 @@ namespace Niobium.Ads.Analyst
             foreach (var tool in Tools)
             {
                 agentDefinition.Tools.Add(tool);
+            }
+
+            if (Reasoning != null)
+            {
+                agentDefinition.ReasoningOptions = new ResponseReasoningOptions
+                {
+                    ReasoningEffortLevel = Reasoning,
+                };
             }
 
             return agentDefinition;
@@ -98,7 +114,7 @@ namespace Niobium.Ads.Analyst
 
         public async Task DeployAsync(CancellationToken cancellationToken) => await DeployAgentAsync(cancellationToken);
 
-        public virtual async Task<string?> RunAsync(string conversationID, string input, CancellationToken cancellationToken)
+        public virtual async Task<string> RunAsync(string conversationID, string input, CancellationToken cancellationToken)
         {
             var agent = await GetOrCreateAgentAsync(conversationID, cancellationToken);
             ResponseResult response = await agent.CreateResponseAsync(userInputText: input, cancellationToken: cancellationToken);
@@ -112,7 +128,7 @@ namespace Niobium.Ads.Analyst
             var toolChoice = response.ToolChoice;
             logger.LogInformation("Agent {AgentName} responded with status {Status}. ConversationID={ConversationId}, Usage={Usage}, Reasoning={Reasoning}, Temperature={Temperature}, Tool Choice={ToolChoice}:\n{Output}",
                 Name, status, conversation, usage?.TotalTokenCount, reasoning?.ReasoningEffortLevel, temperature, toolChoice?.FunctionName, output);
-            return output;
+            return output ?? throw new AgentException($"Failed to get output from agent response: {error}");
         }
     }
 }

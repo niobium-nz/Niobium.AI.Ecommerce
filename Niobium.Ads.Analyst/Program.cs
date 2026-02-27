@@ -16,23 +16,18 @@ builder.Services.AddHttpClient<AdsDiscoverer>(httpClient =>
 });
 
 builder.Services
-    .AddTransient<ProductInfoEnricher>()
+    .AddTransient<ProductNormalizer>()
+    .AddTransient<CompetitionScout>()
+    .AddTransient<ProductClusterer>()
     .AddTransient<KeywordsPlanner>()
-    .AddTransient<VendorProfiler>()
+    .AddTransient<ProductProfiler>()
     .AddTransient<AnalystWorkflow>()
     .AddSingleton(sp => new AIProjectClient(
         new Uri("https://whaneus2.services.ai.azure.com/api/projects/firstProject"),
         new DefaultAzureCredential(),
-        new AIProjectClientOptions { NetworkTimeout = TimeSpan.FromMinutes(5) }));
+        new AIProjectClientOptions { NetworkTimeout = TimeSpan.FromMinutes(10) }));
 
-if (args.Length > 0 && args[0] == "deploy")
-{
-    builder.Services.AddHostedService<WorkflowDeployer>();
-}
-else
-{
-    builder.Services.AddHostedService<WorkflowWorker>();
-}
+builder.Services.AddHostedService<WorkflowWorker>();
 
 IHost host = builder.Build();
 host.Run();

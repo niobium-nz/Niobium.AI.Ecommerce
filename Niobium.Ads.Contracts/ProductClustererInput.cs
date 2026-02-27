@@ -1,6 +1,6 @@
 namespace Niobium.Ads
 {
-    public class ProductInfoEnricherInput
+    public class ProductClustererInput
     {
         public List<MetaAd> RawAds { get; set; } = [];
     }

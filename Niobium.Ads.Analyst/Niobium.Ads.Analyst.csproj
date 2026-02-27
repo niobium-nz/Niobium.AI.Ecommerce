@@ -11,17 +11,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Agents\AdsDiscoverer.md" />
     <None Remove="Agents\KeywordsPlanner.md" />
-    <None Remove="Agents\ProductInfoEnricher.md" />
-    <None Remove="Agents\VendorProfiler.md" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Agents\AdsDiscoverer.md" />
+    <EmbeddedResource Include="Agents\ProductNormalizer.md" />
+    <EmbeddedResource Include="Agents\CompetitionScout.md" />
     <EmbeddedResource Include="Agents\KeywordsPlanner.md" />
-    <EmbeddedResource Include="Agents\ProductInfoEnricher.md" />
-    <EmbeddedResource Include="Agents\VendorProfiler.md" />
+    <EmbeddedResource Include="Agents\ProductClusterer.md" />
+    <EmbeddedResource Include="Agents\ProductProfiler.md" />
   </ItemGroup>
 
   <ItemGroup>

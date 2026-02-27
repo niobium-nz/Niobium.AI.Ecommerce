@@ -17,5 +17,18 @@ namespace Niobium.Ads.Analyst
                 return tool;
             }
         }
+
+        public static ResponseTool PlayWrightMcpTool
+        {
+            get
+            {
+                var tool = ResponseTool.CreateMcpTool(
+                    serverLabel: "playwright",
+                    serverUri: new Uri("http://minecraft.5he11.com:8931/sse"),
+                    toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval));
+                tool.ProjectConnectionId = "playwright";
+                return tool;
+            }
+        }
     }
 }
