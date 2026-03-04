@@ -32,8 +32,23 @@ namespace Niobium.Ads.Analyst
                 return responseJSON as TOutput ?? throw new AgentException($"Expected string output but got null. Response JSON: {responseJSON}");
             }
 
-            TOutput? result = string.IsNullOrWhiteSpace(responseJSON) ? null
-                : JsonSerializer.Deserialize<TOutput>(responseJSON!, SerializationOptions.SnakeCase);
+            TOutput? result = null;
+            if (!string.IsNullOrWhiteSpace(responseJSON))
+            {
+                var normalizedJSON = responseJSON;
+                if (normalizedJSON.StartsWith("```json", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    normalizedJSON = normalizedJSON[7..];
+                }
+
+                if (normalizedJSON.EndsWith("```"))
+                {
+                    normalizedJSON = normalizedJSON[..^3];
+                }
+
+                result = JsonSerializer.Deserialize<TOutput>(normalizedJSON, SerializationOptions.SnakeCase);
+            }
+
             return result ?? throw new AgentException($"Failed to deserialize agent response into {typeof(TOutput).Name}. Response JSON: {responseJSON}");
         }
     }

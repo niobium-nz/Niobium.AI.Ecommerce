@@ -20,6 +20,6 @@ namespace Niobium.Ads
 
         public List<string> Videos { get; set; } = [];
 
-        public List<SellingPoint> HowItWins { get; set; } = [];
+        public SellingPoint? HowItWins { get; init; }
     }
 }

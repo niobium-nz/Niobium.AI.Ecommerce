@@ -25,7 +25,7 @@ builder.Services
     .AddSingleton(sp => new AIProjectClient(
         new Uri("https://whaneus2.services.ai.azure.com/api/projects/firstProject"),
         new DefaultAzureCredential(),
-        new AIProjectClientOptions { NetworkTimeout = TimeSpan.FromMinutes(10) }));
+        new AIProjectClientOptions { NetworkTimeout = TimeSpan.FromMinutes(15) }));
 
 builder.Services.AddHostedService<WorkflowWorker>();
 

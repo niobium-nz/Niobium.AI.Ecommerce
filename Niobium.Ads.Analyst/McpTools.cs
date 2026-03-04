@@ -30,5 +30,58 @@ namespace Niobium.Ads.Analyst
                 return tool;
             }
         }
+
+
+        static async Task CleanupPlaywrightTabsAsync(IList<McpClientTool> mcpTools)
+        {
+            ArgumentNullException.ThrowIfNull(mcpTools);
+
+            McpClientTool? tabsTool = mcpTools.FirstOrDefault(t => string.Equals(t.Name, "browser_tabs", StringComparison.Ordinal));
+            McpClientTool? closeTool = mcpTools.FirstOrDefault(t => string.Equals(t.Name, "browser_close", StringComparison.Ordinal));
+
+            try
+            {
+                if (tabsTool is null)
+                {
+                    return;
+                }
+
+                // Best-effort: close unknown extra tabs without relying on `action: list` output format.
+                for (int i = 50; i >= 1; i--)
+                {
+                    try
+                    {
+                        await tabsTool.InvokeAsync(new AIFunctionArguments
+                        {
+                            ["action"] = "close",
+                            ["index"] = i
+                        }).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        // Ignore per-tab failures; some indices may not exist.
+                    }
+                }
+            }
+            catch
+            {
+                // Best-effort cleanup; ignore failures.
+            }
+
+            try
+            {
+                if (closeTool is null)
+                {
+                    return;
+                }
+
+                await closeTool.InvokeAsync().ConfigureAwait(false);
+            }
+            catch
+            {
+                // Best-effort cleanup; ignore failures.
+            }
+        }
+
     }
 }
