@@ -1,5 +1,4 @@
 <Solution>
   <Project Path="Niobium.Ads.Analyst/Niobium.Ads.Analyst.csproj" Id="ad3c504a-fcd3-480c-9916-91c8d976ddec" />
   <Project Path="Niobium.Ads.Contracts/Niobium.Ads.Contracts.csproj" Id="e74d93c2-7ac9-4afc-ba9b-b32f634ababc" />
-  <Project Path="Niobium.Ads.MCP\Niobium.Ads.MCP.csproj" />
 </Solution>

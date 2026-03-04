@@ -1,4 +1,4 @@
-namespace Niobium.Ads
+namespace Niobium.Ads.Agents
 {
     public class ProductClustererOutput
     {

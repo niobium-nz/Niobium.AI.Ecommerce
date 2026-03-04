@@ -1,4 +1,4 @@
-namespace Niobium.Ads;
+namespace Niobium.Ads.Agents;
 
 // POCO/record types for parsing the product normalization JSON response
 public record ProductNormalizerOutput

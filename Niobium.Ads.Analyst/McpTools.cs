@@ -1,43 +1,35 @@
-using Azure.AI.Projects.OpenAI;
-using OpenAI.Responses;
+using Microsoft.Extensions.AI;
+using ModelContextProtocol.Client;
+using Niobium.Ads.Analyst.AgentTools;
 
 namespace Niobium.Ads.Analyst
 {
-    internal class McpTools
+    internal class McpTools(AdsLibraryTool adsLibraryTool)
     {
-        public static ResponseTool AdsLibraryMcpTool
+        private static McpClient? playwrightMcpClient;
+
+        public async Task<IEnumerable<AITool>> GetPlaywrightToolsAsync(CancellationToken cancellationToken)
         {
-            get
+            playwrightMcpClient ??= await McpClient.CreateAsync(new StdioClientTransport(new()
             {
-                var tool = ResponseTool.CreateMcpTool(
-                    serverLabel: "adslibrary",
-                    serverUri: new Uri("https://niobiumadsmcpapp.mangosky-a7b92dc1.westus2.azurecontainerapps.io/"),
-                    toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval));
-                tool.ProjectConnectionId = "adslibrary";
-                return tool;
-            }
+                Name = "Playwright",
+                Command = "npx",
+                Arguments = ["-y", "@playwright/mcp@latest", "--extension"],
+            }), cancellationToken: cancellationToken);
+
+            IList<McpClientTool> mcpTools = await playwrightMcpClient.ListToolsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+            return mcpTools.Cast<AITool>();
         }
 
-        public static ResponseTool PlayWrightMcpTool
-        {
-            get
-            {
-                var tool = ResponseTool.CreateMcpTool(
-                    serverLabel: "playwright",
-                    serverUri: new Uri("http://minecraft.5he11.com:8931/sse"),
-                    toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval));
-                tool.ProjectConnectionId = "playwright";
-                return tool;
-            }
-        }
+        public Task<IEnumerable<AITool>> GetAdsLibraryToolsAsync(CancellationToken cancellationToken)
+            => Task.FromResult<IEnumerable<AITool>>([AIFunctionFactory.Create(adsLibraryTool.SearchAds)]);
 
-
-        static async Task CleanupPlaywrightTabsAsync(IList<McpClientTool> mcpTools)
+        private static async Task CleanupPlaywrightTabsAsync(IList<McpClientTool> mcpTools)
         {
             ArgumentNullException.ThrowIfNull(mcpTools);
 
-            McpClientTool? tabsTool = mcpTools.FirstOrDefault(t => string.Equals(t.Name, "browser_tabs", StringComparison.Ordinal));
-            McpClientTool? closeTool = mcpTools.FirstOrDefault(t => string.Equals(t.Name, "browser_close", StringComparison.Ordinal));
+            McpClientTool? tabsTool = mcpTools.FirstOrDefault(t => String.Equals(t.Name, "browser_tabs", StringComparison.Ordinal));
+            McpClientTool? closeTool = mcpTools.FirstOrDefault(t => String.Equals(t.Name, "browser_close", StringComparison.Ordinal));
 
             try
             {
@@ -51,7 +43,7 @@ namespace Niobium.Ads.Analyst
                 {
                     try
                     {
-                        await tabsTool.InvokeAsync(new AIFunctionArguments
+                        _ = await tabsTool.InvokeAsync(new AIFunctionArguments
                         {
                             ["action"] = "close",
                             ["index"] = i
@@ -75,7 +67,7 @@ namespace Niobium.Ads.Analyst
                     return;
                 }
 
-                await closeTool.InvokeAsync().ConfigureAwait(false);
+                _ = await closeTool.InvokeAsync().ConfigureAwait(false);
             }
             catch
             {

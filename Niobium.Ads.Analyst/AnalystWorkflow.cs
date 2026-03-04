@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging;
+using Niobium.Ads.Agents;
+using Niobium.Ads.Analyst.Agents;
 
 namespace Niobium.Ads.Analyst
 {
@@ -11,19 +13,8 @@ namespace Niobium.Ads.Analyst
         CompetitionScout competitionScout,
         ILogger<AnalystWorkflow> logger)
     {
-        private async Task DeployAsync(CancellationToken cancellationToken)
-        {
-            await keywordPlanner.DeployAsync(cancellationToken);
-            await productClusterer.DeployAsync(cancellationToken);
-            await productProfiler.DeployAsync(cancellationToken);
-            await competitionScout.DeployAsync(cancellationToken);
-            await productNormalizer.DeployAsync(cancellationToken);
-        }
-
         public async Task RunAsync(string conversationID, CancellationToken cancellationToken)
         {
-            await this.DeployAsync(cancellationToken);
-
             List<Exception> exceptions = [];
 
             do
@@ -81,6 +72,7 @@ namespace Niobium.Ads.Analyst
                                 ProductName = cluster.LikelyProductName,
                                 CategoryName = cluster.CategoryGuess,
                                 KnownFeatures = cluster.KnownFeatures,
+                                TargetCountry = sourceCountry,
                             },
                             cancellationToken);
 
