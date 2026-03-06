@@ -23,7 +23,7 @@ public record NormalizationSection
     public List<string> ObservedFromInput { get; init; } = [];
     public List<string> ObservedFromWeb { get; init; } = [];
     public List<string> Assumptions { get; init; } = [];
-    public int Confidence { get; init; }
+    public int Confidence0To10 { get; init; }
 }
 
 public record CompetitiveSetDefinition

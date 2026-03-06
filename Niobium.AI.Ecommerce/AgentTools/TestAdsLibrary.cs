@@ -5,7 +5,7 @@ namespace Niobium.AI.Ecommerce.AgentTools
 {
     internal class TestAdsLibrary : IMetaAdsLibrary
     {
-        private const string TestDataSource = "Niobium.Ads.Analyst.AgentTools.dog-hair-removal.json";
+        private const string TestDataSource = "Niobium.AI.Ecommerce.AgentTools.dog-hair-removal.json";
 
         public async Task<MetaAdsSearchResponse> SearchAdsAsync(string keyword, Country country, DateOnly? activeSince = null, CancellationToken? cancellationToken = null)
         {

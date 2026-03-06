@@ -5,30 +5,37 @@ namespace Niobium.AI.Ecommerce.AgentTools
 {
     internal class McpTools(AdsLibraryTool adsLibraryTool)
     {
-        private static McpClient? playwrightMcpClient;
+        private static IEnumerable<McpClientTool>? playwrightTools;
 
         public async Task<IEnumerable<AITool>> GetPlaywrightToolsAsync(CancellationToken cancellationToken)
         {
-            playwrightMcpClient ??= await McpClient.CreateAsync(new StdioClientTransport(new()
+            if (playwrightTools == null)
             {
-                Name = "Playwright",
-                Command = "npx",
-                Arguments = ["-y", "@playwright/mcp@latest", "--extension"],
-            }), cancellationToken: cancellationToken);
+                var playwrightMcpClient = await McpClient.CreateAsync(new StdioClientTransport(new()
+                {
+                    Name = "Playwright",
+                    Command = "npx",
+                    Arguments = ["-y", "@playwright/mcp@latest", "--extension"],
+                }), cancellationToken: cancellationToken);
 
-            IList<McpClientTool> mcpTools = await playwrightMcpClient.ListToolsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-            return mcpTools.Cast<AITool>();
+                playwrightTools = await playwrightMcpClient.ListToolsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
+
+            return playwrightTools.Cast<AITool>();
         }
 
         public Task<IEnumerable<AITool>> GetAdsLibraryToolsAsync(CancellationToken cancellationToken)
             => Task.FromResult<IEnumerable<AITool>>([AIFunctionFactory.Create(adsLibraryTool.SearchAds)]);
 
-        private static async Task CleanupPlaywrightTabsAsync(IList<McpClientTool> mcpTools)
+        public async Task CleanupPlaywrightTabsAsync(CancellationToken cancellationToken)
         {
-            ArgumentNullException.ThrowIfNull(mcpTools);
+            if (playwrightTools == null)
+            {
+                return;
+            }
 
-            McpClientTool? tabsTool = mcpTools.FirstOrDefault(t => String.Equals(t.Name, "browser_tabs", StringComparison.Ordinal));
-            McpClientTool? closeTool = mcpTools.FirstOrDefault(t => String.Equals(t.Name, "browser_close", StringComparison.Ordinal));
+            McpClientTool? tabsTool = playwrightTools.FirstOrDefault(t => String.Equals(t.Name, "browser_tabs", StringComparison.Ordinal));
+            McpClientTool? closeTool = playwrightTools.FirstOrDefault(t => String.Equals(t.Name, "browser_close", StringComparison.Ordinal));
 
             try
             {
@@ -37,8 +44,8 @@ namespace Niobium.AI.Ecommerce.AgentTools
                     return;
                 }
 
-                // Best-effort: close unknown extra tabs without relying on `action: list` output format.
-                for (int i = 50; i >= 1; i--)
+                //Best - effort: close unknown extra tabs without relying on `action: list` output format.
+                for (int i = 50; i >= 0; i--)
                 {
                     try
                     {
@@ -50,13 +57,13 @@ namespace Niobium.AI.Ecommerce.AgentTools
                     }
                     catch
                     {
-                        // Ignore per-tab failures; some indices may not exist.
+                        //Ignore per-tab failures; some indices may not exist.
                     }
                 }
             }
             catch
             {
-                // Best-effort cleanup; ignore failures.
+                //Best - effort cleanup; ignore failures.
             }
 
             try
@@ -70,7 +77,7 @@ namespace Niobium.AI.Ecommerce.AgentTools
             }
             catch
             {
-                // Best-effort cleanup; ignore failures.
+                //Best - effort cleanup; ignore failures.
             }
         }
 

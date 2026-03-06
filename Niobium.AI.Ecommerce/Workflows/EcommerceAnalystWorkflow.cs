@@ -76,11 +76,11 @@ namespace Niobium.AI.Ecommerce.Workflows
                             },
                             cancellationToken);
 
-                        if (normalizedProduct.Normalization?.Confidence < 7)
+                        if (normalizedProduct.Normalization?.Confidence0To10 < 7)
                         {
                             logger.LogWarning("Normalized product {productName} has low confidence {confidence}. Skipping competition scouting for this product. Normalized product details: {@normalizedProduct}",
                                 cluster.LikelyProductName,
-                                normalizedProduct.Normalization?.Confidence,
+                                normalizedProduct.Normalization?.Confidence0To10,
                                 normalizedProduct);
                             continue;
                         }

@@ -8,6 +8,7 @@ namespace Niobium.AI.Ecommerce
     public static class DependencyModule
     {
         public static IServiceCollection AddEcommerce(this IServiceCollection services) => services.AddAI()
+            .AddTransient<AdsLibraryTool>()
             .AddSingleton<McpTools>()
             .AddTransient<IWorkflow, EcommerceAnalystWorkflow>()
             .AddTransient<IMetaAdsLibrary, TestAdsLibrary>()

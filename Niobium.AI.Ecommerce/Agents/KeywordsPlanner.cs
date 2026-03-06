@@ -10,17 +10,15 @@ namespace Niobium.AI.Ecommerce.Agents
     {
         public override string Name => nameof(KeywordsPlanner);
 
-        protected override Task<IEnumerable<AITool>> GetToolsAsync(CancellationToken cancellationToken) => tools.GetPlaywrightToolsAsync(cancellationToken);
+        protected override ReasoningEffort Reasoning => ReasoningEffort.Medium;
 
-        public override Task<KeywordsPlannerOutput> RunAsync(string conversationID, KeywordsPlannerInput input, CancellationToken cancellationToken)
-            => Task.FromResult(new KeywordsPlannerOutput
-            {
-                CategoryFocus = input.CategoryFocus,
-                OptimizedKeywords = [
-                    $"{input.CategoryFocus} for {input.Country}",
-                    $"Best {input.CategoryFocus} in {input.Country}",
-                    $"{input.CategoryFocus} online {input.Country}",
-                ]
-            });
+        protected override Task<IEnumerable<AITool>> GetToolsAsync(CancellationToken cancellationToken)
+            => tools.GetPlaywrightToolsAsync(cancellationToken);
+
+        protected override async Task OnRanAsync(string conversationID, KeywordsPlannerInput input, KeywordsPlannerOutput? output, CancellationToken cancellationToken)
+        {
+            await tools.CleanupPlaywrightTabsAsync(cancellationToken);
+            await base.OnRanAsync(conversationID, input, output, cancellationToken);
+        }
     }
 }

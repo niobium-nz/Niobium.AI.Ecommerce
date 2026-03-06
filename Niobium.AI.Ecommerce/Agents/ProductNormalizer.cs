@@ -12,6 +12,13 @@ namespace Niobium.AI.Ecommerce.Agents
 
         protected override ReasoningEffort Reasoning => ReasoningEffort.Medium;
 
-        protected override Task<IEnumerable<AITool>> GetToolsAsync(CancellationToken cancellationToken) => tools.GetPlaywrightToolsAsync(cancellationToken);
+        protected override Task<IEnumerable<AITool>> GetToolsAsync(CancellationToken cancellationToken)
+            => tools.GetPlaywrightToolsAsync(cancellationToken);
+
+        protected async override Task OnRanAsync(string conversationID, ProductNormalizerInput input, ProductNormalizerOutput? output, CancellationToken cancellationToken)
+        {
+            await tools.CleanupPlaywrightTabsAsync(cancellationToken);
+            await base.OnRanAsync(conversationID, input, output, cancellationToken);
+        }
     }
 }
