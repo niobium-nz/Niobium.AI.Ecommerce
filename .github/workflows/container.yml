@@ -1,0 +1,85 @@
+name: container
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    env:
+      VERSION_MAJOR: "1"
+      VERSION_MINOR: "0"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract container metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: docker.io/5he11/adslibrary
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ env.VERSION_MAJOR }}.${{ env.VERSION_MINOR }}.${{ github.run_number }}
+            type=sha
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Niobium.AI.Console/Dockerfile
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Niobium.AI.Console/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy infrastructure (Bicep)
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az deployment group create \
+              --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
+              --template-file ".azure/infra/main.bicep" \
+              --parameters \
+                containerImage="docker.io/5he11/adslibrary:${{ env.VERSION_MAJOR }}.${{ env.VERSION_MINOR }}.${{ github.run_number }}" \
+                envVars='[ \
+                  {"name": "OPENAI_ENDPOINT", "value": "${{ secrets.OPENAI_ENDPOINT }}"},
+                  {"name": "OPENAI_KEY", "value": "${{ secrets.OPENAI_KEY }}"} \
+                ]' \
+                containerAppName="${{ vars.CONTAINER_APP_NAME }}" \
+                containerAppsEnvironmentName="${{ vars.CONTAINER_APPS_ENVIRONMENT_NAME }}"
