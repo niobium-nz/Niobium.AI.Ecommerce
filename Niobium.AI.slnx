@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Dockerfile" />
+  </Folder>
   <Project Path="Niobium.AI.Console/Niobium.AI.Console.csproj" />
   <Project Path="Niobium.AI.Ecommerce/Niobium.AI.Ecommerce.csproj" />
   <Project Path="Niobium.AI.Shorts/Niobium.AI.Shorts.csproj" Id="d9d42b12-9951-494b-8c58-edddfeafa661" />

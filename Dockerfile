@@ -13,13 +13,12 @@ ARG TARGETARCH
 WORKDIR /src
 
 
-# Copy project file and restore as distinct layers
-COPY --link *.csproj .
-RUN dotnet restore -a $TARGETARCH
-
-# Copy source code and publish app
+# Copy source code and restore app dependencies
 COPY --link . .
-RUN dotnet publish -a $TARGETARCH -c $BUILD_CONFIGURATION --no-restore -o /app
+RUN dotnet restore Niobium.AI.slnx -a $TARGETARCH
+
+# Publish app
+RUN dotnet publish Niobium.AI.slnx -a $TARGETARCH -c $BUILD_CONFIGURATION --no-restore -o /app
 
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
