@@ -12,8 +12,6 @@ namespace Niobium.AI.Ecommerce.Agents
 
         protected override ReasoningEffort Reasoning => ReasoningEffort.High;
 
-        protected override string Model => Models.GPT_5_2;
-
         protected override Task<IEnumerable<AITool>> GetToolsAsync(CancellationToken cancellationToken) => tools.GetPlaywrightToolsAsync(cancellationToken);
 
         protected async override Task OnRanAsync(string conversationID, ProductProfilerInput input, ProductProfilerOutput? output, CancellationToken cancellationToken)

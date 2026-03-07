@@ -6,9 +6,7 @@ namespace Niobium.AI.Ecommerce.Contracts
 
         public string? FinalUrl { get; set; }
 
-        public int? HttpStatus { get; set; }
-
-        public string? RetrievalDateIso { get; set; }
+        public string? RetrievalDateTimeUtc { get; set; }
 
         public ProductInfo? Product { get; set; }
 

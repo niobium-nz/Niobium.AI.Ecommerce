@@ -12,7 +12,7 @@ namespace Niobium.AI
 
         protected ILogger Logger { get; } = logger ?? throw new ArgumentNullException(nameof(logger));
 
-        protected virtual string Model => Models.GPT_5_3;
+        protected virtual string Model => Models.GPT_LATEST;
 
         protected virtual ReasoningEffort Reasoning => ReasoningEffort.None;
 
