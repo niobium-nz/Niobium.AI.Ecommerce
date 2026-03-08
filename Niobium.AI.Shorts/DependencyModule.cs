@@ -9,7 +9,7 @@ namespace Niobium.AI.Shorts
         public static IServiceCollection AddShorts(this IServiceCollection services)
         {
             services.AddAI()
-            .AddTransient<MetaVideoAdPublisher>()
+            .AddTransient<MetaVideoAdCreator>()
             .AddTransient<AttractiveShortDirector>()
             .AddTransient<IWorkflow, AttractiveShortWorkflow>()
             .AddHttpClient<SoraShortProducer>(httpClient =>

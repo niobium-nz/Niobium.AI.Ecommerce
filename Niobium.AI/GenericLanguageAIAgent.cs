@@ -14,6 +14,8 @@ namespace Niobium.AI
 
         protected virtual ReasoningEffort Reasoning => ReasoningEffort.None;
 
+        protected virtual DirectoryInfo? SkillsFolder => null;
+
         public abstract string Name { get; }
 
         protected virtual Task<IEnumerable<AITool>> GetToolsAsync(CancellationToken cancellationToken) => Task.FromResult(Enumerable.Empty<AITool>());
@@ -64,6 +66,9 @@ namespace Niobium.AI
                     {
                         Name = this.Name,
                         ChatOptions = chatOptions,
+                        AIContextProviders = this.SkillsFolder != null
+                            ? [new FileAgentSkillsProvider(skillPath: this.SkillsFolder.FullName)]
+                            : null,
                     });
             }
 

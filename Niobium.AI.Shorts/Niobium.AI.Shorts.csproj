@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Agents\MetaVideoAdPublisher.md" />
+    <EmbeddedResource Include="Agents\MetaVideoAdCreator.md" />
     <EmbeddedResource Include="Agents\AttractiveShortDirector.md" />
   </ItemGroup>
 
@@ -17,6 +17,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Niobium.AI\Niobium.AI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Skills\create-meta-video-ad\references\INPUT_SCHEMA.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Skills\create-meta-video-ad\references\PLAYBOOK.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Skills\create-meta-video-ad\SKILL.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
