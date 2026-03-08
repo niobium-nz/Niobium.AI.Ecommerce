@@ -1,4 +1,4 @@
-namespace Niobium.AI.Shorts.Contracts
+namespace Niobium.AI.OpenAI
 {
     internal record SoraJobQuery
     {

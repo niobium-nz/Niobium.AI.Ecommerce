@@ -8,7 +8,7 @@ namespace Niobium.AI.Ecommerce.Agents
     {
         public string Name => nameof(AdsDiscoverer);
 
-        public async Task<AdsDiscovererOutput> RunAsync(string conversationID, AdsDiscovererInput input, CancellationToken cancellationToken)
+        public async Task<AdsDiscovererOutput> GetResponseAsync(string conversationID, AdsDiscovererInput input, CancellationToken cancellationToken)
         {
             if (!Country.TryParse(input.Country, out var country))
             {

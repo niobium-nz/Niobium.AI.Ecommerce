@@ -24,7 +24,7 @@ namespace Niobium.AI.Ecommerce.Workflows
                 var sourceCountry = "US";
                 var targetCountry = "AU";
 
-                var keywords = await keywordPlanner.RunAsync(conversationID,
+                var keywords = await keywordPlanner.GetResponseAsync(conversationID,
                     new KeywordsPlannerInput
                     {
                         CategoryFocus = focus,
@@ -39,7 +39,7 @@ namespace Niobium.AI.Ecommerce.Workflows
 
                 foreach (var keyword in keywords.OptimizedKeywords)
                 {
-                    var rawAds = await adsDiscoverer.RunAsync(
+                    var rawAds = await adsDiscoverer.GetResponseAsync(
                         conversationID,
                         new AdsDiscovererInput
                         {
@@ -53,7 +53,7 @@ namespace Niobium.AI.Ecommerce.Workflows
                         continue;
                     }
 
-                    ProductClustererOutput clusters = await productClusterer.RunAsync(
+                    ProductClustererOutput clusters = await productClusterer.GetResponseAsync(
                         conversationID,
                         new ProductClustererInput { RawAds = rawAds },
                         cancellationToken);
@@ -66,7 +66,7 @@ namespace Niobium.AI.Ecommerce.Workflows
                             continue;
                         }
 
-                        var normalizedProduct = await productNormalizer.RunAsync(
+                        var normalizedProduct = await productNormalizer.GetResponseAsync(
                             conversationID,
                             new ProductNormalizerInput
                             {
@@ -97,7 +97,7 @@ namespace Niobium.AI.Ecommerce.Workflows
                         bool shouldProceed = true;
                         foreach (var competitiveSearchQuery in normalizedProduct.KeywordPlan.RecommendedMcpQueries)
                         {
-                            CompetitionScoutOutput report = await competitionScout.RunAsync(
+                            CompetitionScoutOutput report = await competitionScout.GetResponseAsync(
                                 conversationID,
                                 new CompetitionScoutInput
                                 {
@@ -157,7 +157,7 @@ namespace Niobium.AI.Ecommerce.Workflows
                                 continue;
                             }
 
-                            ProductProfilerOutput profile = await productProfiler.RunAsync(
+                            ProductProfilerOutput profile = await productProfiler.GetResponseAsync(
                                 conversationID,
                                 new ProductProfilerInput { LandingPageUrl = ad.Snapshot.LinkUrl },
                                 cancellationToken);

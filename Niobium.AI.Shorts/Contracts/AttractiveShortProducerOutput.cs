@@ -1,6 +1,8 @@
+using System.Text.Json.Serialization;
+
 namespace Niobium.AI.Shorts.Contracts
 {
-    internal class AttractiveShortDirectorOutput
+    internal class AttractiveShortProducerOutput : IResponseWithVideo
     {
         public required string VideoPrompt { get; set; }
 
@@ -15,5 +17,8 @@ namespace Niobium.AI.Shorts.Contracts
         public List<string> SocialPostTags { get; set; } = [];
 
         public required SubtitlePlan SubtitlePlan { get; set; }
+
+        [JsonIgnore]
+        public Uri? VideoUrl { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace Niobium.AI
 
         protected virtual Task OnRanAsync(string conversationID, TInput input, TOutput? output, CancellationToken cancellationToken) => Task.CompletedTask;
 
-        public virtual async Task<TOutput> RunAsync(string conversationID, TInput input, CancellationToken cancellationToken)
+        public virtual async Task<TOutput> GetResponseAsync(string conversationID, TInput input, CancellationToken cancellationToken)
         {
             TOutput? output = null;
             try
@@ -19,9 +19,21 @@ namespace Niobium.AI
                 await this.OnRunningAsync(conversationID, input, cancellationToken);
                 var request = input is string str ? str : JsonSerializer.Serialize(input, SerializationOptions.SnakeCase);
                 var agent = await this.GetOrCreateAgentAsync(conversationID, cancellationToken);
-                AgentResponse<TOutput> response = await agent.RunAsync<TOutput>(request, cancellationToken: cancellationToken);
-                this.LogUsage(conversationID, response.Usage);
-                output = response.Result;
+
+                AgentResponse response;
+                if (typeof(TOutput) == typeof(string))
+                {
+                    response = await agent.RunAsync(request, cancellationToken: cancellationToken);
+                    output = response.Text as TOutput;
+                }
+                else
+                {
+                    AgentResponse<TOutput> resp = await agent.RunAsync<TOutput>(request, cancellationToken: cancellationToken);
+                    response = resp;
+                    output = resp.Result;
+                }
+                
+                this.LogUsage(conversationID, response.Usage);                
                 return output!;
             }
             finally

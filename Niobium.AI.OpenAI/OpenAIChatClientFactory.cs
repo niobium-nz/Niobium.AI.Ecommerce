@@ -26,25 +26,37 @@ namespace Niobium.AI.OpenAI
         }
 
         private IChatClient CreateOpenAIChatClient(string model)
-            => this.standardOpenAIClient ??= new OpenAIClient(
-                new ApiKeyCredential(Environment.GetEnvironmentVariable("LLM_OPENAI_KEY")!),
+        {
+            var endpoint = Environment.GetEnvironmentVariable("LLM_OPENAI_ENDPOINT")
+                ?? throw new Exception("`LLM_OPENAI_ENDPOINT` must be configured.");
+            var key = Environment.GetEnvironmentVariable("LLM_OPENAI_KEY")
+                ?? throw new Exception("`LLM_OPENAI_KEY` must be configured.");
+            return this.standardOpenAIClient ??= new OpenAIClient(
+                new ApiKeyCredential(key),
                 new OpenAIClientOptions
                 {
-                    Endpoint = new Uri(Environment.GetEnvironmentVariable("LLM_OPENAI_ENDPOINT")!),
+                    Endpoint = new Uri(endpoint),
                     NetworkTimeout = TimeSpan.FromMinutes(15)
                 })
-            .GetResponsesClient(model)
-            .AsIChatClient();
+                .GetResponsesClient(model)
+                .AsIChatClient();
+        }
 
         private IChatClient CreateQwenChatClient(string model)
-            => this.lowCostOpenAIClient ??= new OpenAIClient(
-                    new ApiKeyCredential(Environment.GetEnvironmentVariable("LLM_QWEN_KEY")!),
-                    new OpenAIClientOptions
-                    {
-                        Endpoint = new Uri(Environment.GetEnvironmentVariable("LLM_QWEN_ENDPOINT")!),
-                        NetworkTimeout = TimeSpan.FromMinutes(15)
-                    })
+        {
+            var endpoint = Environment.GetEnvironmentVariable("LLM_QWEN_ENDPOINT")
+                ?? throw new Exception("`LLM_QWEN_ENDPOINT` must be configured.");
+            var key = Environment.GetEnvironmentVariable("LLM_QWEN_KEY")
+                ?? throw new Exception("`LLM_QWEN_KEY` must be configured.");
+            return this.lowCostOpenAIClient ??= new OpenAIClient(
+                new ApiKeyCredential(key),
+                new OpenAIClientOptions
+                {
+                    Endpoint = new Uri(endpoint),
+                    NetworkTimeout = TimeSpan.FromMinutes(15)
+                })
                 .GetChatClient(model)
                 .AsIChatClient();
+        }
     }
 }

@@ -3,9 +3,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Niobium.AI.BlobStorage;
 using Niobium.AI.Console;
 using Niobium.AI.Ecommerce;
 using Niobium.AI.OpenAI;
+using Niobium.AI.Shorts;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -40,8 +42,8 @@ builder.Logging.AddOpenTelemetry(options =>
 
 var tracerBuilder = Sdk.CreateTracerProviderBuilder()
     .SetResourceBuilder(resourceBuilder)
-    .AddHttpClientInstrumentation()
-    .AddSource("Niobium.AI")
+    /*.AddHttpClientInstrumentation()*/
+    .AddSource("*Niobium.AI*")
     .AddSource("*Microsoft.Extensions.AI") // Listen to the Experimental.Microsoft.Extensions.AI source for chat client telemetry.
     .AddSource("*Microsoft.Extensions.Agents*") // Listen to the Experimental.Microsoft.Extensions.Agents source for agent telemetry.
     .AddConsoleExporter();
@@ -61,8 +63,8 @@ builder.Services.AddSingleton(tracerProvider);
 
 var meterBuilder = Sdk.CreateMeterProviderBuilder()
     .SetResourceBuilder(resourceBuilder)
-    .AddHttpClientInstrumentation()
-    .AddRuntimeInstrumentation()
+    /*.AddHttpClientInstrumentation()*/
+    /*.AddRuntimeInstrumentation()*/
     .AddMeter("*Microsoft.Agents.AI") // Agent Framework metrics
     .AddConsoleExporter();
 
@@ -79,8 +81,9 @@ if (!String.IsNullOrWhiteSpace(otlpEndpoint))
 var meterProvider = meterBuilder.Build();
 builder.Services.AddSingleton(meterProvider);
 
+builder.Services.AddBlobStorage();
 builder.Services.AddOpenAI();
-builder.Services.AddEcommerce();
+builder.Services.AddShorts();
 builder.Services.AddHostedService<WorkflowWorker>();
 IHost host = builder.Build();
 host.Run();

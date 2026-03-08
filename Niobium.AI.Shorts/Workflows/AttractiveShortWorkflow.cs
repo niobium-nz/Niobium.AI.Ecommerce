@@ -1,38 +1,39 @@
-using System.Text.Json;
 using Niobium.AI.Shorts.Agents;
 using Niobium.AI.Shorts.Contracts;
 
 namespace Niobium.AI.Shorts.Workflows
 {
     internal class AttractiveShortWorkflow(
-        AttractiveShortDirector attractiveVideoDirector,
-        SoraShortProducer soraShortProducer)
+        AttractiveShortProducer attractiveShortProducer,
+        MetaVideoAdCreator metaVideoAdCreator)
         : IWorkflow
     {
         public async Task RunAsync(string conversationID, CancellationToken cancellationToken)
         {
-            for (int i = 0; i < 10; i++)
-            {
-                var story = await attractiveVideoDirector.RunAsync(
+            var video = await attractiveShortProducer.GetVideoAsync(
+                    conversationID,
+                    new AttractiveShortProducerInput
+                    {
+                        BusinessName = "Beach Front Restaurant and Cocktail Bar",
+                        Location = "Mission Bay, Auckland, New Zealand",
+                        BusinessType = "Beach Front Restaurant and Cocktail Bar",
+                        TypicalSpend = "$60-$80"
+                    },
+                    cancellationToken);
+
+            var result = await metaVideoAdCreator.GetResponseAsync(
                 conversationID,
-                new AttractiveShortDirectorInput
+                new MetaVideoAdCreatorInput
                 {
-                    BusinessName = "Beach Front Restaurant and Cocktail Bar",
-                    Location = "Mission Bay, Auckland, New Zealand",
-                    BusinessType = "Beach Front Restaurant and Cocktail Bar",
-                    TypicalSpend = "$60-$80"
+                    AdAccountId = "26137758852540494",
+                    CampaignName = "Followers",
+                    AdSetName = "Attractive Shorts",
+                    VideoUrl = video.VideoUrl!.ToString(),
+                    PrimaryText = $"{video.SocialPost}\n\n{String.Join(' ', video.SocialPostTags)}"
                 },
                 cancellationToken);
-                var videoPath = await soraShortProducer.RunAsync(conversationID, new SoraShortProducerInput
-                {
-                    Prompt = story.VideoPrompt,
-                    Width = story.VideoWidth,
-                    Height = story.VideoHeight,
-                    DurationInSeconds = story.VideoDurationInSeconds,
-                }, cancellationToken);
-                Console.WriteLine("Generated video URL: " + videoPath);
-                await File.WriteAllTextAsync($"{videoPath}.json", JsonSerializer.Serialize(story, SerializationOptions.SnakeCase));
-            }
+
+            Console.WriteLine(result);
         }
     }
 }

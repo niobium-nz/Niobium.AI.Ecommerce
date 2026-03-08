@@ -1,6 +1,6 @@
 namespace Niobium.AI.Shorts.Contracts
 {
-    internal class AttractiveShortDirectorInput
+    internal class AttractiveShortProducerInput
     {
         public required string BusinessName { get; set; }
 

@@ -1,30 +1,37 @@
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using Niobium.AI.Shorts.Contracts;
 
-namespace Niobium.AI.Shorts.Agents
+namespace Niobium.AI.OpenAI
 {
-    internal class SoraShortProducer(HttpClient client, ILogger<SoraShortProducer> logger)
-        : IVideoAgent<SoraShortProducerInput>
+    internal class SoraVideoClient(HttpClient client, ILogger<SoraVideoClient> logger) : IVideoClient
     {
-        public string Name => nameof(SoraShortProducer);
-
-        public async Task<Uri> RunAsync(string conversationID, SoraShortProducerInput input, CancellationToken cancellationToken)
+        public async Task<FileInfo> RunAsync(
+            string conversationID,
+            string prompt,
+            int width,
+            int height,
+            int durationInSeconds,
+            CancellationToken cancellationToken)
         {
-            // align size to 720p if necessary
-            if (input.Width > 720)
+            if (durationInSeconds is not 4 and not 8 and not 12)
             {
-                var scale = input.Width / 720.0d;
-                input.Width = 720;
-                input.Height = (int)(input.Height / scale);
+                throw new ArgumentOutOfRangeException(nameof(durationInSeconds));
+            }
+
+            // align size to 720p if necessary
+            if (width > 720)
+            {
+                var scale = width / 720.0d;
+                width = 720;
+                height = (int)(height / scale);
             }
 
             var requestBody = new
             {
-                prompt = input.Prompt,
-                size = $"{input.Width}x{input.Height}",
-                seconds = input.DurationInSeconds.ToString(),
+                prompt,
+                size = $"{width}x{height}",
+                seconds = durationInSeconds.ToString(),
                 model = Models.SORA_2,
             };
             var json = JsonSerializer.Serialize(requestBody, SerializationOptions.SnakeCase);
@@ -98,7 +105,7 @@ namespace Niobium.AI.Shorts.Agents
             await video.CopyToAsync(fileStream, cancellationToken);
             var filePath = Path.GetFullPath(fileStream.Name);
             logger.LogInformation("Sora video downloaded and saved to {FilePath}", filePath);
-            return new Uri(filePath);
+            return new FileInfo(filePath);
         }
     }
 }

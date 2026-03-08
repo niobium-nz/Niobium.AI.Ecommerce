@@ -7,7 +7,15 @@ namespace Niobium.AI.OpenAI
         public static IServiceCollection AddOpenAI(this IServiceCollection services)
         {
             _ = Niobium.AI.DependencyModule.AddAI(services);
-            return services.AddTransient<IChatClientFactory, OpenAIChatClientFactory>();
+            services
+                .AddTransient<IChatClientFactory, OpenAIChatClientFactory>()
+                .AddTransient<IVideoClientFactory, OpenAIVideoClientFactory>()
+                .AddHttpClient<SoraVideoClient>(httpClient =>
+                {
+                    httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("LLM_OPENAI_ENDPOINT")!);
+                    httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Environment.GetEnvironmentVariable("LLM_OPENAI_KEY")!}");
+                });
+            return services;
         }
     }
 }

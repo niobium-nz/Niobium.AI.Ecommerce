@@ -9,14 +9,10 @@ namespace Niobium.AI.Shorts
         public static IServiceCollection AddShorts(this IServiceCollection services)
         {
             services.AddAI()
+            .AddSingleton<McpTools>()
             .AddTransient<MetaVideoAdCreator>()
-            .AddTransient<AttractiveShortDirector>()
-            .AddTransient<IWorkflow, AttractiveShortWorkflow>()
-            .AddHttpClient<SoraShortProducer>(httpClient =>
-            {
-                httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("OPENAI_ENDPOINT")!);
-                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Environment.GetEnvironmentVariable("OPENAI_KEY")!}");
-            });
+            .AddTransient<AttractiveShortProducer>()
+            .AddTransient<IWorkflow, AttractiveShortWorkflow>();
 
             return services;
         }
