@@ -2,11 +2,10 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.Ecommerce.AgentTools;
 using Niobium.AI.Ecommerce.Contracts;
-using OpenAI;
 
 namespace Niobium.AI.Ecommerce.Agents
 {
-    internal class ProductNormalizer(OpenAIClient client, McpTools tools, ILogger<ProductNormalizer> logger) : GenericResponseAIAgent<ProductNormalizerInput, ProductNormalizerOutput>(client, logger)
+    internal class ProductNormalizer(IChatClientFactory clientFactory, McpTools tools, ILogger<ProductNormalizer> logger) : TypedGenericLanguageAIAgent<ProductNormalizerInput, ProductNormalizerOutput>(clientFactory, logger)
     {
         public override string Name => nameof(ProductNormalizer);
 
@@ -15,7 +14,7 @@ namespace Niobium.AI.Ecommerce.Agents
         protected override Task<IEnumerable<AITool>> GetToolsAsync(CancellationToken cancellationToken)
             => tools.GetPlaywrightToolsAsync(cancellationToken);
 
-        protected async override Task OnRanAsync(string conversationID, ProductNormalizerInput input, ProductNormalizerOutput? output, CancellationToken cancellationToken)
+        protected override async Task OnRanAsync(string conversationID, ProductNormalizerInput input, ProductNormalizerOutput? output, CancellationToken cancellationToken)
         {
             await tools.CleanupPlaywrightTabsAsync(cancellationToken);
             await base.OnRanAsync(conversationID, input, output, cancellationToken);

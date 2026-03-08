@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.Console;
 using Niobium.AI.Ecommerce;
+using Niobium.AI.OpenAI;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -78,6 +79,7 @@ if (!String.IsNullOrWhiteSpace(otlpEndpoint))
 var meterProvider = meterBuilder.Build();
 builder.Services.AddSingleton(meterProvider);
 
+builder.Services.AddOpenAI();
 builder.Services.AddEcommerce();
 builder.Services.AddHostedService<WorkflowWorker>();
 IHost host = builder.Build();

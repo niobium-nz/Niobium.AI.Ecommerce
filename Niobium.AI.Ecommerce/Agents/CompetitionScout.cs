@@ -2,11 +2,10 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.Ecommerce.AgentTools;
 using Niobium.AI.Ecommerce.Contracts;
-using OpenAI;
 
 namespace Niobium.AI.Ecommerce.Agents
 {
-    internal class CompetitionScout(OpenAIClient client, McpTools mcpTools, ILogger<CompetitionScout> logger) : GenericResponseAIAgent<CompetitionScoutInput, CompetitionScoutOutput>(client, logger)
+    internal class CompetitionScout(IChatClientFactory clientFactory, McpTools mcpTools, ILogger<CompetitionScout> logger) : TypedGenericLanguageAIAgent<CompetitionScoutInput, CompetitionScoutOutput>(clientFactory, logger)
     {
         public override string Name => nameof(CompetitionScout);
 

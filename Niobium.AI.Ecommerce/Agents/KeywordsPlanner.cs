@@ -2,11 +2,10 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.Ecommerce.AgentTools;
 using Niobium.AI.Ecommerce.Contracts;
-using OpenAI;
 
 namespace Niobium.AI.Ecommerce.Agents
 {
-    internal class KeywordsPlanner(OpenAIClient client, McpTools tools, ILogger<KeywordsPlanner> logger) : GenericResponseAIAgent<KeywordsPlannerInput, KeywordsPlannerOutput>(client, logger)
+    internal class KeywordsPlanner(IChatClientFactory clientFactory, McpTools tools, ILogger<KeywordsPlanner> logger) : TypedGenericLanguageAIAgent<KeywordsPlannerInput, KeywordsPlannerOutput>(clientFactory, logger)
     {
         public override string Name => nameof(KeywordsPlanner);
 

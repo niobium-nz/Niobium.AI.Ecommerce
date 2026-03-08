@@ -4,6 +4,7 @@
   </Folder>
   <Project Path="Niobium.AI.Console/Niobium.AI.Console.csproj" />
   <Project Path="Niobium.AI.Ecommerce/Niobium.AI.Ecommerce.csproj" />
+  <Project Path="Niobium.AI.OpenAI/Niobium.AI.OpenAI.csproj" Id="32f598bd-cb81-4aca-a775-1b53fef12f1c" />
   <Project Path="Niobium.AI.Shorts/Niobium.AI.Shorts.csproj" Id="d9d42b12-9951-494b-8c58-edddfeafa661" />
   <Project Path="Niobium.AI/Niobium.AI.csproj" Id="296ad24e-61e1-46ce-b5e5-b047906efc2d" />
 </Solution>

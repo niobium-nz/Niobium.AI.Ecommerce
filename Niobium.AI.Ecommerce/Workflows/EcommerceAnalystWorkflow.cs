@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.Ecommerce.Agents;
 using Niobium.AI.Ecommerce.Contracts;
@@ -160,6 +161,7 @@ namespace Niobium.AI.Ecommerce.Workflows
                                 conversationID,
                                 new ProductProfilerInput { LandingPageUrl = ad.Snapshot.LinkUrl },
                                 cancellationToken);
+                            await File.WriteAllTextAsync(@"C:\Users\Wen\Desktop\profile.json", JsonSerializer.Serialize(profile, SerializationOptions.SnakeCase));
                         }
                     }
                 }

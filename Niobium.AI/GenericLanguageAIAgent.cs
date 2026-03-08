@@ -1,12 +1,10 @@
-using System.Text.Json;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
-using OpenAI;
 
 namespace Niobium.AI
 {
-    public abstract class GenericResponseAIAgent(OpenAIClient client, ILogger logger) : IAgent
+    public abstract class GenericLanguageAIAgent(IChatClientFactory clientFactory, ILogger logger) : IAgent
     {
         private AIAgent? _agent;
 
@@ -54,11 +52,10 @@ namespace Niobium.AI
                 {
                     Instructions = instructions,
                     Reasoning = new ReasoningOptions { Effort = this.Reasoning },
-                    Tools = tools.ToList(),
+                    Tools = [.. tools],
                 };
 
-                this._agent = client.GetResponsesClient(this.Model)
-                    .AsIChatClient()
+                this._agent = clientFactory.CreateChatClient(this.Model)
                     .AsBuilder()
                     .UseOpenTelemetry(
                         sourceName: "Niobium.AI",
@@ -79,33 +76,6 @@ namespace Niobium.AI
             AgentResponse response = await agent.RunAsync(input, cancellationToken: cancellationToken);
             this.LogUsage(conversationID, response.Usage);
             return response.Text;
-        }
-    }
-
-    public abstract class GenericResponseAIAgent<TInput, TOutput>(OpenAIClient client, ILogger logger) : GenericResponseAIAgent(client, logger), IResponseAgent<TInput, TOutput>
-        where TOutput : class
-    {
-        protected virtual Task OnRunningAsync(string conversationID, TInput input, CancellationToken cancellationToken) => Task.CompletedTask;
-
-        protected virtual Task OnRanAsync(string conversationID, TInput input, TOutput? output, CancellationToken cancellationToken) => Task.CompletedTask;
-
-        public virtual async Task<TOutput> RunAsync(string conversationID, TInput input, CancellationToken cancellationToken)
-        {
-            TOutput? output = null;
-            try
-            {
-                await this.OnRunningAsync(conversationID, input, cancellationToken);
-                var request = input is string str ? str : JsonSerializer.Serialize(input, SerializationOptions.SnakeCase);
-                var agent = await this.GetOrCreateAgentAsync(conversationID, cancellationToken);
-                AgentResponse<TOutput> response = await agent.RunAsync<TOutput>(request, cancellationToken: cancellationToken);
-                this.LogUsage(conversationID, response.Usage);
-                output = response.Result;
-                return output!;
-            }
-            finally
-            {
-                await this.OnRanAsync(conversationID, input, output, cancellationToken);
-            }
         }
     }
 }
