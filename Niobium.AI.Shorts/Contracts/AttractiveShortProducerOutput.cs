@@ -4,6 +4,8 @@ namespace Niobium.AI.Shorts.Contracts
 {
     internal class AttractiveShortProducerOutput : IResponseWithVideo
     {
+        public required string VideoIdea { get; set; }
+
         public required string VideoPrompt { get; set; }
 
         public int VideoWidth { get; set; }
@@ -19,6 +21,6 @@ namespace Niobium.AI.Shorts.Contracts
         public required SubtitlePlan SubtitlePlan { get; set; }
 
         [JsonIgnore]
-        public Uri? VideoUrl { get; set; }
+        public string? VideoUrl { get; set; }
     }
 }

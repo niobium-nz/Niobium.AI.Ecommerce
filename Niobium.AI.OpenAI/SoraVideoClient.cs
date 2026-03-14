@@ -6,7 +6,7 @@ namespace Niobium.AI.OpenAI
 {
     internal class SoraVideoClient(HttpClient client, ILogger<SoraVideoClient> logger) : IVideoClient
     {
-        public async Task<FileInfo> RunAsync(
+        public async Task<Stream> RunAsync(
             string conversationID,
             string prompt,
             int width,
@@ -17,14 +17,6 @@ namespace Niobium.AI.OpenAI
             if (durationInSeconds is not 4 and not 8 and not 12)
             {
                 throw new ArgumentOutOfRangeException(nameof(durationInSeconds));
-            }
-
-            // align size to 720p if necessary
-            if (width > 720)
-            {
-                var scale = width / 720.0d;
-                width = 720;
-                height = (int)(height / scale);
             }
 
             var requestBody = new
@@ -100,12 +92,17 @@ namespace Niobium.AI.OpenAI
                 logger.LogError("Sora API request failed with status code {StatusCode}: {ResponseBody}", downloadResponse.StatusCode, await downloadResponse.Content.ReadAsStringAsync(cancellationToken));
                 throw new HttpRequestException($"Sora download API request failed with status code {downloadResponse.StatusCode}");
             }
-            var video = await downloadResponse.Content.ReadAsStreamAsync(cancellationToken);
-            using var fileStream = new FileStream($"{videoId}.mp4", FileMode.Create, FileAccess.Write);
-            await video.CopyToAsync(fileStream, cancellationToken);
-            var filePath = Path.GetFullPath(fileStream.Name);
-            logger.LogInformation("Sora video downloaded and saved to {FilePath}", filePath);
-            return new FileInfo(filePath);
+
+            using var video = await downloadResponse.Content.ReadAsStreamAsync(cancellationToken);
+            var memoryStream = new MemoryStream();
+            if (video.CanSeek)
+            {
+                video.Seek(0, SeekOrigin.Begin);
+            }
+            await video.CopyToAsync(memoryStream, cancellationToken);
+            logger.LogInformation("Sora video downloaded for ID {VideoId}", videoId);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            return memoryStream;
         }
     }
 }

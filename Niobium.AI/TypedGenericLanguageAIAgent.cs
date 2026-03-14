@@ -7,16 +7,16 @@ namespace Niobium.AI
     public abstract class TypedGenericLanguageAIAgent<TInput, TOutput>(IChatClientFactory clientFactory, ILogger logger) : GenericLanguageAIAgent(clientFactory, logger), IResponseAgent<TInput, TOutput>
         where TOutput : class
     {
-        protected virtual Task OnRunningAsync(string conversationID, TInput input, CancellationToken cancellationToken) => Task.CompletedTask;
+        protected virtual Task OnGettingResponseAsync(string conversationID, TInput input, CancellationToken cancellationToken) => Task.CompletedTask;
 
-        protected virtual Task OnRanAsync(string conversationID, TInput input, TOutput? output, CancellationToken cancellationToken) => Task.CompletedTask;
+        protected virtual Task OnResponseGotAsync(string conversationID, TInput input, TOutput? output, CancellationToken cancellationToken) => Task.CompletedTask;
 
         public virtual async Task<TOutput> GetResponseAsync(string conversationID, TInput input, CancellationToken cancellationToken)
         {
             TOutput? output = null;
             try
             {
-                await this.OnRunningAsync(conversationID, input, cancellationToken);
+                await this.OnGettingResponseAsync(conversationID, input, cancellationToken);
                 var request = input is string str ? str : JsonSerializer.Serialize(input, SerializationOptions.SnakeCase);
                 var agent = await this.GetOrCreateAgentAsync(conversationID, cancellationToken);
 
@@ -38,7 +38,7 @@ namespace Niobium.AI
             }
             finally
             {
-                await this.OnRanAsync(conversationID, input, output, cancellationToken);
+                await this.OnResponseGotAsync(conversationID, input, output, cancellationToken);
             }
         }
     }

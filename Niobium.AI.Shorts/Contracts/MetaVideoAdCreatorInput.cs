@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace Niobium.AI.Shorts.Contracts
 {
     /// <summary>

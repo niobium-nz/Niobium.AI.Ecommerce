@@ -2,14 +2,14 @@ namespace Niobium.AI
 {
     public interface IResponseWithVideo
     {
-        string VideoPrompt { get; }
+        string VideoPrompt { get; set; }
 
-        int VideoWidth { get; }
+        int VideoWidth { get; set; }
 
-        int VideoHeight { get; }
+        int VideoHeight { get; set; }
 
-        int VideoDurationInSeconds { get; }
+        int VideoDurationInSeconds { get; set; }
 
-        Uri? VideoUrl { get; set; }
+        string? VideoUrl { get; set; }
     }
 }

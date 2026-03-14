@@ -1,8 +1,19 @@
 # TASK:
-Create a 8-second vertical (9:16) single-scene short-form video concept for organic social (Facebook Reels + Instagram Reels) for a small local business. You will NOT generate the video yourself. You will do lightweight audience reasoning + creative planning, then output:
-1) ONE single-line Sora2 generation prompt (copy/paste-ready) that includes an explicit NEGATIVE PROMPT clause  
-2) A structured JSON “subtitle plan” (for adding subtitles later in editing software; NOT rendered in-video by Sora)  
+Create an 8-second vertical (9:16) single-scene short-form video concept for organic social (Facebook Reels + Instagram Reels) for a small local business. You will NOT generate the video yourself. You will do lightweight audience reasoning + creative planning, then output:
+1) ONE single-line Sora2 generation prompt (copy/paste-ready) that includes an explicit NEGATIVE PROMPT clause
+2) A structured JSON “subtitle plan” (for adding subtitles later in editing software; NOT rendered in-video by Sora)
 3) Optional social post caption + hashtags (no comment hook required)
+
+# REQUIRED INPUTS
+You will receive:
+- BUSINESS INFO
+- PREVIOUS_VIDEO_IDEAS: array of strings
+
+Definition of PREVIOUS_VIDEO_IDEAS:
+- An array of all prior video idea summaries ever used for this business/account.
+- Each string may be short, messy, or partially specified.
+- Treat this array as a hard anti-repetition constraint.
+- If the array is empty, proceed normally.
 
 # PRIMARY GOAL
 Earn follows because the video is instantly funny/odd/unusual and self-contained. It must feel like content, not an ad.
@@ -10,16 +21,37 @@ Earn follows because the video is instantly funny/odd/unusual and self-contained
 # Reasoning Framework:
 Use **moderate depth** internal reasoning:
 - Briefly infer audience preferences.
+- Parse PREVIOUS_VIDEO_IDEAS into internal “idea fingerprints” using:
+  - business anchor
+  - hero object
+  - action verb
+  - surreal device
+  - punchline image
+  - location/staging
 - Generate 6 candidate gags internally with *mandatory novelty diversity*.
-- Score candidates against readability/reliability rules.
-- Select the single best concept and produce the final outputs.  
-Do **not** reveal your internal candidate list or scoring notes beyond the required fields.
+- Reject any candidate that is too similar to a prior idea.
+- Score remaining candidates against readability/reliability rules.
+- Select the single best concept and produce the final outputs.
+Do **not** reveal your internal candidate list, fingerprints, or scoring notes beyond the required fields.
 
 # Input Handling:
 Interpret the BUSINESS INFO section as grounding constraints:
 - Treat business name and spend range as realism hints only (never shown on-screen).
 - Use business type + products sold as the primary “business anchor” source.
 - Use location/area vibe only for set dressing (no full address, no readable signage/text).
+
+Interpret PREVIOUS_VIDEO_IDEAS as a novelty blacklist:
+- Use semantic matching, not exact wording, when checking similarity.
+- Assume synonyms, paraphrases, related objects, and cosmetic rewrites may still be “similar.”
+- Do NOT repeat the same gag engine with only superficial swaps (different product flavor, animal type, prop color, camera angle, or nearby setting).
+- If a previous idea is vague, infer its most likely core gag and avoid nearby variants.
+
+# Output Requirement:
+- Output concept idea as part of the required structured outputs.
+- Concept idea should only include subject, scene, action and reason of funny/odd/unusual.
+- Concept idea should not include video shot details or plan.
+- Do NOT output the internal candidate list, fingerprint analysis, rejected ideas, or scoring notes.
+- Do NOT output the PREVIOUS_VIDEO_IDEAS array.
 
 # CORE CREATIVE RULE (NON-NEGOTIABLE)
 This must be a “thumbnail joke + one clean action”:
@@ -30,23 +62,23 @@ This must be a “thumbnail joke + one clean action”:
 # BUSINESS-ADJACENT SURREALISM RULE (NON-NEGOTIABLE)
 Your ideas must be related to the business, but **must not be trapped in literal business scenes**.
 - Minimum relevance requirement (“Business Anchor”): the FIRST FRAME must clearly show at least ONE of:
-  1) a product sold, OR  
-  2) a core material/ingredient used, OR  
-  3) a tool/equipment associated with the business, OR  
+  1) a product sold, OR
+  2) a core material/ingredient used, OR
+  3) a tool/equipment associated with the business, OR
   4) the service outcome (visually obvious result).
 - Maximum novelty requirement (“Surreal Twist”): the FIRST FRAME must also include at least ONE:
-  A) anthropomorphic or unexpected performer (e.g., object/animal/creature/miniature human-like figure), OR  
-  B) impossible physics (gravity reversal, self-moving object), OR  
-  C) extreme scale mismatch (tiny hero object or comically oversized), OR  
+  A) anthropomorphic or unexpected performer (e.g., object/animal/creature/miniature human-like figure), OR
+  B) impossible physics (gravity reversal, self-moving object), OR
+  C) extreme scale mismatch (tiny hero object or comically oversized), OR
   D) magical transformation (object morphs into the outcome).
 - The twist must be instantly readable and must not require text to understand.
 - The location can be business-adjacent (workbench, prep table, back room, supply shelf, studio corner) rather than the stereotypical customer-facing scene.
 
 # HARD CONSTRAINTS
-1) Final video length: exactly 8.0 seconds.  
-2) Aspect ratio: 9:16 vertical.  
-3) Single scene / single continuous shot (no cuts). One location only.  
-4) Max 2 characters on screen. Prefer 1 character if possible.  
+1) Final video length: exactly 8.0 seconds.
+2) Aspect ratio: 9:16 vertical.
+3) Single scene / single continuous shot (no cuts). One location only.
+4) Max 2 characters on screen. Prefer 1 character if possible.
 5) “Not an ad” rule:
    - No direct selling language. No CTAs to buy/visit/order.
    - No prices, discounts, deals, “best in town,” etc.
@@ -72,11 +104,40 @@ Your ideas must be related to the business, but **must not be trapped in literal
 - End with a held final pose for 1.5–2.0 seconds so viewers can process.
 - Keep props minimal: only the hero object + essential surface/tools; no clutter.
 
+# NOVELTY FILTER AGAINST PREVIOUS VIDEO IDEAS (NON-NEGOTIABLE)
+Before selecting a final concept, compare each candidate against PREVIOUS_VIDEO_IDEAS using its internal idea fingerprint.
+
+A candidate is TOO SIMILAR and must be rejected if ANY of the following are true:
+1) Same or near-same hero object/product family + same action verb.
+2) Same business anchor + same surreal device + same punchline image/result.
+3) Same gag engine with only cosmetic substitutions:
+   - different flavor/color/size of the same item
+   - different animal/creature performing the same joke
+   - same joke moved to a slightly different corner of the business
+   - same action but with a near-equivalent tool/material/product
+4) Viewer would describe both ideas with essentially the same one-sentence summary.
+5) The new idea would feel like a sequel, remix, or reskin of a prior post rather than a fresh concept.
+
+Novelty preference rules:
+- Change at least TWO major axes from prior ideas whenever possible:
+  - hero object
+  - action verb
+  - surreal device
+  - business anchor
+  - location/staging
+  - punchline image
+- Prioritize unused surreal devices before reusing one.
+- Prioritize unused action verbs before reusing one.
+- If previous ideas heavily used products, consider tools/materials/service outcomes instead.
+- If previous ideas were mostly anthropomorphic, pivot to physics/scale/transformation, or vice versa.
+
 # NOVELTY DIVERSITY REQUIREMENT (INTERNAL ONLY)
 When generating 6 candidate gags internally (do NOT output them), enforce diversity:
 - At least 2 candidates must use an anthropomorphic/unexpected performer.
 - At least 2 candidates must use impossible physics or scale mismatch.
 - At least 1 candidate must be “business-adjacent but not inside the obvious storefront scene.”
+- At least 4 of the 6 candidates must be materially distinct from the dominant patterns found in PREVIOUS_VIDEO_IDEAS.
+
 Then score and pick the best concept as usual.
 
 # WORKFLOW (MUST DO IN ORDER)
@@ -89,13 +150,15 @@ Then score and pick the best concept as usual.
 
 ## SECTION 2 — Concept Selection (thumbnail test)
 - Generate 6 candidate gag ideas (do NOT output them). Must follow the NOVELTY DIVERSITY REQUIREMENT.
-- Score them internally using this checklist:
+- Reject candidates that violate the NOVELTY FILTER AGAINST PREVIOUS VIDEO IDEAS.
+- Score remaining candidates internally using this checklist:
   - “Readable at 0.0s as an image?”
   - “One hero object?”
   - “One verb action?”
   - “No text required?”
   - “Non-ad vibe?”
   - “Has BOTH: Business Anchor + Surreal Twist in first frame?”
+  - “Clearly distinct from prior ideas?”
 - Pick the single best idea and proceed.
 - Output:
   - HERO OBJECT (one short phrase)
@@ -123,6 +186,7 @@ Then score and pick the best concept as usual.
   - Explicit: “NO text-in-world” + “NO on-screen subtitles/overlays” + “no logos/prices/sales language”
   - Anti-cinematic constraints (no slow-mo, no dramatic lighting, no commercial hero shots)
   - Audio direction (generic)
+  - The concept must be clearly different from all prior ideas in PREVIOUS_VIDEO_IDEAS
   - MUST INCLUDE an explicit NEGATIVE PROMPT clause within the same single line, using this pattern:
     “NEGATIVE PROMPT: …”
     The negative prompt must ban at minimum:
@@ -136,7 +200,7 @@ Then score and pick the best concept as usual.
       - copyrighted or recognizable characters/mascots
 
 ## SECTION 5 — Subtitle Plan JSON (for editing later; NOT rendered by Sora)
-- Output a structured JSON object describing subtitles for this 10s video:
+- Output a structured JSON object describing subtitles for this 8.0-second video:
   - Keep it minimal (1–3 short subtitle moments total).
   - Each moment includes:
     - start (float seconds)
@@ -156,8 +220,8 @@ Then score and pick the best concept as usual.
 ## SECTION 6 — Social Post Copy + Hashtags (optional, no comment hook)
 - 1 caption (1 short paragraph) that frames the gag; no CTA to buy/order.
 - 12–18 hashtags, grouped:
-  (a) broad (reach)  
-  (b) niche (humor + category moments)  
+  (a) broad (reach)
+  (b) niche (humor + category moments)
   (c) local (city/suburb/area from BUSINESS INFO)
 - Do NOT claim verification or audience sizes.
 
@@ -171,7 +235,17 @@ Then score and pick the best concept as usual.
 If business info is missing or vague:
 - Infer a generic anchor from “Business type” (e.g., tool/material/service outcome).
 - Choose a universally readable hero object (oversized version of a product/tool/material).
-- Keep the action extremely literal (pour/squeeze/open/lift) while the *premise* carries the weirdness (anthropomorphic/physics/scale).
+- Keep the action extremely literal (pour/squeeze/open/lift) while the premise carries the weirdness (anthropomorphic/physics/scale).
+
+If PREVIOUS_VIDEO_IDEAS is long, messy, or repetitive:
+- Extract the most likely recurring gag patterns internally.
+- Avoid both exact repeats and nearby variants of those patterns.
+- Prefer a concept that changes the surreal device and action verb first.
 
 If constraints conflict (e.g., product requires text/branding to be recognizable):
 - Replace with a generic unbranded equivalent and explicitly instruct blank/blurred labels.
+
+If novelty space is constrained by many prior ideas:
+- Favor less obvious business anchors (tool/material/service outcome instead of flagship product).
+- Favor a new surreal mechanism not already represented in prior ideas.
+- Keep the concept simple and readable even if the anchor becomes more indirect.

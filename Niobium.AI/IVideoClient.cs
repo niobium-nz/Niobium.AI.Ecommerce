@@ -2,7 +2,7 @@ namespace Niobium.AI
 {
     public interface IVideoClient
     {
-        Task<FileInfo> RunAsync(
+        Task<Stream> RunAsync(
             string conversationID,
             string prompt,
             int width,

@@ -5,7 +5,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.BlobStorage;
 using Niobium.AI.Console;
-using Niobium.AI.Ecommerce;
 using Niobium.AI.OpenAI;
 using Niobium.AI.Shorts;
 using OpenTelemetry;
@@ -29,10 +28,10 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddOpenTelemetry(options =>
 {
-    options.SetResourceBuilder(resourceBuilder);
-    if (!string.IsNullOrWhiteSpace(applicationInsightsConnectionString))
+    _ = options.SetResourceBuilder(resourceBuilder);
+    if (!String.IsNullOrWhiteSpace(applicationInsightsConnectionString))
     {
-        options.AddAzureMonitorLogExporter(options => options.ConnectionString = applicationInsightsConnectionString);
+        _ = options.AddAzureMonitorLogExporter(options => options.ConnectionString = applicationInsightsConnectionString);
     }
     // Format log messages. This is default to false.
     options.IncludeFormattedMessage = true;
@@ -48,7 +47,7 @@ var tracerBuilder = Sdk.CreateTracerProviderBuilder()
     .AddSource("*Microsoft.Extensions.Agents*") // Listen to the Experimental.Microsoft.Extensions.Agents source for agent telemetry.
     .AddConsoleExporter();
 
-if (!string.IsNullOrWhiteSpace(applicationInsightsConnectionString))
+if (!String.IsNullOrWhiteSpace(applicationInsightsConnectionString))
 {
     _ = tracerBuilder.AddAzureMonitorTraceExporter(options => options.ConnectionString = applicationInsightsConnectionString);
 }
@@ -68,7 +67,7 @@ var meterBuilder = Sdk.CreateMeterProviderBuilder()
     .AddMeter("*Microsoft.Agents.AI") // Agent Framework metrics
     .AddConsoleExporter();
 
-if (!string.IsNullOrWhiteSpace(applicationInsightsConnectionString))
+if (!String.IsNullOrWhiteSpace(applicationInsightsConnectionString))
 {
     _ = meterBuilder.AddAzureMonitorMetricExporter(options => options.ConnectionString = applicationInsightsConnectionString);
 }

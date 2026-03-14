@@ -13,10 +13,10 @@ namespace Niobium.AI.Ecommerce.Agents
 
         protected override Task<IEnumerable<AITool>> GetToolsAsync(CancellationToken cancellationToken) => tools.GetPlaywrightToolsAsync(cancellationToken);
 
-        protected override async Task OnRanAsync(string conversationID, ProductProfilerInput input, ProductProfilerOutput? output, CancellationToken cancellationToken)
+        protected override async Task OnResponseGotAsync(string conversationID, ProductProfilerInput input, ProductProfilerOutput? output, CancellationToken cancellationToken)
         {
             await tools.CleanupPlaywrightTabsAsync(cancellationToken);
-            await base.OnRanAsync(conversationID, input, output, cancellationToken);
+            await base.OnResponseGotAsync(conversationID, input, output, cancellationToken);
         }
     }
 }

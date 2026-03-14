@@ -1,6 +1,7 @@
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.Shorts.Contracts;
+using Niobium.AI.Shorts.Skills;
 
 namespace Niobium.AI.Shorts.Agents
 {
@@ -16,5 +17,14 @@ namespace Niobium.AI.Shorts.Agents
         protected override Type InstructionsResourceBaseType => this.GetType();
 
         protected override ReasoningEffort Reasoning => ReasoningEffort.Medium;
+
+        protected override async Task OnVideoGotAsync(string conversationID, AttractiveShortProducerInput input, AttractiveShortProducerOutput output, Stream videoStream, CancellationToken cancellationToken)
+        {
+            using (videoStream)
+            {
+                Stream videoStreamWithSubtitle = await BurnSubtitleToVideo.BurnInSubtitlesAsync(videoStream, output, cancellationToken);
+                await base.OnVideoGotAsync(conversationID, input, output, videoStreamWithSubtitle, cancellationToken);
+            }
+        }
     }
 }

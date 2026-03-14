@@ -11,5 +11,7 @@ namespace Niobium.AI.Shorts.Contracts
         public List<string> ProductsSold { get; set; } = [];
 
         public string? TypicalSpend { get; set; }
+
+        public List<string> PreviousVideoIdeas { get; set; } = [];
     }
 }
