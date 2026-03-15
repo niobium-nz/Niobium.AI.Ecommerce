@@ -36,7 +36,6 @@ namespace Niobium.AI.OpenAI
                 new OpenAIClientOptions
                 {
                     Endpoint = new Uri(endpoint),
-                    NetworkTimeout = TimeSpan.FromMinutes(15)
                 })
                 .GetResponsesClient(model)
                 .AsIChatClient();
@@ -53,7 +52,6 @@ namespace Niobium.AI.OpenAI
                 new OpenAIClientOptions
                 {
                     Endpoint = new Uri(endpoint),
-                    NetworkTimeout = TimeSpan.FromMinutes(15)
                 })
                 .GetChatClient(model)
                 .AsIChatClient();

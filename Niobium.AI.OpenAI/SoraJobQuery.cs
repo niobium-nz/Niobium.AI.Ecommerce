@@ -4,7 +4,7 @@ namespace Niobium.AI.OpenAI
     {
         public required string Id { get; init; }
 
-        public required string Object { get; init; }
+        public string? Object { get; init; }
 
         public long CreatedAt { get; init; }
 
@@ -16,16 +16,16 @@ namespace Niobium.AI.OpenAI
 
         public long? ExpiresAt { get; init; }
 
-        public required string Model { get; init; }
+        public string? Model { get; init; }
 
         public int Progress { get; init; }
 
-        public required string Prompt { get; init; }
+        public string? Prompt { get; init; }
 
         public string? RemixedFromVideoId { get; init; }
 
-        public required string Seconds { get; init; }
+        public string? Seconds { get; init; }
 
-        public required string Size { get; init; }
+        public string? Size { get; init; }
     }
 }

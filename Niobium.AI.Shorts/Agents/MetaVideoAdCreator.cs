@@ -12,6 +12,8 @@ namespace Niobium.AI.Shorts.Agents
     {
         public override string Name => nameof(MetaVideoAdCreator);
 
+        protected override bool KeepContext => false;
+
         protected override Type InstructionsResourceBaseType => this.GetType();
 
         protected override ReasoningEffort Reasoning => ReasoningEffort.High;

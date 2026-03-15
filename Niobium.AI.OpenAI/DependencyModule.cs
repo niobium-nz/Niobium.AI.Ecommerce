@@ -12,8 +12,8 @@ namespace Niobium.AI.OpenAI
                 .AddTransient<IVideoClientFactory, OpenAIVideoClientFactory>()
                 .AddHttpClient<SoraVideoClient>(httpClient =>
                 {
-                    httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("LLM_OPENAI_ENDPOINT")!);
-                    httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Environment.GetEnvironmentVariable("LLM_OPENAI_KEY")!}");
+                    httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("VIDEO_SORA_ENDPOINT")!);
+                    httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Environment.GetEnvironmentVariable("VIDEO_SORA_KEY")!}");
                 });
             return services;
         }

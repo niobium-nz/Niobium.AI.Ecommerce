@@ -10,6 +10,12 @@ namespace Niobium.AI
 
         protected ILogger Logger { get; } = logger ?? throw new ArgumentNullException(nameof(logger));
 
+        protected virtual bool KeepContext => true;
+
+        protected virtual int MaxMessagesBeforeContextCompaction => -1;
+
+        protected virtual int TrailingMessagesToKeepUnderContextCompaction => -1;
+
         protected virtual string Model => Models.GPT_LATEST;
 
         protected virtual ReasoningEffort Reasoning => ReasoningEffort.None;
@@ -53,12 +59,20 @@ namespace Niobium.AI
                 var chatOptions = new ChatOptions
                 {
                     Instructions = instructions,
-                    Reasoning = new ReasoningOptions { Effort = this.Reasoning },
+                    Reasoning = new ReasoningOptions
+                    {
+                        Effort = this.Reasoning,
+                    },
                     Tools = [.. tools],
                 };
 
-                this._agent = clientFactory.CreateChatClient(this.Model)
-                    .AsBuilder()
+                IChatClient client = clientFactory.CreateChatClient(this.Model);
+                if (!KeepContext)
+                {
+                    client = new CompactingChatClient(client, this.MaxMessagesBeforeContextCompaction, this.TrailingMessagesToKeepUnderContextCompaction);
+                }
+
+                this._agent = client.AsBuilder()
                     .UseOpenTelemetry(
                         sourceName: "Niobium.AI",
                         configure: cfg => cfg.EnableSensitiveData = true)

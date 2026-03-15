@@ -29,7 +29,11 @@ namespace Niobium.AI.Shorts.Workflows
                     },
                     cancellationToken);
 
-                await tableClient.AddEntityAsync(new TableEntity(businessName, DateTimeOffset.UtcNow.ToReverseUnixTimestamp()) { { "Value", video.VideoIdea } }, cancellationToken);
+                await tableClient.AddEntityAsync(new TableEntity(businessName, DateTimeOffset.UtcNow.ToReverseUnixTimestamp())
+                {
+                    { "Value", video.VideoIdea },
+                    { "Prompt", video.VideoPrompt },
+                }, cancellationToken);
 
                 var result = await metaVideoAdCreator.GetResponseAsync(
                     conversationID,
