@@ -8,13 +8,13 @@ namespace Niobium.AI.OpenAI
         {
             _ = Niobium.AI.DependencyModule.AddAI(services);
             services
-                .AddTransient<IChatClientFactory, OpenAIChatClientFactory>()
+                .AddSingleton<IChatClientFactory, OpenAIChatClientFactory>()
                 .AddTransient<IVideoClientFactory, OpenAIVideoClientFactory>()
                 .AddHttpClient<SoraVideoClient>(httpClient =>
                 {
                     httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("VIDEO_SORA_ENDPOINT")!);
                     httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Environment.GetEnvironmentVariable("VIDEO_SORA_KEY")!}");
-                });
+                }).AddStandardResilienceHandler();
             return services;
         }
     }

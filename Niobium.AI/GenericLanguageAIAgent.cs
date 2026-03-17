@@ -10,12 +10,6 @@ namespace Niobium.AI
 
         protected ILogger Logger { get; } = logger ?? throw new ArgumentNullException(nameof(logger));
 
-        protected virtual bool KeepContext => true;
-
-        protected virtual int MaxMessagesBeforeContextCompaction => -1;
-
-        protected virtual int TrailingMessagesToKeepUnderContextCompaction => -1;
-
         protected virtual string Model => Models.GPT_LATEST;
 
         protected virtual ReasoningEffort Reasoning => ReasoningEffort.None;
@@ -66,24 +60,22 @@ namespace Niobium.AI
                     Tools = [.. tools],
                 };
 
-                IChatClient client = clientFactory.CreateChatClient(this.Model);
-                if (!KeepContext)
-                {
-                    client = new CompactingChatClient(client, this.MaxMessagesBeforeContextCompaction, this.TrailingMessagesToKeepUnderContextCompaction);
-                }
-
-                this._agent = client.AsBuilder()
+                var builder = clientFactory.CreateChatClient(this.Model)
+                    .AsBuilder()
                     .UseOpenTelemetry(
                         sourceName: "Niobium.AI",
-                        configure: cfg => cfg.EnableSensitiveData = true)
-                    .BuildAIAgent(new ChatClientAgentOptions
-                    {
-                        Name = this.Name,
-                        ChatOptions = chatOptions,
-                        AIContextProviders = this.SkillsFolder != null
-                            ? [new FileAgentSkillsProvider(skillPath: this.SkillsFolder.FullName)]
-                            : null,
-                    });
+                        configure: cfg => cfg.EnableSensitiveData = true);
+
+                if (this.SkillsFolder != null)
+                {
+                    builder = builder.UseAIContextProviders(new FileAgentSkillsProvider(skillPath: this.SkillsFolder.FullName));
+                }
+
+                this._agent = builder.BuildAIAgent(new ChatClientAgentOptions
+                {
+                    Name = this.Name,
+                    ChatOptions = chatOptions,
+                });
             }
 
             return this._agent!;

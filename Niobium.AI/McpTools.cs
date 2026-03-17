@@ -5,6 +5,23 @@ namespace Niobium.AI
 {
     public class McpTools
     {
+        private static readonly string[] PlaywrightToolNames = 
+        {
+            "browser_navigate",
+            "browser_snapshot",
+            "browser_wait_for",
+            "browser_click",
+            "browser_fill_form",
+            "browser_type",
+            "browser_select_option",
+            "browser_take_screenshot",
+            "browser_handle_dialog",
+            "browser_tabs",
+            "browser_console_messages",
+            "browser_network_requests",
+            "browser_evaluate",
+            "browser_run_code",
+        };
         private static IEnumerable<McpClientTool>? playwrightTools;
 
         public async Task<IEnumerable<AITool>> GetPlaywrightToolsAsync(CancellationToken cancellationToken)
@@ -21,7 +38,7 @@ namespace Niobium.AI
                 playwrightTools = await playwrightMcpClient.ListToolsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
-            return playwrightTools.Cast<AITool>();
+            return playwrightTools.Cast<AITool>().Where(t => PlaywrightToolNames.Contains(t.Name));
         }
 
         public async Task CleanupPlaywrightTabsAsync(CancellationToken cancellationToken)
