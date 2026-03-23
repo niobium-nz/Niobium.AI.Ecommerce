@@ -8,9 +8,9 @@ namespace Niobium.AI.Shorts.Agents
         IChatClientFactory clientFactory,
         McpTools tools,
         ILogger<MetaVideoAdCreator> logger)
-        : TypedGenericLanguageAIAgent<MetaVideoAdCreatorInput, string>(clientFactory, logger)
+        : TypedResponseAgent<MetaVideoAdCreatorInput, MetaVideoAdCreatorOutput>(clientFactory, logger)
     {
-        public override string Name => nameof(MetaVideoAdCreator);
+        public override string Id => nameof(MetaVideoAdCreator);
 
         protected override Type InstructionsResourceBaseType => this.GetType();
 
@@ -20,7 +20,7 @@ namespace Niobium.AI.Shorts.Agents
 
         protected override DirectoryInfo? SkillsFolder => new(Path.Combine(AppContext.BaseDirectory, "skills"));
 
-        protected override async Task OnResponseGotAsync(string conversationID, MetaVideoAdCreatorInput input, string? output, CancellationToken cancellationToken)
+        protected override async Task OnResponseGotAsync(string conversationID, MetaVideoAdCreatorInput input, MetaVideoAdCreatorOutput? output, CancellationToken cancellationToken)
         {
             await tools.CleanupPlaywrightTabsAsync(cancellationToken);
             await base.OnResponseGotAsync(conversationID, input, output, cancellationToken);

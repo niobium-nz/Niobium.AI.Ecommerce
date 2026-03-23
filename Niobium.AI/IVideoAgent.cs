@@ -1,8 +1,6 @@
 namespace Niobium.AI
 {
-    public interface IVideoAgent<TInput, TOutput> : IAgent
-        where TOutput : IResponseWithVideo
+    public interface IVideoAgent<T> : IResponseAgent<T, Stream> where T : IVideoInstruction
     {
-        Task<TOutput> GetVideoAsync(string conversationID, TInput input, CancellationToken cancellationToken);
     }
 }

@@ -6,7 +6,7 @@ namespace Niobium.AI.Ecommerce.Agents
 {
     internal class AdsDiscoverer(IMetaAdsLibrary adsLibrary) : IResponseAgent<AdsDiscovererInput, AdsDiscovererOutput>
     {
-        public string Name => nameof(AdsDiscoverer);
+        public string Id => nameof(AdsDiscoverer);
 
         public async Task<AdsDiscovererOutput> GetResponseAsync(string conversationID, AdsDiscovererInput input, CancellationToken cancellationToken)
         {

@@ -5,9 +5,9 @@ using Niobium.AI.Ecommerce.Contracts;
 
 namespace Niobium.AI.Ecommerce.Agents
 {
-    internal class KeywordsPlanner(IChatClientFactory clientFactory, McpTools tools, ILogger<KeywordsPlanner> logger) : TypedGenericLanguageAIAgent<KeywordsPlannerInput, KeywordsPlannerOutput>(clientFactory, logger)
+    internal class KeywordsPlanner(IChatClientFactory clientFactory, McpTools tools, ILogger<KeywordsPlanner> logger) : TypedResponseAgent<KeywordsPlannerInput, KeywordsPlannerOutput>(clientFactory, logger)
     {
-        public override string Name => nameof(KeywordsPlanner);
+        public override string Id => nameof(KeywordsPlanner);
 
         protected override ReasoningEffort Reasoning => ReasoningEffort.Medium;
 

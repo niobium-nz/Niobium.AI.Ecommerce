@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Niobium.AI
 {
-    public abstract class GenericLanguageAIAgent(IChatClientFactory clientFactory, ILogger logger) : IAgent
+    public abstract class GenericResponseAgent(IChatClientFactory clientFactory, ILogger logger) : IAgent
     {
         private AIAgent? _agent;
 
@@ -16,7 +16,7 @@ namespace Niobium.AI
 
         protected virtual DirectoryInfo? SkillsFolder => null;
 
-        public abstract string Name { get; }
+        public abstract string Id { get; }
 
         protected virtual Task<IEnumerable<AITool>> GetToolsAsync(CancellationToken cancellationToken) => Task.FromResult(Enumerable.Empty<AITool>());
 
@@ -24,7 +24,7 @@ namespace Niobium.AI
 
         protected virtual async Task<string> GetInstructionsAsync(CancellationToken cancellationToken)
         {
-            var resource = $"{this.InstructionsResourceBaseType.Namespace}.{this.Name}.md";
+            var resource = $"{this.InstructionsResourceBaseType.Namespace}.{this.Id}.md";
             using var stream = this.InstructionsResourceBaseType.Assembly.GetManifestResourceStream(resource)
                 ?? throw new InvalidOperationException($"Instructions resource not found: {resource}");
             using var reader = new StreamReader(stream);
@@ -40,7 +40,7 @@ namespace Niobium.AI
                 var reasoningToken = usage.ReasoningTokenCount;
                 var totalToken = usage.TotalTokenCount;
                 this.Logger.LogInformation("Agent {AgentName} token usage for conversation {ConversationId}: Input={InputToken}, Output={OutputToken}, Reasoning={ReasoningToken}, Total={TotalToken}",
-                    this.Name, conversationID, inputToken, outputToken, reasoningToken, totalToken);
+                    this.Id, conversationID, inputToken, outputToken, reasoningToken, totalToken);
             }
         }
 
@@ -73,7 +73,7 @@ namespace Niobium.AI
 
                 this._agent = builder.BuildAIAgent(new ChatClientAgentOptions
                 {
-                    Name = this.Name,
+                    Name = this.Id,
                     ChatOptions = chatOptions,
                 });
             }

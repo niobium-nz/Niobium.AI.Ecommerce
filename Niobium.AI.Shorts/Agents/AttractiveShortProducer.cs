@@ -1,29 +1,19 @@
-using Microsoft.Extensions.AI;
-using Microsoft.Extensions.Logging;
 using Niobium.AI.Shorts.Contracts;
 using Niobium.AI.Shorts.Skills;
 
 namespace Niobium.AI.Shorts.Agents
 {
-    internal class AttractiveShortProducer(
-        IFileStorage fileStorage,
-        IVideoClientFactory videoClientFactory,
-        IChatClientFactory chatClientFactory,
-        ILogger<AttractiveShortProducer> logger)
-            : GenericVideoAIAgent<AttractiveShortProducerInput, AttractiveShortProducerOutput>(fileStorage, videoClientFactory, chatClientFactory, logger)
+    internal class AttractiveShortProducer(IVideoClientFactory videoClientFactory)
+        : Sora2VideoAgent<AttractiveShortScreenwriterOutput>(videoClientFactory)
     {
-        public override string Name => nameof(AttractiveShortProducer);
+        public override string Id => nameof(AttractiveShortProducer);
 
-        protected override Type InstructionsResourceBaseType => this.GetType();
-
-        protected override ReasoningEffort Reasoning => ReasoningEffort.Medium;
-
-        protected override async Task OnVideoGotAsync(string conversationID, AttractiveShortProducerInput input, AttractiveShortProducerOutput output, Stream videoStream, CancellationToken cancellationToken)
+        protected override async Task<Stream> OnResponseGotAsync(string conversationID, AttractiveShortScreenwriterOutput input, Stream videoStream, CancellationToken cancellationToken)
         {
             using (videoStream)
             {
-                Stream videoStreamWithSubtitle = await BurnSubtitleToVideo.BurnInSubtitlesAsync(videoStream, output, cancellationToken);
-                await base.OnVideoGotAsync(conversationID, input, output, videoStreamWithSubtitle, cancellationToken);
+                Stream videoStreamWithSubtitle = await BurnSubtitleToVideo.BurnInSubtitlesAsync(videoStream, input, input.SubtitlePlan, cancellationToken);
+                return await base.OnResponseGotAsync(conversationID, input, videoStreamWithSubtitle, cancellationToken);
             }
         }
     }

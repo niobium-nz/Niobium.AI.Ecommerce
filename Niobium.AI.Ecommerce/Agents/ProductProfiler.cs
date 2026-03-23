@@ -5,9 +5,9 @@ using Niobium.AI.Ecommerce.Contracts;
 
 namespace Niobium.AI.Ecommerce.Agents
 {
-    internal class ProductProfiler(IChatClientFactory clientFactory, McpTools tools, ILogger<ProductProfiler> logger) : TypedGenericLanguageAIAgent<ProductProfilerInput, ProductProfilerOutput>(clientFactory, logger)
+    internal class ProductProfiler(IChatClientFactory clientFactory, McpTools tools, ILogger<ProductProfiler> logger) : TypedResponseAgent<ProductProfilerInput, ProductProfilerOutput>(clientFactory, logger)
     {
-        public override string Name => nameof(ProductProfiler);
+        public override string Id => nameof(ProductProfiler);
 
         protected override ReasoningEffort Reasoning => ReasoningEffort.High;
 

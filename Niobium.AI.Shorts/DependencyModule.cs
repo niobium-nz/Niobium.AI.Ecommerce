@@ -2,6 +2,7 @@ using Azure;
 using Azure.Data.Tables;
 using Microsoft.Extensions.DependencyInjection;
 using Niobium.AI.Shorts.Agents;
+using Niobium.AI.Shorts.Contracts;
 using Niobium.AI.Shorts.Workflows;
 
 namespace Niobium.AI.Shorts
@@ -12,6 +13,11 @@ namespace Niobium.AI.Shorts
         {
             _ = services.AddAI()
             .AddSingleton<McpTools>()
+            .AddTransient<WorkflowUserInputAdaptor<AttractiveShortWorkflowInput>>()
+            .AddTransient<AttractiveShortScreenwriter>()
+            .AddTransient<AttractiveShortScreenwriterAdaptor>()
+            .AddTransient<MetaVideoAdCreatorAdaptor>()
+            .AddTransient<FileUploader>()
             .AddTransient<MetaVideoAdCreator>()
             .AddTransient<AttractiveShortProducer>()
             .AddTransient<IWorkflow, AttractiveShortWorkflow>()

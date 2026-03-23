@@ -1,54 +1,71 @@
-using Azure.Data.Tables;
+using System.Text.Json;
+using Microsoft.Agents.AI.Workflows;
 using Niobium.AI.Shorts.Agents;
 using Niobium.AI.Shorts.Contracts;
 
 namespace Niobium.AI.Shorts.Workflows
 {
     internal class AttractiveShortWorkflow(
-        TableServiceClient tableServiceClient,
+        AttractiveShortScreenwriterAdaptor attractiveShortScreenwriterAdaptor,
+        AttractiveShortScreenwriter attractiveShortScreenwriter,
         AttractiveShortProducer attractiveShortProducer,
-        MetaVideoAdCreator metaVideoAdCreator)
-        : IWorkflow
+        MetaVideoAdCreator metaVideoAdCreator,
+        FileUploader fileUploader,
+        MetaVideoAdCreatorAdaptor metaVideoAdCreatorAdaptor,
+        WorkflowUserInputAdaptor<AttractiveShortWorkflowInput> workflowUserInputAdaptor)
+        : IWorkflow<AttractiveShortWorkflowInput, AttractiveShortWorkflowOutput>
     {
-        public async Task RunAsync(string conversationID, CancellationToken cancellationToken)
+        private Workflow? workflow;
+
+        public string Render() => this.GetOrCreateWorkflow().ToMermaidString();
+
+        public async Task<AttractiveShortWorkflowOutput> RunAsync(string conversationID, AttractiveShortWorkflowInput input, CancellationToken cancellationToken)
         {
-            //for (int i = 0; i < 5; i++)
+            var workflow = this.GetOrCreateWorkflow();
+            await using var run = await InProcessExecution.RunAsync(workflow, input, cancellationToken: cancellationToken);
+            foreach (WorkflowEvent evt in run.NewEvents)
             {
-                var businessName = "Mid-class community Restaurant and Bar";
-                var tableClient = tableServiceClient.GetTableClient("VideoIdea");
-                var ideas = await tableClient.QueryAsync<TableEntity>(x => x.PartitionKey == businessName, cancellationToken: cancellationToken).ToListAsync();
-                var video = await attractiveShortProducer.GetVideoAsync(
-                    conversationID,
-                    new AttractiveShortProducerInput
-                    {
-                        BusinessName = businessName,
-                        Location = "Morningside, Auckland, New Zealand",
-                        BusinessType = "Restaurant & Bar",
-                        TypicalSpend = "$60-$80",
-                        PreviousVideoIdeas = [.. ideas.Select(x => x.GetString("Value")!)],
-                    },
-                    cancellationToken);
-
-                await tableClient.AddEntityAsync(new TableEntity(businessName, DateTimeOffset.UtcNow.ToReverseUnixTimestamp())
+                if (evt is WorkflowOutputEvent outputEvt)
                 {
-                    { "Value", video.VideoIdea },
-                    { "Prompt", video.VideoPrompt },
-                }, cancellationToken);
-
-                var result = await metaVideoAdCreator.GetResponseAsync(
-                    conversationID,
-                    new MetaVideoAdCreatorInput
-                    {
-                        AdAccountId = "1560340895219737",
-                        CampaignName = "Followers",
-                        AdSetName = "Attractive Shorts",
-                        VideoUrl = video.VideoUrl!.ToString(),
-                        PrimaryText = $"{video.SocialPost}\n\n{String.Join(' ', video.SocialPostTags)}"
-                    },
-                    cancellationToken);
-
-                Console.WriteLine(result);
+                    return outputEvt.Data == null
+                        ? throw new InvalidOperationException($"[{conversationID}] Workflow output event data is null.")
+                        : outputEvt.Data is MetaVideoAdCreatorOutput output
+                        ? new AttractiveShortWorkflowOutput
+                        {
+                            Status = output.Status,
+                            AdName = output.AdName,
+                            ScreenshotFullFilePath = output.ScreenshotFullFilePath
+                        }
+                        : throw new InvalidCastException($"[{conversationID}] Expected workflow output data of type {nameof(MetaVideoAdCreatorOutput)}, but got {outputEvt.Data.GetType().FullName}.");
+                }
             }
+
+            throw new InvalidOperationException($"[{conversationID}] Workflow {nameof(AttractiveShortWorkflow)} completed without producing an output.");
+        }
+
+        public async Task<string> RunAsync(string conversationID, string input, CancellationToken cancellationToken)
+            => JsonSerializer.Serialize(await this.RunAsync(conversationID, JsonSerializer.Deserialize<AttractiveShortWorkflowInput>(input)!, cancellationToken));
+
+        private Workflow GetOrCreateWorkflow()
+        {
+            if (this.workflow == null)
+            {
+                var attractiveShortScreenwriterBinding = attractiveShortScreenwriter.GetBinding(States.VideoInstructions, States.SharedScope);
+                var attractiveShortProducerBinding = attractiveShortProducer.GetBinding();
+                var metaVideoAdCreatorBinding = metaVideoAdCreator.GetBinding(yieldWorkflowOutput: true);
+
+                var builder = new WorkflowBuilder(workflowUserInputAdaptor)
+                    .AddEdge(workflowUserInputAdaptor, attractiveShortScreenwriterAdaptor)
+                    .AddEdge(attractiveShortScreenwriterAdaptor, attractiveShortScreenwriterBinding)
+                    .AddEdge(attractiveShortScreenwriterBinding, attractiveShortProducerBinding)
+                    .AddEdge(attractiveShortProducerBinding, fileUploader)
+                    .AddEdge(fileUploader, metaVideoAdCreatorAdaptor)
+                    .AddEdge(metaVideoAdCreatorAdaptor, metaVideoAdCreatorBinding)
+                    .WithOutputFrom(metaVideoAdCreatorBinding);
+                this.workflow = builder.Build();
+            }
+
+            return this.workflow;
         }
     }
 }

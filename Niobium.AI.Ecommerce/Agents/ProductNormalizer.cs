@@ -5,9 +5,9 @@ using Niobium.AI.Ecommerce.Contracts;
 
 namespace Niobium.AI.Ecommerce.Agents
 {
-    internal class ProductNormalizer(IChatClientFactory clientFactory, McpTools tools, ILogger<ProductNormalizer> logger) : TypedGenericLanguageAIAgent<ProductNormalizerInput, ProductNormalizerOutput>(clientFactory, logger)
+    internal class ProductNormalizer(IChatClientFactory clientFactory, McpTools tools, ILogger<ProductNormalizer> logger) : TypedResponseAgent<ProductNormalizerInput, ProductNormalizerOutput>(clientFactory, logger)
     {
-        public override string Name => nameof(ProductNormalizer);
+        public override string Id => nameof(ProductNormalizer);
 
         protected override ReasoningEffort Reasoning => ReasoningEffort.Medium;
 

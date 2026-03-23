@@ -80,8 +80,8 @@ namespace Niobium.AI.OpenAI
                     throw ex;
                 }
 
-                logger.LogInformation("Sora video generation status: {Status}, current progress: {Progress}. Checking again in 15 seconds...", result?.Status, result?.Progress);
-                await Task.Delay(TimeSpan.FromSeconds(15), cancellationToken);
+                logger.LogInformation("Sora video generation status: {Status}, current progress: {Progress}. Checking again in 20 seconds...", result?.Status, result?.Progress);
+                await Task.Delay(TimeSpan.FromSeconds(20), cancellationToken);
             }
 
             logger.LogInformation("Sora video generation completed for ID: {VideoId}. Starting download...", videoId);

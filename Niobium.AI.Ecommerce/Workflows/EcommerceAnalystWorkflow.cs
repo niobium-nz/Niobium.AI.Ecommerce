@@ -14,7 +14,9 @@ namespace Niobium.AI.Ecommerce.Workflows
         CompetitionScout competitionScout,
         ILogger<EcommerceAnalystWorkflow> logger) : IWorkflow
     {
-        public async Task RunAsync(string conversationID, CancellationToken cancellationToken)
+        public string Render() => throw new NotImplementedException();
+
+        public async Task<string> RunAsync(string conversationID, string input, CancellationToken cancellationToken)
         {
             List<Exception> exceptions = [];
 
@@ -173,6 +175,8 @@ namespace Niobium.AI.Ecommerce.Workflows
                 logger.LogError(aggregateException, "Workflow completed with {exceptionCount} errors. Throwing aggregate exception. Exceptions: {@exceptions}", exceptions.Count, exceptions);
                 throw aggregateException;
             }
+
+            return string.Empty;
         }
     }
 }

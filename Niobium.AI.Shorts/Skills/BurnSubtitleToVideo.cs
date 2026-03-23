@@ -11,17 +11,18 @@ namespace Niobium.AI.Shorts.Skills
     {
         private const string EmphasisWordRegexFormat = "\\b({0})\\b";
 
-        public static async Task<Stream> BurnInSubtitlesAsync(Stream videoStream, AttractiveShortProducerOutput output, CancellationToken cancellationToken)
+        public static async Task<Stream> BurnInSubtitlesAsync(Stream videoStream, IVideoInstruction videoInstruction, SubtitlePlan subtitlePlan, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(videoStream);
-            ArgumentNullException.ThrowIfNull(output);
+            ArgumentNullException.ThrowIfNull(videoInstruction);
+            ArgumentNullException.ThrowIfNull(subtitlePlan);
 
-            if (output.VideoWidth <= 0 || output.VideoHeight <= 0)
+            if (videoInstruction.VideoWidth <= 0 || videoInstruction.VideoHeight <= 0)
             {
                 throw new InvalidOperationException("Video dimensions must be set before burning subtitles.");
             }
 
-            if (output.SubtitlePlan?.Captions is null || output.SubtitlePlan.Captions.Count == 0)
+            if (subtitlePlan.Captions is null || subtitlePlan.Captions.Count == 0)
             {
                 return videoStream;
             }
@@ -34,15 +35,14 @@ namespace Niobium.AI.Shorts.Skills
                 {
                     await videoStream.CopyToAsync(fileStream, cancellationToken).ConfigureAwait(false);
                 }
-                output.VideoUrl = tempVideoPath;
-                var inputPath = output.VideoUrl;
+
                 var outputPath = Path.Combine(Path.GetTempPath(), $"subs_{Guid.NewGuid():N}.mp4");
                 var assPath = Path.Combine(Path.GetTempPath(), $"subs_{Guid.NewGuid():N}.ass");
 
                 try
                 {
-                    await File.WriteAllTextAsync(assPath, BuildAss(output.SubtitlePlan, output.VideoWidth, output.VideoHeight), Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-                    await RunFFmpegBurnAsync(inputPath, outputPath, assPath, cancellationToken).ConfigureAwait(false);
+                    await File.WriteAllTextAsync(assPath, BuildAss(subtitlePlan, videoInstruction.VideoWidth, videoInstruction.VideoHeight), Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+                    await RunFFmpegBurnAsync(tempVideoPath, outputPath, assPath, cancellationToken).ConfigureAwait(false);
                     return File.OpenRead(outputPath);
                 }
                 catch (Exception ex) when (ex is Win32Exception or InvalidOperationException)
