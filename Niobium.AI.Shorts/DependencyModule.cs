@@ -12,7 +12,7 @@ namespace Niobium.AI.Shorts
         {
             _ = services.AddAI()
             .AddSingleton<McpTools>()
-            .AddTransient<WorkflowUserInputAdaptor<AttractiveShortWorkflowInput>>()
+            .AddTransient<UserInputAdaptor<AttractiveShortWorkflowInput>>()
             .AddTransient<AttractiveShortScreenwriter>()
             .AddTransient<AttractiveShortScreenwriterAdaptor>()
             .AddTransient<MetaVideoAdCreatorAdaptor>()

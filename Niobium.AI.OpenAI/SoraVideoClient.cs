@@ -45,7 +45,7 @@ namespace Niobium.AI.OpenAI
             var videoId = document.RootElement.GetProperty("id").GetString();
             if (String.IsNullOrWhiteSpace(videoId))
             {
-                var ex = new AgentException("Failed to get video ID from Sora response");
+                var ex = new ExecutorException("Failed to get video ID from Sora response");
                 logger.LogError(ex, "Failed to get video ID from Sora response: {ResponseContent}", responseContent);
                 throw ex;
             }
@@ -68,7 +68,7 @@ namespace Niobium.AI.OpenAI
 
                 if (result?.Status == "failed")
                 {
-                    var ex = new AgentException("Sora video generation failed");
+                    var ex = new ExecutorException("Sora video generation failed");
                     logger.LogError(ex, "Sora video generation failed with code {Code}: {ErrorMessage}", result?.Error?.Code, result?.Error?.Message);
                     throw ex;
                 }

@@ -2,7 +2,7 @@ using Microsoft.Agents.AI.Workflows;
 
 namespace Niobium.AI
 {
-    public class WorkflowUserInputAdaptor<T>() : Executor<T, T>(nameof(WorkflowUserInputAdaptor<T>))
+    public class UserInputAdaptor<T>() : Executor<T, T>(nameof(UserInputAdaptor<T>))
     {
         public override async ValueTask<T> HandleAsync(T message, IWorkflowContext context, CancellationToken cancellationToken = default)
         {

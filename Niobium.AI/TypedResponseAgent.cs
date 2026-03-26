@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Niobium.AI
 {
-    public abstract class TypedResponseAgent<TInput, TOutput>(IChatClientFactory clientFactory, ILogger logger) : GenericResponseAgent(clientFactory, logger), IResponseAgent<TInput, TOutput>
+    public abstract class TypedResponseAgent<TInput, TOutput>(IChatClientFactory clientFactory, ILogger logger) : GenericResponseAgent(clientFactory, logger), IResponseGenerator<TInput, TOutput>
         where TOutput : class
     {
         protected virtual Task OnGettingResponseAsync(string conversationID, TInput input, CancellationToken cancellationToken) => Task.CompletedTask;
@@ -49,6 +49,6 @@ namespace Niobium.AI
         }
 
         public ExecutorBinding GetBinding(string? outputStateKey = null, string? stateScope = null, bool yieldWorkflowOutput = false)
-            => new AgentExecutorAdaptor<TInput, TOutput>(this, yieldWorkflowOutput, outputStateKey, stateScope);
+            => new AgentExecutor<TInput, TOutput>(this, yieldWorkflowOutput, outputStateKey, stateScope);
     }
 }

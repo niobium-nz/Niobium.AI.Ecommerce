@@ -4,7 +4,7 @@ using Niobium.AI.Ecommerce.Contracts;
 
 namespace Niobium.AI.Ecommerce.Agents
 {
-    internal class AdsDiscoverer(IMetaAdsLibrary adsLibrary) : IResponseAgent<AdsDiscovererInput, AdsDiscovererOutput>
+    internal class AdsDiscoverer(IMetaAdsLibrary adsLibrary) : IResponseGenerator<AdsDiscovererInput, AdsDiscovererOutput>
     {
         public string Id => nameof(AdsDiscoverer);
 

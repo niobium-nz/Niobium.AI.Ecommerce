@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Niobium.AI
 {
-    public abstract class GenericResponseAgent(IChatClientFactory clientFactory, ILogger logger) : IAgent
+    public abstract class GenericResponseAgent(IChatClientFactory clientFactory, ILogger logger) : IExecutor
     {
         private AIAgent? _agent;
 

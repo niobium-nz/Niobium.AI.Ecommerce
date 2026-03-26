@@ -14,6 +14,8 @@ namespace Niobium.AI.Ecommerce.Workflows
         CompetitionScout competitionScout,
         ILogger<EcommerceAnalystWorkflow> logger) : IWorkflow
     {
+        public string Id => nameof(EcommerceAnalystWorkflow);
+
         public string Render() => throw new NotImplementedException();
 
         public async Task<string> RunAsync(string conversationID, string input, CancellationToken cancellationToken)
@@ -35,7 +37,7 @@ namespace Niobium.AI.Ecommerce.Workflows
                     cancellationToken);
                 if (keywords.OptimizedKeywords.Count <= 0)
                 {
-                    exceptions.Add(new AgentException($"Failed to get keywords for focus {focus}"));
+                    exceptions.Add(new ExecutorException($"Failed to get keywords for focus {focus}"));
                     break;
                 }
 
@@ -51,7 +53,7 @@ namespace Niobium.AI.Ecommerce.Workflows
                         cancellationToken);
                     if (rawAds == null || rawAds.Count <= 0)
                     {
-                        exceptions.Add(new AgentException($"Failed to get ads for keyword {keyword}"));
+                        exceptions.Add(new ExecutorException($"Failed to get ads for keyword {keyword}"));
                         continue;
                     }
 

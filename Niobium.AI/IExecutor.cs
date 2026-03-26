@@ -1,6 +1,6 @@
 namespace Niobium.AI
 {
-    public interface IAgent
+    public interface IExecutor
     {
         string Id { get; }
     }

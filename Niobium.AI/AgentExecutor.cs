@@ -2,7 +2,7 @@ using Microsoft.Agents.AI.Workflows;
 
 namespace Niobium.AI
 {
-    public class AgentExecutorAdaptor<TInput, TOutput>(IResponseAgent<TInput, TOutput> agent, bool yieldWorkflowOutput, string? outputStateKey = null, string ? stateScope = null)
+    public class AgentExecutor<TInput, TOutput>(IResponseGenerator<TInput, TOutput> agent, bool yieldWorkflowOutput, string? outputStateKey = null, string ? stateScope = null)
         : Executor<TInput, TOutput>(agent.Id)
     {
         public override async ValueTask<TOutput> HandleAsync(TInput message, IWorkflowContext context, CancellationToken cancellationToken = default)

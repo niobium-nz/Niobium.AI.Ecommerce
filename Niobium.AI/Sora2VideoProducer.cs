@@ -2,7 +2,7 @@ using Microsoft.Agents.AI.Workflows;
 
 namespace Niobium.AI
 {
-    public abstract class Sora2VideoAgent<T>(IVideoClientFactory videoClientFactory) : IVideoAgent<T> where T : IVideoInstruction
+    public abstract class Sora2VideoProducer<T>(IVideoClientFactory videoClientFactory) : IVideoProducer<T> where T : IVideoInstruction
     {
         public abstract string Id { get; }
 
@@ -38,6 +38,6 @@ namespace Niobium.AI
             => Task.FromResult(videoStream);
 
         public ExecutorBinding GetBinding(string ? outputStateKey = null, string? stateScope = null, bool yieldWorkflowOutput = false)
-            => new AgentExecutorAdaptor<T, Stream>(this, yieldWorkflowOutput, outputStateKey, stateScope);
+            => new AgentExecutor<T, Stream>(this, yieldWorkflowOutput, outputStateKey, stateScope);
     }
 }

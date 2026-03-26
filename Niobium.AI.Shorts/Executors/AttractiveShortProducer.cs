@@ -4,7 +4,7 @@ using Niobium.AI.Shorts.Skills;
 namespace Niobium.AI.Shorts.Executors
 {
     internal class AttractiveShortProducer(IVideoClientFactory videoClientFactory)
-        : Sora2VideoAgent<AttractiveShortScreenwriterOutput>(videoClientFactory)
+        : Sora2VideoProducer<AttractiveShortScreenwriterOutput>(videoClientFactory)
     {
         public override string Id => nameof(AttractiveShortProducer);
 

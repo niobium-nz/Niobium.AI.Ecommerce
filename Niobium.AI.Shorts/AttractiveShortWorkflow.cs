@@ -12,10 +12,12 @@ namespace Niobium.AI.Shorts
         MetaVideoAdCreator metaVideoAdCreator,
         FileUploader fileUploader,
         MetaVideoAdCreatorAdaptor metaVideoAdCreatorAdaptor,
-        WorkflowUserInputAdaptor<AttractiveShortWorkflowInput> workflowUserInputAdaptor)
+        UserInputAdaptor<AttractiveShortWorkflowInput> workflowUserInputAdaptor)
         : IWorkflow<AttractiveShortWorkflowInput, AttractiveShortWorkflowOutput>
     {
         private Workflow? workflow;
+
+        public string Id => nameof(AttractiveShortWorkflow);
 
         public string Render() => this.GetOrCreateWorkflow().ToMermaidString();
 
