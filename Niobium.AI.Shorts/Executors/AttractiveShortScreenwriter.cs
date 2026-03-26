@@ -2,7 +2,7 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.Shorts.Contracts;
 
-namespace Niobium.AI.Shorts.Agents
+namespace Niobium.AI.Shorts.Executors
 {
     internal class AttractiveShortScreenwriter(
         IChatClientFactory chatClientFactory,

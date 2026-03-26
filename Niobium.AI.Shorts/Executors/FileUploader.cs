@@ -2,7 +2,7 @@ using Azure;
 using Microsoft.Agents.AI.Workflows;
 using Microsoft.Extensions.Logging;
 
-namespace Niobium.AI.Shorts.Agents
+namespace Niobium.AI.Shorts.Executors
 {
     internal class FileUploader(IFileStorage fileStorage, ILogger<FileUploader> logger) : Executor<Stream, Uri>(nameof(FileUploader))
     {

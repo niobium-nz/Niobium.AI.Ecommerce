@@ -2,7 +2,7 @@ using Azure.Data.Tables;
 using Microsoft.Agents.AI.Workflows;
 using Niobium.AI.Shorts.Contracts;
 
-namespace Niobium.AI.Shorts.Agents
+namespace Niobium.AI.Shorts.Executors
 {
     internal class AttractiveShortScreenwriterAdaptor(TableServiceClient tableServiceClient) : Executor<AttractiveShortWorkflowInput, AttractiveShortScreenwriterInput>(nameof(AttractiveShortScreenwriterAdaptor))
     {

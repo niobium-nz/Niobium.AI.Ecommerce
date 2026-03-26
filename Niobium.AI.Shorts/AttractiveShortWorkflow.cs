@@ -1,9 +1,9 @@
 using System.Text.Json;
 using Microsoft.Agents.AI.Workflows;
-using Niobium.AI.Shorts.Agents;
 using Niobium.AI.Shorts.Contracts;
+using Niobium.AI.Shorts.Executors;
 
-namespace Niobium.AI.Shorts.Workflows
+namespace Niobium.AI.Shorts
 {
     internal class AttractiveShortWorkflow(
         AttractiveShortScreenwriterAdaptor attractiveShortScreenwriterAdaptor,

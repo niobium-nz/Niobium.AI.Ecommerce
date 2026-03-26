@@ -1,9 +1,8 @@
 using Azure;
 using Azure.Data.Tables;
 using Microsoft.Extensions.DependencyInjection;
-using Niobium.AI.Shorts.Agents;
 using Niobium.AI.Shorts.Contracts;
-using Niobium.AI.Shorts.Workflows;
+using Niobium.AI.Shorts.Executors;
 
 namespace Niobium.AI.Shorts
 {

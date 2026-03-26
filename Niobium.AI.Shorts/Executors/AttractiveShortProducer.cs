@@ -1,7 +1,7 @@
 using Niobium.AI.Shorts.Contracts;
 using Niobium.AI.Shorts.Skills;
 
-namespace Niobium.AI.Shorts.Agents
+namespace Niobium.AI.Shorts.Executors
 {
     internal class AttractiveShortProducer(IVideoClientFactory videoClientFactory)
         : Sora2VideoAgent<AttractiveShortScreenwriterOutput>(videoClientFactory)
