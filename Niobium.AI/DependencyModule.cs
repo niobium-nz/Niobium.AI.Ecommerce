@@ -4,15 +4,17 @@ namespace Niobium.AI
 {
     public static class DependencyModule
     {
-        private volatile static bool loaded = false;
+        private static volatile bool loaded = false;
 
         public static IServiceCollection AddAI(this IServiceCollection services)
         {
-            if (!loaded)
+            if (loaded)
             {
-                loaded = true;
+                return services;
             }
 
+            loaded = true;
+            services.AddTransient(typeof(UserInputAdaptor<>));
             return services;
         }
     }

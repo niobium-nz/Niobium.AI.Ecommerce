@@ -5,8 +5,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.BlobStorage;
 using Niobium.AI.Console;
+using Niobium.AI.Ecommerce;
 using Niobium.AI.OpenAI;
-using Niobium.AI.Shorts;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -14,13 +14,13 @@ using OpenTelemetry.Trace;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
-var serviceName = builder.Configuration.GetValue<string>("ServiceName") ?? throw new InvalidOperationException("ServiceName is not set.");
-var serviceVersion = builder.Configuration.GetValue<string>("ServiceVersion") ?? "1.0.0";
-var applicationInsightsConnectionString = Environment.GetEnvironmentVariable("APPLICATION_INSIGHTS_CONNECTION_STRING");
+string serviceName = builder.Configuration.GetValue<string>("ServiceName") ?? throw new InvalidOperationException("ServiceName is not set.");
+string serviceVersion = builder.Configuration.GetValue<string>("ServiceVersion") ?? "1.0.0";
+string? applicationInsightsConnectionString = Environment.GetEnvironmentVariable("APPLICATION_INSIGHTS_CONNECTION_STRING");
 
-var otlpEndpoint = builder.Configuration.GetValue<string>("OpenTelemetry:OtlpEndpoint");
+string? otlpEndpoint = builder.Configuration.GetValue<string>("OpenTelemetry:OtlpEndpoint");
 
-var resourceBuilder = ResourceBuilder
+ResourceBuilder resourceBuilder = ResourceBuilder
     .CreateDefault()
     .AddService(serviceName: serviceName, serviceVersion: serviceVersion);
 
@@ -39,7 +39,7 @@ builder.Logging.AddOpenTelemetry(options =>
 })
 .SetMinimumLevel(LogLevel.Debug);
 
-var tracerBuilder = Sdk.CreateTracerProviderBuilder()
+TracerProviderBuilder tracerBuilder = Sdk.CreateTracerProviderBuilder()
     .SetResourceBuilder(resourceBuilder)
     /*.AddHttpClientInstrumentation()*/
     .AddSource("*Niobium.AI*")
@@ -57,10 +57,10 @@ if (!String.IsNullOrWhiteSpace(otlpEndpoint))
     _ = tracerBuilder.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
 }
 
-var tracerProvider = tracerBuilder.Build();
+TracerProvider tracerProvider = tracerBuilder.Build();
 builder.Services.AddSingleton(tracerProvider);
 
-var meterBuilder = Sdk.CreateMeterProviderBuilder()
+MeterProviderBuilder meterBuilder = Sdk.CreateMeterProviderBuilder()
     .SetResourceBuilder(resourceBuilder)
     /*.AddHttpClientInstrumentation()*/
     /*.AddRuntimeInstrumentation()*/
@@ -77,12 +77,12 @@ if (!String.IsNullOrWhiteSpace(otlpEndpoint))
     _ = meterBuilder.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
 }
 
-var meterProvider = meterBuilder.Build();
+MeterProvider meterProvider = meterBuilder.Build();
 builder.Services.AddSingleton(meterProvider);
 
 builder.Services.AddBlobStorage();
 builder.Services.AddOpenAI();
-builder.Services.AddShorts();
+builder.Services.AddEcommerce();
 builder.Services.AddHostedService<WorkflowWorker>();
 IHost host = builder.Build();
 host.Run();

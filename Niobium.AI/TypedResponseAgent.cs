@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Microsoft.Agents.AI;
-using Microsoft.Agents.AI.Workflows;
 using Microsoft.Extensions.Logging;
 
 namespace Niobium.AI
@@ -18,13 +17,13 @@ namespace Niobium.AI
             try
             {
                 await this.OnGettingResponseAsync(conversationID, input, cancellationToken);
-                var request = input is string str ? str : JsonSerializer.Serialize(input, SerializationOptions.SnakeCase);
-                var agent = await this.GetOrCreateAgentAsync(conversationID, cancellationToken);
+                string request = input is string str ? str : JsonSerializer.Serialize(input, SerializationOptions.SnakeCase);
+                AIAgent agent = await this.GetOrCreateAgentAsync(conversationID, cancellationToken);
 
-//                System.ClientModel.ClientResultException: 'HTTP 429 (new_api_error: )
-//当前分组上游负载已饱和，请稍后再试(request id: 20260316171712186993607SDHgN0RI)'
-//Status = 429
-//Source = OpenAI
+                //                System.ClientModel.ClientResultException: 'HTTP 429 (new_api_error: )
+                //当前分组上游负载已饱和，请稍后再试(request id: 20260316171712186993607SDHgN0RI)'
+                //Status = 429
+                //Source = OpenAI
 
                 AgentResponse response;
                 if (typeof(TOutput) == typeof(string))
@@ -38,8 +37,8 @@ namespace Niobium.AI
                     response = resp;
                     output = resp.Result;
                 }
-                
-                this.LogUsage(conversationID, response.Usage);                
+
+                this.LogUsage(conversationID, response.Usage);
                 return output!;
             }
             finally
@@ -47,8 +46,5 @@ namespace Niobium.AI
                 await this.OnResponseGotAsync(conversationID, input, output, cancellationToken);
             }
         }
-
-        public ExecutorBinding GetBinding(string? outputStateKey = null, string? stateScope = null, bool yieldWorkflowOutput = false)
-            => new AgentExecutor<TInput, TOutput>(this, yieldWorkflowOutput, outputStateKey, stateScope);
     }
 }

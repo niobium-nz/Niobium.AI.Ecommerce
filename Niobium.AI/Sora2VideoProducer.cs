@@ -1,5 +1,3 @@
-using Microsoft.Agents.AI.Workflows;
-
 namespace Niobium.AI
 {
     public abstract class Sora2VideoProducer<T>(IVideoClientFactory videoClientFactory) : IVideoProducer<T> where T : IVideoInstruction
@@ -18,13 +16,13 @@ namespace Niobium.AI
             // align size to 720p if necessary due to Sora2 limitations
             if (input.VideoWidth > 720)
             {
-                var scale = input.VideoWidth / 720.0d;
+                double scale = input.VideoWidth / 720.0d;
                 input.VideoWidth = 720;
                 input.VideoHeight = (int)(input.VideoHeight / scale);
             }
 
             await this.OnGettingResponseAsync(conversationID, input, cancellationToken);
-            var videoStream = await this.VideoClient.RunAsync(
+            Stream videoStream = await this.VideoClient.RunAsync(
                  conversationID,
                  input.VideoPrompt,
                  input.VideoWidth,
@@ -36,8 +34,5 @@ namespace Niobium.AI
 
         protected virtual Task<Stream> OnResponseGotAsync(string conversationID, T input, Stream videoStream, CancellationToken cancellationToken)
             => Task.FromResult(videoStream);
-
-        public ExecutorBinding GetBinding(string ? outputStateKey = null, string? stateScope = null, bool yieldWorkflowOutput = false)
-            => new AgentExecutor<T, Stream>(this, yieldWorkflowOutput, outputStateKey, stateScope);
     }
 }

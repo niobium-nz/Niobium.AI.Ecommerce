@@ -20,10 +20,7 @@ namespace Niobium.AI.Shorts.Executors
 
         protected override DirectoryInfo? SkillsFolder => new(Path.Combine(AppContext.BaseDirectory, "skills"));
 
-        protected override async Task OnResponseGotAsync(string conversationID, MetaVideoAdCreatorInput input, MetaVideoAdCreatorOutput? output, CancellationToken cancellationToken)
-        {
-            await tools.CleanupPlaywrightTabsAsync(cancellationToken);
-            await base.OnResponseGotAsync(conversationID, input, output, cancellationToken);
-        }
+        protected override Task OnCleanupAsync(CancellationToken cancellationToken)
+            => tools.CleanupPlaywrightTabsAsync(cancellationToken);
     }
 }

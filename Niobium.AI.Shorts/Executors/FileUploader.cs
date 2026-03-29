@@ -10,11 +10,11 @@ namespace Niobium.AI.Shorts.Executors
 
         public override async ValueTask<Uri> HandleAsync(Stream message, IWorkflowContext context, CancellationToken cancellationToken = default)
         {
-            var videoName = $"{DateTime.Now:yyyyMMdd}-{random.Next(10, 99)}.mp4";
+            string videoName = $"{DateTime.Now:yyyyMMdd}-{random.Next(10, 99)}.mp4";
             try
             {
                 logger.LogInformation($"Staging video {videoName} on Azure Blob...");
-                var result = await fileStorage.UploadAsync(videoName, message, cancellationToken);
+                Uri result = await fileStorage.UploadAsync(videoName, message, cancellationToken);
                 logger.LogInformation($"Video {videoName} staged on Azure Blob as {result}");
                 message.Dispose();
                 return result;

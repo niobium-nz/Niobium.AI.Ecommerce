@@ -393,14 +393,14 @@ namespace Niobium.AI.Ecommerce.Contracts
 
         public string Fullname { get; private set; }
 
-        public string Alpha2 => alpha2[Fullname];
+        public string Alpha2 => alpha2[this.Fullname];
 
-        public string Alpha3 => alpha3[Fullname];
+        public string Alpha3 => alpha3[this.Fullname];
 
         public static bool TryParse(string nameOrCode, out Country result)
         {
             result = default;
-            if (string.IsNullOrWhiteSpace(nameOrCode))
+            if (String.IsNullOrWhiteSpace(nameOrCode))
             {
                 return false;
             }
@@ -434,39 +434,18 @@ namespace Niobium.AI.Ecommerce.Contracts
             return result != default;
         }
 
-        public static Country Parse(string nameOrCode)
-        {
-            return !TryParse(nameOrCode, out Country result) ? throw new ArgumentOutOfRangeException(nameof(nameOrCode)) : result;
-        }
+        public static Country Parse(string nameOrCode) => !TryParse(nameOrCode, out Country result) ? throw new ArgumentOutOfRangeException(nameof(nameOrCode)) : result;
 
-        public override bool Equals(object? obj)
-        {
-            return obj is Country country && Equals(country);
-        }
+        public override bool Equals(object? obj) => obj is Country country && this.Equals(country);
 
-        public bool Equals(Country other)
-        {
-            return Fullname == other.Fullname;
-        }
+        public bool Equals(Country other) => this.Fullname == other.Fullname;
 
-        public override int GetHashCode()
-        {
-            return 558414575 + EqualityComparer<string>.Default.GetHashCode(Fullname);
-        }
+        public override int GetHashCode() => 558414575 + EqualityComparer<string>.Default.GetHashCode(this.Fullname);
 
-        public override string ToString()
-        {
-            return Fullname;
-        }
+        public override string ToString() => this.Fullname;
 
-        public static bool operator ==(Country left, Country right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(Country left, Country right) => left.Equals(right);
 
-        public static bool operator !=(Country left, Country right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(Country left, Country right) => !(left == right);
     }
 }

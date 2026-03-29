@@ -6,7 +6,7 @@ namespace Niobium.AI
     public class SerializationOptions
     {
         public static JsonSerializerOptions SnakeCase = new()
-        { 
+        {
             PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
             TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
         };

@@ -27,17 +27,17 @@ namespace Niobium.AI.Shorts.Skills
                 return videoStream;
             }
 
-            var tempVideoPath = Path.Combine(Path.GetTempPath(), $"video_{Guid.NewGuid():N}.mp4");
+            string tempVideoPath = Path.Combine(Path.GetTempPath(), $"video_{Guid.NewGuid():N}.mp4");
             try
             {
                 using (videoStream)
-                using (var fileStream = File.Create(tempVideoPath))
+                using (FileStream fileStream = File.Create(tempVideoPath))
                 {
                     await videoStream.CopyToAsync(fileStream, cancellationToken).ConfigureAwait(false);
                 }
 
-                var outputPath = Path.Combine(Path.GetTempPath(), $"subs_{Guid.NewGuid():N}.mp4");
-                var assPath = Path.Combine(Path.GetTempPath(), $"subs_{Guid.NewGuid():N}.ass");
+                string outputPath = Path.Combine(Path.GetTempPath(), $"subs_{Guid.NewGuid():N}.mp4");
+                string assPath = Path.Combine(Path.GetTempPath(), $"subs_{Guid.NewGuid():N}.ass");
 
                 try
                 {
@@ -76,14 +76,14 @@ namespace Niobium.AI.Shorts.Skills
         {
             ArgumentNullException.ThrowIfNull(plan);
 
-            var fontSize = Math.Max(10, plan.Style.FontSizePt > 0 ? plan.Style.FontSizePt : (int)Math.Round(height * 0.06));
-            var outlinePx = Math.Max(1, plan.Style.OutlineWidthPt > 0 ? plan.Style.OutlineWidthPt : (int)Math.Round(fontSize * 0.08));
-            var marginV = Math.Max(10, (int)Math.Round(height * 0.06));
-            var marginLR = Math.Max(10, (int)Math.Round(width * 0.06));
-            var primary = ColorToAssPrimary(plan.Style.ColorRgb);
-            var outlineColor = ColorToAssPrimary(plan.Style.OutlineRgb);
+            int fontSize = Math.Max(10, plan.Style.FontSizePt > 0 ? plan.Style.FontSizePt : (int)Math.Round(height * 0.06));
+            int outlinePx = Math.Max(1, plan.Style.OutlineWidthPt > 0 ? plan.Style.OutlineWidthPt : (int)Math.Round(fontSize * 0.08));
+            int marginV = Math.Max(10, (int)Math.Round(height * 0.06));
+            int marginLR = Math.Max(10, (int)Math.Round(width * 0.06));
+            string primary = ColorToAssPrimary(plan.Style.ColorRgb);
+            string outlineColor = ColorToAssPrimary(plan.Style.OutlineRgb);
 
-            var header = new StringBuilder()
+            StringBuilder header = new StringBuilder()
                 .AppendLine("[Script Info]")
                 .AppendLine("ScriptType: v4.00+")
                 .AppendLine("WrapStyle: 2")
@@ -107,10 +107,10 @@ namespace Niobium.AI.Shorts.Skills
                 .AppendLine("[Events]")
                 .AppendLine("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text");
 
-            foreach (var caption in plan.Captions)
+            foreach (SubtitleCaption caption in plan.Captions)
             {
-                var textRaw = String.Join("\\N", caption.Text.Select(EscapeAssText));
-                var text = ApplyEmphasis(textRaw, caption.Emphasis);
+                string textRaw = String.Join("\\N", caption.Text.Select(EscapeAssText));
+                string text = ApplyEmphasis(textRaw, caption.Emphasis);
                 _ = header.Append("Dialogue: 0,")
                     .Append(AssTime(caption.Start)).Append(',')
                     .Append(AssTime(caption.End)).Append(",Default,,0,0,0,,")
@@ -122,13 +122,13 @@ namespace Niobium.AI.Shorts.Skills
 
         private static string AssTime(double seconds)
         {
-            var totalCs = (int)Math.Round(seconds * 100, MidpointRounding.AwayFromZero);
-            var cs = totalCs % 100;
-            var totalS = totalCs / 100;
-            var s = totalS % 60;
-            var totalM = totalS / 60;
-            var m = totalM % 60;
-            var h = totalM / 60;
+            int totalCs = (int)Math.Round(seconds * 100, MidpointRounding.AwayFromZero);
+            int cs = totalCs % 100;
+            int totalS = totalCs / 100;
+            int s = totalS % 60;
+            int totalM = totalS / 60;
+            int m = totalM % 60;
+            int h = totalM / 60;
             return String.Create(CultureInfo.InvariantCulture, $"{h}:{m:00}:{s:00}.{cs:00}");
         }
 
@@ -147,7 +147,7 @@ namespace Niobium.AI.Shorts.Skills
                 return text;
             }
 
-            var regex = new Regex(String.Format(CultureInfo.InvariantCulture, EmphasisWordRegexFormat, Regex.Escape(emphasisWord)), RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));
+            Regex regex = new(String.Format(CultureInfo.InvariantCulture, EmphasisWordRegexFormat, Regex.Escape(emphasisWord)), RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));
             return regex.Replace(text, "{\\b1}$1{\\b0}", 1);
         }
 
@@ -158,7 +158,7 @@ namespace Niobium.AI.Shorts.Skills
                 return "&H00FFFFFF";
             }
 
-            var normalized = color.Trim();
+            string normalized = color.Trim();
             if (String.Equals(normalized, "white", StringComparison.OrdinalIgnoreCase))
             {
                 return "&H00FFFFFF";
@@ -169,7 +169,7 @@ namespace Niobium.AI.Shorts.Skills
                 return "&H00000000";
             }
 
-            var hex = normalized.TrimStart('#');
+            string hex = normalized.TrimStart('#');
             return hex.Length == 6 && Int32.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out _)
                 ? String.Create(CultureInfo.InvariantCulture, $"&H00{hex[4..6]}{hex[2..4]}{hex[0..2]}").ToUpperInvariant()
                 : "&H00FFFFFF";
@@ -177,8 +177,8 @@ namespace Niobium.AI.Shorts.Skills
 
         private static async Task RunFFmpegBurnAsync(string inputPath, string outputPath, string assPath, CancellationToken cancellationToken)
         {
-            var escapedAssPath = assPath.Replace("\\", "/", StringComparison.Ordinal).Replace(":", "\\:", StringComparison.Ordinal);
-            var processStartInfo = new ProcessStartInfo
+            string escapedAssPath = assPath.Replace("\\", "/", StringComparison.Ordinal).Replace(":", "\\:", StringComparison.Ordinal);
+            ProcessStartInfo processStartInfo = new()
             {
                 FileName = "ffmpeg",
                 RedirectStandardError = true,
@@ -202,18 +202,18 @@ namespace Niobium.AI.Shorts.Skills
             processStartInfo.ArgumentList.Add("copy");
             processStartInfo.ArgumentList.Add(outputPath);
 
-            using var process = new Process { StartInfo = processStartInfo };
+            using Process process = new() { StartInfo = processStartInfo };
             if (!process.Start())
             {
                 throw new InvalidOperationException("Failed to start ffmpeg process.");
             }
 
-            var standardOutputTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
-            var standardErrorTask = process.StandardError.ReadToEndAsync(cancellationToken);
+            Task<string> standardOutputTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
+            Task<string> standardErrorTask = process.StandardError.ReadToEndAsync(cancellationToken);
 
             await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
-            var standardOutput = await standardOutputTask.ConfigureAwait(false);
-            var standardError = await standardErrorTask.ConfigureAwait(false);
+            string standardOutput = await standardOutputTask.ConfigureAwait(false);
+            string standardError = await standardErrorTask.ConfigureAwait(false);
 
             if (process.ExitCode != 0)
             {

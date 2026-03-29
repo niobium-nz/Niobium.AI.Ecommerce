@@ -26,26 +26,26 @@ namespace Niobium.AI.OpenAI
                 seconds = durationInSeconds.ToString(),
                 model = Models.SORA_2,
             };
-            var json = JsonSerializer.Serialize(requestBody, SerializationOptions.SnakeCase);
-            var requestContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var request = new HttpRequestMessage(HttpMethod.Post, "videos")
+            string json = JsonSerializer.Serialize(requestBody, SerializationOptions.SnakeCase);
+            StringContent requestContent = new(json, Encoding.UTF8, "application/json");
+            HttpRequestMessage request = new(HttpMethod.Post, "videos")
             {
                 Content = requestContent
             };
 
-            var response = await client.SendAsync(request, cancellationToken);
+            HttpResponseMessage response = await client.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 logger.LogError("Sora API request failed with status code {StatusCode}: {ResponseBody}", response.StatusCode, await response.Content.ReadAsStringAsync(cancellationToken));
                 throw new HttpRequestException($"Sora create API request failed with status code {response.StatusCode}");
             }
 
-            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            using var document = JsonDocument.Parse(responseContent);
-            var videoId = document.RootElement.GetProperty("id").GetString();
+            string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            using JsonDocument document = JsonDocument.Parse(responseContent);
+            string? videoId = document.RootElement.GetProperty("id").GetString();
             if (String.IsNullOrWhiteSpace(videoId))
             {
-                var ex = new ExecutorException("Failed to get video ID from Sora response");
+                ExecutorException ex = new("Failed to get video ID from Sora response");
                 logger.LogError(ex, "Failed to get video ID from Sora response: {ResponseContent}", responseContent);
                 throw ex;
             }
@@ -56,26 +56,26 @@ namespace Niobium.AI.OpenAI
             while (result == null || result.Status != "completed")
             {
                 HttpRequestMessage queryRequest = new(HttpMethod.Get, $"videos/{videoId}");
-                var queryResponse = await client.SendAsync(queryRequest, cancellationToken);
+                HttpResponseMessage queryResponse = await client.SendAsync(queryRequest, cancellationToken);
                 if (!queryResponse.IsSuccessStatusCode)
                 {
                     logger.LogError("Sora API request failed with status code {StatusCode}: {ResponseBody}", queryResponse.StatusCode, await queryResponse.Content.ReadAsStringAsync(cancellationToken));
                     throw new HttpRequestException($"Sora query API request failed with status code {queryResponse.StatusCode}");
                 }
 
-                var queryResponseContent = await queryResponse.Content.ReadAsStringAsync(cancellationToken);
+                string queryResponseContent = await queryResponse.Content.ReadAsStringAsync(cancellationToken);
                 result = JsonSerializer.Deserialize<SoraJobQuery>(queryResponseContent, SerializationOptions.SnakeCase);
 
                 if (result?.Status == "failed")
                 {
-                    var ex = new ExecutorException("Sora video generation failed");
+                    ExecutorException ex = new("Sora video generation failed");
                     logger.LogError(ex, "Sora video generation failed with code {Code}: {ErrorMessage}", result?.Error?.Code, result?.Error?.Message);
                     throw ex;
                 }
 
                 if (result?.Status == "cancelled" || cancellationToken.IsCancellationRequested)
                 {
-                    var ex = new OperationCanceledException("Sora video generation was cancelled", cancellationToken);
+                    OperationCanceledException ex = new("Sora video generation was cancelled", cancellationToken);
                     logger.LogInformation(ex, "Sora video generation was cancelled");
                     throw ex;
                 }
@@ -86,22 +86,22 @@ namespace Niobium.AI.OpenAI
 
             logger.LogInformation("Sora video generation completed for ID: {VideoId}. Starting download...", videoId);
             HttpRequestMessage downloadRequest = new(HttpMethod.Get, $"videos/{videoId}/content");
-            var downloadResponse = await client.SendAsync(downloadRequest, cancellationToken);
+            HttpResponseMessage downloadResponse = await client.SendAsync(downloadRequest, cancellationToken);
             if (!downloadResponse.IsSuccessStatusCode)
             {
                 logger.LogError("Sora API request failed with status code {StatusCode}: {ResponseBody}", downloadResponse.StatusCode, await downloadResponse.Content.ReadAsStringAsync(cancellationToken));
                 throw new HttpRequestException($"Sora download API request failed with status code {downloadResponse.StatusCode}");
             }
 
-            using var video = await downloadResponse.Content.ReadAsStreamAsync(cancellationToken);
-            var memoryStream = new MemoryStream();
+            using Stream video = await downloadResponse.Content.ReadAsStreamAsync(cancellationToken);
+            MemoryStream memoryStream = new();
             if (video.CanSeek)
             {
-                video.Seek(0, SeekOrigin.Begin);
+                _ = video.Seek(0, SeekOrigin.Begin);
             }
             await video.CopyToAsync(memoryStream, cancellationToken);
             logger.LogInformation("Sora video downloaded for ID {VideoId}", videoId);
-            memoryStream.Seek(0, SeekOrigin.Begin);
+            _ = memoryStream.Seek(0, SeekOrigin.Begin);
             return memoryStream;
         }
     }

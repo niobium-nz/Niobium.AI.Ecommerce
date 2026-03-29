@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Agents\CompetitionScout.md" />
-    <EmbeddedResource Include="Agents\KeywordsPlanner.md" />
-    <EmbeddedResource Include="Agents\ProductClusterer.md" />
-    <EmbeddedResource Include="Agents\ProductNormalizer.md" />
-    <EmbeddedResource Include="Agents\ProductProfiler.md" />
-    <EmbeddedResource Include="AgentTools\dog-hair-removal.json" />
+    <EmbeddedResource Include="Executors\CompetitorAnalysis\CompetitionScout.md" />
+    <EmbeddedResource Include="Executors\MarketResearch\KeywordsExpander.md" />
+    <EmbeddedResource Include="Executors\ProductDiscovery\ProductClusterer.md" />
+    <EmbeddedResource Include="Executors\ProductNormalization\ProductNormalizer.md" />
+    <EmbeddedResource Include="Executors\ProductProfile\ProductProfiler.md" />
+    <EmbeddedResource Include="Tools\dog-hair-removal.json" />
   </ItemGroup>
 
   <ItemGroup>

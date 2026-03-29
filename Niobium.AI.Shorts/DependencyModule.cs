@@ -1,35 +1,39 @@
 using Azure;
 using Azure.Data.Tables;
 using Microsoft.Extensions.DependencyInjection;
-using Niobium.AI.Shorts.Contracts;
 using Niobium.AI.Shorts.Executors;
 
 namespace Niobium.AI.Shorts
 {
     public static class DependencyModule
     {
+        private static volatile bool loaded = false;
+
         public static IServiceCollection AddShorts(this IServiceCollection services)
         {
-            _ = services.AddAI()
-            .AddSingleton<McpTools>()
-            .AddTransient<UserInputAdaptor<AttractiveShortWorkflowInput>>()
-            .AddTransient<AttractiveShortScreenwriter>()
-            .AddTransient<AttractiveShortScreenwriterAdaptor>()
-            .AddTransient<MetaVideoAdCreatorAdaptor>()
-            .AddTransient<FileUploader>()
-            .AddTransient<MetaVideoAdCreator>()
-            .AddTransient<AttractiveShortProducer>()
-            .AddTransient<IWorkflow, AttractiveShortWorkflow>()
-            .AddTransient(sp =>
+            if (loaded)
             {
-                var endpoint = Environment.GetEnvironmentVariable("AZURE_TABLE_ENDPOINT")
-                    ?? throw new Exception("`AZURE_TABLE_ENDPOINT` must be configured.");
-                var sas = Environment.GetEnvironmentVariable("AZURE_TABLE_SAS")
-                    ?? throw new Exception("`AZURE_TABLE_SAS` must be configured.");
-                return new TableServiceClient(new Uri(endpoint), new AzureSasCredential(sas));
-            });
+                return services;
+            }
 
-            return services;
+            loaded = true;
+            return services.AddAI()
+                .AddSingleton<McpTools>()
+                .AddTransient<AttractiveShortScreenwriter>()
+                .AddTransient<AttractiveShortScreenwriterAdaptor>()
+                .AddTransient<MetaVideoAdCreatorAdaptor>()
+                .AddTransient<FileUploader>()
+                .AddTransient<MetaVideoAdCreator>()
+                .AddTransient<AttractiveShortProducer>()
+                .AddTransient<IWorkflow, AttractiveShortWorkflow>()
+                .AddTransient(sp =>
+                {
+                    string endpoint = Environment.GetEnvironmentVariable("AZURE_TABLE_ENDPOINT")
+                        ?? throw new Exception("`AZURE_TABLE_ENDPOINT` must be configured.");
+                    string sas = Environment.GetEnvironmentVariable("AZURE_TABLE_SAS")
+                        ?? throw new Exception("`AZURE_TABLE_SAS` must be configured.");
+                    return new TableServiceClient(new Uri(endpoint), new AzureSasCredential(sas));
+                });
         }
     }
 }

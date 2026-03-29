@@ -24,10 +24,10 @@ namespace Niobium.AI
 
         protected virtual async Task<string> GetInstructionsAsync(CancellationToken cancellationToken)
         {
-            var resource = $"{this.InstructionsResourceBaseType.Namespace}.{this.Id}.md";
-            using var stream = this.InstructionsResourceBaseType.Assembly.GetManifestResourceStream(resource)
+            string resource = $"{this.InstructionsResourceBaseType.Namespace}.{this.Id}.md";
+            using Stream stream = this.InstructionsResourceBaseType.Assembly.GetManifestResourceStream(resource)
                 ?? throw new InvalidOperationException($"Instructions resource not found: {resource}");
-            using var reader = new StreamReader(stream);
+            using StreamReader reader = new(stream);
             return await reader.ReadToEndAsync(cancellationToken);
         }
 
@@ -35,10 +35,10 @@ namespace Niobium.AI
         {
             if (usage != null)
             {
-                var inputToken = usage.InputTokenCount;
-                var outputToken = usage.OutputTokenCount;
-                var reasoningToken = usage.ReasoningTokenCount;
-                var totalToken = usage.TotalTokenCount;
+                long? inputToken = usage.InputTokenCount;
+                long? outputToken = usage.OutputTokenCount;
+                long? reasoningToken = usage.ReasoningTokenCount;
+                long? totalToken = usage.TotalTokenCount;
                 this.Logger.LogInformation("Agent {AgentName} token usage for conversation {ConversationId}: Input={InputToken}, Output={OutputToken}, Reasoning={ReasoningToken}, Total={TotalToken}",
                     this.Id, conversationID, inputToken, outputToken, reasoningToken, totalToken);
             }
@@ -48,9 +48,9 @@ namespace Niobium.AI
         {
             if (this._agent == null)
             {
-                var instructions = await this.GetInstructionsAsync(cancellationToken);
-                var tools = (await this.GetToolsAsync(cancellationToken)) ?? [];
-                var chatOptions = new ChatOptions
+                string instructions = await this.GetInstructionsAsync(cancellationToken);
+                IEnumerable<AITool> tools = (await this.GetToolsAsync(cancellationToken)) ?? [];
+                ChatOptions chatOptions = new()
                 {
                     Instructions = instructions,
                     Reasoning = new ReasoningOptions
@@ -60,7 +60,7 @@ namespace Niobium.AI
                     Tools = [.. tools],
                 };
 
-                var builder = clientFactory.CreateChatClient(this.Model)
+                ChatClientBuilder builder = clientFactory.CreateChatClient(this.Model)
                     .AsBuilder()
                     .UseOpenTelemetry(
                         sourceName: "Niobium.AI",
@@ -83,10 +83,20 @@ namespace Niobium.AI
 
         protected virtual async Task<string> RunAsync(string conversationID, string input, CancellationToken cancellationToken)
         {
-            var agent = await this.GetOrCreateAgentAsync(conversationID, cancellationToken);
-            AgentResponse response = await agent.RunAsync(input, cancellationToken: cancellationToken);
-            this.LogUsage(conversationID, response.Usage);
-            return response.Text;
+            try
+            {
+                AIAgent agent = await this.GetOrCreateAgentAsync(conversationID, cancellationToken);
+                AgentResponse response = await agent.RunAsync(input, cancellationToken: cancellationToken);
+                this.LogUsage(conversationID, response.Usage);
+                return response.Text;
+            }
+            finally
+            {
+                await this.OnCleanupAsync(cancellationToken);
+            }
         }
+
+        protected virtual Task OnCleanupAsync(CancellationToken cancellationToken)
+            => Task.CompletedTask;
     }
 }

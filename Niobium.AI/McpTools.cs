@@ -5,7 +5,7 @@ namespace Niobium.AI
 {
     public class McpTools
     {
-        private static readonly string[] PlaywrightToolNames = 
+        private static readonly string[] PlaywrightToolNames =
         {
             "browser_navigate",
             "browser_snapshot",
@@ -28,7 +28,7 @@ namespace Niobium.AI
         {
             if (playwrightTools == null)
             {
-                var playwrightMcpClient = await McpClient.CreateAsync(new StdioClientTransport(new()
+                McpClient playwrightMcpClient = await McpClient.CreateAsync(new StdioClientTransport(new()
                 {
                     Name = "Playwright",
                     Command = "npx",

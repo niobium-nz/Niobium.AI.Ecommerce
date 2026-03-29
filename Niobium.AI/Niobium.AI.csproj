@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Core" Version="1.51.1" />
+    <PackageReference Include="Azure.Core" Version="1.52.0" />
     <PackageReference Include="Microsoft.Agents.AI" Version="1.0.0-rc4" />
     <PackageReference Include="Microsoft.Agents.AI.Workflows" Version="1.0.0-rc4" />
     <PackageReference Include="ModelContextProtocol" Version="1.1.0" />

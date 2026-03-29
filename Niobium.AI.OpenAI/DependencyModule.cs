@@ -4,10 +4,18 @@ namespace Niobium.AI.OpenAI
 {
     public static class DependencyModule
     {
+        private static volatile bool loaded = false;
+
         public static IServiceCollection AddOpenAI(this IServiceCollection services)
         {
-            _ = Niobium.AI.DependencyModule.AddAI(services);
-            services
+            if (loaded)
+            {
+                return services;
+            }
+
+            loaded = true;
+
+            Niobium.AI.DependencyModule.AddAI(services)
                 .AddSingleton<IChatClientFactory, OpenAIChatClientFactory>()
                 .AddTransient<IVideoClientFactory, OpenAIVideoClientFactory>()
                 .AddHttpClient<SoraVideoClient>(httpClient =>

@@ -6,13 +6,13 @@ using Niobium.AI.Shorts.Executors;
 namespace Niobium.AI.Shorts
 {
     internal class AttractiveShortWorkflow(
+        UserInputAdaptor<AttractiveShortWorkflowInput> workflowUserInputAdaptor,
         AttractiveShortScreenwriterAdaptor attractiveShortScreenwriterAdaptor,
         AttractiveShortScreenwriter attractiveShortScreenwriter,
         AttractiveShortProducer attractiveShortProducer,
         MetaVideoAdCreator metaVideoAdCreator,
         FileUploader fileUploader,
-        MetaVideoAdCreatorAdaptor metaVideoAdCreatorAdaptor,
-        UserInputAdaptor<AttractiveShortWorkflowInput> workflowUserInputAdaptor)
+        MetaVideoAdCreatorAdaptor metaVideoAdCreatorAdaptor)
         : IWorkflow<AttractiveShortWorkflowInput, AttractiveShortWorkflowOutput>
     {
         private Workflow? workflow;
@@ -21,10 +21,10 @@ namespace Niobium.AI.Shorts
 
         public string Render() => this.GetOrCreateWorkflow().ToMermaidString();
 
-        public async Task<AttractiveShortWorkflowOutput> RunAsync(string conversationID, AttractiveShortWorkflowInput input, CancellationToken cancellationToken)
+        public async Task<AttractiveShortWorkflowOutput?> RunAsync(string conversationID, AttractiveShortWorkflowInput input, CancellationToken cancellationToken)
         {
-            var workflow = this.GetOrCreateWorkflow();
-            await using var run = await InProcessExecution.RunAsync(workflow, input, cancellationToken: cancellationToken);
+            Workflow workflow = this.GetOrCreateWorkflow();
+            await using Run run = await InProcessExecution.RunAsync(workflow, input, sessionId: conversationID, cancellationToken: cancellationToken);
             foreach (WorkflowEvent evt in run.NewEvents)
             {
                 if (evt is WorkflowOutputEvent outputEvt)
@@ -52,11 +52,11 @@ namespace Niobium.AI.Shorts
         {
             if (this.workflow == null)
             {
-                var attractiveShortScreenwriterBinding = attractiveShortScreenwriter.GetBinding(States.VideoInstructions, States.SharedScope);
-                var attractiveShortProducerBinding = attractiveShortProducer.GetBinding();
-                var metaVideoAdCreatorBinding = metaVideoAdCreator.GetBinding(yieldWorkflowOutput: true);
+                ExecutorBinding attractiveShortScreenwriterBinding = attractiveShortScreenwriter.GetBinding(States.VideoInstructions, States.SharedScope);
+                ExecutorBinding attractiveShortProducerBinding = attractiveShortProducer.GetBinding();
+                ExecutorBinding metaVideoAdCreatorBinding = metaVideoAdCreator.GetBinding(yieldWorkflowOutput: true);
 
-                var builder = new WorkflowBuilder(workflowUserInputAdaptor)
+                WorkflowBuilder builder = new WorkflowBuilder(workflowUserInputAdaptor)
                     .AddEdge(workflowUserInputAdaptor, attractiveShortScreenwriterAdaptor)
                     .AddEdge(attractiveShortScreenwriterAdaptor, attractiveShortScreenwriterBinding)
                     .AddEdge(attractiveShortScreenwriterBinding, attractiveShortProducerBinding)

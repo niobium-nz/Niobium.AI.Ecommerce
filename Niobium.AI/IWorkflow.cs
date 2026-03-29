@@ -10,9 +10,9 @@ namespace Niobium.AI
     }
 
     public interface IWorkflow<TInput, TOutput> : IWorkflow
-        where TInput : class
+        where TInput : notnull
         where TOutput : class
     {
-        Task<TOutput> RunAsync(string conversationID, TInput input, CancellationToken cancellationToken);
+        Task<TOutput?> RunAsync(string conversationID, TInput input, CancellationToken cancellationToken);
     }
 }

@@ -8,8 +8,8 @@ namespace Niobium.AI.Shorts.Executors
     {
         public override async ValueTask<AttractiveShortScreenwriterInput> HandleAsync(AttractiveShortWorkflowInput message, IWorkflowContext context, CancellationToken cancellationToken = default)
         {
-            var tableClient = tableServiceClient.GetTableClient("VideoIdea");
-            var ideas = await tableClient.QueryAsync<TableEntity>(x => x.PartitionKey == message.BusinessName, cancellationToken: cancellationToken).ToListAsync(cancellationToken: cancellationToken);
+            TableClient tableClient = tableServiceClient.GetTableClient("VideoIdea");
+            List<TableEntity> ideas = await tableClient.QueryAsync<TableEntity>(x => x.PartitionKey == message.BusinessName, cancellationToken: cancellationToken).ToListAsync(cancellationToken: cancellationToken);
             return new AttractiveShortScreenwriterInput
             {
                 BusinessName = message.BusinessName,

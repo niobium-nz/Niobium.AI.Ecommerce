@@ -6,7 +6,7 @@ namespace Niobium.AI.BlobStorage
     {
         public async Task<Uri> UploadAsync(string name, Stream stream, CancellationToken cancellationToken)
         {
-            var endpoint = Environment.GetEnvironmentVariable("AZURE_BLOB_PUBLIC_ENDPOINT")
+            string endpoint = Environment.GetEnvironmentVariable("AZURE_BLOB_PUBLIC_ENDPOINT")
                 ?? throw new Exception("`AZURE_BLOB_PUBLIC_ENDPOINT` must be configured.");
             if (!endpoint.EndsWith('/'))
             {

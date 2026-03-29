@@ -8,15 +8,15 @@ namespace Niobium.AI.Shorts.Executors
     {
         public override async ValueTask<MetaVideoAdCreatorInput> HandleAsync(Uri message, IWorkflowContext context, CancellationToken cancellationToken = default)
         {
-            var userInput = await context.ReadStateAsync<AttractiveShortWorkflowInput>(States.UserInput, scopeName: States.SharedScope, cancellationToken: cancellationToken);
-            var videoInstruction = await context.ReadStateAsync<AttractiveShortScreenwriterOutput>(States.VideoInstructions, scopeName: States.SharedScope, cancellationToken: cancellationToken);
+            AttractiveShortWorkflowInput? userInput = await context.ReadStateAsync<AttractiveShortWorkflowInput>(States.UserInput, scopeName: States.SharedScope, cancellationToken: cancellationToken);
+            AttractiveShortScreenwriterOutput? videoInstruction = await context.ReadStateAsync<AttractiveShortScreenwriterOutput>(States.VideoInstructions, scopeName: States.SharedScope, cancellationToken: cancellationToken);
 
             if (videoInstruction == null || userInput == null)
             {
                 throw new InvalidOperationException($"Invalid workflow state: either {States.UserInput} or {States.VideoInstructions} not found.");
             }
 
-            var tableClient = tableServiceClient.GetTableClient("VideoIdea");
+            TableClient tableClient = tableServiceClient.GetTableClient("VideoIdea");
             _ = await tableClient.AddEntityAsync(new TableEntity(userInput.BusinessName, DateTimeOffset.UtcNow.ToReverseUnixTimestamp())
                     {
                         { "Value", videoInstruction.VideoIdea },

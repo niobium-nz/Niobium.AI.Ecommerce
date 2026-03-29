@@ -16,9 +16,9 @@ namespace Niobium.AI.BlobStorage
 
                 _ = services.AddTransient(sp =>
                 {
-                    var endpoint = Environment.GetEnvironmentVariable("AZURE_BLOB_ENDPOINT")
+                    string endpoint = Environment.GetEnvironmentVariable("AZURE_BLOB_ENDPOINT")
                         ?? throw new Exception("`AZURE_BLOB_ENDPOINT` must be configured.");
-                    var sas = Environment.GetEnvironmentVariable("AZURE_BLOB_SAS")
+                    string sas = Environment.GetEnvironmentVariable("AZURE_BLOB_SAS")
                         ?? throw new Exception("`AZURE_BLOB_SAS` must be configured.");
                     return new BlobServiceClient(new Uri(endpoint), new AzureSasCredential(sas));
                 });
