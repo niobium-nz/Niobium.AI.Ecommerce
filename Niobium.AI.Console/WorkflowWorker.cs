@@ -534,9 +534,91 @@ namespace Niobium.AI.Console
             //    """;
 
             string input = """
-                {"Url":"https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free","FinalUrl":"https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free","RetrievalDateTimeUtc":"2026-03-29T10:42:24.619Z","Product":{"Name":"The Magic Brush\u2122 - Buy 1 Get 1 Free","Price":36.95,"Currency":"NZD","Variants":[],"BundleOffers":["Buy 1 Get 1 Free standard offer \u2014 selected option $36.95 (displayed elsewhere as $37.00), regular price $74.00","Fur Free Home Bundle \u2014 $53.85 (was $136.00), includes 2x The Magic Brush\u2122, 4x Pet Hair Catcher for Washing Machine, and 1x Magic Grooming Glove"],"KeyClaims":["Gets rid of cat \u0026 dog hair within seconds","Works on carpets, rugs, upholstery, clothing, bedding, car interiors, and pet beds","Reusable and easy to clean","Fits every hand size with an adjustable wrist strap","Foldable and handbag-friendly for cleanup on the go","Lifts fur without scratching or snagging delicate fabrics","Slip it on in seconds for a comfortable, secure fit","Cuts hair cleanup from hours to minutes","Lightweight yet durable for quick touch-ups anywhere","Helps keep couches, rugs, car seats, and clothing fur-free"],"IngredientsOrMaterials":["Durable mesh cloth backing","Soft brush cloth bristles","Food-grade silicone bristles","Polyester cuff","Reinforced stitching"],"Images":["https://magicbrushofficial.com/cdn/shop/files/Untitled_design_1d3ad57d-0e64-4484-bb91-d6f6d9def06e.png?v=1768605293\u0026width=1200","https://magicbrushofficial.com/cdn/shop/files/GMP_U2F2ZUdIMDE.gif?v=1768605293\u0026width=300","https://magicbrushofficial.com/cdn/shop/files/GMP_Q29tcHJlc3NHSDAx_7_d520a39a-1b89-4141-82e0-4960d14e1246.gif?v=1768605293\u0026width=300","https://magicbrushofficial.com/cdn/shop/files/The_Magic_Brush_6.png?v=1768605293\u0026width=600","https://magicbrushofficial.com/cdn/shop/files/GMP_U2F2ZUdIMDE_2.gif?v=1768605293\u0026width=300","https://magicbrushofficial.com/cdn/shop/files/GMP_Q29tcHJlc3NHSDAx_7_9_9ae9141d-73d1-4a40-a2ef-cb6782aa572d.gif?v=1768605293\u0026width=300","https://magicbrushofficial.com/cdn/shop/files/GMP_Q29tcHJlc3NHSDAx_7_7.gif?v=1768605293\u0026width=500","https://magicbrushofficial.com/cdn/shop/files/GMP_Q29tcHJlc3NHSDAx_7_3.gif?v=1768605293\u0026width=300"],"Videos":["https://cdn.shopify.com/videos/c/o/v/f05f8584753547c5964b6737bd48efa8.mp4"],"HowItWins":{"Positioning":["Buy 1 Get 1 Free","National Leader","The ultimate choice for anyone who wants a quick, comfortable, and stylish way to banish pet hair","For Both Dog \u0026 Cat Hair"],"Differentiators":["360\u00B0 silicone bristles grip and lift fur without scratching or snagging","Foldable and handbag-friendly","Adjustable wrist strap adapts to any hand"],"ProofPoints":["4.8 rating with 9,516\u20139,517 reviews/votes shown on page","100,000\u002B Happy Customers","Verified photo and video reviews are embedded on the page","30-day money-back guarantee with refund policy link"],"TargetCustomer":["For both dog and cat hair","Anyone who wants a quick, comfortable, and stylish way to banish pet hair"],"ObjectionHandling":["Works on virtually any fabric surface\u2014carpets, rugs, upholstery, clothing, bedding, car interiors, and even pet beds.","Fits most hand sizes comfortably and securely during use.","You can confidently use it on delicate upholstery, silk blends, and soft clothing without fear of damage.","After collecting loose hair, simply rinse under running water and air-dry.","Express Shipping \u2014 From Us To Your Door In 6-10 Days.","Refund policy says you have 30 days after receiving your item to request a return."],"ComparisonClaims":["\u0022Pulled up fur from my rug that a vacuum can\u2019t lift\u0022 \u2014 Danielle B. review","\u0022The vacuum only picks up so much\u0022 \u2014 Chris A. review"],"CallsToAction":["ADD TO CART"],"OffersAndGuarantees":["Buy 1 Get 1 Free","Sale price shown as $37.00, with selected standard option shown as $36.95, down from $74.00 ($37 OFF)","Fur Free Home Bundle \u2014 $53.85, was $136.00, save $82.15","30-day money-back guarantee","Refund policy states 30 days after delivery to request a return"],"RiskReducers":["30-Day Guarantee","Refund policy says accepted returns receive a return shipping label","24 / 7 Customer Service","Support email is shown in the footer","Approved refunds are returned to the original payment method within 10 business days"],"SocialProof":["4.8 rating with 9,516\u20139,517 reviews/votes","100,000\u002B Happy Customers","Customer photo and video reviews marked Verified","\u0022Absolutely brilliant. removes fur easily. game changer\u0022 \u2014 Charlotte D."],"UrgencyScarcity":["\uD83D\uDEA8 Buy 1 Get 1 Free Ends When Stock Runs Out! \uD83D\uDEA8","Only 9 Magic Brushes Left","Due to the extremely high surge in sales, we only have limited stock available per customer."],"ComplianceLanguage":["We have a 30-day return policy, which means you have 30 days after receiving your item to request a return.","European Union 14 day cooling off period","Unfortunately, we cannot accept returns on sale items or gift cards.","If approved, refunds are automatically sent to the original payment method within 10 business days."]}},"Vendor":{"BrandName":"The Magic Brush","Domain":"magicbrushofficial.com","PlatformDetected":"Shopify","PolicyUrls":{"Shipping":"https://magicbrushofficial.com/policies/shipping-policy","Returns":"https://magicbrushofficial.com/policies/refund-policy","Privacy":"https://magicbrushofficial.com/policies/privacy-policy"},"TrustSignals":[{"Type":"rating","Value":"4.8 rating with 9,516\u20139,517 reviews/votes","SourceUrl":"https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"},{"Type":"guarantee","Value":"30-day money-back guarantee","SourceUrl":"https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"},{"Type":"shipping","Value":"Express Shipping: 6-10 days","SourceUrl":"https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"},{"Type":"customer_count","Value":"100,000\u002B Happy Customers","SourceUrl":"https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"},{"Type":"payment_methods","Value":"American Express, Apple Pay, Bancontact, Google Pay, Mastercard, PayPal, Shop Pay, Union Pay, Visa","SourceUrl":"https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"},{"Type":"customer_support","Value":"info@magicbrushofficial.com \u2022 24 / 7 Customer Service","SourceUrl":"https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"},{"Type":"social_profile","Value":"Facebook reviews/profile","SourceUrl":"https://www.facebook.com/profile.php?id=61558189937295\u0026sk=reviews"},{"Type":"social_profile","Value":"Instagram @themagicbrush.co","SourceUrl":"https://www.instagram.com/themagicbrush.co/"},{"Type":"social_profile","Value":"TikTok @themagicbrushco","SourceUrl":"https://www.tiktok.com/@themagicbrushco?is_from_webapp=1\u0026sender_device=pc"}]},"Blockers":["Price display varies slightly on page ($37.00 headline price vs $36.95 selected standard-offer price).","Guarantee/return claims conflict on site (60-day money-back bullet vs 30-day guarantee on PDP and 30-day refund policy).","Materials description is inconsistent on page (description says brush cloth bristles; FAQ says food-grade silicone bristles).","Customer-count claims conflict on site (100,000\u002B happy customers vs over 50,000 happy customers).","Support email differs between pages (footer: info@magicbrushofficial.com; refund policy: info@themagicbrush.com)."]}
+                                {
+                  "Url": "https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free",
+                  "FinalUrl": "https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free",
+                  "RetrievalDateTimeUtc": "2026-04-01T06:57:05Z",
+                  "Product": {
+                    "Name": "The Magic Brush\u2122 - Buy 1 Get 1 Free",
+                    "Price": 37,
+                    "Currency": "NZD",
+                    "Variants": [],
+                    "BundleOffers": [ "Buy 1 Get 1 Free \u2014 sale price NZD $37.00 vs regular price NZD $74.00", "Fur Free Home Bundle (Most Popular) \u2014 NZD $53.85 vs NZD $136.00; includes 2x The Magic Brush\u2122, 4x Pet Hair Catcher for Washing Machine, and 1x Magic Grooming Glove" ],
+                    "KeyClaims": [ "Gets rid of Cat \u0026 Dog Hair within Seconds", "Reusable \u0026 Easy to Clean", "Works on carpets, rugs, upholstery, clothing, bedding, car interiors, and pet beds", "Lifts fur without scratching or snagging", "Compact and handbag-friendly for pet-hair removal on the go", "Adjustable fit for most adult hand sizes", "Ambidextrous design for left- or right-hand use", "Reduces hair cleanup from hours to just minutes" ],
+                    "IngredientsOrMaterials": [ "Durable mesh cloth backing", "Soft brush cloth bristles", "Food-grade silicone bristles", "Reinforced stitching", "Polyester cuff" ],
+                    "Images": [ "https://magicbrushofficial.com/cdn/shop/files/MagicBrush_Logo_Colour_23727271-a98a-4d81-ac29-d3b7cdf4d759.png?v=1749229574\u0026width=280", "https://magicbrushofficial.com/cdn/shop/files/Untitled_design_1d3ad57d-0e64-4484-bb91-d6f6d9def06e.png?v=1768605293\u0026width=1200", "https://magicbrushofficial.com/cdn/shop/files/GMP_U2F2ZUdIMDE.gif?v=1768605293\u0026width=300", "https://magicbrushofficial.com/cdn/shop/files/GMP_Q29tcHJlc3NHSDAx_7_d520a39a-1b89-4141-82e0-4960d14e1246.gif?v=1768605293\u0026width=300", "https://magicbrushofficial.com/cdn/shop/files/The_Magic_Brush_6.png?v=1768605293\u0026width=600", "https://magicbrushofficial.com/cdn/shop/files/GMP_U2F2ZUdIMDE_2.gif?v=1768605293\u0026width=300", "https://magicbrushofficial.com/cdn/shop/files/GMP_Q29tcHJlc3NHSDAx_7_9_9ae9141d-73d1-4a40-a2ef-cb6782aa572d.gif?v=1768605293\u0026width=300", "https://magicbrushofficial.com/cdn/shop/files/GMP_Q29tcHJlc3NHSDAx_7_7.gif?v=1768605293\u0026width=500" ],
+                    "Videos": [ "https://cdn.shopify.com/videos/c/o/v/f05f8584753547c5964b6737bd48efa8.mp4" ],
+                    "HowItWins": {
+                      "Positioning": [ "The Magic Brush\u2122 pet grooming glove", "The ultimate choice for anyone who wants a quick, comfortable, and stylish way to banish pet hair", "National Leader" ],
+                      "Differentiators": [ "360\u00B0 silicone bristles grip and lift fur without scratching or snagging", "Bristles generate static to lift and capture fur on contact", "Adjustable Velcro wrist strap conforms to most adult hand sizes", "Ambidextrous glove design", "Compact glove lies flat for handbag, backpack, or car-console storage" ],
+                      "ProofPoints": [ "4.8 rating from 9,577 reviews", "Verified photo and video reviews are shown on-page", "Over 100,000 Happy Customers", "30-day money-back guarantee", "Refund policy says approved refunds are issued to the original payment method within 10 business days" ],
+                      "TargetCustomer": [ "Cat \u0026 dog owners", "Anyone who wants a quick, comfortable, and stylish way to banish pet hair" ],
+                      "ObjectionHandling": [ "Works on virtually any fabric surface\u2014carpets, rugs, upholstery, clothing, bedding, car interiors, and even pet beds.", "The glove comes with an adjustable Velcro wrist strap that conforms to most adult hand sizes.", "Designed to be ambidextrous\u2014simply switch the glove to whichever hand you prefer.", "Just rinse the glove under warm water to release trapped fur, then let it air-dry; it\u2019s ready again within minutes.", "You can confidently use it on delicate upholstery, silk blends, and soft clothing without fear of damage.", "Shipping policy says average shipping time is 5\u201315 days after purchase.", "Refund policy says you have 30 days after receiving your item to request a return." ],
+                      "ComparisonClaims": [ "\u201CIt\u2019s pulled up fur from my rug that a vacuum can\u2019t lift.\u201D", "\u201CThe vacuum only picks up so much.\u201D", "\u201CThe photo shows all the hair I got after the vacuuming!\u201D" ],
+                      "CallsToAction": [ "ADD TO CART" ],
+                      "OffersAndGuarantees": [ "Sale price NZD $37.00 vs regular price NZD $74.00 ($37.00 OFF)", "Buy 1 Get 1 Free", "Fur Free Home Bundle \u2014 NZD $53.85 vs NZD $136.00; includes 2x The Magic Brush\u2122, 4x Pet Hair Catcher for Washing Machine, and 1x Magic Grooming Glove", "30-Day Guarantee / 30 Days Money Back Guarantee", "FAQ guarantee text says if you\u2019re not satisfied within 30 days, they\u2019ll refund within 24 hours\u2014\u201Cno questions asked\u201D" ],
+                      "RiskReducers": [ "30-day money-back guarantee", "\u201CNot satisfied? Get a full refund within 30 days\u2014no hassle, no worries.\u201D", "24 / 7 Customer Service", "Shipping, refund, terms, and privacy policies are linked in the footer", "Shipping policy says order tracking is available via the site navigation", "Refund policy says a return shipping label is provided if the return is accepted" ],
+                      "SocialProof": [ "4.8 stars from 9,577 reviews", "Verified purchase photo and video reviews", "\u201CAbsolutely brilliant. removes fur easily. game changer\u201D \u2014 Charlotte D.", "\u201CDoes EXACTLY what the ads show!\u201D \u2014 Stina J.", "\u201CSuper duper cat hair remover! Just like the ad\u201D \u2014 Carolyn B." ],
+                      "UrgencyScarcity": [ "\uD83D\uDEA8 Buy 1 Get 1 Free Ends When Stock Runs Out! \uD83D\uDEA8", "Only 9 Magic Brushes Left", "\u201CDue to the extremely high surge in sales, we only have limited stock available per customer.\u201D" ],
+                      "ComplianceLanguage": [ "Refund policy says returns must be requested within 30 days after receiving the item.", "Returned items must be unworn or unused, with tags, in original packaging, and accompanied by proof of purchase.", "Refund policy says sale items or gift cards cannot be returned.", "EU customers have a 14 day cooling off period.", "Approved refunds are issued to the original payment method within 10 business days." ]
+                    }
+                  },
+                  "Vendor": {
+                    "BrandName": "The Magic Brush",
+                    "Domain": "magicbrushofficial.com",
+                    "PlatformDetected": "Shopify",
+                    "PolicyUrls": {
+                      "Shipping": "https://magicbrushofficial.com/policies/shipping-policy",
+                      "Returns": "https://magicbrushofficial.com/policies/refund-policy",
+                      "Privacy": "https://magicbrushofficial.com/policies/privacy-policy"
+                    },
+                    "TrustSignals": [
+                      {
+                        "Type": "rating",
+                        "Value": "4.8 rating from 9,577 reviews",
+                        "SourceUrl": "https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"
+                      },
+                      {
+                        "Type": "guarantee",
+                        "Value": "30-day money-back guarantee",
+                        "SourceUrl": "https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"
+                      },
+                      {
+                        "Type": "support",
+                        "Value": "24 / 7 Customer Service",
+                        "SourceUrl": "https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"
+                      },
+                      {
+                        "Type": "email",
+                        "Value": "info@magicbrushofficial.com",
+                        "SourceUrl": "https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"
+                      },
+                      {
+                        "Type": "shipping",
+                        "Value": "Express Shipping: From Us To Your Door In 6-10 Days",
+                        "SourceUrl": "https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"
+                      },
+                      {
+                        "Type": "social",
+                        "Value": "Facebook profile/reviews linked",
+                        "SourceUrl": "https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"
+                      },
+                      {
+                        "Type": "social",
+                        "Value": "Instagram profile linked",
+                        "SourceUrl": "https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"
+                      },
+                      {
+                        "Type": "social",
+                        "Value": "TikTok profile linked",
+                        "SourceUrl": "https://magicbrushofficial.com/products/the-magic-brush-buy-1-get-1-free"
+                      }
+                    ]
+                  },
+                  "Blockers": [ "Materials descriptions conflict on-page: one section says \u0027soft brush cloth bristles\u0027 while FAQ says \u0027food-grade silicone bristles\u0027.", "Customer-count claims conflict on-page: PDP says \u0027Over 100,000 Happy Customers\u0027 while footer/policy pages say \u0027Over 50,000 Happy Customers\u0027.", "Support email differs across pages: PDP/footer shows info@magicbrushofficial.com, while refund policy lists info@themagicbrush.com.", "Guarantee terms conflict: PDP promises a 30-day money-back guarantee, but refund policy says sale items cannot be returned." ]
+                }
                 """;
-            
+
             string result = await workflow.RunAsync(conversationID.ToString(), input, cancellationToken);
             System.Console.WriteLine(result);
         }

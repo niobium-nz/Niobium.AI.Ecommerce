@@ -16,7 +16,9 @@ namespace Niobium.AI.OpenAI
             loaded = true;
 
             Niobium.AI.DependencyModule.AddAI(services)
-                .AddSingleton<IChatClientFactory, OpenAIChatClientFactory>()
+                .AddSingleton<OpenAIClientFactory>()
+                .AddTransient<IImageClientFactory, OpenAIImageClientFactory>()
+                .AddTransient<IChatClientFactory, OpenAIChatClientFactory>()
                 .AddTransient<IVideoClientFactory, OpenAIVideoClientFactory>()
                 .AddHttpClient<SoraVideoClient>(httpClient =>
                 {

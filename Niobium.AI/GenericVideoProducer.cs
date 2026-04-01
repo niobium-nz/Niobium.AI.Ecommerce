@@ -1,12 +1,10 @@
 namespace Niobium.AI
 {
-    public abstract class Sora2VideoProducer<T>(IVideoClientFactory videoClientFactory) : IVideoProducer<T> where T : IVideoInstruction
+    public abstract class GenericVideoProducer<T>(IVideoClientFactory clientFactory) : IVideoProducer<T> where T : IVideoInstruction
     {
         public abstract string Id { get; }
 
-        protected virtual string Model => Models.SORA_2;
-
-        protected IVideoClient VideoClient => videoClientFactory.CreateVideoClient(this.Model);
+        protected virtual string Model => Models.SORA_LATEST;
 
         protected virtual Task OnGettingResponseAsync(string conversationID, T input, CancellationToken cancellationToken)
             => Task.CompletedTask;
@@ -22,7 +20,8 @@ namespace Niobium.AI
             }
 
             await this.OnGettingResponseAsync(conversationID, input, cancellationToken);
-            Stream videoStream = await this.VideoClient.RunAsync(
+            IVideoClient client = clientFactory.CreateClient(this.Model);
+            Stream videoStream = await client.RunAsync(
                  conversationID,
                  input.VideoPrompt,
                  input.VideoWidth,

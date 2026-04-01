@@ -10,6 +10,11 @@ namespace Niobium.AI
         public const string GPT_5_4 = "gpt-5.4";
         public const string GPT_5_4_PRO = "gpt-5.4-pro";
         public const string GPT_LATEST = GPT_5_4;
+
         public const string SORA_2 = "sora-2";
+        public const string SORA_LATEST = SORA_2;
+
+        public const string GPT_IMAGE_1_5 = "gpt-image-1.5";
+        public const string GPT_IMAGE_LATEST = GPT_IMAGE_1_5;
     }
 }
