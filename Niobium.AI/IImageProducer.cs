@@ -1,6 +1,6 @@
 namespace Niobium.AI
 {
-    public interface IImageProducer : IResponseGenerator<ImageInstruction, IEnumerable<Uri>>
+    public interface IImageProducer<T> : IResponseGenerator<T, IEnumerable<BinaryData>> where T : IImageInstruction
     {
     }
 }

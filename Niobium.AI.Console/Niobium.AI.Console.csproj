@@ -10,10 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.6.0" />
+    <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
-    <PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-rc4" />
-    <PackageReference Include="ModelContextProtocol" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-rc5" />
+    <PackageReference Include="ModelContextProtocol" Version="1.2.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.5" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.4.0" />

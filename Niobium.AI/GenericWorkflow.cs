@@ -31,12 +31,7 @@ namespace Niobium.AI
             {
                 if (evt is WorkflowOutputEvent output)
                 {
-                    if (output.Data == null)
-                    {
-                        return null;
-                    }
-
-                    return output.Data as TOutput;
+                    return output.Data == null ? null : output.Data as TOutput;
                 }
             }
 

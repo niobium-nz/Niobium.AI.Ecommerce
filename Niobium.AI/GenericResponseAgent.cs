@@ -68,7 +68,7 @@ namespace Niobium.AI
 
                 if (this.SkillsFolder != null)
                 {
-                    builder = builder.UseAIContextProviders(new FileAgentSkillsProvider(skillPath: this.SkillsFolder.FullName));
+                    builder = builder.UseAIContextProviders(new AgentSkillsProvider(skillPath: this.SkillsFolder.FullName));
                 }
 
                 this._agent = builder.BuildAIAgent(new ChatClientAgentOptions

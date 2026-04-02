@@ -4,6 +4,7 @@ using Niobium.AI.Ecommerce.Executors.MarketResearch;
 using Niobium.AI.Ecommerce.Executors.ProductDiscovery;
 using Niobium.AI.Ecommerce.Executors.ProductNormalization;
 using Niobium.AI.Ecommerce.Executors.ProductProfile;
+using Niobium.AI.Ecommerce.Executors.ProductVisual;
 using Niobium.AI.Ecommerce.Tools;
 using Niobium.AI.Ecommerce.Workflows;
 
@@ -32,7 +33,7 @@ namespace Niobium.AI.Ecommerce
                 .AddTransient<KeywordsExpander>()
                 .AddTransient<ProductProfiler>()
                 .AddTransient<CompetitorAnalysisWorkflow>()
-                .AddTransient<IWorkflow, ProductProfileWorkflow>()
+                .AddTransient<IWorkflow, ProductCreativityWorkflow>()
                 .AddTransient<ProductDiscoveryWorkflow>()
                 .AddTransient<ProductProfileWorkflow>()
                 .AddTransient<ProductNormalizationWorkflow>()
@@ -44,7 +45,9 @@ namespace Niobium.AI.Ecommerce
                 .AddTransient<ProductNormalizationAggregator>()
                 .AddTransient<CompetitionScoutAdaptor>()
                 .AddTransient<CompetitorAnalysisAggregator>()
-                .AddTransient<ProductProfilerAdaptor>();
+                .AddTransient<ProductProfilerAdaptor>()
+                .AddTransient<ProductVisualBuilderAdaptor>()
+                .AddTransient<ProductVisualBuilder>();
         }
     }
 }

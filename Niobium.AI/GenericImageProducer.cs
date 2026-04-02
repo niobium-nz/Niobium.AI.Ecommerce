@@ -1,6 +1,6 @@
 namespace Niobium.AI
 {
-    public abstract class GenericImageProducer(IImageClientFactory clientFactory) : IImageProducer
+    public abstract class GenericImageProducer<T>(IImageClientFactory clientFactory) : IImageProducer<T> where T : IImageInstruction
     {
         public abstract string Id { get; }
 
@@ -19,10 +19,10 @@ namespace Niobium.AI
             return await reader.ReadToEndAsync(cancellationToken);
         }
 
-        protected virtual Task OnGettingResponseAsync(string conversationID, ImageInstruction input, CancellationToken cancellationToken)
+        protected virtual Task OnGettingResponseAsync(string conversationID, T input, CancellationToken cancellationToken)
             => Task.CompletedTask;
 
-        public virtual async Task<IEnumerable<Uri>> GetResponseAsync(string conversationID, ImageInstruction input, CancellationToken cancellationToken)
+        public virtual async Task<IEnumerable<BinaryData>> GetResponseAsync(string conversationID, T input, CancellationToken cancellationToken)
         {
             int width, height;
             switch (input.Form)
@@ -47,7 +47,7 @@ namespace Niobium.AI
 
             string prompt = await this.GetInstructionsAsync(cancellationToken);
             IImageClient client = clientFactory.CreateClient(this.Model);
-            IEnumerable<Uri> result = await client.RunAsync(
+            IEnumerable<BinaryData> result = await client.RunAsync(
                  conversationID,
                  prompt,
                  width,
@@ -58,7 +58,7 @@ namespace Niobium.AI
             return await this.OnResponseGotAsync(conversationID, input, result, cancellationToken);
         }
 
-        protected virtual Task<IEnumerable<Uri>> OnResponseGotAsync(string conversationID, ImageInstruction input, IEnumerable<Uri> results, CancellationToken cancellationToken)
+        protected virtual Task<IEnumerable<BinaryData>> OnResponseGotAsync(string conversationID, T input, IEnumerable<BinaryData> results, CancellationToken cancellationToken)
             => Task.FromResult(results);
     }
 }

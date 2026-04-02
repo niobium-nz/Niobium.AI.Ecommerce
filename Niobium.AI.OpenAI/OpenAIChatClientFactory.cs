@@ -6,7 +6,7 @@ namespace Niobium.AI.OpenAI
     {
         public IChatClient CreateChatClient(string model)
             => model.StartsWith("gpt-", StringComparison.OrdinalIgnoreCase)
-                ? clientFactory.GetOrCreateClient().GetResponsesClient(model).AsIChatClient()
+                ? clientFactory.GetOrCreateClient().GetResponsesClient().AsIChatClient()
                 : throw new NotSupportedException($"The specified LLM model is not supported: {model}");
     }
 }
