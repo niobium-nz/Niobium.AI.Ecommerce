@@ -22,16 +22,21 @@ string? otlpEndpoint = builder.Configuration.GetValue<string>("OpenTelemetry:Otl
 
 ResourceBuilder resourceBuilder = ResourceBuilder
     .CreateDefault()
-    .AddService(serviceName: serviceName, serviceVersion: serviceVersion);
+    .AddService(serviceName: serviceName, serviceVersion: serviceVersion)
+    .AddAttributes(new Dictionary<string, object>
+    {
+        ["service.instance.id"] = Environment.MachineName,
+        ["deployment.environment"] = "development"
+    });
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddOpenTelemetry(options =>
 {
-    _ = options.SetResourceBuilder(resourceBuilder);
+    options.SetResourceBuilder(resourceBuilder);
     if (!String.IsNullOrWhiteSpace(applicationInsightsConnectionString))
     {
-        _ = options.AddAzureMonitorLogExporter(options => options.ConnectionString = applicationInsightsConnectionString);
+        options.AddAzureMonitorLogExporter(options => options.ConnectionString = applicationInsightsConnectionString);
     }
     // Format log messages. This is default to false.
     options.IncludeFormattedMessage = true;
@@ -49,12 +54,12 @@ TracerProviderBuilder tracerBuilder = Sdk.CreateTracerProviderBuilder()
 
 if (!String.IsNullOrWhiteSpace(applicationInsightsConnectionString))
 {
-    _ = tracerBuilder.AddAzureMonitorTraceExporter(options => options.ConnectionString = applicationInsightsConnectionString);
+    tracerBuilder.AddAzureMonitorTraceExporter(options => options.ConnectionString = applicationInsightsConnectionString);
 }
 
 if (!String.IsNullOrWhiteSpace(otlpEndpoint))
 {
-    _ = tracerBuilder.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
+    tracerBuilder.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
 }
 
 TracerProvider tracerProvider = tracerBuilder.Build();
@@ -69,12 +74,12 @@ MeterProviderBuilder meterBuilder = Sdk.CreateMeterProviderBuilder()
 
 if (!String.IsNullOrWhiteSpace(applicationInsightsConnectionString))
 {
-    _ = meterBuilder.AddAzureMonitorMetricExporter(options => options.ConnectionString = applicationInsightsConnectionString);
+    meterBuilder.AddAzureMonitorMetricExporter(options => options.ConnectionString = applicationInsightsConnectionString);
 }
 
 if (!String.IsNullOrWhiteSpace(otlpEndpoint))
 {
-    _ = meterBuilder.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
+    meterBuilder.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
 }
 
 MeterProvider meterProvider = meterBuilder.Build();
