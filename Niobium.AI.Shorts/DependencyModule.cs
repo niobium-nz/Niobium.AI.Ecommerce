@@ -22,7 +22,6 @@ namespace Niobium.AI.Shorts
                 .AddTransient<AttractiveShortScreenwriter>()
                 .AddTransient<AttractiveShortScreenwriterAdaptor>()
                 .AddTransient<MetaVideoAdCreatorAdaptor>()
-                .AddTransient<FileUploader>()
                 .AddTransient<MetaVideoAdCreator>()
                 .AddTransient<AttractiveShortProducer>()
                 .AddTransient<IWorkflow, AttractiveShortWorkflow>()

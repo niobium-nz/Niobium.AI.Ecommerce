@@ -1,15 +1,15 @@
 namespace Niobium.AI
 {
-    public abstract class GenericVideoProducer<T>(IVideoClientFactory clientFactory) : IVideoProducer<T> where T : IVideoInstruction
+    public abstract class GenericVideoProducer<TInput, TOutput>(IVideoClientFactory clientFactory) : IVideoProducer<TInput, TOutput> where TInput : IVideoInstruction
     {
         public abstract string Id { get; }
 
         protected virtual string Model => Models.SORA_LATEST;
 
-        protected virtual Task OnGettingResponseAsync(string conversationID, T input, CancellationToken cancellationToken)
+        protected virtual Task OnGettingResponseAsync(string conversationID, TInput input, CancellationToken cancellationToken)
             => Task.CompletedTask;
 
-        public virtual async Task<Stream> GetResponseAsync(string conversationID, T input, CancellationToken cancellationToken)
+        public virtual async Task<TOutput> GetResponseAsync(string conversationID, TInput input, CancellationToken cancellationToken)
         {
             // align size to 720p if necessary due to Sora2 limitations
             if (input.VideoWidth > 720)
@@ -21,17 +21,16 @@ namespace Niobium.AI
 
             await this.OnGettingResponseAsync(conversationID, input, cancellationToken);
             IVideoClient client = clientFactory.CreateClient(this.Model);
-            Stream videoStream = await client.RunAsync(
+            BinaryData video = await client.RunAsync(
                  conversationID,
                  input.VideoPrompt,
                  input.VideoWidth,
                  input.VideoHeight,
                  input.VideoDurationInSeconds,
                  cancellationToken);
-            return await this.OnResponseGotAsync(conversationID, input, videoStream, cancellationToken);
+            return await this.OnResponseGotAsync(conversationID, input, video, cancellationToken);
         }
 
-        protected virtual Task<Stream> OnResponseGotAsync(string conversationID, T input, Stream videoStream, CancellationToken cancellationToken)
-            => Task.FromResult(videoStream);
+        protected abstract Task<TOutput> OnResponseGotAsync(string conversationID, TInput input, BinaryData video, CancellationToken cancellationToken);
     }
 }

@@ -6,7 +6,7 @@ namespace Niobium.AI.OpenAI
 {
     internal class SoraVideoClient(HttpClient client, ILogger<SoraVideoClient> logger) : IVideoClient
     {
-        public async Task<Stream> RunAsync(
+        public async Task<BinaryData> RunAsync(
             string conversationID,
             string prompt,
             int width,
@@ -94,15 +94,8 @@ namespace Niobium.AI.OpenAI
             }
 
             using Stream video = await downloadResponse.Content.ReadAsStreamAsync(cancellationToken);
-            MemoryStream memoryStream = new();
-            if (video.CanSeek)
-            {
-                _ = video.Seek(0, SeekOrigin.Begin);
-            }
-            await video.CopyToAsync(memoryStream, cancellationToken);
             logger.LogInformation("Sora video downloaded for ID {VideoId}", videoId);
-            _ = memoryStream.Seek(0, SeekOrigin.Begin);
-            return memoryStream;
+            return BinaryData.FromStream(video);
         }
     }
 }

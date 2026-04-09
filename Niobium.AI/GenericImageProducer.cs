@@ -1,6 +1,6 @@
 namespace Niobium.AI
 {
-    public abstract class GenericImageProducer<T>(IImageClientFactory clientFactory) : IImageProducer<T> where T : IImageInstruction
+    public abstract class GenericImageProducer<TInput, TOutput>(IImageClientFactory clientFactory) : IImageProducer<TInput, TOutput> where TInput : IImageInstruction
     {
         public abstract string Id { get; }
 
@@ -19,10 +19,10 @@ namespace Niobium.AI
             return await reader.ReadToEndAsync(cancellationToken);
         }
 
-        protected virtual Task OnGettingResponseAsync(string conversationID, T input, CancellationToken cancellationToken)
+        protected virtual Task OnGettingResponseAsync(string conversationID, TInput input, CancellationToken cancellationToken)
             => Task.CompletedTask;
 
-        public virtual async Task<IEnumerable<BinaryData>> GetResponseAsync(string conversationID, T input, CancellationToken cancellationToken)
+        public virtual async Task<TOutput> GetResponseAsync(string conversationID, TInput input, CancellationToken cancellationToken)
         {
             int width, height;
             switch (input.Form)
@@ -58,7 +58,6 @@ namespace Niobium.AI
             return await this.OnResponseGotAsync(conversationID, input, result, cancellationToken);
         }
 
-        protected virtual Task<IEnumerable<BinaryData>> OnResponseGotAsync(string conversationID, T input, IEnumerable<BinaryData> results, CancellationToken cancellationToken)
-            => Task.FromResult(results);
+        protected abstract Task<TOutput> OnResponseGotAsync(string conversationID, TInput input, IEnumerable<BinaryData> results, CancellationToken cancellationToken);
     }
 }

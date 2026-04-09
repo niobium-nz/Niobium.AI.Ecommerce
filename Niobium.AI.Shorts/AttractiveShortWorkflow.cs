@@ -11,7 +11,6 @@ namespace Niobium.AI.Shorts
         AttractiveShortScreenwriter attractiveShortScreenwriter,
         AttractiveShortProducer attractiveShortProducer,
         MetaVideoAdCreator metaVideoAdCreator,
-        FileUploader fileUploader,
         MetaVideoAdCreatorAdaptor metaVideoAdCreatorAdaptor)
         : IWorkflow<AttractiveShortWorkflowInput, AttractiveShortWorkflowOutput>
     {
@@ -60,8 +59,7 @@ namespace Niobium.AI.Shorts
                     .AddEdge(workflowUserInputAdaptor, attractiveShortScreenwriterAdaptor)
                     .AddEdge(attractiveShortScreenwriterAdaptor, attractiveShortScreenwriterBinding)
                     .AddEdge(attractiveShortScreenwriterBinding, attractiveShortProducerBinding)
-                    .AddEdge(attractiveShortProducerBinding, fileUploader)
-                    .AddEdge(fileUploader, metaVideoAdCreatorAdaptor)
+                    .AddEdge(attractiveShortProducerBinding, metaVideoAdCreatorAdaptor)
                     .AddEdge(metaVideoAdCreatorAdaptor, metaVideoAdCreatorBinding)
                     .WithOutputFrom(metaVideoAdCreatorBinding);
                 this.workflow = builder.Build();

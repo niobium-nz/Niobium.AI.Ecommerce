@@ -1,6 +1,6 @@
 namespace Niobium.AI
 {
-    public interface IVideoProducer<T> : IResponseGenerator<T, Stream> where T : IVideoInstruction
+    public interface IVideoProducer<TInput, TOutput> : IResponseGenerator<TInput, TOutput> where TInput : IVideoInstruction
     {
     }
 }

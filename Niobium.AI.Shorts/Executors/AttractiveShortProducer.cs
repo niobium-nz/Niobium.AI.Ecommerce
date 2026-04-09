@@ -1,19 +1,42 @@
+using Azure;
+using Microsoft.Extensions.Logging;
 using Niobium.AI.Shorts.Contracts;
 using Niobium.AI.Shorts.Skills;
 
 namespace Niobium.AI.Shorts.Executors
 {
-    internal class AttractiveShortProducer(IVideoClientFactory videoClientFactory)
-        : GenericVideoProducer<AttractiveShortScreenwriterOutput>(videoClientFactory)
+    internal class AttractiveShortProducer(
+        IVideoClientFactory videoClientFactory,
+        IFileStorage fileStorage,
+        ILogger<AttractiveShortProducer> logger)
+        : GenericVideoProducer<AttractiveShortScreenwriterOutput, Uri>(videoClientFactory)
     {
+        private static readonly Random random = new();
+
         public override string Id => nameof(AttractiveShortProducer);
 
-        protected override async Task<Stream> OnResponseGotAsync(string conversationID, AttractiveShortScreenwriterOutput input, Stream videoStream, CancellationToken cancellationToken)
+        protected override async Task<Uri> OnResponseGotAsync(string conversationID, AttractiveShortScreenwriterOutput input, BinaryData video, CancellationToken cancellationToken)
         {
-            using (videoStream)
+            using Stream videoStream = video.ToStream();
+            using Stream videoStreamWithSubtitle = await BurnSubtitleToVideo.BurnInSubtitlesAsync(videoStream, input, input.SubtitlePlan, cancellationToken);
+            return await this.UploadAsync(videoStreamWithSubtitle, cancellationToken);
+        }
+
+        public async ValueTask<Uri> UploadAsync(Stream message, CancellationToken cancellationToken = default)
+        {
+            string videoName = $"{DateTime.Now:yyyyMMdd}-{random.Next(10, 99)}.mp4";
+            try
             {
-                Stream videoStreamWithSubtitle = await BurnSubtitleToVideo.BurnInSubtitlesAsync(videoStream, input, input.SubtitlePlan, cancellationToken);
-                return await base.OnResponseGotAsync(conversationID, input, videoStreamWithSubtitle, cancellationToken);
+                logger.LogInformation($"Staging video {videoName} on Azure Blob...");
+                Uri result = await fileStorage.UploadAsync(videoName, message, cancellationToken);
+                logger.LogInformation($"Video {videoName} staged on Azure Blob as {result}");
+                return result;
+            }
+            catch (RequestFailedException e) when (e.Status == 409 && e.ErrorCode == "BlobAlreadyExists")
+            {
+                // If the blob already exists, it means we got lucky on the same random number. We can just need to call self again so another random name will be generated.
+                logger.LogWarning("Blob with name {BlobName} already exists. Retrying with a new name...", videoName);
+                return await this.UploadAsync(message, cancellationToken);
             }
         }
     }
