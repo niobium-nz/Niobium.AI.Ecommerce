@@ -4,6 +4,6 @@ namespace Niobium.AI
     {
         ImageForm Form { get; }
 
-        Dictionary<string, BinaryData> References { get; }
+        List<ImageReference> References { get; }
     }
 }

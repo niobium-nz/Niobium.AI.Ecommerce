@@ -1,53 +1,54 @@
-using OpenAI.Images;
+using System.Drawing;
+using Microsoft.Extensions.AI;
 
 namespace Niobium.AI.OpenAI
 {
-    internal class OpenAIImageClientAdaptor(ImageClient openAIImageClient) : IImageClient
+    internal class OpenAIImageClientAdaptor(IImageGenerator imageGenerator) : IImageClient
     {
-        public async Task<IEnumerable<BinaryData>> RunAsync(string conversationID, string prompt, int width, int height, int variantCount = 1, Dictionary<string, BinaryData>? references = null, CancellationToken cancellationToken = default)
+        private static readonly Size Square = new(1024, 1024);
+        private static readonly Size Vertical = new(1024, 1536);
+        private static readonly Size Horizontal = new(1536, 1024);
+
+        public async Task<IEnumerable<BinaryData>> RunAsync(string conversationID, string prompt, int width, int height, int variantCount = 1, List<ImageReference>? references = null, CancellationToken cancellationToken = default)
         {
             if (references != null && references.Count > 1)
             {
                 throw new NotSupportedException("OpenAI image client does not support multiple image references as input.");
             }
 
-            GeneratedImageSize size = width == 1024 && height == 1024
-                ? GeneratedImageSize.W1024xH1024
+            Size size = width == 1024 && height == 1024
+                ? Square
                 : width == 1024 && height == 1536
-                    ? GeneratedImageSize.W1024xH1536
-                    : width == 1536 && height == 1024 ? GeneratedImageSize.W1536xH1024
+                    ? Vertical
+                    : width == 1536 && height == 1024 ? Horizontal
                     : throw new NotSupportedException($"Image size not supported by OpenAI image client: {width}x{height}.");
 
-            GeneratedImageCollection images;
+            ImageGenerationOptions options = new()
+            {
+                Count = variantCount,
+                ImageSize = size,
+                MediaType = "image/png",
+            };
+
+            ImageGenerationResponse images;
             if (references == null || references.Count == 0)
             {
-                images = await openAIImageClient.GenerateImagesAsync(
+                images = await imageGenerator.GenerateImagesAsync(
                     prompt,
-                    variantCount,
-                    options: new ImageGenerationOptions
-                    {
-                        OutputFileFormat = GeneratedImageFileFormat.Png,
-                        ResponseFormat = GeneratedImageFormat.Uri,
-                        Size = size,
-                    },
+                    options: options,
                     cancellationToken: cancellationToken);
             }
             else
             {
-                using MemoryStream ms = new(references.First().Value.ToArray());
-                images = (GeneratedImageCollection)await openAIImageClient.GenerateImageEditsAsync(
-                    ms,
-                    references.First().Key,
+                ImageReference reference = references.Single();
+                images = await imageGenerator.EditImageAsync(
+                    new DataContent(reference.Data, reference.MediaType),
                     prompt,
-                    variantCount,
-                    options: new ImageEditOptions
-                    {
-                        Size = size,
-                    },
+                    options: options,
                     cancellationToken: cancellationToken);
             }
 
-            return images.Select(i => i.ImageBytes);
+            return images.Contents.Where(c => c is DataContent).Select(c => BinaryData.FromBytes(((DataContent)c).Data));
         }
     }
 }

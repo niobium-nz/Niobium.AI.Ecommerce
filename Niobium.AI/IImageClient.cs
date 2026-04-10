@@ -8,7 +8,7 @@ namespace Niobium.AI
             int width,
             int height,
             int variantCount = 1,
-            Dictionary<string, BinaryData>? references = null,
+            List<ImageReference>? references = null,
             CancellationToken cancellationToken = default);
     }
 }

@@ -1,4 +1,4 @@
-using OpenAI.Images;
+using Microsoft.Extensions.AI;
 
 namespace Niobium.AI.OpenAI
 {
@@ -11,7 +11,14 @@ namespace Niobium.AI.OpenAI
 
         private OpenAIImageClientAdaptor CreateAdaptor(string model)
         {
-            ImageClient openAIImageClient = clientFactory.GetOrCreateClient().GetImageClient(model);
+            IImageGenerator openAIImageClient = clientFactory.GetOrCreateClient()
+                .GetImageClient(model)
+                .AsIImageGenerator()
+                .AsBuilder()
+                .UseOpenTelemetry(
+                    sourceName: this.GetType().Assembly.GetName().Name,
+                    configure: (cfg) => cfg.EnableSensitiveData = true)
+                .Build();
             return new OpenAIImageClientAdaptor(openAIImageClient);
         }
     }

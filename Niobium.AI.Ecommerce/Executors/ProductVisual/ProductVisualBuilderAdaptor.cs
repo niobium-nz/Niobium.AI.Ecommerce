@@ -7,14 +7,18 @@ namespace Niobium.AI.Ecommerce.Executors.ProductVisual
     {
         public override ValueTask<ProductVisualBuilderInput> HandleAsync(ProductCreativityInput message, IWorkflowContext context, CancellationToken cancellationToken = default)
         {
-            FileInfo fileInfo = new(message.Photos);
+            _ = new FileInfo(message.Photos);
             return ValueTask.FromResult(new ProductVisualBuilderInput
             {
                 Form = ImageForm.Squared,
-                References = new Dictionary<string, BinaryData>
-                {
-                    { $"reference{fileInfo.Extension}", BinaryData.FromFile(message.Photos) }
-                }
+                References =
+                [
+                    new ImageReference
+                    {
+                        Data = BinaryData.FromFile(message.Photos),
+                        MediaType = "image/png",
+                    }
+                ]
             });
         }
     }

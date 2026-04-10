@@ -60,11 +60,7 @@ namespace Niobium.AI
                     Tools = [.. tools],
                 };
 
-                ChatClientBuilder builder = clientFactory.CreateChatClient(this.Model)
-                    .AsBuilder()
-                    .UseOpenTelemetry(
-                        sourceName: "Niobium.AI",
-                        configure: cfg => cfg.EnableSensitiveData = true);
+                ChatClientBuilder builder = clientFactory.CreateChatClient(this.Model).AsBuilder();
 
                 if (this.SkillsFolder != null)
                 {

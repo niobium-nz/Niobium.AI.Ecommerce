@@ -4,6 +4,6 @@ namespace Niobium.AI.Ecommerce.Contracts.ProductVisual
     {
         public ImageForm Form { get; set; }
 
-        public Dictionary<string, BinaryData> References { get; set; } = [];
+        public List<ImageReference> References { get; set; } = [];
     }
 }
