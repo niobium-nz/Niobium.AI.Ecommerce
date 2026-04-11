@@ -31,7 +31,7 @@ namespace Niobium.AI
             return await reader.ReadToEndAsync(cancellationToken);
         }
 
-        protected void LogUsage(string conversationID, UsageDetails? usage)
+        protected virtual void LogUsage(string conversationID, UsageDetails? usage)
         {
             if (usage != null)
             {

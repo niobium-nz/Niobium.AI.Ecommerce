@@ -24,6 +24,8 @@ namespace Niobium.AI
         };
         private static IEnumerable<McpClientTool>? playwrightTools;
 
+        public Task<IEnumerable<AITool>> GetWebSearchTools(CancellationToken cancellationToken) => Task.FromResult<IEnumerable<AITool>>([new HostedWebSearchTool()]);
+
         public async Task<IEnumerable<AITool>> GetPlaywrightToolsAsync(CancellationToken cancellationToken)
         {
             if (playwrightTools == null)

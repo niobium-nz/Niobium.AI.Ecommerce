@@ -11,7 +11,7 @@ namespace Niobium.AI.Ecommerce.Executors.MarketResearch
         protected override ReasoningEffort Reasoning => ReasoningEffort.Medium;
 
         protected override Task<IEnumerable<AITool>> GetToolsAsync(CancellationToken cancellationToken)
-            => tools.GetPlaywrightToolsAsync(cancellationToken);
+            => tools.GetWebSearchTools(cancellationToken);
 
         protected override async Task OnResponseGotAsync(string conversationID, KeywordsExpanderInput input, KeywordsExpanderOutput? output, CancellationToken cancellationToken)
         {
