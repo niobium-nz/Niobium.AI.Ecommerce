@@ -13,6 +13,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Executors\CompetitorAnalysis\CompetitionScout.md" />
     <EmbeddedResource Include="Executors\MarketResearch\KeywordsExpander.md" />
+    <EmbeddedResource Include="Executors\MarketStrategy\MarketStrategist.md" />
     <EmbeddedResource Include="Executors\ProductDiscovery\ProductClusterer.md" />
     <EmbeddedResource Include="Executors\ProductNormalization\ProductNormalizer.md" />
     <EmbeddedResource Include="Executors\ProductProfile\ProductProfiler.md" />
