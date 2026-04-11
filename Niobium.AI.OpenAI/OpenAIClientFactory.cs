@@ -18,7 +18,7 @@ namespace Niobium.AI.OpenAI
                 new OpenAIClientOptions
                 {
                     Endpoint = new Uri(endpoint),
-                    NetworkTimeout = TimeSpan.FromMinutes(5),
+                    NetworkTimeout = TimeSpan.FromMinutes(10),
                 });
         }
     }

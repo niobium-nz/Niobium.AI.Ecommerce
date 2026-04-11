@@ -619,9 +619,36 @@ namespace Niobium.AI.Console
             //    }
             //    """;
 
+            //string input = """
+            //    {"Photos":"C:\\Users\\Wen\\Downloads\\merged-image-2026-04-01T08-38-54_processed_by_imagy.png"}
+            //    """;
+
             string input = """
-                {"Photos":"C:\\Users\\Wen\\Downloads\\merged-image-2026-04-01T08-38-54_processed_by_imagy.png"}
+                {
+                    "CompetitorUsedProductName": "The Magic Brush",
+                    "COGSPerUnit": "$5",
+                    "TargetMarketCountry": "AU",
+                    "ExtraUnitCOGSPerOrder": "$1",
+                    "SalesTax": "10%",
+                    "PaymentProcessingFees": "3% + $0.30",
+                    "CompetitorClaims": [ "Gets rid of Cat \u0026 Dog Hair within Seconds", "Reusable \u0026 Easy to Clean", "Works on carpets, rugs, upholstery, clothing, bedding, car interiors, and pet beds", "Lifts fur without scratching or snagging", "Compact and handbag-friendly for pet-hair removal on the go", "Adjustable fit for most adult hand sizes", "Ambidextrous design for left- or right-hand use", "Reduces hair cleanup from hours to just minutes" ],
+                    "IngredientsOrMaterials": [ "Durable mesh cloth backing", "Soft brush cloth bristles", "Food-grade silicone bristles", "Reinforced stitching", "Polyester cuff" ],
+                    "CompetitorMarketingHowItWins": {
+                      "Positioning": [ "The Magic Brush\u2122 pet grooming glove", "The ultimate choice for anyone who wants a quick, comfortable, and stylish way to banish pet hair", "National Leader" ],
+                      "Differentiators": [ "360\u00B0 silicone bristles grip and lift fur without scratching or snagging", "Bristles generate static to lift and capture fur on contact", "Adjustable Velcro wrist strap conforms to most adult hand sizes", "Ambidextrous glove design", "Compact glove lies flat for handbag, backpack, or car-console storage" ],
+                      "ProofPoints": [ "4.8 rating from 9,577 reviews", "Verified photo and video reviews are shown on-page", "Over 100,000 Happy Customers", "30-day money-back guarantee", "Refund policy says approved refunds are issued to the original payment method within 10 business days" ],
+                      "TargetCustomer": [ "Cat \u0026 dog owners", "Anyone who wants a quick, comfortable, and stylish way to banish pet hair" ],
+                      "ObjectionHandling": [ "Works on virtually any fabric surface\u2014carpets, rugs, upholstery, clothing, bedding, car interiors, and even pet beds.", "The glove comes with an adjustable Velcro wrist strap that conforms to most adult hand sizes.", "Designed to be ambidextrous\u2014simply switch the glove to whichever hand you prefer.", "Just rinse the glove under warm water to release trapped fur, then let it air-dry; it\u2019s ready again within minutes.", "You can confidently use it on delicate upholstery, silk blends, and soft clothing without fear of damage.", "Shipping policy says average shipping time is 5\u201315 days after purchase.", "Refund policy says you have 30 days after receiving your item to request a return." ],
+                      "ComparisonClaims": [ "\u201CIt\u2019s pulled up fur from my rug that a vacuum can\u2019t lift.\u201D", "\u201CThe vacuum only picks up so much.\u201D", "\u201CThe photo shows all the hair I got after the vacuuming!\u201D" ],
+                      "CallsToAction": [ "ADD TO CART" ],
+                      "RiskReducers": [ "30-day money-back guarantee", "\u201CNot satisfied? Get a full refund within 30 days\u2014no hassle, no worries.\u201D", "24 / 7 Customer Service", "Shipping, refund, terms, and privacy policies are linked in the footer", "Shipping policy says order tracking is available via the site navigation", "Refund policy says a return shipping label is provided if the return is accepted" ],
+                      "SocialProof": [ "4.8 stars from 9,577 reviews", "Verified purchase photo and video reviews", "\u201CAbsolutely brilliant. removes fur easily. game changer\u201D \u2014 Charlotte D.", "\u201CDoes EXACTLY what the ads show!\u201D \u2014 Stina J.", "\u201CSuper duper cat hair remover! Just like the ad\u201D \u2014 Carolyn B." ],
+                      "UrgencyScarcity": [ "\uD83D\uDEA8 Buy 1 Get 1 Free Ends When Stock Runs Out! \uD83D\uDEA8", "Only 9 Magic Brushes Left", "\u201CDue to the extremely high surge in sales, we only have limited stock available per customer.\u201D" ],
+                      "ComplianceLanguage": [ "Refund policy says returns must be requested within 30 days after receiving the item.", "Returned items must be unworn or unused, with tags, in original packaging, and accompanied by proof of purchase.", "Refund policy says sale items or gift cards cannot be returned.", "EU customers have a 14 day cooling off period.", "Approved refunds are issued to the original payment method within 10 business days." ]
+                    }
+                }
                 """;
+
             string result = await workflow.RunAsync(conversationID.ToString(), input, cancellationToken);
             System.Console.WriteLine(result);
         }

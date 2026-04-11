@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry;
-using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -15,57 +15,76 @@ namespace Niobium.AI.Console
     {
         public static HostApplicationBuilder ConfigureOpenTelemetry(this HostApplicationBuilder builder)
         {
-            string serviceName = builder.Configuration.GetValue<string>("ServiceName") ?? throw new InvalidOperationException("ServiceName is not set.");
-            string serviceVersion = builder.Configuration.GetValue<string>("ServiceVersion") ?? "1.0.0";
-            string? applicationInsightsConnectionString = Environment.GetEnvironmentVariable("APPLICATION_INSIGHTS_CONNECTION_STRING");
-
+            string? applicationInsightsConnectionString = builder.Configuration.GetValue<string>("APPLICATION_INSIGHTS_CONNECTION_STRING");
             string? otlpEndpoint = builder.Configuration.GetValue<string>("OTEL_EXPORTER_OTLP_ENDPOINT");
-
-            ResourceBuilder resourceBuilder = ResourceBuilder
-                .CreateDefault()
-                .AddService(serviceName: serviceName, serviceVersion: serviceVersion)
-                .AddAttributes(new Dictionary<string, object>
-                {
-                    ["service.instance.id"] = Environment.MachineName,
-                    ["deployment.environment"] = "development"
-                });
-
-            builder.Logging.ClearProviders();
-            builder.Logging.AddConsole();
-            builder.Logging.AddOpenTelemetry(options =>
+            Dictionary<string, object> resourceAttributes = new()
             {
-                options.SetResourceBuilder(resourceBuilder);
-                options.IncludeFormattedMessage = true;
-                options.IncludeScopes = true;
-            })
-            .SetMinimumLevel(LogLevel.Debug);
+                { "service.instance.id", Environment.MachineName },
+                { "deployment.environment", "development" }
+            };
 
-            OpenTelemetryBuilder otel = builder.Services.AddOpenTelemetry();
-            otel.WithTracing(tracerBuilder =>
-            {
-                tracerBuilder.SetResourceBuilder(resourceBuilder)
+            ResourceBuilder resourceBuilder = ResourceBuilder.CreateDefault().AddAttributes(resourceAttributes);
+
+            TracerProviderBuilder tracerBuilder = Sdk.CreateTracerProviderBuilder()
+                .SetResourceBuilder(resourceBuilder)
                 .AddHttpClientInstrumentation()
                 .AddSource("Niobium.*")
                 .AddSource("*Microsoft.Extensions.AI")
-                .AddSource("*Microsoft.Extensions.Agents*");
-            })
-            .WithMetrics(meterBuilder =>
-            {
-                meterBuilder.SetResourceBuilder(resourceBuilder)
-                .AddHttpClientInstrumentation()
-                .AddRuntimeInstrumentation()
-                .AddMeter("*Microsoft.Agents.AI");
-            });
+                .AddSource("*Microsoft.Extensions.Agents*")
+                .AddConsoleExporter();
 
             if (!String.IsNullOrWhiteSpace(applicationInsightsConnectionString))
             {
-                otel.UseAzureMonitorExporter(options => options.ConnectionString = applicationInsightsConnectionString);
+                tracerBuilder.AddAzureMonitorTraceExporter(options => options.ConnectionString = applicationInsightsConnectionString);
             }
 
             if (!String.IsNullOrWhiteSpace(otlpEndpoint))
             {
-                otel.UseOtlpExporter(OtlpExportProtocol.Grpc, new Uri(otlpEndpoint));
+                tracerBuilder.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
             }
+
+            TracerProvider tracerProvider = tracerBuilder.Build();
+            builder.Services.AddSingleton(tracerProvider);
+
+            MeterProviderBuilder meterBuilder = Sdk.CreateMeterProviderBuilder()
+                .SetResourceBuilder(resourceBuilder)
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation()
+                .AddMeter("*Microsoft.Agents.AI")
+                .AddConsoleExporter();
+
+            if (!String.IsNullOrWhiteSpace(applicationInsightsConnectionString))
+            {
+                meterBuilder.AddAzureMonitorMetricExporter(options => options.ConnectionString = applicationInsightsConnectionString);
+            }
+
+            if (!String.IsNullOrWhiteSpace(otlpEndpoint))
+            {
+                meterBuilder.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
+            }
+
+            MeterProvider meterProvider = meterBuilder.Build();
+            builder.Services.AddSingleton(meterProvider);
+
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddOpenTelemetry(logging =>
+            {
+                logging.SetResourceBuilder(resourceBuilder);
+                logging.IncludeFormattedMessage = true;
+                logging.IncludeScopes = true;
+
+                if (!String.IsNullOrWhiteSpace(applicationInsightsConnectionString))
+                {
+                    logging.AddAzureMonitorLogExporter(options => options.ConnectionString = applicationInsightsConnectionString);
+                }
+
+                if (!String.IsNullOrWhiteSpace(otlpEndpoint))
+                {
+                    logging.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
+                }
+            })
+            .SetMinimumLevel(LogLevel.Debug);
 
             return builder;
         }

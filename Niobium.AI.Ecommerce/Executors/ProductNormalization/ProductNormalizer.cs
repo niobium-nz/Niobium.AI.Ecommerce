@@ -21,8 +21,5 @@ namespace Niobium.AI.Ecommerce.Executors.ProductNormalization
             }
             await base.OnResponseGotAsync(conversationID, input, output, cancellationToken);
         }
-
-        protected override Task OnCleanupAsync(CancellationToken cancellationToken)
-            => tools.CleanupPlaywrightTabsAsync(cancellationToken);
     }
 }

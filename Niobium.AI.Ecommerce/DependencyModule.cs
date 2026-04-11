@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Niobium.AI.Ecommerce.Executors.CompetitorAnalysis;
 using Niobium.AI.Ecommerce.Executors.MarketResearch;
+using Niobium.AI.Ecommerce.Executors.MarketStrategy;
 using Niobium.AI.Ecommerce.Executors.ProductDiscovery;
 using Niobium.AI.Ecommerce.Executors.ProductNormalization;
 using Niobium.AI.Ecommerce.Executors.ProductProfile;
@@ -33,7 +34,7 @@ namespace Niobium.AI.Ecommerce
                 .AddTransient<KeywordsExpander>()
                 .AddTransient<ProductProfiler>()
                 .AddTransient<CompetitorAnalysisWorkflow>()
-                .AddTransient<IWorkflow, ProductCreativityWorkflow>()
+                .AddTransient<IWorkflow, MarketingWorkflow>()
                 .AddTransient<ProductDiscoveryWorkflow>()
                 .AddTransient<ProductProfileWorkflow>()
                 .AddTransient<ProductNormalizationWorkflow>()
@@ -47,7 +48,8 @@ namespace Niobium.AI.Ecommerce
                 .AddTransient<CompetitorAnalysisAggregator>()
                 .AddTransient<ProductProfilerAdaptor>()
                 .AddTransient<ProductVisualBuilderAdaptor>()
-                .AddTransient<ProductVisualBuilder>();
+                .AddTransient<ProductVisualBuilder>()
+                .AddTransient<MarketStrategist>();
         }
     }
 }
