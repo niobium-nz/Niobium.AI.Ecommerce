@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: niobium-ai-ecommerce
+metadata:
+  template: durable-agents-quickstart-dotnet@1.0.0
+resourceGroup: rg-niobium-ai-ecommerce-${AZURE_ENV_NAME}
+services:
+  host:
+    project: ./src/Niobium.AI.Host
+    language: csharp
+    host: containerapp
+infra:
+  provider: bicep
+  layers:
+    - name: niobium-ai-host
+      path: ./.azure/infra

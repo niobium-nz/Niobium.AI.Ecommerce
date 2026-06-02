@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Agents\ImageStrategist.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Agents\CompetitionScout.md" />
+    <EmbeddedResource Include="Agents\ImageStrategist.md" />
+    <EmbeddedResource Include="Agents\KeywordsExpander.md" />
+    <EmbeddedResource Include="Agents\MarketStrategist.md" />
+    <EmbeddedResource Include="Agents\ProductTransformer.md" />
+    <EmbeddedResource Include="Agents\ProductNormalizer.md" />
+    <EmbeddedResource Include="Agents\ProductProfiler.md" />
+    <EmbeddedResource Include="Agents\ProductVisualBuilder.md" />
+    <EmbeddedResource Include="Tools\dog-hair-removal.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Niobium.AI\Niobium.AI.csproj" />
+  </ItemGroup>
+
+</Project>

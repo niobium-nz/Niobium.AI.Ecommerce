@@ -25,4 +25,4 @@ RUN dotnet publish Niobium.AI.slnx -a $TARGETARCH -c $BUILD_CONFIGURATION --no-r
 FROM base AS final
 WORKDIR /app
 COPY --link --from=build /app .
-ENTRYPOINT ["./Niobium.AI.Console"]
+ENTRYPOINT ["./Niobium.AI.Host"]

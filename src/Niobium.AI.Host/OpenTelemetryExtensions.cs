@@ -1,0 +1,92 @@
+using Azure.Monitor.OpenTelemetry.Exporter;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using OpenTelemetry;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
+namespace Niobium.AI.Host
+{
+    internal static class OpenTelemetryExtensions
+    {
+        public static HostApplicationBuilder ConfigureOpenTelemetry(this HostApplicationBuilder builder)
+        {
+            string? applicationInsightsConnectionString = builder.Configuration.GetValue<string>("APPLICATION_INSIGHTS_CONNECTION_STRING");
+            string? otlpEndpoint = builder.Configuration.GetValue<string>("OTEL_EXPORTER_OTLP_ENDPOINT");
+            Dictionary<string, object> resourceAttributes = new()
+            {
+                { "service.instance.id", Environment.MachineName },
+                { "deployment.environment", "development" }
+            };
+
+            ResourceBuilder resourceBuilder = ResourceBuilder.CreateDefault().AddAttributes(resourceAttributes);
+
+            TracerProviderBuilder tracerBuilder = Sdk.CreateTracerProviderBuilder()
+                .SetResourceBuilder(resourceBuilder)
+                .AddHttpClientInstrumentation()
+                .AddSource("Niobium.*")
+                .AddSource("*Microsoft.Extensions.AI")
+                .AddSource("*Microsoft.Extensions.Agents*")
+                .AddSource("Microsoft.DurableTask")
+                .AddConsoleExporter();
+
+            if (!String.IsNullOrWhiteSpace(applicationInsightsConnectionString))
+            {
+                tracerBuilder.AddAzureMonitorTraceExporter(options => options.ConnectionString = applicationInsightsConnectionString);
+            }
+
+            if (!String.IsNullOrWhiteSpace(otlpEndpoint))
+            {
+                tracerBuilder.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
+            }
+
+            TracerProvider tracerProvider = tracerBuilder.Build();
+            builder.Services.AddSingleton(tracerProvider);
+
+            MeterProviderBuilder meterBuilder = Sdk.CreateMeterProviderBuilder()
+                .SetResourceBuilder(resourceBuilder)
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation()
+                .AddMeter("*Microsoft.Agents.AI");
+
+            if (!String.IsNullOrWhiteSpace(applicationInsightsConnectionString))
+            {
+                meterBuilder.AddAzureMonitorMetricExporter(options => options.ConnectionString = applicationInsightsConnectionString);
+            }
+
+            if (!String.IsNullOrWhiteSpace(otlpEndpoint))
+            {
+                meterBuilder.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
+            }
+
+            MeterProvider meterProvider = meterBuilder.Build();
+            builder.Services.AddSingleton(meterProvider);
+
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddOpenTelemetry(logging =>
+            {
+                logging.SetResourceBuilder(resourceBuilder);
+                logging.IncludeFormattedMessage = true;
+                logging.IncludeScopes = true;
+
+                if (!String.IsNullOrWhiteSpace(applicationInsightsConnectionString))
+                {
+                    logging.AddAzureMonitorLogExporter(options => options.ConnectionString = applicationInsightsConnectionString);
+                }
+
+                if (!String.IsNullOrWhiteSpace(otlpEndpoint))
+                {
+                    logging.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
+                }
+            })
+            .SetMinimumLevel(LogLevel.Debug);
+
+            return builder;
+        }
+    }
+}
