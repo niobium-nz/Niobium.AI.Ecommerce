@@ -1,12 +1,13 @@
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.Shorts.Contracts;
+using Niobium.AI.Web;
 
 namespace Niobium.AI.Shorts.Executors
 {
     internal class MetaVideoAdCreator(
         IChatClientFactory clientFactory,
-        McpTools tools,
+        IWebBrowser browser,
         ILogger<MetaVideoAdCreator> logger)
         : TypedResponseAgent<MetaVideoAdCreatorInput, MetaVideoAdCreatorOutput>(clientFactory, logger)
     {
@@ -16,7 +17,7 @@ namespace Niobium.AI.Shorts.Executors
 
         protected override ReasoningEffort Reasoning => ReasoningEffort.High;
 
-        protected override IEnumerable<AITool> GetTools() => tools.GetPlaywrightTools();
+        protected override IEnumerable<AITool> GetTools() => browser.AsAITools();
 
         protected override DirectoryInfo? SkillsFolder => new(Path.Combine(AppContext.BaseDirectory, "skills"));
     }

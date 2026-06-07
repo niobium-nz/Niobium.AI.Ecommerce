@@ -1,25 +1,20 @@
 using System.ClientModel;
+using Microsoft.Extensions.Options;
 using OpenAI;
 
 namespace Niobium.AI.OpenAI
 {
-    internal class OpenAIClientFactory
+    internal class OpenAIClientFactory(IOptions<OpenAIClientOptions> options)
     {
         private OpenAIClient? client;
 
-        public OpenAIClient GetOrCreateClient()
-        {
-            string endpoint = Environment.GetEnvironmentVariable("LLM_OPENAI_ENDPOINT")
-                ?? throw new Exception("`LLM_OPENAI_ENDPOINT` must be configured.");
-            string key = Environment.GetEnvironmentVariable("LLM_OPENAI_KEY")
-                ?? throw new Exception("`LLM_OPENAI_KEY` must be configured.");
-            return this.client ??= new OpenAIClient(
-                new ApiKeyCredential(key),
-                new OpenAIClientOptions
+        public OpenAIClient GetOrCreateClient() 
+            => this.client ??= new OpenAIClient(
+                new ApiKeyCredential(options.Value.LLMKey),
+                new global::OpenAI.OpenAIClientOptions
                 {
-                    Endpoint = new Uri(endpoint),
+                    Endpoint = new Uri(options.Value.LLMEndpoint),
                     NetworkTimeout = TimeSpan.FromMinutes(15),
                 });
-        }
     }
 }

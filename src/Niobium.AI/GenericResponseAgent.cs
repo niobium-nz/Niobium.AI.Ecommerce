@@ -53,7 +53,8 @@ namespace Niobium.AI
                     {
                         Effort = this.Reasoning,
                     },
-                    Tools = [.. tools],
+                    Tools = [.. tools], 
+                    AllowMultipleToolCalls = true,
                 };
 
                 if (ResponseType != null)

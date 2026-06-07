@@ -18,7 +18,7 @@ namespace Niobium.AI.Ecommerce
 
             return services.AddAI()
                 .AddTransient<AdsLibraryTool>()
-                .AddSingleton<Tools.McpTools>()
+                .AddSingleton<Tools.ToolBox>()
                 .AddTransient<IMetaAdsLibrary, TestAdsLibrary>();
         }
     }

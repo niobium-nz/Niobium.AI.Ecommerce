@@ -34,22 +34,19 @@ namespace Niobium.AI.Ecommerce.Workflows
                 return null;
             }
 
-            ProductCost cost = cost = await context.WaitForExternalEvent<ProductCost>(nameof(ProductCost));
             IResponseGenerator<MarketStrategyInput, MarketStrategyOutput> marketStrategist = context.GetAgent<MarketStrategist, MarketStrategyInput, MarketStrategyOutput>();
             MarketStrategyOutput marketingStrategy = await marketStrategist.RunAsync(new MarketStrategyInput
             {
-                COGSPerUnit = cost.COGSPerUnit,
-                ExtraUnitCOGSPerOrder = cost.ExtraUnitCOGSPerOrder,
+                COGSPerUnit = input.Cost.COGSPerUnit,
+                ExtraUnitCOGSPerOrder = input.Cost.ExtraUnitCOGSPerOrder,
                 CompetitorClaims = profile.Product.KeyClaims,
                 CompetitorUsedProductName = profile.Product.Name,
-                PaymentProcessingFees = cost.PaymentProcessingFees,
-                SalesTax = cost.SalesTax,
+                PaymentProcessingFees = input.Cost.PaymentProcessingFees,
+                SalesTax = input.Cost.SalesTax,
                 TargetMarketCountry = input.TargetCountry,
                 IngredientsOrMaterials = profile.Product.IngredientsOrMaterials,
                 CompetitorMarketingHowItWins = profile.Product.HowItWins
             });
-
-            IEnumerable<Task<ImageReference>> competitorProductImageReferences = profile.Product.Images.Select(image => image.ToImageReferenceAsync());
 
             IResponseGenerator<MarketStrategyOutput, ImageStrategyOutput> imageStrategist = context.GetAgent<ImageStrategist, MarketStrategyOutput, ImageStrategyOutput>();
             ImageStrategyOutput imageStrategy = await imageStrategist.RunAsync(marketingStrategy);
@@ -59,36 +56,25 @@ namespace Niobium.AI.Ecommerce.Workflows
                 return null;
             }
 
-            IResponseGenerator<ProductVisualBuilderInput, ProductCreativityOutput> productVisualBuilder = context.GetAgent<ProductVisualBuilder, ProductVisualBuilderInput, ProductCreativityOutput>();
-            ProductCreativityOutput productVisual = await productVisualBuilder.RunAsync(new ProductVisualBuilderInput
-            {
-                Form = ImageForm.Square,
-                References = [.. await Task.WhenAll(competitorProductImageReferences)]
-            });
-            if (productVisual.ProductVisual is null || !productVisual.ProductVisual.IsFile)
-            {
-                logger.LogError("Product visual builder did not return a valid product visual. Ending workflow.");
-                return null;
-            }
-
+            List<ImageProducerOutput> landingPageImageReferences = [];
             IResponseGenerator<ImageProducerInput, ImageProducerOutput> imageProducer = context.GetAgent<ImageProducer, ImageProducerInput, ImageProducerOutput>();
-            IEnumerable<Task<ImageProducerOutput>> imageProducingTasks = imageStrategy.ImagePrompts.Select(p => imageProducer.RunAsync(new ImageProducerInput
+            ImageReference productVisualReference = await input.ProductVisual.ToImageReferenceAsync();
+            foreach (ImagePromptAsset imagePrompt in imageStrategy.ImagePrompts)
             {
-                AssetId = p.AssetId,
-                Form = p.ToImageForm(),
-                Prompt = p.Prompt,
-                References = [new ImageReference
+                ImageProducerOutput landingPageImageReference = await imageProducer.RunAsync(new ImageProducerInput
                 {
-                    Data = BinaryData.FromFile(productVisual.ProductVisual.AbsolutePath, productVisual.MediaType),
-                }]
-            }));
-            ImageProducerOutput[] producedImages = await Task.WhenAll(imageProducingTasks);
+                    AssetId = imagePrompt.AssetId,
+                    Form = imagePrompt.ToImageForm(),
+                    Prompt = imagePrompt.Prompt,
+                    References = [productVisualReference]
+                });
+                landingPageImageReferences.Add(landingPageImageReference);
+            }
 
             return new ProductOnboardingOutput
             {
                 MarketingStrategy = marketingStrategy,
-                ProductVisual = productVisual,
-                LandingPageImages = producedImages
+                LandingPageImages = landingPageImageReferences
             };
         }
     }

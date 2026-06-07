@@ -18,7 +18,7 @@ namespace Niobium.AI.Shorts
 
             loaded = true;
             return services.AddAI()
-                .AddSingleton<McpTools>()
+                .AddSingleton<ToolBox>()
                 .AddTransient<AttractiveShortScreenwriter>()
                 .AddTransient<AttractiveShortScreenwriterAdaptor>()
                 .AddTransient<MetaVideoAdCreatorAdaptor>()

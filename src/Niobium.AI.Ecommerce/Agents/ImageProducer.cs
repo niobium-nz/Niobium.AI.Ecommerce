@@ -16,9 +16,8 @@ namespace Niobium.AI.Ecommerce.Agents
             List<Uri> imageVariants = [];
             foreach (BinaryData result in results)
             {
-                string tempFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-                await File.WriteAllBytesAsync(tempFilePath, result.ToArray(), cancellationToken);
-                imageVariants.Add(new Uri(tempFilePath));
+                Uri variant = await result.ToTempFileAsync(cancellationToken);
+                imageVariants.Add(variant);
             }
 
             return new ImageProducerOutput
@@ -27,5 +26,6 @@ namespace Niobium.AI.Ecommerce.Agents
                 ImageVariants = imageVariants,
             };
         }
+
     }
 }

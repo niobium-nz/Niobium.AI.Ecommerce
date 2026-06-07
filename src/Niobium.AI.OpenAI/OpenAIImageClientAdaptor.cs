@@ -48,7 +48,13 @@ namespace Niobium.AI.OpenAI
                     cancellationToken: cancellationToken);
             }
 
-            return images.Contents.Where(c => c is DataContent).Select(c => BinaryData.FromBytes(((DataContent)c).Data));
+            return images.Contents
+                .Where(c => c is DataContent)
+                .Select(c =>
+                {
+                    DataContent dc = (DataContent)c;
+                    return BinaryData.FromBytes(dc.Data, dc.MediaType);
+                });
         }
     }
 }

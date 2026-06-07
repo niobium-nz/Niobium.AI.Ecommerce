@@ -4,13 +4,13 @@ using Niobium.AI.Ecommerce.Contracts;
 
 namespace Niobium.AI.Ecommerce.Agents
 {
-    internal class CompetitionScout(IChatClientFactory clientFactory, Tools.McpTools mcpTools, ILogger<CompetitionScout> logger)
+    internal class CompetitionScout(IChatClientFactory clientFactory, Tools.ToolBox mcpTools, ILogger<CompetitionScout> logger)
         : TypedResponseAgent<CompetitionScoutInput, CompetitionScoutOutput>(clientFactory, logger)
     {
         public override string Id => nameof(CompetitionScout);
 
         protected override ReasoningEffort Reasoning => ReasoningEffort.Medium;
 
-        protected override IEnumerable<AITool> GetTools() => mcpTools.GetAdsLibraryTools();
+        protected override IEnumerable<AITool> GetTools() => [mcpTools.AdsLibraryTool];
     }
 }

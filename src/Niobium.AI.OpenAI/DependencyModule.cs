@@ -1,4 +1,6 @@
+using System.Net.Http.Headers;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Niobium.AI.OpenAI
 {
@@ -6,7 +8,7 @@ namespace Niobium.AI.OpenAI
     {
         private static volatile bool loaded = false;
 
-        public static IServiceCollection AddOpenAI(this IServiceCollection services)
+        public static IServiceCollection AddOpenAI(this IServiceCollection services, Action<OpenAIClientOptions>? options = null)
         {
             if (loaded)
             {
@@ -15,14 +17,16 @@ namespace Niobium.AI.OpenAI
 
             loaded = true;
 
+            services.Configure<OpenAIClientOptions>(o => options?.Invoke(o));
             services.AddSingleton<OpenAIClientFactory>()
                 .AddTransient<IImageClientFactory, OpenAIImageClientFactory>()
                 .AddTransient<IChatClientFactory, OpenAIChatClientFactory>()
                 .AddTransient<IVideoClientFactory, OpenAIVideoClientFactory>()
-                .AddHttpClient<SoraVideoClient>(httpClient =>
+                .AddHttpClient<SoraVideoClient>((sp, httpClient) =>
                 {
-                    httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("VIDEO_SORA_ENDPOINT")!);
-                    httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Environment.GetEnvironmentVariable("VIDEO_SORA_KEY")!}");
+                    IOptions<OpenAIClientOptions> opt = sp.GetRequiredService<IOptions<OpenAIClientOptions>>();
+                    httpClient.BaseAddress = new Uri(opt.Value.SoraEndpoint.Trim());
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", opt.Value.SoraKey.Trim());
                 }).AddStandardResilienceHandler();
             return services;
         }
