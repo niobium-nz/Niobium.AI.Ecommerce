@@ -263,3 +263,5 @@ __pycache__/
 *.pyc
 /ConsoleApp1
 **/launchSettings.json
+/src/Niobium.AI.Host/appsettings.Development.json
+/src/Niobium.AI.Host/appsettings.Development.json
