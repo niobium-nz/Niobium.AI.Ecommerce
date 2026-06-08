@@ -8,7 +8,7 @@ namespace Niobium.AI.OpenAI
     {
         private static volatile bool loaded = false;
 
-        public static IServiceCollection AddOpenAI(this IServiceCollection services, Action<OpenAIClientOptions>? options = null)
+        public static IServiceCollection AddOpenAI(this IServiceCollection services, Action<OpenAIClientOptions> options)
         {
             if (loaded)
             {
@@ -17,7 +17,7 @@ namespace Niobium.AI.OpenAI
 
             loaded = true;
 
-            services.Configure<OpenAIClientOptions>(o => options?.Invoke(o));
+            services.Configure<OpenAIClientOptions>(options.Invoke);
             services.AddSingleton<OpenAIClientFactory>()
                 .AddTransient<IImageClientFactory, OpenAIImageClientFactory>()
                 .AddTransient<IChatClientFactory, OpenAIChatClientFactory>()

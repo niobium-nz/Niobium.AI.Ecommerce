@@ -18,9 +18,8 @@ namespace Niobium.AI.Playwright
 
             loaded = true;
 
-            services.Configure<PlaywrightBrowserLaunchOptions>(o => options?.Invoke(o));
-
-            return services.AddSingleton(_ => Microsoft.Playwright.Playwright.CreateAsync().GetAwaiter().GetResult())
+            return services.Configure<PlaywrightBrowserLaunchOptions>(o => options?.Invoke(o))
+                .AddSingleton(_ => Microsoft.Playwright.Playwright.CreateAsync().GetAwaiter().GetResult())
                 .AddTransient<IWebBrowser, PlaywrightBrowserDriver>();
         }
     }

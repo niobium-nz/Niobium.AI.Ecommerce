@@ -2,6 +2,8 @@ namespace Niobium.AI.Ecommerce.Contracts
 {
     internal class ProductOnboardingInput
     {
+        public required Guid CandidateId { get; init; }
+
         public required string SourceCountry { get; set; }
 
         public required string TargetCountry { get; set; }

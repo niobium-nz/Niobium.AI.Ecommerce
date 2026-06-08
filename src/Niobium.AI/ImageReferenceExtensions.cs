@@ -1,9 +1,9 @@
 using System.Net.Http.Headers;
 using System.Net.Mime;
 
-namespace Niobium.AI.Ecommerce
+namespace Niobium.AI
 {
-    internal static class ImageReferenceExtensions
+    public static class ImageReferenceExtensions
     {
         private const string DefaultMediaType = "application/octet-stream";
 

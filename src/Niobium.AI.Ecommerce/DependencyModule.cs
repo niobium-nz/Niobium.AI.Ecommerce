@@ -7,7 +7,7 @@ namespace Niobium.AI.Ecommerce
     {
         private static volatile bool loaded = false;
 
-        public static IServiceCollection AddEcommerce(this IServiceCollection services)
+        public static IServiceCollection AddEcommerce(this IServiceCollection services, Action<EcommerceOptions> options)
         {
             if (loaded)
             {
@@ -16,7 +16,7 @@ namespace Niobium.AI.Ecommerce
 
             loaded = true;
 
-            return services.AddAI()
+            return services.Configure<EcommerceOptions>(options.Invoke)
                 .AddTransient<AdsLibraryTool>()
                 .AddSingleton<Tools.ToolBox>()
                 .AddTransient<IMetaAdsLibrary, TestAdsLibrary>();

@@ -6,11 +6,11 @@ using Niobium.AI.Ecommerce.Contracts;
 namespace Niobium.AI.Ecommerce.Workflows
 {
     [DurableTask]
-    internal class ProductDiscoveryFlow : TaskOrchestrator<ProductDiscoveryInput, IEnumerable<ProductDiscoveryOutput>>
+    internal class ProductDiscoveryFlow(ILogger<ProductDiscoveryFlow> logger) : TaskOrchestrator<ProductDiscoveryInput, IEnumerable<ProductDiscoveryOutput>>
     {
         public override async Task<IEnumerable<ProductDiscoveryOutput>> RunAsync(TaskOrchestrationContext context, ProductDiscoveryInput input)
         {
-            ILogger logger = context.CreateReplaySafeLogger<ProductDiscoveryFlow>();
+            _ = context.CreateReplaySafeLogger<ProductDiscoveryFlow>();
             if (String.IsNullOrWhiteSpace(input.Keyword)
                 || !Country.TryParse(input.SourceCountry, out _)
                 || !Country.TryParse(input.TargetCountry, out _))
@@ -24,17 +24,28 @@ namespace Niobium.AI.Ecommerce.Workflows
                 Country = input.SourceCountry
             });
 
-            IEnumerable<Task<ProductDiscoveryOutput?>> tasks = products.Select(product => NormalizeAsync(context, new CompetitionAnalysisInput
-            {
-                Keyword = input.Keyword,
-                SourceCountry = input.SourceCountry,
-                TargetCountry = input.TargetCountry,
-                Product = product
-            }));
-
             List<ProductDiscoveryOutput> result = [];
-            ProductDiscoveryOutput?[] discoveryOutputs = await Task.WhenAll(tasks);
-            return [.. discoveryOutputs.Where(output => output != null).Select(output => output!)];
+            foreach (CompetingProductWithAds product in products)
+            {
+                ProductDiscoveryOutput? nomalizedProduct = await NormalizeAsync(context, new CompetitionAnalysisInput
+                {
+                    Keyword = input.Keyword,
+                    SourceCountry = input.SourceCountry,
+                    TargetCountry = input.TargetCountry,
+                    Product = product
+                });
+
+                if (nomalizedProduct == null)
+                {
+                    logger.LogWarning("Product {productName} failed to normalize. Skipping this product.", product.Product.LikelyProductName);
+                }
+                else
+                {
+                    result.Add(nomalizedProduct);
+                }
+            }
+
+            return result;
         }
 
         private static async Task<IEnumerable<CompetingProductWithAds>> DiscoverProductsAsync(TaskOrchestrationContext context, AdsDiscovererInput input)
@@ -68,8 +79,6 @@ namespace Niobium.AI.Ecommerce.Workflows
                     Product = product,
                     Ads = [.. ads]
                 });
-
-                break; // For now, we are only analyzing the top cluster. We can remove this break statement to analyze more clusters, but we should be mindful of the potential increase in latency and cost.
             }
 
             return results;
@@ -106,6 +115,7 @@ namespace Niobium.AI.Ecommerce.Workflows
             List<CompetitionScoutOutput> competitionSignals = await AnalyzeCompetitionAsync(context, input, normalizedProduct);
             return new ProductDiscoveryOutput
             {
+                CandidateId = Guid.NewGuid(),
                 Keyword = input.Keyword,
                 SourceCountry = input.SourceCountry,
                 TargetCountry = input.TargetCountry,
@@ -118,11 +128,11 @@ namespace Niobium.AI.Ecommerce.Workflows
         private static async Task<List<CompetitionScoutOutput>> AnalyzeCompetitionAsync(TaskOrchestrationContext context, CompetitionAnalysisInput input, ProductNormalizerOutput normalizedProduct)
         {
             ILogger logger = context.CreateReplaySafeLogger<ProductDiscoveryFlow>();
-            List<Task<CompetitionScoutOutput>> tasks = [];
+            List<CompetitionScoutOutput> competitionSignals = [];
             foreach (string keyword in normalizedProduct.KeywordPlan!.RecommendedMcpQueries)
             {
                 IResponseGenerator<CompetitionScoutInput, CompetitionScoutOutput> competitionScout = context.GetAgent<CompetitionScout, CompetitionScoutInput, CompetitionScoutOutput>();
-                Task<CompetitionScoutOutput> competitionScoutTask = competitionScout.RunAsync(new CompetitionScoutInput
+                CompetitionScoutOutput signal = await competitionScout.RunAsync(new CompetitionScoutInput
                 {
                     Query = keyword,
                     Country = input.TargetCountry,
@@ -131,14 +141,7 @@ namespace Niobium.AI.Ecommerce.Workflows
                     AvoidOrExclusionTerms = normalizedProduct.KeywordPlan.AvoidOrExclusionTerms,
                     ProductInterpretations = normalizedProduct.ProductInterpretations,
                 });
-                tasks.Add(competitionScoutTask);
 
-                break; // For now, we are only running the competition scout for the top recommended MCP query. We can remove this break statement to run the competition scout for more recommended MCP queries, but we should be mindful of the potential increase in latency and cost.
-            }
-
-            CompetitionScoutOutput[] competitionSignals = await Task.WhenAll(tasks);
-            foreach (CompetitionScoutOutput signal in competitionSignals)
-            {
                 if (!String.IsNullOrWhiteSpace(signal.RawAdsDiscovered.McpError))
                 {
                     logger.LogError("MCP error {mcpError} found for competitive search query {competitiveSearchQuery} for product {productName}. Skipping this competitive search query.",
@@ -146,9 +149,13 @@ namespace Niobium.AI.Ecommerce.Workflows
                         signal.Query,
                         input.Product.Product.LikelyProductName);
                 }
+                else
+                {
+                    competitionSignals.Add(signal);
+                }
             }
 
-            return [.. competitionSignals];
+            return competitionSignals;
         }
     }
 }

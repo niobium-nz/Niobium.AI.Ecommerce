@@ -17,7 +17,7 @@ namespace Niobium.AI.Shorts
             }
 
             loaded = true;
-            return services.AddAI()
+            return services
                 .AddSingleton<ToolBox>()
                 .AddTransient<AttractiveShortScreenwriter>()
                 .AddTransient<AttractiveShortScreenwriterAdaptor>()

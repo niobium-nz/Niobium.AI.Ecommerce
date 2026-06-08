@@ -18,19 +18,9 @@ namespace Niobium.AI.Ecommerce.Workflows
             ILogger logger = context.CreateReplaySafeLogger<ProductOnboardingFlow>();
             IResponseGenerator<ProductProfilerInput, ProductProfilerOutput> productProfiler = context.GetAgent<ProductProfiler, ProductProfilerInput, ProductProfilerOutput>();
             ProductProfilerOutput profile = await productProfiler.RunAsync(new ProductProfilerInput { LandingPageUrl = input.Ad.Snapshot.LinkUrl });
-            if (profile.Product == null)
-            {
-                logger.LogError("Product profiling did not return any product information. Ending workflow.");
-                return null;
-            }
-            if (String.IsNullOrWhiteSpace(profile.Product.Name))
+            if (profile.Product == null || String.IsNullOrWhiteSpace(profile.Product.Name) || profile.Product.KeyClaims.Count <= 0)
             {
                 logger.LogError("Competitor product info is missing. Ending workflow.");
-                return null;
-            }
-            if (profile.Product.KeyClaims.Count <= 0)
-            {
-                logger.LogError("Competitor product claim is missing. Ending workflow.");
                 return null;
             }
 
@@ -73,6 +63,7 @@ namespace Niobium.AI.Ecommerce.Workflows
 
             return new ProductOnboardingOutput
             {
+                CandidateId = input.CandidateId,
                 MarketingStrategy = marketingStrategy,
                 LandingPageImages = landingPageImageReferences
             };

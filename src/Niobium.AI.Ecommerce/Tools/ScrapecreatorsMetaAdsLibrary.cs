@@ -1,10 +1,11 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Niobium.AI.Ecommerce.Contracts;
 
 namespace Niobium.AI.Ecommerce.Tools
 {
-    internal class ScrapecreatorsMetaAdsLibrary(HttpClient httpClient) : IMetaAdsLibrary
+    internal class ScrapecreatorsMetaAdsLibrary(HttpClient httpClient, IOptions<EcommerceOptions> options) : IMetaAdsLibrary
     {
         private const string ApiEndpoint = "https://api.scrapecreators.com/v1/facebook/adLibrary/search/ads";
 
@@ -13,7 +14,7 @@ namespace Niobium.AI.Ecommerce.Tools
             MetaAdsSearchResponse result = await this.SearchAdsAsync(keyword, country, activeSince, null);
             for (int i = 0; i < 3 && !String.IsNullOrWhiteSpace(result.Cursor); i++)
             {
-                MetaAdsSearchResponse nextPageResult = await this.SearchAdsAsync(keyword, country, activeSince, result.Cursor, cancellationToken: cancellationToken);
+                MetaAdsSearchResponse nextPageResult = await this.SearchAdsAsync(options.Value.ScrapeCreatorsKey, keyword, country, activeSince, result.Cursor, cancellationToken: cancellationToken);
                 if (nextPageResult.SearchResultsCount > 0)
                 {
                     result.SearchResults.AddRange(nextPageResult.SearchResults);
@@ -27,15 +28,9 @@ namespace Niobium.AI.Ecommerce.Tools
             return result;
         }
 
-        private async Task<MetaAdsSearchResponse> SearchAdsAsync(string keyword, Country country, DateOnly? activeSince = null, string? cursor = null, CancellationToken? cancellationToken = null)
+        private async Task<MetaAdsSearchResponse> SearchAdsAsync(string apikey, string keyword, Country country, DateOnly? activeSince = null, string? cursor = null, CancellationToken? cancellationToken = null)
         {
             _ = cancellationToken ?? CancellationToken.None;
-
-            string? apikey = Environment.GetEnvironmentVariable("SCRAPECREATORS_API_KEY");
-            if (String.IsNullOrEmpty(apikey))
-            {
-                throw new InvalidOperationException("SCRAPECREATORS_API_KEY environment variable is not set.");
-            }
 
             if (!activeSince.HasValue)
             {
