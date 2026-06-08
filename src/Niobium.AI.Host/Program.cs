@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Niobium.AI;
 using Niobium.AI.BlobStorage;
@@ -8,14 +6,13 @@ using Niobium.AI.Host;
 using Niobium.AI.OpenAI;
 using Niobium.AI.Playwright;
 
-HostApplicationBuilder builder = Host.CreateApplicationBuilder(args)
-    .ConfigureOpenTelemetry();
-
-builder.AddAI()
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+builder.ConfigureOpenTelemetry()
+    .AddAI()
+    .AddOpenAI()
+    .AddPlaywright()
     .AddBlobStorage()
-    .AddOpenAI(builder.Configuration.GetSection("OpenAI").Bind)
-    .AddPlaywright(builder.Configuration.GetSection("Playwright").Bind)
-    .AddEcommerce(builder.Configuration.GetSection("Ecommerce").Bind);
+    .AddEcommerce();
 
 IHost host = builder.Build();
 await host.RunAsync();

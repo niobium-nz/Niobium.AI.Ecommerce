@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.DurableTask;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.Ecommerce.Agents;
@@ -6,7 +7,7 @@ using Niobium.AI.Ecommerce.Contracts;
 namespace Niobium.AI.Ecommerce.Workflows
 {
     [DurableTask]
-    internal class ProductDiscoveryFlow(ILogger<ProductDiscoveryFlow> logger) : TaskOrchestrator<ProductDiscoveryInput, IEnumerable<ProductDiscoveryOutput>>
+    internal class ProductDiscoveryFlow(IFileStorage storage) : TaskOrchestrator<ProductDiscoveryInput, IEnumerable<ProductDiscoveryOutput>>
     {
         public override async Task<IEnumerable<ProductDiscoveryOutput>> RunAsync(TaskOrchestrationContext context, ProductDiscoveryInput input)
         {
@@ -18,6 +19,7 @@ namespace Niobium.AI.Ecommerce.Workflows
                 throw new ArgumentException($"Invalid input parameters. Keyword: {input.Keyword}, SourceCountry: {input.SourceCountry}, TargetCountry: {input.TargetCountry}");
             }
 
+            ILogger logger = context.CreateReplaySafeLogger<ProductDiscoveryFlow>();
             IEnumerable<CompetingProductWithAds> products = await DiscoverProductsAsync(context, new AdsDiscovererInput
             {
                 Keyword = input.Keyword,
@@ -27,13 +29,15 @@ namespace Niobium.AI.Ecommerce.Workflows
             List<ProductDiscoveryOutput> result = [];
             foreach (CompetingProductWithAds product in products)
             {
-                ProductDiscoveryOutput? nomalizedProduct = await NormalizeAsync(context, new CompetitionAnalysisInput
-                {
-                    Keyword = input.Keyword,
-                    SourceCountry = input.SourceCountry,
-                    TargetCountry = input.TargetCountry,
-                    Product = product
-                });
+                ProductDiscoveryOutput? nomalizedProduct = await NormalizeAsync(context,
+                    input.JobId,
+                    new CompetitionAnalysisInput
+                    {
+                        Keyword = input.Keyword,
+                        SourceCountry = input.SourceCountry,
+                        TargetCountry = input.TargetCountry,
+                        Product = product
+                    });
 
                 if (nomalizedProduct == null)
                 {
@@ -42,6 +46,10 @@ namespace Niobium.AI.Ecommerce.Workflows
                 else
                 {
                     result.Add(nomalizedProduct);
+                    using MemoryStream stream = new();
+                    JsonSerializer.Serialize(stream, nomalizedProduct);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    await storage.UploadAsync($"discovery/{nomalizedProduct.JobId}/{nomalizedProduct.CandidateId}.json", stream, CancellationToken.None);
                 }
             }
 
@@ -84,7 +92,7 @@ namespace Niobium.AI.Ecommerce.Workflows
             return results;
         }
 
-        private static async Task<ProductDiscoveryOutput?> NormalizeAsync(TaskOrchestrationContext context, CompetitionAnalysisInput input)
+        private static async Task<ProductDiscoveryOutput?> NormalizeAsync(TaskOrchestrationContext context, Guid jobId, CompetitionAnalysisInput input)
         {
             const int ConfidenceThreshold = 6;
             ILogger logger = context.CreateReplaySafeLogger<ProductDiscoveryFlow>();
@@ -115,6 +123,7 @@ namespace Niobium.AI.Ecommerce.Workflows
             List<CompetitionScoutOutput> competitionSignals = await AnalyzeCompetitionAsync(context, input, normalizedProduct);
             return new ProductDiscoveryOutput
             {
+                JobId = jobId,
                 CandidateId = Guid.NewGuid(),
                 Keyword = input.Keyword,
                 SourceCountry = input.SourceCountry,

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.DurableTask;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.Ecommerce.Agents;
@@ -6,7 +7,7 @@ using Niobium.AI.Ecommerce.Contracts;
 namespace Niobium.AI.Ecommerce.Workflows
 {
     [DurableTask]
-    internal partial class ProductOnboardingFlow : TaskOrchestrator<ProductOnboardingInput, ProductOnboardingOutput?>
+    internal partial class ProductOnboardingFlow(IFileStorage storage) : TaskOrchestrator<ProductOnboardingInput, ProductOnboardingOutput?>
     {
         public override async Task<ProductOnboardingOutput?> RunAsync(TaskOrchestrationContext context, ProductOnboardingInput input)
         {
@@ -61,12 +62,20 @@ namespace Niobium.AI.Ecommerce.Workflows
                 landingPageImageReferences.Add(landingPageImageReference);
             }
 
-            return new ProductOnboardingOutput
+            ProductOnboardingOutput result = new()
             {
+                JobId = input.JobId,
                 CandidateId = input.CandidateId,
+                ListingId = Guid.NewGuid(),
                 MarketingStrategy = marketingStrategy,
                 LandingPageImages = landingPageImageReferences
             };
+
+            using MemoryStream stream = new();
+            JsonSerializer.Serialize(stream, result);
+            stream.Seek(0, SeekOrigin.Begin);
+            await storage.UploadAsync($"listing/{result.JobId}/{result.CandidateId}/{result.ListingId}.json", stream, CancellationToken.None);
+            return result;
         }
     }
 }

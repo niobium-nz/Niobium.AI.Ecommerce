@@ -2,7 +2,9 @@ namespace Niobium.AI.Ecommerce.Contracts
 {
     internal class ProductDiscoveryOutput
     {
-        public required Guid CandidateId { get; init; } = Guid.NewGuid();
+        public required Guid JobId { get; init; }
+
+        public required Guid CandidateId { get; init; }
 
         public required string SourceCountry { get; init; }
 

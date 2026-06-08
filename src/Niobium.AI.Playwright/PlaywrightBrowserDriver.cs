@@ -6,7 +6,7 @@ using Niobium.AI.Web;
 
 namespace Niobium.AI.Playwright
 {
-    internal sealed class PlaywrightBrowserDriver(IOptions<PlaywrightBrowserLaunchOptions> options, IPlaywright playwright) : IWebBrowser
+    internal sealed class PlaywrightBrowserDriver(IOptions<PlaywrightOptions> options, IPlaywright playwright) : IWebBrowser
     {
         private readonly List<IPage> pages = [];
         private readonly Dictionary<IPage, List<WebBrowserConsoleMessage>> consoleMessages = [];

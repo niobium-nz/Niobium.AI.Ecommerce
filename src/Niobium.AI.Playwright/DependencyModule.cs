@@ -1,5 +1,6 @@
-using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Niobium.AI.Web;
 
 namespace Niobium.AI.Playwright
@@ -8,8 +9,13 @@ namespace Niobium.AI.Playwright
     {
         private static volatile bool loaded = false;
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static IServiceCollection AddPlaywright(this IServiceCollection services, Action<PlaywrightBrowserLaunchOptions>? options = null)
+        public static IHostApplicationBuilder AddPlaywright(this IHostApplicationBuilder builder)
+        {
+            builder.Services.AddPlaywright(builder.Configuration.GetSection(nameof(PlaywrightOptions)).Bind);
+            return builder;
+        }
+
+        public static IServiceCollection AddPlaywright(this IServiceCollection services, Action<PlaywrightOptions>? options = null)
         {
             if (loaded)
             {
@@ -18,7 +24,7 @@ namespace Niobium.AI.Playwright
 
             loaded = true;
 
-            return services.Configure<PlaywrightBrowserLaunchOptions>(o => options?.Invoke(o))
+            return services.Configure<PlaywrightOptions>(o => options?.Invoke(o))
                 .AddSingleton(_ => Microsoft.Playwright.Playwright.CreateAsync().GetAwaiter().GetResult())
                 .AddTransient<IWebBrowser, PlaywrightBrowserDriver>();
         }

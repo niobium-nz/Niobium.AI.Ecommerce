@@ -2,7 +2,7 @@ using Niobium.AI.Web;
 
 namespace Niobium.AI.Playwright
 {
-    public class PlaywrightBrowserLaunchOptions
+    public class PlaywrightOptions
     {
         public WebBrowserKind Browser { get; set; } = WebBrowserKind.Chrome;
 

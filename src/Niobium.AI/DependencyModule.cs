@@ -18,16 +18,16 @@ namespace Niobium.AI
         private static volatile bool loaded = false;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static IServiceCollection AddAI(this IHostApplicationBuilder builder)
+        public static IHostApplicationBuilder AddAI(this IHostApplicationBuilder builder)
         {
-            IServiceCollection services = builder.Services;
             if (loaded)
             {
-                return builder.Services;
+                return builder;
             }
 
             loaded = true;
 
+            IServiceCollection services = builder.Services;
             services.AddSingleton(sp => new ExecutorFactory(sp));
 
             Assembly callingAssembly = Assembly.GetCallingAssembly();
@@ -44,10 +44,9 @@ namespace Niobium.AI
                 }
             }
 
-            string? dtsConnectionString = builder.Configuration.GetValue<string>("DURABLE_TASK_CONNECTION_STRING");
-            return String.IsNullOrWhiteSpace(dtsConnectionString)
-                ? throw new InvalidOperationException($"`DURABLE_TASK_CONNECTION_STRING` must be provided.")
-                : services.ConfigureDurableAgents(
+            string? dtsConnectionString = builder.Configuration.GetValue<string>("DURABLE_TASK_CONNECTION_STRING")
+                ?? throw new InvalidOperationException($"`DURABLE_TASK_CONNECTION_STRING` must be provided.");
+            services.ConfigureDurableAgents(
                 options =>
                 {
                     Dictionary<string, Type> workflowDefinitions = typesFromCallingAssembly.Where(t => typeof(GenericResponseAgent).IsAssignableFrom(t)).ToDictionary(t => t.Name, t => t);
@@ -96,6 +95,8 @@ namespace Niobium.AI
                         }
                     });
                 });
+
+            return builder;
         }
     }
 }

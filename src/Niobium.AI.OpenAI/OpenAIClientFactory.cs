@@ -4,7 +4,7 @@ using OpenAI;
 
 namespace Niobium.AI.OpenAI
 {
-    internal class OpenAIClientFactory(IOptions<OpenAIClientOptions> options)
+    internal class OpenAIClientFactory(IOptions<OpenAIOptions> options)
     {
         private OpenAIClient? client;
 

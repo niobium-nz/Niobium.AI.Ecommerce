@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace Niobium.AI.OpenAI
 {
-    internal class OpenAIChatClientFactory(OpenAIClientFactory clientFactory, IOptions<OpenAIClientOptions> retryOptions, ILogger<OpenAIChatClientFactory> logger) : IChatClientFactory
+    internal class OpenAIChatClientFactory(OpenAIClientFactory clientFactory, IOptions<OpenAIOptions> retryOptions, ILogger<OpenAIChatClientFactory> logger) : IChatClientFactory
     {
         public IChatClient CreateChatClient(string model)
         {

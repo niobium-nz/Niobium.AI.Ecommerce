@@ -1,6 +1,9 @@
 using Azure;
 using Azure.Storage.Blobs;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace Niobium.AI.BlobStorage
 {
@@ -8,21 +11,25 @@ namespace Niobium.AI.BlobStorage
     {
         private static volatile bool loaded = false;
 
-        public static IServiceCollection AddBlobStorage(this IServiceCollection services)
+        public static IHostApplicationBuilder AddBlobStorage(this IHostApplicationBuilder builder)
+        {
+            builder.Services.AddBlobStorage(builder.Configuration.GetSection(nameof(BlobOptions)).Bind);
+            return builder;
+        }
+
+        public static IServiceCollection AddBlobStorage(this IServiceCollection services, Action<BlobOptions> options)
         {
             if (!loaded)
             {
                 loaded = true;
 
-                _ = services.AddTransient(sp =>
+                services.Configure<BlobOptions>(options.Invoke)
+                .AddTransient<IFileStorage, AzureBlobStorage>()
+                .AddTransient(sp =>
                 {
-                    string endpoint = Environment.GetEnvironmentVariable("AZURE_BLOB_ENDPOINT")
-                        ?? throw new Exception("`AZURE_BLOB_ENDPOINT` must be configured.");
-                    string sas = Environment.GetEnvironmentVariable("AZURE_BLOB_SAS")
-                        ?? throw new Exception("`AZURE_BLOB_SAS` must be configured.");
-                    return new BlobServiceClient(new Uri(endpoint), new AzureSasCredential(sas));
+                    IOptions<BlobOptions> options = sp.GetRequiredService<IOptions<BlobOptions>>();
+                    return new BlobServiceClient(new Uri(options.Value.ControlEndpoint), new AzureSasCredential(options.Value.AccessToken));
                 });
-                _ = services.AddTransient<IFileStorage, AzureBlobStorage>();
             }
 
             return services;

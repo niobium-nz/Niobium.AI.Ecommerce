@@ -29,6 +29,7 @@ namespace Niobium.AI.Ecommerce.Workflows
             IEnumerable<Task<IEnumerable<ProductDiscoveryOutput>>> subOrchestrations = keywords.Select(keyword =>
                 context.CallSubOrchestratorAsync<IEnumerable<ProductDiscoveryOutput>>(nameof(ProductDiscoveryFlow), new ProductDiscoveryInput
                 {
+                    JobId = Guid.NewGuid(),
                     Keyword = keyword,
                     SourceCountry = input.SourceCountry,
                     TargetCountry = input.TargetCountry,

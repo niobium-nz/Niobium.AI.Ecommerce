@@ -1,6 +1,6 @@
 namespace Niobium.AI.OpenAI
 {
-    public class OpenAIClientOptions
+    public class OpenAIOptions
     {
         public required string LLMEndpoint { get; set; }
 

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Niobium.AI.OpenAI
 {
-    internal sealed class KeywordRetryChatClient(IChatClient innerClient, OpenAIClientOptions retryOptions, ILogger logger) : IChatClient, IDisposable
+    internal sealed class KeywordRetryChatClient(IChatClient innerClient, OpenAIOptions retryOptions, ILogger logger) : IChatClient, IDisposable
     {
         public async Task<ChatResponse> GetResponseAsync(
             IEnumerable<ChatMessage> messages,
@@ -95,7 +95,7 @@ namespace Niobium.AI.OpenAI
 
         private static bool ShouldRetry(
             int attempt,
-            OpenAIClientOptions options,
+            OpenAIOptions options,
             string input)
             => attempt < options.MaxRetries && options.RetryKeywords.Any(keyword => input.Contains(keyword, StringComparison.OrdinalIgnoreCase));
 
