@@ -64,6 +64,9 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
   params: {
     name: containerAppName
     location: location
+    tags: {
+        'azd-service-name': 'host'
+    }
     environmentResourceId: managedEnvironment.outputs.resourceId
     containers: [
       {

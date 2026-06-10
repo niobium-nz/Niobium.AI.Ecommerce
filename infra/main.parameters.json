@@ -13,9 +13,6 @@
     },
     "APPSETTING_LLM_KEY": {
       "value": "PUT-YOUR-KEY-HERE"
-    },
-    "appExists": {
-      "value": false
     }
   }
 }
