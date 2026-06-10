@@ -49,4 +49,4 @@ jobs:
           VERSION_MINOR: ${{ env.VERSION_MINOR }}
           APPSETTING_LLM_ENDPOINT: ${{ vars.APPSETTING_LLM_ENDPOINT }}
           APPSETTING_LLM_KEY: ${{ secrets.APPSETTING_LLM_KEY }}
-        run: azd up --no-prompt
+        run: azd up -e ${{ github.environment }} --no-prompt
