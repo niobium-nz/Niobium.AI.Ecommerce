@@ -38,9 +38,11 @@ jobs:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+ 
+      - name: azd login
+        run: azd auth login --federated-credential-provider github --client-id ${{ vars.AZURE_CLIENT_ID }} --tenant-id ${{ vars.AZURE_TENANT_ID }}
 
-      - name: Publish Container Image
-        shell: pwsh
+      - name: Publish
         env:
           AZURE_ENV_NAME: ${{ github.environment }}
           VERSION_MAJOR: ${{ env.VERSION_MAJOR }}
