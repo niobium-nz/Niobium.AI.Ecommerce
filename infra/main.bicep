@@ -1,0 +1,89 @@
+targetScope = 'resourceGroup'
+
+@description('Name of the environment.')
+param environmentName string
+
+@description('Location for deployed resources. If empty, uses the resource group location.')
+param location string = resourceGroup().location
+
+@description('Short name used as a prefix for Azure resources. Keep it globally unique where required.')
+param appName string = 'niobiumecom-${environmentName}'
+
+@description('Name of the Container Apps managed environment.')
+param containerAppsEnvironmentName string = '${appName}-cae'
+
+@description('Name of the Container App.')
+param containerAppName string = '${appName}-ca'
+
+@description('App settings to project into the container app environment.')
+param appSettings array = []
+
+@description('Automatically set by azd. True if the container app already exists.')
+param appExists bool = true
+
+var logAnalyticsName = '${appName}-law'
+var appInsightsName = '${appName}-ai'
+
+var derivedSecrets = [for setting in appSettings: {
+  name: toLower(replace(string(setting.name), '_', '-'))
+  value: string(setting.value)
+}]
+
+var containerEnv = [for setting in appSettings: {
+  name: string(setting.name)
+  secretRef: toLower(replace(string(setting.name), '_', '-'))
+}]
+
+module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.15.1' = {
+  params: {
+    name: logAnalyticsName
+    location: location
+  }
+}
+
+module appInsights 'br/public:avm/res/insights/component:0.7.2' = {
+  params: {
+    name: appInsightsName
+    workspaceResourceId: logAnalytics.outputs.resourceId
+    location: location
+  }
+}
+
+module managedEnvironment 'br/public:avm/res/app/managed-environment:0.13.3' = {
+  params: {
+    name: containerAppsEnvironmentName
+    location: location
+    zoneRedundant: false
+    publicNetworkAccess: 'Enabled'
+    appInsightsConnectionString: appInsights.outputs.connectionString
+  }
+}
+
+var currentImage = appExists ? reference(resourceId('Microsoft.App/containerApps', containerAppName), '2026-01-01').template.containers[0].image : 'mcr.microsoft.com/dotnet/samples:dotnetapp'
+module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
+  params: {
+    name: containerAppName
+    location: location
+    environmentResourceId: managedEnvironment.outputs.resourceId
+    containers: [
+      {
+        name: 'app'
+        image: currentImage
+        env: containerEnv
+        resources: {
+          cpu: any('0.25')
+          memory: '0.5Gi'
+        }
+      }
+    ]
+    scaleSettings: {
+        minReplicas: 0
+        maxReplicas: 1
+    }
+    secrets: derivedSecrets
+    disableIngress: true
+  }
+}
+
+output containerAppId string = containerApp.outputs.resourceId
+output containerAppFqdn string = containerApp.outputs.fqdn

@@ -1,0 +1,46 @@
+name: "Publish Container"
+description: "Composite action that checks out code, installs azd, logs into Docker Hub and Azure, then runs azd up"
+inputs:
+  env_name:
+    description: "Environment name (e.g. prod, test). Pass github.environment to reflect the job's environment value."
+    required: true
+  version_major:
+    description: "Major version"
+    required: false
+    default: "1"
+  version_minor:
+    description: "Minor version"
+    required: false
+    default: "0"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install azd
+      uses: Azure/setup-azd@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ vars.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Azure login
+      uses: azure/login@v2
+      with:
+        client-id: ${{ vars.AZURE_CLIENT_ID }}
+        tenant-id: ${{ vars.AZURE_TENANT_ID }}
+        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Publish Container Image
+      shell: pwsh
+      env:
+        AZURE_ENV_NAME: ${{ inputs.env_name }}
+        VERSION_MAJOR: ${{ inputs.version_major }}
+        VERSION_MINOR: ${{ inputs.version_minor }}
+        APPSETTING_LLM_ENDPOINT: ${{ vars.APPSETTING_LLM_ENDPOINT }}
+        APPSETTING_LLM_KEY: ${{ secrets.APPSETTING_LLM_KEY }}
+      run: azd up --no-prompt

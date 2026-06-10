@@ -1,0 +1,24 @@
+name: Publish to Test
+
+on:
+  push:
+    branches: ["feature/**"]
+  pull_request:
+    branches: ["feature/**"]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: test
+
+    steps:
+      - name: Run publish composite
+        uses: ./.github/actions/container-app
+        with:
+          env_name: ${{ github.environment }}
+          version_major: 1
+          version_minor: 0

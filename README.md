@@ -61,3 +61,15 @@ You can initialize a project from this `azd` template in one of these ways:
 ## Follow the tutorial
 
 You can follow the step-by-step tutorial for this sample at [](https://learn.microsoft.com/agent-framework/tutorials/agents/create-and-run-durable-agent?pivots=programming-language-csharp). The tutorial walks you through the code and deployment process in detail.
+
+## Deployment parameters
+
+Container App application settings and secrets are defined once in `infra/appsettings.manifest.json`. Each entry specifies the final app setting name, the source environment variable name, and whether the value should be stored as a secret.
+
+For local provisioning, place the source values in `.azure/<environment-name>/.env` and run `azd provision`. The `preprovision` hook in `azure.yaml` generates `infra/main.parameters.json` automatically before provisioning:
+
+```powershell
+azd provision --environment test
+```
+
+For GitHub Actions, the workflow exposes the same source environment variables and `azd up` triggers the same hook-driven parameter generation automatically.
