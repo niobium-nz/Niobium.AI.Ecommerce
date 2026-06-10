@@ -9,20 +9,22 @@ WORKDIR /app
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
-ARG TARGETARCH
-WORKDIR /src
 
+WORKDIR /build
 
 # Copy source code and restore app dependencies
 COPY --link . .
-RUN dotnet restore Niobium.AI.slnx -a $TARGETARCH
+WORKDIR "/build/src/Niobium.AI.Host"
+RUN dotnet restore Niobium.AI.Host.csproj
 
-# Publish app
-RUN dotnet publish Niobium.AI.slnx -a $TARGETARCH -c $BUILD_CONFIGURATION --no-restore -o /app
 
+# This stage is used to publish the service project to be copied to the final stage
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish Niobium.AI.Host.csproj -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
-COPY --link --from=build /app .
-ENTRYPOINT ["./Niobium.AI.Host"]
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Niobium.AI.Host.dll"]

@@ -1,5 +1,8 @@
 <Solution>
   <Project Path="src/Niobium.AI.Playwright/Niobium.AI.Playwright.csproj" Id="fa9517e3-3cb4-41c1-ab4d-0f3ea97dc47f" />
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
   <Project Path="src/Niobium.AI.BlobStorage/Niobium.AI.BlobStorage.csproj" Id="df25782c-1d60-40bc-9164-8e2fa398cc94" />
   <Project Path="src/Niobium.AI.Ecommerce/Niobium.AI.Ecommerce.csproj" />
   <Project Path="src/Niobium.AI.Host/Niobium.AI.Host.csproj" />

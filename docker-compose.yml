@@ -1,0 +1,33 @@
+services:
+  niobium.ai.host:
+    image: ${DOCKER_REGISTRY-}niobiumaihost
+    build:
+      context: .
+      dockerfile: src/Niobium.AI.Host/Dockerfile
+    env_file:
+      - .azure/local/.env
+    environment:
+      - DURABLE_TASK_CONNECTION_STRING=Endpoint=http://dts-emulator:8080;TaskHub=default;Authentication=None
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:4317
+    volumes:
+      - ./PlaywrightUserData:/PlaywrightUserData
+    depends_on:
+      dts-emulator:
+        condition: service_started
+
+  dts-emulator:
+    image: mcr.microsoft.com/dts/dts-emulator:latest
+    container_name: dts-emulator
+    ports:
+      - "8080:8080"  # Service Endpoint
+      - "8082:8082"  # Web UI
+    restart: unless-stopped
+
+  aspire-dashboard:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
+    container_name: aspire-dashboard
+    ports:
+      - "18888:18888" # Dashboard Web UI
+      - "4317:18889"  # OTLP gRPC port
+      - "4318:18890"  # OTLP HTTP port
+    restart: unless-stopped
