@@ -16,6 +16,9 @@ jobs:
     environment: test
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Run publish composite
         uses: ./.github/actions/container-app
         with:
