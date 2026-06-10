@@ -44,9 +44,9 @@ jobs:
 
       - name: Publish
         env:
-          AZURE_ENV_NAME: ${{ github.environment }}
+          AZURE_ENV_NAME: ${{ vars.ENV_NAME }}
           VERSION_MAJOR: ${{ env.VERSION_MAJOR }}
           VERSION_MINOR: ${{ env.VERSION_MINOR }}
           APPSETTING_LLM_ENDPOINT: ${{ vars.APPSETTING_LLM_ENDPOINT }}
           APPSETTING_LLM_KEY: ${{ secrets.APPSETTING_LLM_KEY }}
-        run: azd up -e ${{ github.environment }} --no-prompt
+        run: azd up -e ${{ vars.ENV_NAME }} --no-prompt
