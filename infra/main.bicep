@@ -23,7 +23,7 @@ param appExists bool = true
 
 var logAnalyticsName = '${appName}-law'
 var appInsightsName = '${appName}-ai'
-var storageAccountName = '${appName}-sa'
+var storageAccountName = replace('${appName}-sa', '-', '')
 var environmentStorageName = '${appName}-caes'
 
 var derivedSecrets = [for setting in appSettings: {

@@ -10,7 +10,7 @@ services:
       - DURABLE_TASK_CONNECTION_STRING=Endpoint=http://dts-emulator:8080;TaskHub=default;Authentication=None
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:4317
     volumes:
-      - ./PlaywrightUserData:/PlaywrightUserData
+      - ./BrowserUserData:/BrowserUserData
       - ./artifacts:/artifacts
     depends_on:
       dts-emulator:
