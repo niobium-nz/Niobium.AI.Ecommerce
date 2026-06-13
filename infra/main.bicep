@@ -23,6 +23,8 @@ param appExists bool = true
 
 var logAnalyticsName = '${appName}-law'
 var appInsightsName = '${appName}-ai'
+var storageAccountName = '${appName}-sa'
+var environmentStorageName = '${appName}-caes'
 
 var derivedSecrets = [for setting in appSettings: {
   name: toLower(replace(string(setting.name), '_', '-'))
@@ -49,6 +51,12 @@ module appInsights 'br/public:avm/res/insights/component:0.7.2' = {
   }
 }
 
+module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
+  params: {
+    name: storageAccountName
+  }
+}
+
 module managedEnvironment 'br/public:avm/res/app/managed-environment:0.13.3' = {
   params: {
     name: containerAppsEnvironmentName
@@ -56,6 +64,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.13.3' = {
     zoneRedundant: false
     publicNetworkAccess: 'Enabled'
     appInsightsConnectionString: appInsights.outputs.connectionString
+    storages: [
+      {
+        accessMode: 'ReadWrite'
+        kind: 'SMB'
+        name: environmentStorageName
+        storageAccountName: storageAccount.outputs.name
+      }
+    ]
   }
 }
 
@@ -77,6 +93,12 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
           cpu: any('0.25')
           memory: '0.5Gi'
         }
+        volumeMounts: [
+          {
+            volumeName: environmentStorageName
+            mountPath: '/artifacts'
+          }
+        ]
       }
     ]
     scaleSettings: {
@@ -85,6 +107,13 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
     }
     secrets: derivedSecrets
     disableIngress: true
+    volumes: [
+      {
+        name: environmentStorageName
+        storageName: environmentStorageName
+        storageType: 'AzureFile'
+      }
+    ]
   }
 }
 

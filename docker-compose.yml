@@ -11,6 +11,7 @@ services:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:4317
     volumes:
       - ./PlaywrightUserData:/PlaywrightUserData
+      - ./artifacts:/artifacts
     depends_on:
       dts-emulator:
         condition: service_started
