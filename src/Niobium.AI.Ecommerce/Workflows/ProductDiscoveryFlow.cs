@@ -7,11 +7,10 @@ using Niobium.AI.Ecommerce.Contracts;
 namespace Niobium.AI.Ecommerce.Workflows
 {
     [DurableTask]
-    internal class ProductDiscoveryFlow(IFileStorage storage) : TaskOrchestrator<ProductDiscoveryInput, IEnumerable<ProductDiscoveryOutput>>
+    internal class ProductDiscoveryFlow : TaskOrchestrator<ProductDiscoveryInput, IEnumerable<ProductDiscoveryOutput>>
     {
         public override async Task<IEnumerable<ProductDiscoveryOutput>> RunAsync(TaskOrchestrationContext context, ProductDiscoveryInput input)
         {
-            _ = context.CreateReplaySafeLogger<ProductDiscoveryFlow>();
             if (String.IsNullOrWhiteSpace(input.Keyword)
                 || !Country.TryParse(input.SourceCountry, out _)
                 || !Country.TryParse(input.TargetCountry, out _))
@@ -46,10 +45,14 @@ namespace Niobium.AI.Ecommerce.Workflows
                 else
                 {
                     result.Add(nomalizedProduct);
-                    using MemoryStream stream = new();
-                    JsonSerializer.Serialize(stream, nomalizedProduct);
-                    stream.Seek(0, SeekOrigin.Begin);
-                    await storage.UploadAsync($"discovery/{nomalizedProduct.JobId}/{nomalizedProduct.CandidateId}.json", stream, CancellationToken.None);
+
+                    string outputDir = $"/artifacts/discovery/{input.JobId}";
+                    if (!Directory.Exists(outputDir))
+                    {
+                        Directory.CreateDirectory(outputDir);
+                    }
+                    string json = JsonSerializer.Serialize(nomalizedProduct);
+                    await File.WriteAllTextAsync($"{outputDir}/{nomalizedProduct.CandidateId}.json", json);
                 }
             }
 

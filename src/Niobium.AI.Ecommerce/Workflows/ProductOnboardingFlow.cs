@@ -7,7 +7,7 @@ using Niobium.AI.Ecommerce.Contracts;
 namespace Niobium.AI.Ecommerce.Workflows
 {
     [DurableTask]
-    internal partial class ProductOnboardingFlow(IFileStorage storage) : TaskOrchestrator<ProductOnboardingInput, ProductOnboardingOutput?>
+    internal partial class ProductOnboardingFlow : TaskOrchestrator<ProductOnboardingInput, ProductOnboardingOutput?>
     {
         public override async Task<ProductOnboardingOutput?> RunAsync(TaskOrchestrationContext context, ProductOnboardingInput input)
         {
@@ -71,10 +71,13 @@ namespace Niobium.AI.Ecommerce.Workflows
                 LandingPageImages = landingPageImageReferences
             };
 
-            using MemoryStream stream = new();
-            JsonSerializer.Serialize(stream, result);
-            stream.Seek(0, SeekOrigin.Begin);
-            await storage.UploadAsync($"listing/{result.JobId}/{result.CandidateId}/{result.ListingId}.json", stream, CancellationToken.None);
+            string outputPath = $"/artifacts/listing/{result.JobId}/{result.CandidateId}";
+            if (!Directory.Exists(outputPath))
+            {
+                Directory.CreateDirectory(outputPath);
+            }
+            await File.WriteAllTextAsync($"{outputPath}/{result.ListingId}.json", JsonSerializer.Serialize(result));
+
             return result;
         }
     }

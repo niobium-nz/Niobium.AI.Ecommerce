@@ -18,7 +18,7 @@ namespace Niobium.AI
         private static volatile bool loaded = false;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static IHostApplicationBuilder AddAI(this IHostApplicationBuilder builder)
+        public static IHostApplicationBuilder AddAI(this IHostApplicationBuilder builder, Assembly? implementationAssembly = null)
         {
             if (loaded)
             {
@@ -30,7 +30,7 @@ namespace Niobium.AI
             IServiceCollection services = builder.Services;
             services.AddSingleton(sp => new ExecutorFactory(sp));
 
-            Assembly callingAssembly = Assembly.GetCallingAssembly();
+            Assembly callingAssembly = implementationAssembly ?? Assembly.GetCallingAssembly();
             Type[] typesFromCallingAssembly = [.. callingAssembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && !t.IsInterface)];
 
             IEnumerable<Type> executors = typesFromCallingAssembly.Where(t => typeof(IExecutor).IsAssignableFrom(t) || typeof(Executor).IsAssignableFrom(t));

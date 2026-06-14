@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -17,10 +18,13 @@ namespace Niobium.AI.Host
         {
             string? applicationInsightsConnectionString = builder.Configuration.GetValue<string>("APPLICATION_INSIGHTS_CONNECTION_STRING");
             string? otlpEndpoint = builder.Configuration.GetValue<string>("OTEL_EXPORTER_OTLP_ENDPOINT");
+            string? environment = builder.Environment.EnvironmentName;
             Dictionary<string, object> resourceAttributes = new()
             {
                 { "service.instance.id", Environment.MachineName },
-                { "deployment.environment", "development" }
+                { "service.name", builder.Configuration.GetValue<string>("SERVICE_NAME") ?? "unknown-service" },
+                { "service.version", builder.Configuration.GetValue<string>("SERVICE_VERSION") ?? "1.0.0-prerelease" },
+                { "deployment.environment", environment ?? "local" }
             };
 
             ResourceBuilder resourceBuilder = ResourceBuilder.CreateDefault().AddAttributes(resourceAttributes);
@@ -41,7 +45,11 @@ namespace Niobium.AI.Host
 
             if (!String.IsNullOrWhiteSpace(otlpEndpoint))
             {
-                tracerBuilder.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
+                tracerBuilder.AddOtlpExporter(o =>
+                {
+                    o.Endpoint = new Uri(otlpEndpoint);
+                    o.Protocol = OtlpExportProtocol.Grpc;
+                });
             }
 
             TracerProvider tracerProvider = tracerBuilder.Build();
@@ -51,6 +59,7 @@ namespace Niobium.AI.Host
                 .SetResourceBuilder(resourceBuilder)
                 .AddHttpClientInstrumentation()
                 .AddRuntimeInstrumentation()
+                .AddMeter("Niobium.*")
                 .AddMeter("*Microsoft.Agents.AI");
 
             if (!String.IsNullOrWhiteSpace(applicationInsightsConnectionString))
@@ -60,7 +69,11 @@ namespace Niobium.AI.Host
 
             if (!String.IsNullOrWhiteSpace(otlpEndpoint))
             {
-                meterBuilder.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
+                meterBuilder.AddOtlpExporter(o =>
+                {
+                    o.Endpoint = new Uri(otlpEndpoint);
+                    o.Protocol = OtlpExportProtocol.Grpc;
+                });
             }
 
             MeterProvider meterProvider = meterBuilder.Build();
@@ -81,7 +94,11 @@ namespace Niobium.AI.Host
 
                 if (!String.IsNullOrWhiteSpace(otlpEndpoint))
                 {
-                    logging.AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint));
+                    logging.AddOtlpExporter(o =>
+                    {
+                        o.Endpoint = new Uri(otlpEndpoint);
+                        o.Protocol = OtlpExportProtocol.Grpc;
+                    });
                 }
             })
             .SetMinimumLevel(LogLevel.Debug);

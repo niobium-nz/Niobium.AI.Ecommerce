@@ -80,7 +80,7 @@ namespace Niobium.AI.Playwright
             cancellationToken.ThrowIfCancellationRequested();
             IPage page = await this.GetPageAsync(tabId, cancellationToken).ConfigureAwait(false);
             await page.GotoAsync(url).ConfigureAwait(false);
-            return await this.CreateNavigationResultAsync(page, tabId).ConfigureAwait(false);
+            return await CreateNavigationResultAsync(page, tabId).ConfigureAwait(false);
         }
 
         public async Task<WebBrowserPageSnapshot> SnapshotAsync(int tabId, CancellationToken cancellationToken = default)
@@ -603,7 +603,7 @@ namespace Niobium.AI.Playwright
                 Title = await page.TitleAsync().ConfigureAwait(false),
             };
 
-        private async Task<WebBrowserNavigationResult> CreateNavigationResultAsync(IPage page, int tabId)
+        private static async Task<WebBrowserNavigationResult> CreateNavigationResultAsync(IPage page, int tabId)
             => new()
             {
                 Tab = await CreateTabInfoAsync(page, tabId).ConfigureAwait(false),

@@ -11,7 +11,7 @@ namespace Niobium.AI.Ecommerce
 
         public static IHostApplicationBuilder AddEcommerce(this IHostApplicationBuilder builder)
         {
-            builder.Services.AddEcommerce(builder.Configuration.GetSection(nameof(EcommerceOptions)).Bind);
+            builder.AddAI().Services.AddEcommerce(builder.Configuration.GetSection(nameof(EcommerceOptions)).Bind);
             return builder;
         }
 
@@ -27,7 +27,7 @@ namespace Niobium.AI.Ecommerce
             return services.Configure<EcommerceOptions>(options.Invoke)
                 .AddTransient<AdsLibraryTool>()
                 .AddSingleton<Tools.ToolBox>()
-                .AddTransient<IMetaAdsLibrary, TestAdsLibrary>();
+                .AddTransient<IMetaAdsLibrary, ScrapecreatorsMetaAdsLibrary>();
         }
     }
 }

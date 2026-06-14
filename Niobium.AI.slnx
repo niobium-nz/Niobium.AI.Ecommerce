@@ -3,7 +3,6 @@
   <Project Path="docker-compose.dcproj">
     <Build />
   </Project>
-  <Project Path="src/Niobium.AI.BlobStorage/Niobium.AI.BlobStorage.csproj" Id="df25782c-1d60-40bc-9164-8e2fa398cc94" />
   <Project Path="src/Niobium.AI.Ecommerce/Niobium.AI.Ecommerce.csproj" />
   <Project Path="src/Niobium.AI.Host/Niobium.AI.Host.csproj" />
   <Project Path="src/Niobium.AI.OpenAI/Niobium.AI.OpenAI.csproj" Id="32f598bd-cb81-4aca-a775-1b53fef12f1c" />

@@ -12,7 +12,7 @@ namespace Niobium.AI.Playwright
 
         public string? BaseUrl { get; set; }
 
-        public string? UserDataDir { get; set; }
+        public string? UserDataDir { get; set; } = "/BrowserUserData";
 
         public string? ExecutablePath { get; set; }
 

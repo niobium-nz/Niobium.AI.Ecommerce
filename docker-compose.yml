@@ -8,12 +8,14 @@ services:
       - .azure/local/.env
     environment:
       - DURABLE_TASK_CONNECTION_STRING=Endpoint=http://dts-emulator:8080;TaskHub=default;Authentication=None
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:4317
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
     volumes:
       - ./BrowserUserData:/BrowserUserData
       - ./artifacts:/artifacts
     depends_on:
       dts-emulator:
+        condition: service_started
+      aspire-dashboard:
         condition: service_started
 
   dts-emulator:

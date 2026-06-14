@@ -16,7 +16,9 @@ namespace Niobium.AI.Ecommerce.Agents
                 throw new ArgumentException($"Invalid country: {input.Country}", nameof(input));
             }
 
-            MetaAdsSearchResponse response = await adsLibrary.SearchAdsAsync(input.Keyword, country, cancellationToken: cancellationToken);
+            DateTime stableAdsDate = DateTime.Now.AddMonths(-3);
+            DateOnly stableAdsDateOnly = new(stableAdsDate.Year, stableAdsDate.Month, stableAdsDate.Day);
+            MetaAdsSearchResponse response = await adsLibrary.SearchAdsAsync(input.Keyword, country, activeSince: stableAdsDateOnly, cancellationToken: cancellationToken);
             return response.SearchResults;
         }
     }

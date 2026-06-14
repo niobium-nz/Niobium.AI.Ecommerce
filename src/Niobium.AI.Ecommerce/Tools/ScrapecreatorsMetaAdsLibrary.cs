@@ -11,7 +11,7 @@ namespace Niobium.AI.Ecommerce.Tools
 
         public async Task<MetaAdsSearchResponse> SearchAdsAsync(string keyword, Country country, DateOnly? activeSince = null, CancellationToken? cancellationToken = null)
         {
-            MetaAdsSearchResponse result = await this.SearchAdsAsync(keyword, country, activeSince, null);
+            MetaAdsSearchResponse result = await this.SearchAdsAsync(options.Value.ScrapeCreatorsKey, keyword, country, activeSince, null, cancellationToken: cancellationToken);
             for (int i = 0; i < 3 && !String.IsNullOrWhiteSpace(result.Cursor); i++)
             {
                 MetaAdsSearchResponse nextPageResult = await this.SearchAdsAsync(options.Value.ScrapeCreatorsKey, keyword, country, activeSince, result.Cursor, cancellationToken: cancellationToken);

@@ -12,7 +12,7 @@ namespace Niobium.AI.OpenAI
 
         public static IHostApplicationBuilder AddOpenAI(this IHostApplicationBuilder builder)
         {
-            builder.Services.AddOpenAI(builder.Configuration.GetSection(nameof(OpenAIOptions)).Bind);
+            builder.AddAI().Services.AddOpenAI(builder.Configuration.GetSection(nameof(OpenAIOptions)).Bind);
             return builder;
         }
 

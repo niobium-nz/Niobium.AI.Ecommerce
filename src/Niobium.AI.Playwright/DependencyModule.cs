@@ -11,7 +11,7 @@ namespace Niobium.AI.Playwright
 
         public static IHostApplicationBuilder AddPlaywright(this IHostApplicationBuilder builder)
         {
-            builder.Services.AddPlaywright(builder.Configuration.GetSection(nameof(PlaywrightOptions)).Bind);
+            builder.AddAI().Services.AddPlaywright(builder.Configuration.GetSection(nameof(PlaywrightOptions)).Bind);
             return builder;
         }
 
