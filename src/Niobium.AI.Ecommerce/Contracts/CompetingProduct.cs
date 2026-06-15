@@ -17,5 +17,9 @@ namespace Niobium.AI.Ecommerce.Contracts
         public required string ClusterConfidence { get; set; }
 
         public List<string> AdArchiveIds { get; set; } = [];
+
+        public bool IsProduct { get; set; }
+
+        public bool IsService { get; set; }
     }
 }
