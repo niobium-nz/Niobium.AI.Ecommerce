@@ -328,7 +328,7 @@ namespace Niobium.AI.Playwright
                 {
                     IsError = true,
                     Tab = await CreateTabInfoAsync(page, tabId).ConfigureAwait(false),
-                    JsonResult = JsonSerializer.Serialize(new { error = "javascript expression cannot be null or whitespace." }),
+                    JsonResult = JsonSerializer.Serialize(new { error = "javascript expression cannot be null or whitespace." }, SerializationOptions.SnakeCase),
                 };
             }
 
@@ -348,7 +348,7 @@ namespace Niobium.AI.Playwright
                 {
                     IsError = true,
                     Tab = await CreateTabInfoAsync(page, tabId).ConfigureAwait(false),
-                    JsonResult = JsonSerializer.Serialize(new { error = e.Message }),
+                    JsonResult = JsonSerializer.Serialize(new { error = e.Message }, SerializationOptions.SnakeCase),
                 };
             }
         }

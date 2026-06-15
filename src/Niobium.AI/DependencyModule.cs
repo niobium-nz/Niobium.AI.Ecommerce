@@ -93,6 +93,8 @@ namespace Niobium.AI
                         {
                             registry.AddOrchestrator(orchestrator);
                         }
+
+                        registry.AddActivity(nameof(PublishArtifact), typeof(PublishArtifact));
                     });
                 });
 

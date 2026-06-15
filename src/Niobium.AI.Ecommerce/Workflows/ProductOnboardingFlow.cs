@@ -47,8 +47,8 @@ namespace Niobium.AI.Ecommerce.Workflows
                 return null;
             }
 
-            List<ImageProducerOutput> landingPageImageReferences = [];
             IResponseGenerator<ImageProducerInput, ImageProducerOutput> imageProducer = context.GetAgent<ImageProducer, ImageProducerInput, ImageProducerOutput>();
+            List<ImageProducerOutput> landingPageImageReferences = [];
             ImageReference productVisualReference = await input.ProductVisual.ToImageReferenceAsync();
             foreach (ImagePromptAsset imagePrompt in imageStrategy.ImagePrompts)
             {
@@ -71,13 +71,9 @@ namespace Niobium.AI.Ecommerce.Workflows
                 LandingPageImages = landingPageImageReferences
             };
 
-            string outputPath = $"/artifacts/listing/{result.JobId}/{result.CandidateId}";
-            if (!Directory.Exists(outputPath))
-            {
-                Directory.CreateDirectory(outputPath);
-            }
-            await File.WriteAllTextAsync($"{outputPath}/{result.ListingId}.json", JsonSerializer.Serialize(result));
-
+            string artifactName = $"listing/{result.JobId}/{result.CandidateId}/{result.ListingId}.json";
+            await context.CallActivityAsync(nameof(PublishArtifact), new PublishArtifactInput(artifactName, result));
+            logger.LogInformation("Published product onboarding result to artifact storage with name: {ArtifactName}", artifactName);
             return result;
         }
     }
