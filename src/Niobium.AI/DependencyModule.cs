@@ -1,6 +1,5 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using DurableTask.Core;
 using Microsoft.Agents.AI.DurableTask;
 using Microsoft.Agents.AI.Workflows;
 using Microsoft.DurableTask;
@@ -82,7 +81,7 @@ namespace Niobium.AI
                             registry.AddActivity(generator.Name, activityType);
                         }
 
-                        IEnumerable<Type> activities = typesFromCallingAssembly.Where(t => typeof(TaskActivity).IsAssignableFrom(t));
+                        IEnumerable<Type> activities = typesFromCallingAssembly.Where(t => typeof(ITaskActivity).IsAssignableFrom(t));
                         foreach (Type activity in activities)
                         {
                             registry.AddActivity(activity);

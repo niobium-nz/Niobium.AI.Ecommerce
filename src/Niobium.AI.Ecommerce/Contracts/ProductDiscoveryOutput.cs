@@ -17,5 +17,7 @@ namespace Niobium.AI.Ecommerce.Contracts
         public required List<MetaAd> Ads { get; init; } = [];
 
         public List<CompetitionScoutOutput> CompetitionSignals { get; init; } = [];
+
+        public required ProductScore Score { get; set; }
     }
 }

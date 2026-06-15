@@ -18,6 +18,7 @@
     <EmbeddedResource Include="Agents\ProductTransformer.md" />
     <EmbeddedResource Include="Agents\ProductNormalizer.md" />
     <EmbeddedResource Include="Agents\ProductProfiler.md" />
+    <EmbeddedResource Include="Agents\ProductScorer.md" />
     <EmbeddedResource Include="Agents\ProductVisualExtractor.md" />
     <EmbeddedResource Include="Agents\ProductVisualBuilder.md" />
     <EmbeddedResource Include="Tools\dog-hair-removal.json" />
