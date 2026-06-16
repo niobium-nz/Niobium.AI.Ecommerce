@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
@@ -12,23 +13,29 @@ namespace Niobium.AI.OpenAI
             ChatOptions? options = null,
             CancellationToken cancellationToken = default)
         {
-            List<ChatMessage> bufferedMessages = [.. messages.Select(static message => message.Clone())];
-
             for (int attempt = 0; ; attempt++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
                 ChatResponse response = await innerClient
-                    .GetResponseAsync(CloneMessages(bufferedMessages), options, cancellationToken)
+                    .GetResponseAsync(CloneMessages(messages), options, cancellationToken)
                     .ConfigureAwait(false);
 
-                if (!ShouldRetry(attempt, retryOptions, response.Text))
+                string responseText = response.Text;
+                IEnumerable<AIContent> responseContents = response.Messages.SelectMany(m => m.Contents);
+                if (!ShouldRetry(attempt, retryOptions, responseText, responseContents))
                 {
+                    if (attempt >= retryOptions.MaxRetries)
+                    {
+                        logger.LogError("Max retry attempts reached for chat response. Returning last error response in anyway.");
+                    }
+
                     return response;
                 }
 
-                logger.LogWarning("Retrying chat response due to presence of retry keywords. Attempt {Attempt}/{MaxRetries}.", attempt + 1, retryOptions.MaxRetries);
-                await Task.Delay(retryOptions.RetryDelay, cancellationToken).ConfigureAwait(false);
+                TimeSpan retryDelay = GetRetryDelay(attempt, retryOptions);
+                logger.LogWarning("Retrying chat response... attempt {Attempt}/{MaxRetries} after {RetryDelay}.", attempt + 1, retryOptions.MaxRetries, retryDelay);
+                await Task.Delay(retryDelay, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -51,17 +58,15 @@ namespace Niobium.AI.OpenAI
             ChatOptions? options,
             [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            List<ChatMessage> bufferedMessages = [.. messages.Select(static message => message.Clone())];
-            List<ChatResponseUpdate> bufferedUpdates = [];
-
             for (int attempt = 0; ; attempt++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                List<ChatResponseUpdate> bufferedUpdates = [];
                 StringBuilder responseTextBuilder = new();
 
                 await foreach (ChatResponseUpdate update in innerClient
-                    .GetStreamingResponseAsync(CloneMessages(bufferedMessages), options, cancellationToken)
+                    .GetStreamingResponseAsync(CloneMessages(messages), options, cancellationToken)
                     .WithCancellation(cancellationToken)
                     .ConfigureAwait(false))
                 {
@@ -74,11 +79,18 @@ namespace Niobium.AI.OpenAI
                 }
 
                 string responseText = responseTextBuilder.ToString();
-                if (ShouldRetry(attempt, retryOptions, responseText))
+                IEnumerable<AIContent> responseContents = bufferedUpdates.SelectMany(u => u.Contents);
+                if (ShouldRetry(attempt, retryOptions, responseText, responseContents))
                 {
-                    logger.LogWarning("Retrying streaming chat response due to presence of retry keywords. Attempt {Attempt}/{MaxRetries}.", attempt + 1, retryOptions.MaxRetries);
-                    await Task.Delay(retryOptions.RetryDelay, cancellationToken).ConfigureAwait(false);
+                    TimeSpan retryDelay = GetRetryDelay(attempt, retryOptions);
+                    logger.LogWarning("Retrying streaming chat response... attempt {Attempt}/{MaxRetries} after {RetryDelay}.", attempt + 1, retryOptions.MaxRetries, retryDelay);
+                    await Task.Delay(retryDelay, cancellationToken).ConfigureAwait(false);
                     continue;
+                }
+
+                if (attempt >= retryOptions.MaxRetries)
+                {
+                    logger.LogError("Max retry attempts reached for chat response. Returning last error response in anyway.");
                 }
 
                 foreach (ChatResponseUpdate update in bufferedUpdates)
@@ -93,11 +105,35 @@ namespace Niobium.AI.OpenAI
         private static IEnumerable<ChatMessage> CloneMessages(IEnumerable<ChatMessage> messages)
             => [.. messages.Select(static message => message.Clone())];
 
+        private static TimeSpan GetRetryDelay(int attempt, OpenAIOptions options)
+        {
+            double backoffMultiplier = Math.Max(1d, options.RetryBackoffMultiplier);
+            double exponentialMultiplier = Math.Pow(backoffMultiplier, attempt);
+            double delayMs = options.RetryDelay.TotalMilliseconds * exponentialMultiplier;
+
+            if (options.MaxRetryDelay.HasValue)
+            {
+                delayMs = Math.Min(delayMs, options.MaxRetryDelay.Value.TotalMilliseconds);
+            }
+
+            if (options.RetryJitterFactor > 0d)
+            {
+                double jitterFactor = Math.Clamp(options.RetryJitterFactor, 0d, 1d);
+                double jitterScale = 1d + (RandomNumberGenerator.GetInt32(-1000, 1001) / 1000d * jitterFactor);
+                delayMs *= jitterScale;
+            }
+
+            return TimeSpan.FromMilliseconds(Math.Max(0d, delayMs));
+        }
+
         private static bool ShouldRetry(
             int attempt,
             OpenAIOptions options,
-            string input)
-            => attempt < options.MaxRetries && options.RetryKeywords.Any(keyword => input.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+            string responseText,
+            IEnumerable<AIContent> responseContents)
+            => attempt < options.MaxRetries
+                && options.RetryKeywords.Any(keyword => responseText.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                && responseContents.Any(content => content is ErrorContent ec && ec.ErrorCode == "too_many_requests");
 
     }
 }

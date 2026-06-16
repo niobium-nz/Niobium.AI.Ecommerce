@@ -15,5 +15,11 @@ namespace Niobium.AI.OpenAI
         public int MaxRetries { get; set; }
 
         public TimeSpan RetryDelay { get; set; } = TimeSpan.FromSeconds(3);
+
+        public double RetryBackoffMultiplier { get; set; } = 1d;
+
+        public double RetryJitterFactor { get; set; }
+
+        public TimeSpan? MaxRetryDelay { get; set; }
     }
 }
