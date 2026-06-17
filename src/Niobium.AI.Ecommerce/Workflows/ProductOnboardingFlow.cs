@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.DurableTask;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.Ecommerce.Agents;
@@ -14,7 +13,7 @@ namespace Niobium.AI.Ecommerce.Workflows
             ILogger logger = context.CreateReplaySafeLogger<ProductOnboardingFlow>();
             if (input.Ad.Snapshot == null || String.IsNullOrWhiteSpace(input.Ad.Snapshot.LinkUrl))
             {
-                logger.LogError("Ad snapshot or LinkUrl is missing in the input. Ending workflow."); 
+                logger.LogError("Ad snapshot or LinkUrl is missing in the input. Ending workflow.");
                 return null;
             }
 
@@ -48,20 +47,16 @@ namespace Niobium.AI.Ecommerce.Workflows
                 return null;
             }
 
+            ImageReference productVisualReference = await context.CallActivityAsync<ImageReference>(nameof(ConvertImageReference), input);
             IResponseGenerator<ImageProducerInput, ImageProducerOutput> imageProducer = context.GetAgent<ImageProducer, ImageProducerInput, ImageProducerOutput>();
-            List<ImageProducerOutput> landingPageImageReferences = [];
-            ImageReference productVisualReference = await input.ProductVisual.ToImageReferenceAsync();
-            foreach (ImagePromptAsset imagePrompt in imageStrategy.ImagePrompts)
+            IEnumerable<Task<ImageProducerOutput>> tasks = imageStrategy.ImagePrompts.Select(p => imageProducer.RunAsync(new ImageProducerInput
             {
-                ImageProducerOutput landingPageImageReference = await imageProducer.RunAsync(new ImageProducerInput
-                {
-                    AssetId = imagePrompt.AssetId,
-                    Form = imagePrompt.ToImageForm(),
-                    Prompt = imagePrompt.Prompt,
-                    References = [productVisualReference]
-                });
-                landingPageImageReferences.Add(landingPageImageReference);
-            }
+                AssetId = p.AssetId,
+                Form = p.ToImageForm(),
+                Prompt = p.Prompt,
+                References = [productVisualReference]
+            }));
+            ImageProducerOutput[] landingPageImageReferences = await Task.WhenAll(tasks);
 
             ProductOnboardingOutput result = new()
             {
@@ -72,7 +67,7 @@ namespace Niobium.AI.Ecommerce.Workflows
                 LandingPageImages = landingPageImageReferences
             };
 
-            string artifactName = $"listing/{result.JobId}/{result.CandidateId}/{result.ListingId}.json";
+            string artifactName = $"listing/{result.CandidateId}/{result.ListingId}.json";
             await context.CallActivityAsync(nameof(PublishArtifact), new PublishArtifactInput(artifactName, result));
             logger.LogInformation("Published product onboarding result to artifact storage with name: {ArtifactName}", artifactName);
             return result;

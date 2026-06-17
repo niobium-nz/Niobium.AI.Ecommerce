@@ -4,7 +4,11 @@ namespace Niobium.AI.Playwright
 {
     public class PlaywrightOptions
     {
+        public static readonly string SectionName = nameof(PlaywrightOptions).ToUpperInvariant();
+
         public WebBrowserKind Browser { get; set; } = WebBrowserKind.Chrome;
+
+        public string? CdpEndpoint { get; set; }
 
         public bool Headless { get; set; } = true;
 

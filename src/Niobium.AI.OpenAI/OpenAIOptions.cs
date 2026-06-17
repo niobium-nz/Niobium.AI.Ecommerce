@@ -2,17 +2,23 @@ namespace Niobium.AI.OpenAI
 {
     public class OpenAIOptions
     {
-        public required string LLMEndpoint { get; set; }
+        public static readonly string SectionName = nameof(OpenAIOptions).ToUpperInvariant();
 
-        public required string LLMKey { get; set; }
+        public required string ResponseEndpoint { get; set; }
 
-        public required string SoraEndpoint { get; set; }
+        public required string ResponseEndpointKey { get; set; }
 
-        public required string SoraKey { get; set; }
+        public required string ImageEndpoint { get; set; }
+
+        public required string ImageEndpointKey { get; set; }
+
+        public required string VideoEndpoint { get; set; }
+
+        public required string VideoEndpointKey { get; set; }
 
         public HashSet<string> RetryKeywords { get; set; } = [];
 
-        public int MaxRetries { get; set; }
+        public int MaxRetries { get; set; } = 3;
 
         public TimeSpan RetryDelay { get; set; } = TimeSpan.FromSeconds(3);
 
@@ -20,6 +26,6 @@ namespace Niobium.AI.OpenAI
 
         public double RetryJitterFactor { get; set; }
 
-        public TimeSpan? MaxRetryDelay { get; set; }
+        public TimeSpan? MaxRetryDelay { get; set; } = TimeSpan.FromSeconds(30);
     }
 }

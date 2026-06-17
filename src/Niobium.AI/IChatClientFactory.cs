@@ -4,6 +4,6 @@ namespace Niobium.AI
 {
     public interface IChatClientFactory
     {
-        IChatClient CreateChatClient(string model);
+        IChatClient CreateChatClient(string model, string? provider = null);
     }
 }

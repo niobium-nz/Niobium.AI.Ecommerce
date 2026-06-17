@@ -10,6 +10,8 @@ namespace Niobium.AI
 
         protected ILogger Logger { get; } = logger ?? throw new ArgumentNullException(nameof(logger));
 
+        protected virtual string? ModelProvider => null;
+
         protected virtual string Model => Models.GPT_LATEST;
 
         protected virtual ReasoningEffort Reasoning => ReasoningEffort.None;
@@ -53,16 +55,16 @@ namespace Niobium.AI
                     {
                         Effort = this.Reasoning,
                     },
-                    Tools = [.. tools], 
+                    Tools = [.. tools],
                     AllowMultipleToolCalls = true,
                 };
 
-                if (ResponseType != null)
+                if (this.ResponseType != null)
                 {
-                    chatOptions.ResponseFormat = ChatResponseFormat.ForJsonSchema(ResponseType, serializerOptions: SerializationOptions.SnakeCase);
+                    chatOptions.ResponseFormat = ChatResponseFormat.ForJsonSchema(this.ResponseType, serializerOptions: SerializationOptions.SnakeCase);
                 }
 
-                ChatClientBuilder builder = clientFactory.CreateChatClient(this.Model).AsBuilder();
+                ChatClientBuilder builder = clientFactory.CreateChatClient(this.Model, this.ModelProvider).AsBuilder();
 
                 if (this.SkillsFolder != null)
                 {

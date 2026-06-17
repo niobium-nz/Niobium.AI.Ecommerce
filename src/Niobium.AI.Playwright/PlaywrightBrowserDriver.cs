@@ -400,36 +400,51 @@ namespace Niobium.AI.Playwright
                 string? browserChannel = GetBrowserChannel(options.Value.Browser);
                 ViewportSize viewportSize = new() { Width = options.Value.ViewportWidth, Height = options.Value.ViewportHeight };
 
-                if (String.IsNullOrWhiteSpace(options.Value.UserDataDir))
+                if (String.IsNullOrWhiteSpace(options.Value.CdpEndpoint))
                 {
-                    this.browser = await browserType.LaunchAsync(new BrowserTypeLaunchOptions
+                    if (String.IsNullOrWhiteSpace(options.Value.UserDataDir))
                     {
-                        Headless = options.Value.Headless,
-                        Channel = browserChannel,
-                        ExecutablePath = options.Value.ExecutablePath,
-                        SlowMo = options.Value.SlowMo,
-                        Timeout = options.Value.TimeoutMs,
-                    }).ConfigureAwait(false);
+                        this.browser = await browserType.LaunchAsync(new BrowserTypeLaunchOptions
+                        {
+                            Headless = options.Value.Headless,
+                            Channel = browserChannel,
+                            ExecutablePath = options.Value.ExecutablePath,
+                            SlowMo = options.Value.SlowMo,
+                            Timeout = options.Value.TimeoutMs,
+                        }).ConfigureAwait(false);
 
-                    this.browserContext = await this.browser.NewContextAsync(new BrowserNewContextOptions
+                        this.browserContext = await this.browser.NewContextAsync(new BrowserNewContextOptions
+                        {
+                            AcceptDownloads = options.Value.AcceptDownloads,
+                            BaseURL = options.Value.BaseUrl,
+                            Locale = options.Value.Locale,
+                            UserAgent = options.Value.UserAgent,
+                            ViewportSize = viewportSize,
+                        }).ConfigureAwait(false);
+                    }
+                    else
                     {
-                        AcceptDownloads = options.Value.AcceptDownloads,
-                        BaseURL = options.Value.BaseUrl,
-                        Locale = options.Value.Locale,
-                        UserAgent = options.Value.UserAgent,
-                        ViewportSize = viewportSize,
-                    }).ConfigureAwait(false);
+                        this.browserContext = await browserType.LaunchPersistentContextAsync(options.Value.UserDataDir, new BrowserTypeLaunchPersistentContextOptions
+                        {
+                            Headless = options.Value.Headless,
+                            Channel = browserChannel,
+                            ExecutablePath = options.Value.ExecutablePath,
+                            SlowMo = options.Value.SlowMo,
+                            Timeout = options.Value.TimeoutMs,
+
+                            AcceptDownloads = options.Value.AcceptDownloads,
+                            BaseURL = options.Value.BaseUrl,
+                            Locale = options.Value.Locale,
+                            UserAgent = options.Value.UserAgent,
+                            ViewportSize = viewportSize,
+                        }).ConfigureAwait(false);
+                    }
                 }
                 else
                 {
-                    this.browserContext = await browserType.LaunchPersistentContextAsync(options.Value.UserDataDir, new BrowserTypeLaunchPersistentContextOptions
+                    this.browser = await playwright.Chromium.ConnectOverCDPAsync(options.Value.CdpEndpoint);
+                    this.browserContext = await this.browser.NewContextAsync(new BrowserNewContextOptions
                     {
-                        Headless = options.Value.Headless,
-                        Channel = browserChannel,
-                        ExecutablePath = options.Value.ExecutablePath,
-                        SlowMo = options.Value.SlowMo,
-                        Timeout = options.Value.TimeoutMs,
-
                         AcceptDownloads = options.Value.AcceptDownloads,
                         BaseURL = options.Value.BaseUrl,
                         Locale = options.Value.Locale,

@@ -12,7 +12,7 @@ namespace Niobium.AI.OpenAI
 
         public static IHostApplicationBuilder AddOpenAI(this IHostApplicationBuilder builder)
         {
-            builder.AddAI().Services.AddOpenAI(builder.Configuration.GetSection(nameof(OpenAIOptions)).Bind);
+            builder.AddAI().Services.AddOpenAI(builder.Configuration.GetSection(OpenAIOptions.SectionName).Bind);
             return builder;
         }
 
@@ -30,12 +30,7 @@ namespace Niobium.AI.OpenAI
                 .AddTransient<IImageClientFactory, OpenAIImageClientFactory>()
                 .AddTransient<IChatClientFactory, OpenAIChatClientFactory>()
                 .AddTransient<IVideoClientFactory, OpenAIVideoClientFactory>()
-                .AddHttpClient<SoraVideoClient>((sp, httpClient) =>
-                {
-                    IOptions<OpenAIOptions> opt = sp.GetRequiredService<IOptions<OpenAIOptions>>();
-                    httpClient.BaseAddress = new Uri(opt.Value.SoraEndpoint.Trim());
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", opt.Value.SoraKey.Trim());
-                }).AddStandardResilienceHandler();
+                .AddHttpClient<SoraVideoClient>().AddStandardResilienceHandler();
             return services;
         }
     }

@@ -11,7 +11,7 @@ namespace Niobium.AI.Ecommerce
 
         public static IHostApplicationBuilder AddEcommerce(this IHostApplicationBuilder builder)
         {
-            builder.AddAI().Services.AddEcommerce(builder.Configuration.GetSection(nameof(EcommerceOptions)).Bind);
+            builder.AddAI().Services.AddEcommerce(builder.Configuration.GetSection(EcommerceOptions.SectionName).Bind);
             return builder;
         }
 

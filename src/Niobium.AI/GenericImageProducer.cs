@@ -4,6 +4,8 @@ namespace Niobium.AI
     {
         public abstract string Id { get; }
 
+        protected virtual string? ModelProvider => null;
+
         protected virtual string Model => Models.GPT_IMAGE_LATEST;
 
         protected virtual int VariantCount => 1;
@@ -47,7 +49,7 @@ namespace Niobium.AI
             await this.OnGettingResponseAsync(input, cancellationToken.Value);
 
             string prompt = await this.GetInstructionsAsync(input, cancellationToken.Value);
-            IImageClient client = clientFactory.CreateClient(this.Model);
+            IImageClient client = clientFactory.CreateClient(this.Model, this.ModelProvider);
             IEnumerable<BinaryData> result = await client.RunAsync(
                  prompt,
                  width,

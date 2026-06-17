@@ -10,6 +10,8 @@ namespace Niobium.AI.Ecommerce.Agents
     {
         public override string Id => nameof(ProductProfiler);
 
+        protected override string? ModelProvider => "ApiMart";
+
         protected override ReasoningEffort Reasoning => ReasoningEffort.High;
 
         protected override IEnumerable<AITool> GetTools() => browser.AsAITools();

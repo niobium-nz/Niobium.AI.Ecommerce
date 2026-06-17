@@ -6,6 +6,8 @@ namespace Niobium.AI.Ecommerce.Agents
     {
         public override string Id => nameof(ImageProducer);
 
+        protected override string? ModelProvider => "ApiMart";
+
         protected override int VariantCount => 5;
 
         protected override Task<string> GetInstructionsAsync(ImageProducerInput input, CancellationToken cancellationToken)
@@ -26,6 +28,5 @@ namespace Niobium.AI.Ecommerce.Agents
                 ImageVariants = imageVariants,
             };
         }
-
     }
 }

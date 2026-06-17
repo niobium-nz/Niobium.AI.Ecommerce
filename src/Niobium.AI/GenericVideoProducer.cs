@@ -4,6 +4,8 @@ namespace Niobium.AI
     {
         public abstract string Id { get; }
 
+        protected virtual string? ModelProvider => null;
+
         protected virtual string Model => Models.SORA_LATEST;
 
         protected virtual Task OnGettingResponseAsync(TInput input, CancellationToken cancellationToken)
@@ -21,7 +23,7 @@ namespace Niobium.AI
             }
 
             await this.OnGettingResponseAsync(input, cancellationToken.Value);
-            IVideoClient client = clientFactory.CreateClient(this.Model);
+            IVideoClient client = clientFactory.CreateClient(this.Model, this.ModelProvider);
             BinaryData video = await client.RunAsync(
                  input.VideoPrompt,
                  input.VideoWidth,

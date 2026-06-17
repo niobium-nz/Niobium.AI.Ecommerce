@@ -9,7 +9,11 @@
     <DockerfileContext>..\..</DockerfileContext>
     <UserSecretsId>e35723ce-18d3-4824-ba77-f2e1578986fc</UserSecretsId>
   </PropertyGroup>
-
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Playwright" Version="1.60.0" />
+  </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.8.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.9" />

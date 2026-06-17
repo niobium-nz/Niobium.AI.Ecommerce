@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Hosting;
-using Niobium.AI;
 using Niobium.AI.Ecommerce;
 using Niobium.AI.Host;
 using Niobium.AI.OpenAI;

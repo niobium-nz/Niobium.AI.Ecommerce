@@ -6,14 +6,14 @@ namespace Niobium.AI.OpenAI
 {
     internal class OpenAIChatClientFactory(OpenAIClientFactory clientFactory, IOptions<OpenAIOptions> retryOptions, ILogger<OpenAIChatClientFactory> logger) : IChatClientFactory
     {
-        public IChatClient CreateChatClient(string model)
+        public IChatClient CreateChatClient(string model, string? provider)
         {
             if (!model.StartsWith("gpt-", StringComparison.OrdinalIgnoreCase))
             {
                 throw new NotSupportedException($"The specified LLM model is not supported: {model}");
             }
 
-            IChatClient chatClient = clientFactory.GetOrCreateClient()
+            IChatClient chatClient = clientFactory.GetOrCreateClient(provider ?? string.Empty)
                 .GetResponsesClient()
                 .AsIChatClient(model)
                 .AsBuilder()

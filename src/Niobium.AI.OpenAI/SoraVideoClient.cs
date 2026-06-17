@@ -1,11 +1,38 @@
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Niobium.AI.OpenAI
 {
-    internal class SoraVideoClient(HttpClient client, ILogger<SoraVideoClient> logger) : IVideoClient
+    internal class SoraVideoClient(HttpClient client, IOptions<OpenAIOptions> options, IConfiguration configuration, ILogger<SoraVideoClient> logger) : IVideoClient
     {
+        private bool isInitiated;
+
+        public void Initialize(string provider)
+        {
+            string? endpoint = options.Value.VideoEndpoint.Trim();
+            string? key = options.Value.VideoEndpointKey.Trim();
+
+            if (!String.IsNullOrWhiteSpace(provider))
+            {
+                IConfigurationSection config = configuration.GetRequiredSection(OpenAIOptions.SectionName);
+                endpoint = config.GetValue<string>($"{provider.Trim().ToUpperInvariant()}{nameof(OpenAIOptions.VideoEndpoint).ToUpperInvariant()}");
+                key = config.GetValue<string>($"{provider.Trim().ToUpperInvariant()}{nameof(OpenAIOptions.VideoEndpointKey).ToUpperInvariant()}");
+            }
+
+            if (String.IsNullOrWhiteSpace(endpoint) || String.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentException("Response endpoint and key must be configured.");
+            }
+
+            client.BaseAddress = new Uri(endpoint);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", key);
+            this.isInitiated = true;
+        }
+
         public async Task<BinaryData> RunAsync(
             string prompt,
             int width,
@@ -13,6 +40,11 @@ namespace Niobium.AI.OpenAI
             int durationInSeconds,
             CancellationToken cancellationToken)
         {
+            if (!this.isInitiated)
+            {
+                throw new InvalidOperationException($"{nameof(SoraVideoClient)} must be initialized.");
+            }
+
             if (durationInSeconds is not 4 and not 8 and not 12)
             {
                 throw new ArgumentOutOfRangeException(nameof(durationInSeconds));

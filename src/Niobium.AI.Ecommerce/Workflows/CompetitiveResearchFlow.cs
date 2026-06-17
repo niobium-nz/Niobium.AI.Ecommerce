@@ -23,6 +23,12 @@ namespace Niobium.AI.Ecommerce.Workflows
                 return null;
             }
 
+            if (input.Ads.All(ad => ad.Snapshot == null || string.IsNullOrWhiteSpace(ad.Snapshot.LinkUrl)))
+            {
+                logger.LogWarning("Cluster {ClusterId} has no ads with valid landing page link URLs. Skipping this cluster.", input.Product.ClusterId);
+                return null;
+            }
+
             bool isDuplicate = await context.CallActivityAsync<bool>(nameof(CheckDuplicateCandidate), input.Ads.Where(a => !String.IsNullOrEmpty(a.AdArchiveId)).Select(a => a.AdArchiveId!));
             if (isDuplicate)
             {
