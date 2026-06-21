@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Niobium.AI.Playwright\Niobium.AI.Playwright.csproj" />
     <ProjectReference Include="..\Niobium.AI.Ecommerce\Niobium.AI.Ecommerce.csproj" />
     <ProjectReference Include="..\Niobium.AI.OpenAI\Niobium.AI.OpenAI.csproj" />
     <ProjectReference Include="..\Niobium.AI.Shorts\Niobium.AI.Shorts.csproj" />

@@ -15,6 +15,7 @@
     <EmbeddedResource Include="Agents\ImageStrategist.md" />
     <EmbeddedResource Include="Agents\KeywordsExpander.md" />
     <EmbeddedResource Include="Agents\MarketStrategist.md" />
+    <EmbeddedResource Include="Agents\ProductProfiler-WebBrowser.md" />
     <EmbeddedResource Include="Agents\ProductTransformer.md" />
     <EmbeddedResource Include="Agents\ProductNormalizer.md" />
     <EmbeddedResource Include="Agents\ProductProfiler.md" />
@@ -29,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Niobium.AI.WebScraper.Firecrawl\Niobium.AI.WebScraper.Firecrawl.csproj" />
     <ProjectReference Include="..\Niobium.AI\Niobium.AI.csproj" />
   </ItemGroup>
 

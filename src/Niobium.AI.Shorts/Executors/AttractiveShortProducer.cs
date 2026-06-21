@@ -7,7 +7,6 @@ namespace Niobium.AI.Shorts.Executors
 {
     internal class AttractiveShortProducer(
         IVideoClientFactory videoClientFactory,
-        IFileStorage fileStorage,
         ILogger<AttractiveShortProducer> logger)
         : GenericVideoProducer<AttractiveShortScreenwriterOutput, Uri>(videoClientFactory)
     {
@@ -27,10 +26,17 @@ namespace Niobium.AI.Shorts.Executors
             string videoName = $"{DateTime.Now:yyyyMMdd}-{random.Next(10, 99)}.mp4";
             try
             {
-                logger.LogInformation($"Staging video {videoName} on Azure Blob...");
-                Uri result = await fileStorage.UploadAsync(videoName, message, cancellationToken);
-                logger.LogInformation($"Video {videoName} staged on Azure Blob as {result}");
-                return result;
+                logger.LogInformation($"Staging video {videoName} to storage...");
+                if (message.CanSeek)
+                {
+                    message.Position = 0;
+                }
+
+                string path = $"/artifacts/shorts/{videoName}";
+                using FileStream fileStream = new(path, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true);
+                await message.CopyToAsync(fileStream);
+                logger.LogInformation($"Video {videoName} staged to storage as {path}");
+                return new Uri(path);
             }
             catch (RequestFailedException e) when (e.Status == 409 && e.ErrorCode == "BlobAlreadyExists")
             {

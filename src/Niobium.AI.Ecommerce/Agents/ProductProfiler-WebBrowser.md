@@ -209,11 +209,40 @@ Moderate depth, bounded loop: **Fetch entry → set scope_domain (with entry red
 
 # Safety Constraints:
 - Do not perform account actions, purchases, or form submissions.
+- Do not bypass paywalls/consent walls.
 - Do not scrape external domains; only record external social links as trust signals.
 - Minimize data collection: store only what is required by the schema.
+- Do not extract or store sensitive personal data (emails, order IDs, etc.) beyond what appears as generic contact info (phone/address) intended for customers.
+
+# Allowed UI interactions (generic, bounded):
+- You MAY click/toggle UI elements that only reveal content already on the page (accordions, disclosure toggles, "read more" expanders, tabs that switch visible panels, modal open/close).
+- You MUST NOT interact with anything that progresses a transaction or account flow (checkout/cart/login/register/order), or that submits/persists user data.
+- You MUST NOT fill inputs except for a consent/age gate that blocks access to the page content (if present). If such a gate exists and can be accepted with a single click, you MAY accept it; otherwise add a blocker and stop.
+- Keep this bounded: at most 5 UI clicks per fetched page and never more than 1 additional UI attempt per missing field group.
 
 # Tool Usage Policy (if applicable):
-- Use `scrape_web_page` for fetching pages.
+- Use Playwright for fetching pages.
+- Use a consistent navigation wait strategy (e.g., `domcontentloaded`) and a fixed timeout per page.
 - No concurrent crawling; fetch one page at a time.
 - Never retry non-entry pages; never loop on navigation actions.
 - Always canonicalize + dedupe URLs **before** navigation.
+- **JS-rendered page readiness (mandatory, selector-agnostic):** many ecommerce pages hydrate client-side. For EVERY page fetch, you MUST use the following render-stabilization routine before extracting any evidence:
+  1. `browser_navigate` to the URL
+  2. `browser_wait_for` with `time: 3` seconds
+  3. `browser_evaluate` to scroll to the bottom in steps (to trigger lazy-loaded content), e.g. `() => { for (let i = 0; i < 8; i++) { window.scrollTo(0, document.body.scrollHeight); } }`
+  4. `browser_wait_for` with `time: 2` seconds
+  5. `browser_snapshot` and extract from the snapshot
+  6. If still thin/empty (only header/footer/cookie banner), do NOT give up immediately: for the **entry page only**, use the allowed second attempt with a longer wait (`time: 7`) and repeat the same scroll + snapshot sequence.
+  7. If content appears blocked by consent/geo wall, add a blocker and stop expanding links.
+- **Optional deep extraction when snapshot is insufficient (bounded):** if a page is clearly loaded but `browser_snapshot` is still missing key text, you MAY call `browser_evaluate` to return `document.body.innerText` (or a small JSON object with `title`, `location.href`, and short `innerText` excerpt). Never return the full HTML.
+- **Generic reveal pass (bounded, evidence-oriented):** if a page shows headings/controls that indicate hidden content (e.g., sections collapsed behind toggles/tabs/modals) and required fields are still null/empty, perform ONE reveal pass:
+- **Generic reveal pass (bounded, evidence-oriented):** if any required fields are still null/empty AND the page appears to contain collapsed/hidden details, you MUST perform ONE reveal pass before adding blockers about "not accessible without interaction":
+  1. Take a `browser_snapshot`.
+  2. From the snapshot, collect candidate UI controls that look like expanders/toggles/tabs (e.g., have labels like "details", "info", "ingredients", "specs", "materials", "size", "care", "shipping", "returns", "warranty", "FAQ", "reviews", "more"), but ALWAYS skip cart/checkout/account/login/order controls.
+  3. Click up to 5 candidates, preferring those most likely to satisfy missing fields (ingredients/materials, policies, media). For each: `browser_click` -> `browser_wait_for` (`time: 1`) -> `browser_snapshot`.
+  4. If the post-click snapshot is empty/thin, do a recovery: `browser_wait_for` (`time: 2`) -> `browser_snapshot` again, then continue.
+  5. Stop clicking once the missing fields are satisfied or you hit the 5-click cap.
+  6. If a click navigates away or triggers a redirect, treat it as navigation and apply the normal scope/denylist rules; do not continue clicking on the prior page.
+- **Media URL extraction fallback (bounded):** if `product.images`/`product.videos` are empty due to snapshot limitations, you MUST attempt a bounded DOM read via `browser_evaluate` to collect media URLs:
+  - Return a small JSON object containing up to 20 absolute URLs from `document.images` (`currentSrc`/`src`) and up to 10 from `video`/`source` elements. Deduplicate.
+  - Do not return full HTML.

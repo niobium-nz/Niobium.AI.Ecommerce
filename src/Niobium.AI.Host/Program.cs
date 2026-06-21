@@ -2,13 +2,13 @@ using Microsoft.Extensions.Hosting;
 using Niobium.AI.Ecommerce;
 using Niobium.AI.Host;
 using Niobium.AI.OpenAI;
-using Niobium.AI.Playwright;
+using Niobium.AI.WebScraper.Firecrawl;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 builder.ConfigureOpenTelemetry()
     .AddEcommerce()
     .AddOpenAI()
-    .AddPlaywright();
+    .AddFirecrawl();
 
 IHost host = builder.Build();
 await host.RunAsync();

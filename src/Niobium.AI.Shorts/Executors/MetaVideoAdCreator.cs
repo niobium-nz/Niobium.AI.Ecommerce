@@ -1,7 +1,7 @@
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Niobium.AI.Shorts.Contracts;
-using Niobium.AI.Web;
+using Niobium.AI.WebBrowser.Playwright;
 
 namespace Niobium.AI.Shorts.Executors
 {

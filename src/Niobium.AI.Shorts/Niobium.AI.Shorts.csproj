@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Niobium.AI.WebBrowser.Playwright\Niobium.AI.WebBrowser.Playwright.csproj" />
     <ProjectReference Include="..\Niobium.AI\Niobium.AI.csproj" />
   </ItemGroup>
 

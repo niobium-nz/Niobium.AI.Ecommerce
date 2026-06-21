@@ -47,24 +47,13 @@ namespace Niobium.AI.Ecommerce.Workflows
                 return null;
             }
 
-            ImageReference productVisualReference = await context.CallActivityAsync<ImageReference>(nameof(ConvertImageReference), input);
-            IResponseGenerator<ImageProducerInput, ImageProducerOutput> imageProducer = context.GetAgent<ImageProducer, ImageProducerInput, ImageProducerOutput>();
-            IEnumerable<Task<ImageProducerOutput>> tasks = imageStrategy.ImagePrompts.Select(p => imageProducer.RunAsync(new ImageProducerInput
-            {
-                AssetId = p.AssetId,
-                Form = p.ToImageForm(),
-                Prompt = p.Prompt,
-                References = [productVisualReference]
-            }));
-            ImageProducerOutput[] landingPageImageReferences = await Task.WhenAll(tasks);
-
             ProductOnboardingOutput result = new()
             {
                 JobId = input.JobId,
                 CandidateId = input.CandidateId,
                 ListingId = Guid.NewGuid(),
                 MarketingStrategy = marketingStrategy,
-                LandingPageImages = landingPageImageReferences
+                ImageStrategy = imageStrategy,
             };
 
             string artifactName = $"listing/{result.CandidateId}/{result.ListingId}.json";

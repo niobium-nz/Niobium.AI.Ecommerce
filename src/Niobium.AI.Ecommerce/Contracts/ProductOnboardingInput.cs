@@ -17,7 +17,5 @@ namespace Niobium.AI.Ecommerce.Contracts
         public required MetaAd Ad { get; set; }
 
         public required ProductCost Cost { get; set; }
-
-        public required Uri ProductVisual { get; set; }
     }
 }

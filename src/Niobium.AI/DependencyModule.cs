@@ -94,7 +94,6 @@ namespace Niobium.AI
                         }
 
                         registry.AddActivity(nameof(PublishArtifact), typeof(PublishArtifact));
-                        registry.AddActivity(nameof(ConvertImageReference), typeof(ConvertImageReference));
                     });
                 });
 

@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: src/Niobium.AI.Host/Dockerfile
     env_file:
-      - .azure/local/.env
+      - .azure/dev/.env
     environment:
       - DURABLE_TASK_CONNECTION_STRING=Endpoint=http://dts-emulator:8080;TaskHub=default;Authentication=None
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
