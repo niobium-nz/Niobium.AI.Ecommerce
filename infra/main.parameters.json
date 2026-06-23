@@ -7,12 +7,6 @@
     },
     "AZURE_RESOURCE_GROUP": {
       "value": "rg-niobium-ecom-${AZURE_ENV_NAME}"
-    },
-    "APPSETTING_LLM_ENDPOINT": {
-      "value": "PUT-YOUR-ENDPOINT-HERE"
-    },
-    "APPSETTING_LLM_KEY": {
-      "value": "PUT-YOUR-KEY-HERE"
     }
   }
 }
