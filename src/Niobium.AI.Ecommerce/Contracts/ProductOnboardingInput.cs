@@ -6,15 +6,9 @@ namespace Niobium.AI.Ecommerce.Contracts
 
         public required Guid CandidateId { get; init; }
 
-        public required string SourceCountry { get; set; }
-
         public required string TargetCountry { get; set; }
 
-        public required string Keyword { get; set; }
-
-        public required CompetingProduct Product { get; set; }
-
-        public required MetaAd Ad { get; set; }
+        public required string LandingPageUrl { get; set; }
 
         public required ProductCost Cost { get; set; }
     }

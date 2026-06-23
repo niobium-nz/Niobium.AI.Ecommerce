@@ -11,14 +11,14 @@ namespace Niobium.AI.Ecommerce.Workflows
         public override async Task<ProductOnboardingOutput?> RunAsync(TaskOrchestrationContext context, ProductOnboardingInput input)
         {
             ILogger logger = context.CreateReplaySafeLogger<ProductOnboardingFlow>();
-            if (input.Ad.Snapshot == null || String.IsNullOrWhiteSpace(input.Ad.Snapshot.LinkUrl))
+            if (String.IsNullOrWhiteSpace(input.LandingPageUrl))
             {
                 logger.LogError("Ad snapshot or LinkUrl is missing in the input. Ending workflow.");
                 return null;
             }
 
             IResponseGenerator<ProductProfilerInput, ProductProfilerOutput> productProfiler = context.GetAgent<ProductProfiler, ProductProfilerInput, ProductProfilerOutput>();
-            ProductProfilerOutput profile = await productProfiler.RunAsync(new ProductProfilerInput { LandingPageUrl = input.Ad.Snapshot.LinkUrl });
+            ProductProfilerOutput profile = await productProfiler.RunAsync(new ProductProfilerInput { LandingPageUrl = input.LandingPageUrl });
             if (profile.Product == null || String.IsNullOrWhiteSpace(profile.Product.Name) || profile.Product.KeyClaims.Count <= 0)
             {
                 logger.LogError("Competitor product info is missing. Ending workflow.");
