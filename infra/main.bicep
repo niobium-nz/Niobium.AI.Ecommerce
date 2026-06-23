@@ -83,6 +83,12 @@ var containerEnv2 = concat(containerEnv, [
   }
 ])
 
+module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
+  params: {
+    name: storageAccountName
+  }
+}
+
 module managedEnvironment 'br/public:avm/res/app/managed-environment:0.13.3' = {
   params: {
     name: containerAppsEnvironmentName
@@ -95,7 +101,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.13.3' = {
         accessMode: 'ReadWrite'
         kind: 'SMB'
         name: environmentStorageName
-        storageAccountName: storageAccountName
+        storageAccountName: storageAccount.outputs.name
       }
     ]
   }
@@ -146,10 +152,10 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
   }
 }
 
-module storageAccount 'br/public:avm/res/storage/storage-account/file-service/share:0.1.3' = {
+module fileShare 'br/public:avm/res/storage/storage-account/file-service/share:0.1.3' = {
   params: {
     name: environmentStorageName
-    storageAccountName: storageAccountName
+    storageAccountName: storageAccount.outputs.name
     accessTier: 'Hot'
     roleAssignments: [
       {
