@@ -56,4 +56,7 @@ jobs:
           APPSETTING_OPENAIOPTIONS__RETRYKEYWORDS__0: ${{ vars.APPSETTING_OPENAIOPTIONS__RETRYKEYWORDS__0 }}
           APPSETTING_FIRECRAWLOPTIONS__APIKEY: ${{ secrets.APPSETTING_FIRECRAWLOPTIONS__APIKEY }}
           APPSETTING_ECOMMERCEOPTIONS__SCRAPECREATORSKEY: ${{ secrets.APPSETTING_ECOMMERCEOPTIONS__SCRAPECREATORSKEY }}
-        run: azd up -e ${{ vars.AZURE_ENV_NAME }} --no-prompt --no-state
+        run: |
+          azd package --no-prompt
+          azd provision --no-state --no-prompt
+          azd deploy --no-prompt
