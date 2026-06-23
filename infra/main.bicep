@@ -25,6 +25,8 @@ var logAnalyticsName = '${appName}-law'
 var appInsightsName = '${appName}-ai'
 var storageAccountName = replace('${appName}-sa', '-', '')
 var environmentStorageName = '${appName}-caes'
+var schedulerName = '${appName}-dts'
+var taskHubName = '${appName}-hub'
 
 var derivedSecrets = [for setting in appSettings: {
   name: toLower(replace(string(setting.name), '_', '-'))
@@ -50,6 +52,32 @@ module appInsights 'br/public:avm/res/insights/component:0.7.2' = {
     location: location
   }
 }
+
+resource durableTaskScheduler 'Microsoft.DurableTask/schedulers@2026-02-01' = {
+  name: schedulerName
+  location: location
+  properties: {
+    sku: {
+      name: 'Consumption'
+    }
+    publicNetworkAccess: 'Enabled'
+    ipAllowlist: [
+      '0.0.0.0/0'
+    ]
+  }
+}
+
+resource durableTaskHub 'Microsoft.DurableTask/schedulers/taskHubs@2026-02-01' = {
+  parent: durableTaskScheduler
+  name: taskHubName
+}
+
+var containerEnv2 = concat(containerEnv, [
+  { 
+      APPLICATION_INSIGHTS_CONNECTION_STRING: appInsights.outputs.connectionString
+      DURABLE_TASK_CONNECTION_STRING: 'Endpoint=${durableTaskScheduler.properties.endpoint};TaskHub=${taskHubName};Authentication=ManagedIdentity'
+  }
+])
 
 module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
   params: {
@@ -84,11 +112,14 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
         'azd-service-name': 'host'
     }
     environmentResourceId: managedEnvironment.outputs.resourceId
+    managedIdentities: {
+      systemAssigned: true
+    }
     containers: [
       {
         name: 'app'
         image: currentImage
-        env: containerEnv
+        env: containerEnv2
         resources: {
           cpu: any('0.25')
           memory: '0.5Gi'
@@ -114,6 +145,17 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
         storageType: 'AzureFile'
       }
     ]
+  }
+}
+
+var durableTaskDataContributorRoleId = '0ad04412-c4d5-4796-b79c-f76d14c8d402'
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(durableTaskScheduler.id, containerApp.name, durableTaskDataContributorRoleId)
+  scope: durableTaskScheduler
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', durableTaskDataContributorRoleId)
+    principalId: containerApp.outputs.systemAssignedMIPrincipalId!
+    principalType: 'ServicePrincipal' // Best practice to explicitly define for Managed Identities
   }
 }
 
