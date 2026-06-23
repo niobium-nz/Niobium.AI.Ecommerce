@@ -74,8 +74,12 @@ resource durableTaskHub 'Microsoft.DurableTask/schedulers/taskHubs@2026-02-01' =
 
 var containerEnv2 = concat(containerEnv, [
   { 
-      APPLICATION_INSIGHTS_CONNECTION_STRING: appInsights.outputs.connectionString
-      DURABLE_TASK_CONNECTION_STRING: 'Endpoint=${durableTaskScheduler.properties.endpoint};TaskHub=${taskHubName};Authentication=ManagedIdentity'
+      name: 'APPLICATION_INSIGHTS_CONNECTION_STRING'
+      value: appInsights.outputs.connectionString
+  }
+  { 
+      name: 'DURABLE_TASK_CONNECTION_STRING'
+      value: 'Endpoint=${durableTaskScheduler.properties.endpoint};TaskHub=${taskHubName};Authentication=ManagedIdentity'
   }
 ])
 
@@ -155,7 +159,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   properties: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', durableTaskDataContributorRoleId)
     principalId: containerApp.outputs.systemAssignedMIPrincipalId!
-    principalType: 'ServicePrincipal' // Best practice to explicitly define for Managed Identities
+    principalType: 'ServicePrincipal'
   }
 }
 
