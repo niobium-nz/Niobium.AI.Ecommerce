@@ -86,6 +86,7 @@ var containerEnv2 = concat(containerEnv, [
 module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
   params: {
     name: storageAccountName
+    publicNetworkAccess: 'Enabled'
   }
 }
 
