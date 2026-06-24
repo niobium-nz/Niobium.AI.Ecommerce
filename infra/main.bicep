@@ -168,6 +168,16 @@ module fileShare 'br/public:avm/res/storage/storage-account/file-service/share:0
   }
 }
 
+var durableTaskDataContributorRoleId = '0ad04412-c4d5-4796-b79c-f76d14c8d402'
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(durableTaskScheduler.id, containerApp.name, durableTaskDataContributorRoleId)
+  scope: durableTaskScheduler
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', durableTaskDataContributorRoleId)
+    principalId: containerApp.outputs.systemAssignedMIPrincipalId!
+    principalType: 'ServicePrincipal'
+  }
+}
 
 output containerAppId string = containerApp.outputs.resourceId
 output containerAppFqdn string = containerApp.outputs.fqdn
