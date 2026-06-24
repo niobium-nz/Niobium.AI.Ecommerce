@@ -7,6 +7,9 @@
     },
     "AZURE_RESOURCE_GROUP": {
       "value": "rg-niobium-ecom-${AZURE_ENV_NAME}"
+    },
+    "appExists": {
+      "value": false
     }
   }
 }
