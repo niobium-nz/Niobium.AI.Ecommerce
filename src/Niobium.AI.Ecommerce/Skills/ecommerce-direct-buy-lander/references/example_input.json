@@ -1,516 +1,582 @@
 {
-  "brandSystem": {
-    "brandName": "Niobium Studio",
-    "description": "ANZ local online pet shop for pet essentials, treats & toys. Quality products for happy paws, delivered ANZ-wide!",
-    "logoFile": "./assets/logo.png",
-    "primaryColor": "#372010",
-    "secondaryColor": "#FAF3E0",
-    "accentColor": "#6F7D45",
-    "fontStrategy": "system fonts only"
-  },
-  "trackingSpec": {
-    "metaPixelId": "1225432212563029",
-    "ga4Id": "G-E5ZVT43LYM",
-    "microsoftClarity": "t6zjrfru2y",
-    "trackEvents": [
-      "ViewContent",
-      "CTA_Click",
-      "Bundle_Select",
-      "Video_Play",
-      "InitiateCheckout"
-    ],
-    "preserveQueryParams": [ "utm_source", "utm_campaign", "utm_content", "fbclid" ]
-  },
-  "checkoutUrl": "/checkout?p=:offer-short-name",
-  "productDetails": {
-    "workingProductDefinition": "A hand-worn, reusable pet-hair removal glove/mitt that uses textured cloth and silicone surfaces to lift loose fur from fabric-heavy areas such as upholstery, bedding, clothing, pet beds, and car interiors. Position it primarily as a surface-cleanup tool; only use on-pet grooming angles if that use is operationally validated.",
-    "coreProblemSolved": "It gives pet owners a fast way to remove visible fur from the surfaces they notice most, without dragging out a vacuum or burning through disposable lint rollers.",
-    "primaryUseCases": [
-      "Quick couch and upholstery de-furring",
-      "Bedding, throws, and pet-bed cleanup between washes",
-      "Clothing touch-ups before work, guests, or going out",
-      "Car seat and interior hair cleanup after pet trips",
-      "Daily maintenance of fabric-heavy pet zones between deeper cleans"
-    ],
-    "materialsOrConstructionSummary": "Durable mesh cloth backing, soft brush cloth bristles, food-grade silicone bristles, reinforced stitching, and a polyester cuff suggest a lightweight, reusable glove built for repeated swipe-rinse-dry usage.",
-    "fulfillmentAndRefundAssumptions": "Assume shipping is already embedded in COGS, parcels ship per order rather than per unit, overseas fulfillment means a realistic AU delivery window of about 7-14 days, and low-cost approved refunds can be treated internally as keep-the-item economics. Customer-facing refund language should stay simple, truthful, and operationally supportable.",
-    "suggestedProductNames": [
-      "FurSweep Glove",
-      "ShedSweep Mitt",
-      "FurLift Glove",
-      "TidyTail Mitt",
-      "FurReset Glove",
-      "CoatCatch Mitt",
-      "HairLift Glove",
-      "SwipeAway Fur Mitt"
-    ],
-    "recommendedPrimaryProductName": "FurSweep Glove",
-    "recommendedPrimaryProductNameRationale": "It is clear, benefit-led, easy to understand in a Meta feed, and broad enough to cover couch, clothing, bedding, and car use without sounding gimmicky."
-  },
-  "pricingEconomicsAndOffers": {
-    "directPurchaseFunnelModel": {
-      "assumedCpc": "A$0.95.",
-      "assumedLpvRate": "85% of clicks.",
-      "assumedCheckoutStartRate": "15% of LPVs.",
-      "assumedPurchaseRate": "35% of checkout starts.",
-      "derivedClickToPurchaseRate": "4.46% (0.85 x 0.15 x 0.35).",
-      "estimatedBlendedCpa": "A$21.29.",
-      "breakEvenBlendedCpa": "A$28.82, based on modeled AOV of A$39.95 minus modeled landed cost per order of A$11.13.",
-      "recommendedTargetBlendedCpa": "A$22.00.",
-      "funnelLogicExplanation": "This model only works cleanly if the page is 2-Pack-led. With a 2-unit average order, contribution margin is A$28.82, so that is the break-even blended CPA. At A$0.95 CPC and a 4.46% click-to-purchase rate, estimated blended CPA lands at A$21.29. The main economic dependency is offer mix: if too many paid orders stay at the A$24.95 single, break-even CPA compresses to about A$16.63, which makes cold Meta scale far tighter."
+    "shortProductName": "fursweep-glove",
+    "targetCountry": "AU",
+    "vendorIntegration": {
+        "tenantId": "tenant_fursweep_demo",
+        "googleRecaptchaSiteKey": "REPLACE_WITH_RECAPTCHA_SITE_KEY",
+        "storeIntegrationEndpoint": "https://example.invalid/niobium/store-webhook",
+        "notificationIntegrationEndpoint": "https://example.invalid/niobium/notification-webhook",
+        "stripePublicKey": "pk_test_replace_me",
+        "shippingOptionId": "standard-au-delivery",
+        "fallbackCoupon": ""
     },
-    "diagnosticMetrics": {
-      "estimatedCostPerLpv": "A$1.12.",
-      "estimatedCostPerCheckoutStart": "A$7.45."
+    "brandSystem": {
+        "brandName": "Niobium Studio",
+        "description": "ANZ local online pet shop for pet essentials, treats & toys. Quality products for happy paws, delivered ANZ-wide!",
+        "logoFile": "./assets/logo.png",
+        "primaryColor": "#372010",
+        "secondaryColor": "#FAF3E0",
+        "accentColor": "#6F7D45",
+        "fontStrategy": "system fonts only"
     },
-    "offerStack": {
-      "singleUnitOffer": {
-        "name": "FurSweep Glove — Single",
-        "pricePoint": "A$24.95",
-        "description": "Entry option for one primary fur zone or more price-sensitive buyers. Keep this secondary so it functions as a price ladder into the stronger bundle economics."
-      },
-      "bestSellerBundle": {
-        "name": "Daily Reset 2-Pack",
-        "pricePoint": "A$39.95",
-        "description": "Best balance of impulse conversion and margin. Frame as two everyday zones: couch + bed, home + car, or home + handbag."
-      },
-      "higherAovBundle": {
-        "name": "Whole-Home 3-Pack",
-        "pricePoint": "A$54.95",
-        "description": "For heavier-shed homes or buyers who want immediate coverage across lounge, bedroom, and car without rotating one glove around."
-      }
-    },
-    "recommendedPrimaryOffer": "Daily Reset 2-Pack at A$39.95.",
-    "recommendedPrimaryOfferRationale": "It is the cleanest profit-first offer for cold Meta traffic: the use case is easy to justify, the implied per-unit value improves versus the single, it keeps the headline price below A$40, and it nearly doubles contribution margin versus a single-unit order without creating the extra friction of a 3-Pack-first page."
-  },
-  "mobileFirstLandingPagePlan": {
-    "roleInDirectPurchaseFunnel": "The page should convert short-form demo curiosity into a purchase by proving performance on familiar fabric surfaces within the first screen, then steering most shoppers into the 2-Pack before delivery or fabric-safety objections slow checkout starts.",
-    "mobileFirstSectionOrder": [
-      "Sticky CTA plus hero demo with the 2-Pack preselected",
-      "Problem-to-solution before/after on one high-contrast surface",
-      "Offer stack and bundle savings math",
-      "Surface compatibility proof grid",
-      "How it works: texture, grip, and hair lift",
-      "Reusable rinse-clean demo",
-      "Use-case modules for couch, bedding, clothing, and car",
-      "Shipping, guarantee, and trust guidance",
-      "FAQ block and final CTA"
-    ],
-    "creativeAssetsForEachSection": [
-      {
-        "sectionName": "Sticky CTA plus hero demo",
-        "assets": [
-          "6-8 second vertical video showing the first swipe on a dark, hairy fabric surface",
-          "Fallback static before/after hero image",
-          "Offer selector visual with 2-Pack preselected",
-          "Visible price, delivery window, and CTA in the first viewport"
-        ]
-      },
-      {
-        "sectionName": "Problem-to-solution before/after",
-        "assets": [
-          "Clean half-versus-furry half image on the same surface",
-          "Macro close-up of hair collecting on the glove",
-          "Short caption overlays for sound-off viewers"
-        ]
-      },
-      {
-        "sectionName": "Offer stack and savings math",
-        "assets": [
-          "Bundle comparison cards",
-          "Per-use-zone icons for couch, bed, car, and clothing",
-          "Savings callouts versus buying singles separately"
-        ]
-      },
-      {
-        "sectionName": "Surface compatibility proof grid",
-        "assets": [
-          "4-6 micro demos across sofa, bedding, clothing, and car upholstery",
-          "Simple icon row showing common target surfaces",
-          "If needed, a spot-test note for delicate fabrics"
-        ]
-      },
-      {
-        "sectionName": "How it works",
-        "assets": [
-          "Close-up of cloth and silicone texture",
-          "Simple 3-step diagram: swipe, collect, rinse",
-          "Hand-fit visual and left/right-hand usage visual if accurate"
-        ]
-      },
-      {
-        "sectionName": "Reusable rinse-clean demo",
-        "assets": [
-          "Sink-rinse clip showing hair release",
-          "Air-dry or ready-again visual",
-          "Close-up of the glove after cleaning"
-        ]
-      },
-      {
-        "sectionName": "Use-case modules",
-        "assets": [
-          "Lifestyle frames for couch, bedding, outfit rescue, and car cleanup",
-          "Storage shots in handbag, laundry area, or car console",
-          "Bundle labels tied to zone use"
-        ]
-      },
-      {
-        "sectionName": "Shipping, guarantee, and trust guidance",
-        "assets": [
-          "Plain-language delivery timeline banner",
-          "Guarantee or refund summary card",
-          "Support/contact reassurance block"
-        ]
-      },
-      {
-        "sectionName": "FAQ block and final CTA",
-        "assets": [
-          "Accordion icons with short answers",
-          "Looping mini demo near the final CTA",
-          "Sticky footer CTA state for long-scroll users"
-        ]
-      }
-    ],
-    "shippingAndGuaranteeMessagingGuidance": "State 7-14 day AU delivery near the first CTA and again in the FAQ. Do not use fake scarcity or hidden shipping reality. If operations can support it, test a plain 30-day satisfaction guarantee. If not, use transparent support and damaged/defective replacement language instead of stronger promises.",
-    "faqAndObjectionHandlingPriorities": [
-      "Will it work on couches, bedding, clothing, and car upholstery?",
-      "Will it snag, scratch, or pull fabric?",
-      "How do I clean it and how fast can I reuse it?",
-      "Why buy more than one glove?",
-      "How long does delivery take in Australia?",
-      "Can I use it left- or right-handed, and will it fit most adults?",
-      "Is this for quick daily touch-ups or full deep cleans?"
-    ],
-    "alignmentWithCustomerSegmentsAndAngleTriggerMatrix": "Keep economics constant across all segments with the same offer stack and 2-Pack default, but swap the hero demo, first proof block, and headline based on the incoming ad angle: couch, car, outfit, or after-the-vacuum. Each ad should land on its matching first-use-case module so message scent is preserved and checkout-start rate stays high.",
-    "mobileUxNotes": "Use 1-2 sentence copy blocks, subtitles on every video, large tap targets, a sticky add-to-cart bar after the first scroll, and CTA repetition every 1-1.5 screen heights. Put price, offer choice, and delivery timing above the fold. Compress media aggressively, lazy-load below-the-fold assets, and avoid heavy carousels or long comparison tables that slow LPV quality."
-  },
-  "customerSegment": {
-    "segmentName": "Couch & Bedding Resetters",
-    "sharedContextSnapshot": {
-      "recommendedProductName": "FurSweep Glove",
-      "coreOfferStack": "FurSweep Glove — Single A$24.95 / Daily Reset 2-Pack A$39.95 / Whole-Home 3-Pack A$54.95. Keep the 2-Pack preselected on paid-traffic landers.",
-      "keyPricePoints": [
-        "Single: A$24.95",
-        "Daily Reset 2-Pack: A$39.95",
-        "Whole-Home 3-Pack: A$54.95"
-      ],
-      "shippingReality": "Transparent 7-14 day AU delivery from overseas fulfillment; state it near the first CTA and in FAQ.",
-      "guaranteeOrRefundFraming": "Preferred: a plain 30-day satisfaction guarantee only if operations can honor it. Fallback: transparent support plus damaged/defective replacements without stronger promises.",
-      "landingPageRoleInFunnel": "Convert short-form demo interest into purchase by proving performance on common fabric surfaces fast, steering shoppers to the 2-Pack, and resolving fabric-safety, cleaning, and delivery objections before checkout."
-    },
-    "segmentSummary": {
-      "whoThisSegmentIs": "Indoor cat and dog owners whose sofa, throws, and bedding visibly collect fur every day.",
-      "needState": "A fast, low-effort way to reset the most noticeable fabric surfaces between deeper cleans.",
-      "purchaseMomentOrTriggerCondition": "They see fur on the couch before relaxing, before guests arrive, or on bedding right before bedtime.",
-      "emotionalDriver": "Relief and control: a home that looks clean without committing to a full vacuum session.",
-      "mainObjections": [
-        "Will it actually lift fur from upholstery and bedding?",
-        "Will it snag soft or woven fabrics?",
-        "Is it easy to clean and reuse?",
-        "Why buy more than one?",
-        "How long will delivery take?"
-      ],
-      "economicAttractiveness": "This is the widest use case and naturally supports a 2-Pack because the two most obvious hair zones are usually lounge + bedroom."
-    },
-    "angleAndTrigger": {
-      "angleNumber": 1,
-      "angleName": "One-Swipe Sofa Reset",
-      "trigger": "A dark couch or chair is visibly covered in fur after the pet gets up.",
-      "corePromise": "Lift visible fur fast from upholstery without pulling out bigger cleaning tools.",
-      "messageTerritory": "Immediate before/after proof, hand-scale control, and easy daily reset.",
-      "whyThisAngleShouldConvertOnMeta": "The problem is legible in one glance, the fix is tactile and visual, and the product requires almost no explanation once the first swipe is shown.",
-      "objectionsToPreHandle": [
-        "Will it work on woven upholstery?",
-        "Will it scratch or snag fabric?",
-        "How do I clean the glove after use?"
-      ],
-      "proofOrDemoAssetsRequired": [
-        "Dark couch before/after split image",
-        "One continuous swipe video on upholstery",
-        "Close-up of collected fur plus rinse-clean clip"
-      ],
-      "recommendedCtaOrRoasTarget": "CTA: Get the 2-Pack for lounge + bedroom. Economics target: keep blended CPA at or below A$22.",
-      "creativeHandoffs": {
-        "staticImageDirections": [
-          "Use a dark couch cushion covered in light fur with the glove mid-swipe so the benefit is obvious before copy is read.",
-          "Create a two-panel before/after frame with only the glove and removed fur pile in view.",
-          "Keep text minimal: 'Quick couch reset' or 'Lift fur off upholstery.'"
+    "trackingSpec": {
+        "metaPixelId": "1225432212563029",
+        "ga4Id": "G-E5ZVT43LYM",
+        "microsoftClarity": "t6zjrfru2y",
+        "trackEvents": [
+            "PageView",
+            "CTAClick",
+            "OfferSelect",
+            "VideoPlay",
+            "StartCheckoutForm",
+            "InitiatePurchase",
+            "PurchaseSuccess",
+            "PurchaseFailed"
         ],
-        "shortFormVideoOrUgcDirections": [
-          "Open on the hairy cushion in close-up, show one continuous swipe, reveal the collected fur, then show a fast rinse.",
-          "Keep the first proof moment inside 2-3 seconds and the total clip under 15 seconds.",
-          "End by framing the 2-Pack as one for the lounge and one for the bedroom."
-        ],
-        "firstFrameOrThumbStopDirection": "A dark sofa arm or cushion visibly coated with light fur.",
-        "copyHookTerritories": [
-          "Pet hair on the couch again?",
-          "My sofa looked clean until the fur caught the light.",
-          "The fast reset before guests sit down."
-        ],
-        "headlineTerritories": [
-          "Reset Your Sofa Fast",
-          "Lift Fur Off Upholstery",
-          "Keep One by the Couch"
-        ],
-        "visualProofMoments": [
-          "Hair bunching into the glove texture",
-          "Clean half-versus-furry half on the same cushion",
-          "Sink-rinse cleanup shot"
-        ],
-        "continuityNotesForLandingPage": "Use the same couch visual as the landing-page hero and land directly on the 2-Pack block with lounge + bedroom usage labels."
-      }
+        "preserveQueryParams": [
+            "utm_source",
+            "utm_campaign",
+            "utm_content",
+            "fbclid"
+        ]
     },
-    "segmentLandingPageAdaptation": {
-      "heroDirection": "Lead with a dark couch or bedding before/after and make the 2-Pack the obvious choice for lounge + bedroom coverage.",
-      "benefitOrder": [
-        "Fast visible fur lift",
-        "Safe for everyday fabric surfaces",
-        "Reusable and easy to rinse",
-        "Two-zone value with the 2-Pack",
-        "Transparent delivery timing"
-      ],
-      "faqEmphasis": [
-        "Will it work on upholstery and bedding?",
-        "Will it pull or snag fabric?",
-        "How do I clean it?",
-        "Why buy two?"
-      ],
-      "sectionEmphasis": [
-        "Hero demo",
-        "Surface proof grid",
-        "Rinse-clean section",
-        "2-Pack value block"
-      ],
-      "mobileUxNotes": "Keep the hero proof above the fold and show bundle choices immediately after the first demo. Do not bury the 2-Pack under long copy.",
-      "assetNeedsSpecificToThisSegment": [
-        "Dark couch before/after image set",
-        "Duvet or throw demo clip",
-        "Macro fur collection shot",
-        "Rinse-clean clip"
-      ]
+    "productDetails": {
+        "workingProductDefinition": "A hand-worn, reusable pet-hair removal glove/mitt that uses textured cloth and silicone surfaces to lift loose fur from fabric-heavy areas such as upholstery, bedding, clothing, pet beds, and car interiors. Position it primarily as a surface-cleanup tool; only use on-pet grooming angles if that use is operationally validated.",
+        "coreProblemSolved": "It gives pet owners a fast way to remove visible fur from the surfaces they notice most, without dragging out a vacuum or burning through disposable lint rollers.",
+        "primaryUseCases": [
+            "Quick couch and upholstery de-furring",
+            "Bedding, throws, and pet-bed cleanup between washes",
+            "Clothing touch-ups before work, guests, or going out",
+            "Car seat and interior hair cleanup after pet trips",
+            "Daily maintenance of fabric-heavy pet zones between deeper cleans"
+        ],
+        "materialsOrConstructionSummary": "Durable mesh cloth backing, soft brush cloth bristles, food-grade silicone bristles, reinforced stitching, and a polyester cuff suggest a lightweight, reusable glove built for repeated swipe-rinse-dry usage.",
+        "fulfillmentAndRefundAssumptions": "Assume shipping is already embedded in COGS, parcels ship per order rather than per unit, overseas fulfillment means a realistic AU delivery window of about 7-14 days, and low-cost approved refunds can be treated internally as keep-the-item economics. Customer-facing refund language should stay simple, truthful, and operationally supportable.",
+        "suggestedProductNames": [
+            "FurSweep Glove",
+            "ShedSweep Mitt",
+            "FurLift Glove",
+            "TidyTail Mitt",
+            "FurReset Glove",
+            "CoatCatch Mitt",
+            "HairLift Glove",
+            "SwipeAway Fur Mitt"
+        ],
+        "recommendedPrimaryProductName": "FurSweep Glove",
+        "recommendedPrimaryProductNameRationale": "It is clear, benefit-led, easy to understand in a Meta feed, and broad enough to cover couch, clothing, bedding, and car use without sounding gimmicky."
+    },
+    "pricingEconomicsAndOffers": {
+        "directPurchaseFunnelModel": {
+            "assumedCpc": "A$0.95.",
+            "assumedLpvRate": "85% of clicks.",
+            "assumedCheckoutStartRate": "15% of LPVs.",
+            "assumedPurchaseRate": "35% of checkout starts.",
+            "derivedClickToPurchaseRate": "4.46% (0.85 x 0.15 x 0.35).",
+            "estimatedBlendedCpa": "A$21.29.",
+            "breakEvenBlendedCpa": "A$28.82, based on modeled AOV of A$39.95 minus modeled landed cost per order of A$11.13.",
+            "recommendedTargetBlendedCpa": "A$22.00.",
+            "funnelLogicExplanation": "This model only works cleanly if the page is 2-Pack-led. With a 2-unit average order, contribution margin is A$28.82, so that is the break-even blended CPA. At A$0.95 CPC and a 4.46% click-to-purchase rate, estimated blended CPA lands at A$21.29. The main economic dependency is offer mix: if too many paid orders stay at the A$24.95 single, break-even CPA compresses to about A$16.63, which makes cold Meta scale far tighter."
+        },
+        "diagnosticMetrics": {
+            "estimatedCostPerLpv": "A$1.12.",
+            "estimatedCostPerCheckoutStart": "A$7.45."
+        },
+        "offerStack": {
+            "singleUnitOffer": {
+                "name": "FurSweep Glove \u2014 Single",
+                "pricePoint": "A$24.95",
+                "description": "Entry option for one primary fur zone or more price-sensitive buyers. Keep this secondary so it functions as a price ladder into the stronger bundle economics."
+            },
+            "bestSellerBundle": {
+                "name": "Daily Reset 2-Pack",
+                "pricePoint": "A$39.95",
+                "description": "Best balance of impulse conversion and margin. Frame as two everyday zones: couch + bed, home + car, or home + handbag."
+            },
+            "higherAovBundle": {
+                "name": "Whole-Home 3-Pack",
+                "pricePoint": "A$54.95",
+                "description": "For heavier-shed homes or buyers who want immediate coverage across lounge, bedroom, and car without rotating one glove around."
+            }
+        },
+        "recommendedPrimaryOffer": "Daily Reset 2-Pack at A$39.95.",
+        "recommendedPrimaryOfferRationale": "It is the cleanest profit-first offer for cold Meta traffic: the use case is easy to justify, the implied per-unit value improves versus the single, it keeps the headline price below A$40, and it nearly doubles contribution margin versus a single-unit order without creating the extra friction of a 3-Pack-first page.",
+        "offerOptionsMapping": [
+            {
+                "sourceOfferKey": "singleUnitOffer",
+                "offerOptionKey": "1",
+                "optionConfiguration": [
+                    {
+                        "Listing": 1,
+                        "Option": "Default",
+                        "Quantity": 1
+                    }
+                ],
+                "recommended": false
+            },
+            {
+                "sourceOfferKey": "bestSellerBundle",
+                "offerOptionKey": "2",
+                "optionConfiguration": [
+                    {
+                        "Listing": 1,
+                        "Option": "Default",
+                        "Quantity": 2
+                    },
+                    {
+                        "Listing": 2,
+                        "Option": "Default",
+                        "Quantity": 4
+                    }
+                ],
+                "recommended": true
+            },
+            {
+                "sourceOfferKey": "higherAovBundle",
+                "offerOptionKey": "3",
+                "optionConfiguration": [
+                    {
+                        "Listing": 1,
+                        "Option": "Default",
+                        "Quantity": 3
+                    },
+                    {
+                        "Listing": 2,
+                        "Option": "Default",
+                        "Quantity": 6
+                    }
+                ],
+                "recommended": false
+            }
+        ]
+    },
+    "mobileFirstLandingPagePlan": {
+        "roleInDirectPurchaseFunnel": "The page should convert short-form demo curiosity into a purchase by proving performance on familiar fabric surfaces within the first screen, then steering most shoppers into the 2-Pack before delivery or fabric-safety objections slow checkout starts.",
+        "mobileFirstSectionOrder": [
+            "Sticky CTA plus hero demo with the 2-Pack preselected",
+            "Problem-to-solution before/after on one high-contrast surface",
+            "Offer stack and bundle savings math",
+            "Surface compatibility proof grid",
+            "How it works: texture, grip, and hair lift",
+            "Reusable rinse-clean demo",
+            "Use-case modules for couch, bedding, clothing, and car",
+            "Shipping, guarantee, and trust guidance",
+            "FAQ block and final CTA"
+        ],
+        "creativeAssetsForEachSection": [
+            {
+                "sectionName": "Sticky CTA plus hero demo",
+                "assets": [
+                    "6-8 second vertical video showing the first swipe on a dark, hairy fabric surface",
+                    "Fallback static before/after hero image",
+                    "Offer selector visual with 2-Pack preselected",
+                    "Visible price, delivery window, and CTA in the first viewport"
+                ]
+            },
+            {
+                "sectionName": "Problem-to-solution before/after",
+                "assets": [
+                    "Clean half-versus-furry half image on the same surface",
+                    "Macro close-up of hair collecting on the glove",
+                    "Short caption overlays for sound-off viewers"
+                ]
+            },
+            {
+                "sectionName": "Offer stack and savings math",
+                "assets": [
+                    "Bundle comparison cards",
+                    "Per-use-zone icons for couch, bed, car, and clothing",
+                    "Savings callouts versus buying singles separately"
+                ]
+            },
+            {
+                "sectionName": "Surface compatibility proof grid",
+                "assets": [
+                    "4-6 micro demos across sofa, bedding, clothing, and car upholstery",
+                    "Simple icon row showing common target surfaces",
+                    "If needed, a spot-test note for delicate fabrics"
+                ]
+            },
+            {
+                "sectionName": "How it works",
+                "assets": [
+                    "Close-up of cloth and silicone texture",
+                    "Simple 3-step diagram: swipe, collect, rinse",
+                    "Hand-fit visual and left/right-hand usage visual if accurate"
+                ]
+            },
+            {
+                "sectionName": "Reusable rinse-clean demo",
+                "assets": [
+                    "Sink-rinse clip showing hair release",
+                    "Air-dry or ready-again visual",
+                    "Close-up of the glove after cleaning"
+                ]
+            },
+            {
+                "sectionName": "Use-case modules",
+                "assets": [
+                    "Lifestyle frames for couch, bedding, outfit rescue, and car cleanup",
+                    "Storage shots in handbag, laundry area, or car console",
+                    "Bundle labels tied to zone use"
+                ]
+            },
+            {
+                "sectionName": "Shipping, guarantee, and trust guidance",
+                "assets": [
+                    "Plain-language delivery timeline banner",
+                    "Guarantee or refund summary card",
+                    "Support/contact reassurance block"
+                ]
+            },
+            {
+                "sectionName": "FAQ block and final CTA",
+                "assets": [
+                    "Accordion icons with short answers",
+                    "Looping mini demo near the final CTA",
+                    "Sticky footer CTA state for long-scroll users"
+                ]
+            }
+        ],
+        "shippingAndGuaranteeMessagingGuidance": "State 7-14 day AU delivery near the first CTA and again in the FAQ. Do not use fake scarcity or hidden shipping reality. If operations can support it, test a plain 30-day satisfaction guarantee. If not, use transparent support and damaged/defective replacement language instead of stronger promises.",
+        "faqAndObjectionHandlingPriorities": [
+            "Will it work on couches, bedding, clothing, and car upholstery?",
+            "Will it snag, scratch, or pull fabric?",
+            "How do I clean it and how fast can I reuse it?",
+            "Why buy more than one glove?",
+            "How long does delivery take in Australia?",
+            "Can I use it left- or right-handed, and will it fit most adults?",
+            "Is this for quick daily touch-ups or full deep cleans?"
+        ],
+        "alignmentWithCustomerSegmentsAndAngleTriggerMatrix": "Keep economics constant across all segments with the same offer stack and 2-Pack default, but swap the hero demo, first proof block, and headline based on the incoming ad angle: couch, car, outfit, or after-the-vacuum. Each ad should land on its matching first-use-case module so message scent is preserved and checkout-start rate stays high.",
+        "mobileUxNotes": "Use 1-2 sentence copy blocks, subtitles on every video, large tap targets, a sticky Buy Now bar after the first scroll, and CTA repetition every 1-1.5 screen heights. Put price, offer choice, and delivery timing above the fold. Compress media aggressively, lazy-load below-the-fold assets, and avoid heavy carousels or long comparison tables that slow LPV quality."
+    },
+    "customerSegment": {
+        "segmentName": "Couch & Bedding Resetters",
+        "sharedContextSnapshot": {
+            "recommendedProductName": "FurSweep Glove",
+            "coreOfferStack": "FurSweep Glove \u2014 Single A$24.95 / Daily Reset 2-Pack A$39.95 / Whole-Home 3-Pack A$54.95. Keep the 2-Pack preselected on paid-traffic landers.",
+            "keyPricePoints": [
+                "Single: A$24.95",
+                "Daily Reset 2-Pack: A$39.95",
+                "Whole-Home 3-Pack: A$54.95"
+            ],
+            "shippingReality": "Transparent 7-14 day AU delivery from overseas fulfillment; state it near the first CTA and in FAQ.",
+            "guaranteeOrRefundFraming": "Preferred: a plain 30-day satisfaction guarantee only if operations can honor it. Fallback: transparent support plus damaged/defective replacements without stronger promises.",
+            "landingPageRoleInFunnel": "Convert short-form demo interest into purchase by proving performance on common fabric surfaces fast, steering shoppers to the 2-Pack, and resolving fabric-safety, cleaning, and delivery objections before checkout."
+        },
+        "segmentSummary": {
+            "whoThisSegmentIs": "Indoor cat and dog owners whose sofa, throws, and bedding visibly collect fur every day.",
+            "needState": "A fast, low-effort way to reset the most noticeable fabric surfaces between deeper cleans.",
+            "purchaseMomentOrTriggerCondition": "They see fur on the couch before relaxing, before guests arrive, or on bedding right before bedtime.",
+            "emotionalDriver": "Relief and control: a home that looks clean without committing to a full vacuum session.",
+            "mainObjections": [
+                "Will it actually lift fur from upholstery and bedding?",
+                "Will it snag soft or woven fabrics?",
+                "Is it easy to clean and reuse?",
+                "Why buy more than one?",
+                "How long will delivery take?"
+            ],
+            "economicAttractiveness": "This is the widest use case and naturally supports a 2-Pack because the two most obvious hair zones are usually lounge + bedroom."
+        },
+        "angleAndTrigger": {
+            "angleNumber": 1,
+            "angleName": "One-Swipe Sofa Reset",
+            "trigger": "A dark couch or chair is visibly covered in fur after the pet gets up.",
+            "corePromise": "Lift visible fur fast from upholstery without pulling out bigger cleaning tools.",
+            "messageTerritory": "Immediate before/after proof, hand-scale control, and easy daily reset.",
+            "whyThisAngleShouldConvertOnMeta": "The problem is legible in one glance, the fix is tactile and visual, and the product requires almost no explanation once the first swipe is shown.",
+            "objectionsToPreHandle": [
+                "Will it work on woven upholstery?",
+                "Will it scratch or snag fabric?",
+                "How do I clean the glove after use?"
+            ],
+            "proofOrDemoAssetsRequired": [
+                "Dark couch before/after split image",
+                "One continuous swipe video on upholstery",
+                "Close-up of collected fur plus rinse-clean clip"
+            ],
+            "recommendedCtaOrRoasTarget": "CTA: Get the 2-Pack for lounge + bedroom. Economics target: keep blended CPA at or below A$22.",
+            "creativeHandoffs": {
+                "staticImageDirections": [
+                    "Use a dark couch cushion covered in light fur with the glove mid-swipe so the benefit is obvious before copy is read.",
+                    "Create a two-panel before/after frame with only the glove and removed fur pile in view.",
+                    "Keep text minimal: 'Quick couch reset' or 'Lift fur off upholstery.'"
+                ],
+                "shortFormVideoOrUgcDirections": [
+                    "Open on the hairy cushion in close-up, show one continuous swipe, reveal the collected fur, then show a fast rinse.",
+                    "Keep the first proof moment inside 2-3 seconds and the total clip under 15 seconds.",
+                    "End by framing the 2-Pack as one for the lounge and one for the bedroom."
+                ],
+                "firstFrameOrThumbStopDirection": "A dark sofa arm or cushion visibly coated with light fur.",
+                "copyHookTerritories": [
+                    "Pet hair on the couch again?",
+                    "My sofa looked clean until the fur caught the light.",
+                    "The fast reset before guests sit down."
+                ],
+                "headlineTerritories": [
+                    "Reset Your Sofa Fast",
+                    "Lift Fur Off Upholstery",
+                    "Keep One by the Couch"
+                ],
+                "visualProofMoments": [
+                    "Hair bunching into the glove texture",
+                    "Clean half-versus-furry half on the same cushion",
+                    "Sink-rinse cleanup shot"
+                ],
+                "continuityNotesForLandingPage": "Use the same couch visual as the landing-page hero and land directly on the 2-Pack block with lounge + bedroom usage labels."
+            }
+        },
+        "segmentLandingPageAdaptation": {
+            "heroDirection": "Lead with a dark couch or bedding before/after and make the 2-Pack the obvious choice for lounge + bedroom coverage.",
+            "benefitOrder": [
+                "Fast visible fur lift",
+                "Safe for everyday fabric surfaces",
+                "Reusable and easy to rinse",
+                "Two-zone value with the 2-Pack",
+                "Transparent delivery timing"
+            ],
+            "faqEmphasis": [
+                "Will it work on upholstery and bedding?",
+                "Will it pull or snag fabric?",
+                "How do I clean it?",
+                "Why buy two?"
+            ],
+            "sectionEmphasis": [
+                "Hero demo",
+                "Surface proof grid",
+                "Rinse-clean section",
+                "2-Pack value block"
+            ],
+            "mobileUxNotes": "Keep the hero proof above the fold and show bundle choices immediately after the first demo. Do not bury the 2-Pack under long copy.",
+            "assetNeedsSpecificToThisSegment": [
+                "Dark couch before/after image set",
+                "Duvet or throw demo clip",
+                "Macro fur collection shot",
+                "Rinse-clean clip"
+            ]
+        }
+    },
+    "trustSignal": {
+        "privacyPolicy": "./assets/privacy_policy.md",
+        "contactEmail": "support@niobium.co.nz",
+        "facebookPage": "https://www.facebook.com/niobiumstudionz",
+        "terms": "./assets/terms.md",
+        "returnsPolicy": "./assets/returns_policy.md",
+        "shippingPolicy": "./assets/shipping_policy.md",
+        "testimonials": [
+            {
+                "name": "Emma R.",
+                "city": "Sydney",
+                "testimonial": "I bought the 2-Pack and keep one near the couch and one in the bedroom. It lifts the loose fur off our dark sofa much faster than using a lint roller, and I like that I can just rinse it and use it again.",
+                "videoUrl": "./assets/placeholder.mp4",
+                "mediaRatio": "1:1"
+            },
+            {
+                "name": "Sophie T.",
+                "city": "Melbourne",
+                "testimonial": "After purchase I was mostly hoping it would help with bedding, and it actually made the daily reset much easier. A few quick swipes over the doona cover and throws makes the room look tidier before bed.",
+                "imageUrl": "./assets/placeholder.png",
+                "mediaRatio": "1:1"
+            },
+            {
+                "name": "Liam P.",
+                "city": "Brisbane",
+                "testimonial": "We have a heavy-shedding dog and this has become our go-to for the lounge chairs. It is not a replacement for a deep clean, but for visible fur on upholstery it works really well and saves me dragging out the vacuum.",
+                "videoUrl": "./assets/placeholder.mp4",
+                "mediaRatio": "1:1"
+            },
+            {
+                "name": "Chloe M.",
+                "city": "Perth",
+                "testimonial": "I use mine for quick clothing touch-ups before leaving the house, especially on black leggings and knit tops. The glove is easy to handle, and being reusable makes it feel more practical than going through disposable rollers.",
+                "imageUrl": "./assets/placeholder.png",
+                "mediaRatio": "1:1"
+            },
+            {
+                "name": "Nathan W.",
+                "city": "Adelaide",
+                "testimonial": "The best part for me is the car cleanup. Pet hair always shows up on the back seat after weekend trips, and this is now the fastest way I have found to make the interior look presentable again.",
+                "imageUrl": "./assets/placeholder.png",
+                "mediaRatio": "1:1"
+            },
+            {
+                "name": "Grace H.",
+                "city": "Hobart",
+                "testimonial": "I was worried it might pull at our woven couch fabric, so I spot tested first. It was gentle on the surface and picked up a surprising amount of fur, so I have ended up using it nearly every day.",
+                "videoUrl": "./assets/placeholder.mp4",
+                "mediaRatio": "1:1"
+            },
+            {
+                "name": "Olivia S.",
+                "city": "Canberra",
+                "testimonial": "The rinse-clean part is what sold me after using it. The fur comes off easily under water, it dries quickly enough for regular use, and the whole thing feels simple compared with all the other pet-hair gadgets I have tried.",
+                "imageUrl": "./assets/placeholder.png",
+                "mediaRatio": "1:1"
+            },
+            {
+                "name": "Jack D.",
+                "city": "Gold Coast",
+                "testimonial": "I ordered the 2-Pack because the page suggested one for the lounge and one for the bedroom, and that turned out to be the right call. Having one glove in each area means I actually keep up with the fur instead of putting it off.",
+                "videoUrl": "./assets/placeholder.mp4",
+                "mediaRatio": "1:1"
+            },
+            {
+                "name": "Mia C.",
+                "city": "Newcastle",
+                "testimonial": "This has been especially helpful before guests come over. I can do a fast pass on the couch cushions and pet bed area in a couple of minutes, and the home looks much cleaner without a full cleaning session.",
+                "imageUrl": "./assets/placeholder.png",
+                "mediaRatio": "1:1"
+            },
+            {
+                "name": "Ben K.",
+                "city": "Geelong",
+                "testimonial": "The product matched the main use case I bought it for: quick surface cleanup on fabric-heavy spots around the house. I use it on the sofa, bedding, and occasionally the car, and it has been a solid little tool to keep on hand.",
+                "imageUrl": "./assets/placeholder.png",
+                "mediaRatio": "1:1"
+            }
+        ],
+        "instagramPage": "https://www.instagram.com/niobium_studio"
+    },
+    "assetLibrary": {
+        "6-8 second vertical video showing the first swipe on a dark, hairy fabric surface": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Fallback static before/after hero image": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Offer selector visual with 2-Pack preselected": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Visible price, delivery window, and CTA in the first viewport": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Clean half-versus-furry half image on the same surface": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Macro close-up of hair collecting on the glove": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Short caption overlays for sound-off viewers": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Bundle comparison cards": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Per-use-zone icons for couch, bed, car, and clothing": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Savings callouts versus buying singles separately": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "4-6 micro demos across sofa, bedding, clothing, and car upholstery": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Simple icon row showing common target surfaces": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "If needed, a spot-test note for delicate fabrics": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Close-up of cloth and silicone texture": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Simple 3-step diagram: swipe, collect, rinse": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Hand-fit visual and left/right-hand usage visual if accurate": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Sink-rinse clip showing hair release": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Air-dry or ready-again visual": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Close-up of the glove after cleaning": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Lifestyle frames for couch, bedding, outfit rescue, and car cleanup": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Storage shots in handbag, laundry area, or car console": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Bundle labels tied to zone use": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Plain-language delivery timeline banner": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Guarantee or refund summary card": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Support/contact reassurance block": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Accordion icons with short answers": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Looping mini demo near the final CTA": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Sticky footer CTA state for long-scroll users": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Dark couch before/after split image": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "One continuous swipe video on upholstery": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Close-up of collected fur plus rinse-clean clip": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Dark couch before/after image set": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Duvet or throw demo clip": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Macro fur collection shot": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        },
+        "Rinse-clean clip": {
+            "path": "./assets/placeholder.png",
+            "mediaRatio": "1:1"
+        }
     }
-  },
-  "trustSignal": {
-    "privacyPolicy": "./assets/privacy_policy.md",
-    "contactEmail": "support@niobium.co.nz",
-    "facebookPage": "https://www.facebook.com/niobiumstudionz",
-    "InstrgramPage": "https://www.instagram.com/niobium_studio",
-    "terms": "./assets/terms.md",
-    "returnsPolicy": "./assets/returns_policy.md",
-    "shippingPolicy": "./assets/shipping_policy.md",
-    "testimonials": [
-      {
-        "name": "Emma R.",
-        "city": "Sydney",
-        "testimonial": "I bought the 2-Pack and keep one near the couch and one in the bedroom. It lifts the loose fur off our dark sofa much faster than using a lint roller, and I like that I can just rinse it and use it again.",
-        "videoUrl": "./assets/placeholder.mp4",
-        "mediaRatio": "1:1"
-      },
-      {
-        "name": "Sophie T.",
-        "city": "Melbourne",
-        "testimonial": "After purchase I was mostly hoping it would help with bedding, and it actually made the daily reset much easier. A few quick swipes over the doona cover and throws makes the room look tidier before bed.",
-        "imageUrl": "./assets/placeholder.png",
-        "mediaRatio": "1:1"
-      },
-      {
-        "name": "Liam P.",
-        "city": "Brisbane",
-        "testimonial": "We have a heavy-shedding dog and this has become our go-to for the lounge chairs. It is not a replacement for a deep clean, but for visible fur on upholstery it works really well and saves me dragging out the vacuum.",
-        "videoUrl": "./assets/placeholder.mp4",
-        "mediaRatio": "1:1"
-      },
-      {
-        "name": "Chloe M.",
-        "city": "Perth",
-        "testimonial": "I use mine for quick clothing touch-ups before leaving the house, especially on black leggings and knit tops. The glove is easy to handle, and being reusable makes it feel more practical than going through disposable rollers.",
-        "imageUrl": "./assets/placeholder.png",
-        "mediaRatio": "1:1"
-      },
-      {
-        "name": "Nathan W.",
-        "city": "Adelaide",
-        "testimonial": "The best part for me is the car cleanup. Pet hair always shows up on the back seat after weekend trips, and this is now the fastest way I have found to make the interior look presentable again.",
-        "imageUrl": "./assets/placeholder.png",
-        "mediaRatio": "1:1"
-      },
-      {
-        "name": "Grace H.",
-        "city": "Hobart",
-        "testimonial": "I was worried it might pull at our woven couch fabric, so I spot tested first. It was gentle on the surface and picked up a surprising amount of fur, so I have ended up using it nearly every day.",
-        "videoUrl": "./assets/placeholder.mp4",
-        "mediaRatio": "1:1"
-      },
-      {
-        "name": "Olivia S.",
-        "city": "Canberra",
-        "testimonial": "The rinse-clean part is what sold me after using it. The fur comes off easily under water, it dries quickly enough for regular use, and the whole thing feels simple compared with all the other pet-hair gadgets I have tried.",
-        "imageUrl": "./assets/placeholder.png",
-        "mediaRatio": "1:1"
-      },
-      {
-        "name": "Jack D.",
-        "city": "Gold Coast",
-        "testimonial": "I ordered the 2-Pack because the page suggested one for the lounge and one for the bedroom, and that turned out to be the right call. Having one glove in each area means I actually keep up with the fur instead of putting it off.",
-        "videoUrl": "./assets/placeholder.mp4",
-        "mediaRatio": "1:1"
-      },
-      {
-        "name": "Mia C.",
-        "city": "Newcastle",
-        "testimonial": "This has been especially helpful before guests come over. I can do a fast pass on the couch cushions and pet bed area in a couple of minutes, and the home looks much cleaner without a full cleaning session.",
-        "imageUrl": "./assets/placeholder.png",
-        "mediaRatio": "1:1"
-      },
-      {
-        "name": "Ben K.",
-        "city": "Geelong",
-        "testimonial": "The product matched the main use case I bought it for: quick surface cleanup on fabric-heavy spots around the house. I use it on the sofa, bedding, and occasionally the car, and it has been a solid little tool to keep on hand.",
-        "imageUrl": "./assets/placeholder.png",
-        "mediaRatio": "1:1"
-      }
-    ]
-  },
-  "assetLibrary": {
-    "6-8 second vertical video showing the first swipe on a dark, hairy fabric surface": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Fallback static before/after hero image": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Offer selector visual with 2-Pack preselected": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Visible price, delivery window, and CTA in the first viewport": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Clean half-versus-furry half image on the same surface": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Macro close-up of hair collecting on the glove": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Short caption overlays for sound-off viewers": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Bundle comparison cards": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Per-use-zone icons for couch, bed, car, and clothing": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Savings callouts versus buying singles separately": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "4-6 micro demos across sofa, bedding, clothing, and car upholstery": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Simple icon row showing common target surfaces": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "If needed, a spot-test note for delicate fabrics": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Close-up of cloth and silicone texture": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Simple 3-step diagram: swipe, collect, rinse": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Hand-fit visual and left/right-hand usage visual if accurate": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Sink-rinse clip showing hair release": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Air-dry or ready-again visual": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Close-up of the glove after cleaning": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Lifestyle frames for couch, bedding, outfit rescue, and car cleanup": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Storage shots in handbag, laundry area, or car console": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Bundle labels tied to zone use": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Plain-language delivery timeline banner": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Guarantee or refund summary card": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Support/contact reassurance block": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Accordion icons with short answers": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Looping mini demo near the final CTA": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Sticky footer CTA state for long-scroll users": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Dark couch before/after split image": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "One continuous swipe video on upholstery": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Close-up of collected fur plus rinse-clean clip": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Dark couch before/after image set": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Duvet or throw demo clip": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Macro fur collection shot": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    },
-    "Rinse-clean clip": {
-      "path": "./assets/placeholder.png",
-      "mediaRatio": "1:1"
-    }
-  }
 }

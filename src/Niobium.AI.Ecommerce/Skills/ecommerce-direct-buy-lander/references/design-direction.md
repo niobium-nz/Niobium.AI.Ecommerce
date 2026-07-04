@@ -1,7 +1,5 @@
 # Design Direction And Anti-Generic Heuristics
 
-This file adapts the parts of the reviewed `landing-page-guide-v2` skill that are useful for this product-page workflow, while explicitly rejecting the parts the user does not want.
-
 ## Import These Ideas
 
 ### 1. Choose A Direction Before Coding
@@ -13,7 +11,7 @@ For this page type, common high-fit directions are:
 - tactile proof-led minimalism
 - soft asymmetry with strong offer cards
 
-Pick one and commit.
+Pick one that fits the most to the target audience and product selling, then commit.
 
 ### 2. Design A System, Not A Template
 Before coding, decide:
@@ -47,11 +45,8 @@ Customization should touch:
 - selection states
 
 ## Explicit Rejections
-Do not import these patterns from the reviewed skill:
-- mandatory 11-element coverage
-- mandatory custom-font rules
-- newsletter or waitlist capture
-- countdown timers
+Do not use these patterns:
+- generic newsletter or waitlist capture; the required vendor-backed email subscription form near the footer is allowed and should be visually quiet
 - dual-CTA hero structure
 
 ## Anti-Generic Rules

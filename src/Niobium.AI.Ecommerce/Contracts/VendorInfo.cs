@@ -10,6 +10,6 @@ namespace Niobium.AI.Ecommerce.Contracts
 
         public PolicyInfo? PolicyUrls { get; set; }
 
-        public List<TrustSignal> TrustSignals { get; set; } = [];
+        public List<VendorTrustSignal> TrustSignals { get; set; } = [];
     }
 }

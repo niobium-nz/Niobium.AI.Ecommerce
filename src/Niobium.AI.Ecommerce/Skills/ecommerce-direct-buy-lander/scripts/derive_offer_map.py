@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Derive stable alphabet-only offer short names and checkout URLs from input JSON."""
+"""Validate and print ecommerce offer-option mappings.
+
+The skill no longer derives alphabet-only offer short names or checkout URLs.
+Generated projects use explicit `pricingEconomicsAndOffers.offerOptionsMapping`
+entries. Each visible offer maps to an `OFFER_OPTION__n` environment variable
+whose value is the compact JSON serialization of `optionConfiguration`.
+"""
 
 from __future__ import annotations
 
@@ -9,179 +15,153 @@ import re
 from pathlib import Path
 from typing import Any
 
-DIGIT_WORDS = {
-    "0": "zero",
-    "1": "one",
-    "2": "two",
-    "3": "three",
-    "4": "four",
-    "5": "five",
-    "6": "six",
-    "7": "seven",
-    "8": "eight",
-    "9": "nine",
-    "10": "ten",
-}
-
-PACK_NUMBER_WORDS = {
-    "one": "onepack",
-    "two": "twopack",
-    "three": "threepack",
-    "four": "fourpack",
-    "five": "fivepack",
-    "six": "sixpack",
-    "seven": "sevenpack",
-    "eight": "eightpack",
-    "nine": "ninepack",
-    "ten": "tenpack",
-}
-
-GENERIC_TOKENS = {
-    "offer",
-    "offers",
-    "bundle",
-    "bundles",
-    "pack",
-    "packs",
-    "unit",
-    "units",
-    "glove",
-    "gloves",
-    "mitt",
-    "mitts",
-    "best",
-    "seller",
-    "bestseller",
-}
-
-COUNT_TOKENS = set(PACK_NUMBER_WORDS) | {"single"}
+SUPPORTED_COUNTRIES = {"US", "UK", "CA", "AU", "SG", "NZ", "IE"}
+SHORT_PRODUCT_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+CART_ITEM_KEYS = {"Listing", "Option", "Quantity"}
 
 
 def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
+        data = json.load(f)
+    if not isinstance(data, dict):
+        raise ValueError("input JSON root must be an object")
+    return data
 
 
-def camel_tokens(name: str) -> list[str]:
-    spaced = re.sub(r"([a-z])([A-Z])", r"\1 \2", name)
-    return [tok.lower() for tok in re.findall(r"[A-Za-z]+", spaced)]
+def require_short_product_name(data: dict[str, Any]) -> str:
+    value = data.get("shortProductName")
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError("missing required top-level shortProductName")
+    value = value.strip()
+    if not SHORT_PRODUCT_RE.fullmatch(value):
+        raise ValueError("shortProductName must be lowercase letters/numbers/hyphens, with no leading or trailing hyphen")
+    return value
 
 
-def normalize_words(text: str) -> list[str]:
-    working = text.lower()
-    for digit, word in DIGIT_WORDS.items():
-        working = re.sub(rf"(?<![a-z]){re.escape(digit)}(?![a-z])", f" {word} ", working)
-    return [tok for tok in re.findall(r"[a-z]+", working) if tok]
+def require_target_country(data: dict[str, Any]) -> str:
+    value = data.get("targetCountry")
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError("missing required top-level targetCountry")
+    value = value.strip().upper()
+    if value not in SUPPORTED_COUNTRIES:
+        raise ValueError(f"targetCountry must be one of {sorted(SUPPORTED_COUNTRIES)}")
+    return value
 
 
-def product_tokens(data: dict[str, Any]) -> set[str]:
-    product_details = data.get("productDetails", {})
-    names = []
-    recommended = product_details.get("recommendedPrimaryProductName")
-    if isinstance(recommended, str):
-        names.append(recommended)
-    suggested = product_details.get("suggestedProductNames", [])
-    if isinstance(suggested, list):
-        names.extend(name for name in suggested if isinstance(name, str))
-
-    tokens: set[str] = set()
-    for name in names:
-        tokens.update(normalize_words(name))
-    return tokens
+def normalize_offer_option_key(raw: Any, index: int) -> str:
+    if isinstance(raw, int):
+        if raw <= 0:
+            raise ValueError(f"offerOptionsMapping[{index}].offerOptionKey must be a positive integer")
+        return str(raw)
+    if isinstance(raw, str):
+        value = raw.strip()
+        if not re.fullmatch(r"[1-9][0-9]*", value):
+            raise ValueError(f"offerOptionsMapping[{index}].offerOptionKey must be a positive integer string")
+        return value
+    raise ValueError(f"offerOptionsMapping[{index}].offerOptionKey must be a positive integer or digit string")
 
 
-def derive_short_name(offer_key: str, offer_name: str, blocked_tokens: set[str], used: set[str]) -> str:
-    words = normalize_words(offer_name)
-    key_words = camel_tokens(offer_key)
-
-    descriptor_tokens = [
-        tok
-        for tok in words
-        if tok not in blocked_tokens and tok not in GENERIC_TOKENS and tok not in COUNT_TOKENS
-    ]
-
-    if descriptor_tokens:
-        candidate = "".join(descriptor_tokens[:2])
-    else:
-        if "single" in words or "single" in key_words:
-            candidate = "single"
-        else:
-            count_token = next((tok for tok in words if tok in PACK_NUMBER_WORDS), None)
-            if count_token:
-                candidate = PACK_NUMBER_WORDS[count_token]
-            else:
-                fallback = [tok for tok in key_words if tok not in {"offer", "offers", "bundle", "bundles"}]
-                candidate = "".join(fallback) or "offer"
-
-    candidate = re.sub(r"[^a-z]", "", candidate)
-    if not candidate:
-        candidate = "offer"
-
-    if candidate in used:
-        count_token = next((tok for tok in words if tok in PACK_NUMBER_WORDS), None)
-        suffix = PACK_NUMBER_WORDS[count_token] if count_token else "alt"
-        merged = re.sub(r"[^a-z]", "", f"{candidate}{suffix}")
-        candidate = merged if merged not in used else re.sub(r"[^a-z]", "", f"{candidate}{offer_key}")
-
-    used.add(candidate)
-    return candidate
+def validate_cart_item(item: Any, mapping_index: int, item_index: int) -> dict[str, Any]:
+    label = f"offerOptionsMapping[{mapping_index}].optionConfiguration[{item_index}]"
+    if not isinstance(item, dict):
+        raise ValueError(f"{label} must be an object")
+    keys = set(item.keys())
+    if keys != CART_ITEM_KEYS:
+        extra = sorted(keys - CART_ITEM_KEYS)
+        missing = sorted(CART_ITEM_KEYS - keys)
+        raise ValueError(f"{label} must contain only Listing, Option, Quantity; extra={extra}, missing={missing}")
+    listing = item.get("Listing")
+    quantity = item.get("Quantity")
+    option = item.get("Option")
+    if not isinstance(listing, int) or listing <= 0:
+        raise ValueError(f"{label}.Listing must be a positive integer")
+    if not isinstance(quantity, int) or quantity <= 0:
+        raise ValueError(f"{label}.Quantity must be a positive integer")
+    if not isinstance(option, str) or not option.strip():
+        raise ValueError(f"{label}.Option must be a non-empty string")
+    return {"Listing": listing, "Option": option.strip(), "Quantity": quantity}
 
 
-def replace_offer_token(checkout_url: str, short_name: str) -> str:
-    return checkout_url.replace(":offer-short-name", short_name)
+def build_offer_option_map(data: dict[str, Any]) -> dict[str, Any]:
+    short_product_name = require_short_product_name(data)
+    target_country = require_target_country(data)
 
+    pricing = data.get("pricingEconomicsAndOffers")
+    if not isinstance(pricing, dict):
+        raise ValueError("input JSON does not contain pricingEconomicsAndOffers")
 
-def preferred_offer_key(data: dict[str, Any], offers: dict[str, Any]) -> str | None:
-    target = str(data.get("pricingEconomicsAndOffers", {}).get("recommendedPrimaryOffer", "")).lower()
-    if not target:
-        return None
-    for key, value in offers.items():
-        name = str(value.get("name", "")).lower()
-        price = str(value.get("pricePoint", "")).lower()
-        combined = f"{name} {price}".strip()
-        if target in combined or combined in target:
-            return key
-    for key, value in offers.items():
-        name = str(value.get("name", "")).lower()
-        if name and name in target:
-            return key
-    return None
-
-
-def build_offer_map(data: dict[str, Any]) -> dict[str, Any]:
-    offer_stack = data.get("pricingEconomicsAndOffers", {}).get("offerStack", {})
+    offer_stack = pricing.get("offerStack")
     if not isinstance(offer_stack, dict) or not offer_stack:
         raise ValueError("input JSON does not contain pricingEconomicsAndOffers.offerStack")
 
-    blocked = product_tokens(data)
-    checkout_url = str(data.get("checkoutUrl", "")).strip()
-    used: set[str] = set()
-    offers_out: list[dict[str, Any]] = []
+    mappings = pricing.get("offerOptionsMapping")
+    if not isinstance(mappings, list) or not mappings:
+        raise ValueError("input JSON must contain non-empty pricingEconomicsAndOffers.offerOptionsMapping")
 
-    preferred_key = preferred_offer_key(data, offer_stack)
+    used_option_keys: set[str] = set()
+    recommended_count = 0
+    visible_offers: list[dict[str, Any]] = []
 
-    for offer_key, offer_value in offer_stack.items():
+    for index, mapping in enumerate(mappings):
+        if not isinstance(mapping, dict):
+            raise ValueError(f"offerOptionsMapping[{index}] must be an object")
+
+        source_key = mapping.get("sourceOfferKey")
+        if not isinstance(source_key, str) or not source_key.strip():
+            raise ValueError(f"offerOptionsMapping[{index}].sourceOfferKey is required")
+        source_key = source_key.strip()
+        if source_key not in offer_stack:
+            raise ValueError(f"offerOptionsMapping[{index}].sourceOfferKey '{source_key}' does not exist in offerStack")
+
+        option_key = normalize_offer_option_key(mapping.get("offerOptionKey"), index)
+        if option_key in used_option_keys:
+            raise ValueError(f"duplicate offerOptionKey '{option_key}' in offerOptionsMapping")
+        used_option_keys.add(option_key)
+
+        option_configuration = mapping.get("optionConfiguration")
+        if not isinstance(option_configuration, list) or not option_configuration:
+            raise ValueError(f"offerOptionsMapping[{index}].optionConfiguration must be a non-empty array")
+        cart = [validate_cart_item(item, index, item_index) for item_index, item in enumerate(option_configuration)]
+
+        recommended = mapping.get("recommended")
+        if not isinstance(recommended, bool):
+            raise ValueError(f"offerOptionsMapping[{index}].recommended must be a boolean")
+        if recommended:
+            recommended_count += 1
+
+        offer_value = offer_stack[source_key]
         if not isinstance(offer_value, dict):
-            continue
-        name = str(offer_value.get("name", offer_key)).strip()
-        short_name = derive_short_name(offer_key, name, blocked, used)
-        offers_out.append(
+            raise ValueError(f"offerStack.{source_key} must be an object")
+
+        env_var_name = f"OFFER_OPTION__{option_key}"
+        env_var_value = json.dumps(cart, separators=(",", ":"), ensure_ascii=True)
+        visible_offers.append(
             {
-                "key": offer_key,
-                "name": name,
-                "price": offer_value.get("pricePoint"),
+                "sourceOfferKey": source_key,
+                "offerOptionKey": option_key,
+                "envVarName": env_var_name,
+                "envVarValue": env_var_value,
+                "recommended": recommended,
+                "name": offer_value.get("name", source_key),
                 "description": offer_value.get("description"),
-                "short_name": short_name,
-                "checkout_url": replace_offer_token(checkout_url, short_name) if checkout_url else None,
-                "recommended": offer_key == preferred_key,
+                "pricePointHint": offer_value.get("pricePoint"),
+                "optionConfiguration": cart,
             }
         )
 
+    if recommended_count != 1:
+        raise ValueError(f"offerOptionsMapping must contain exactly one recommended=true mapping; found {recommended_count}")
+
     return {
-        "brand_name": data.get("brandSystem", {}).get("brandName"),
-        "checkout_url_template": checkout_url,
-        "recommended_offer_key": preferred_key,
-        "offers": offers_out,
+        "shortProductName": short_product_name,
+        "targetCountry": target_country,
+        "appNames": {
+            "dev": f"niobiumecomm-{short_product_name}-dev",
+            "test": f"niobiumecomm-{short_product_name}-test",
+            "prod": f"niobiumecomm-{short_product_name}",
+        },
+        "brandName": data.get("brandSystem", {}).get("brandName"),
+        "visibleOffers": visible_offers,
     }
 
 
@@ -191,7 +171,7 @@ def main() -> int:
     args = parser.parse_args()
 
     data = load_json(args.input_json)
-    result = build_offer_map(data)
+    result = build_offer_option_map(data)
     print(json.dumps(result, indent=2, ensure_ascii=True))
     return 0
 

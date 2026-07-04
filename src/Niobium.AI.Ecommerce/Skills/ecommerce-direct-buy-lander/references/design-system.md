@@ -8,8 +8,8 @@ Single-product ecommerce landing page or PDP hybrid for cold Meta paid traffic.
 - fast to understand
 - warm and trustworthy
 - proof-heavy without feeling scammy
-- one page, one product, one job
-- direct purchase, not browsing
+- one main selling page, one product, one job
+- direct purchase through in-site checkout, not browsing
 
 ## What To Keep From The Provided UX Rules
 - minimal header with logo and minimal secondary action
@@ -25,8 +25,8 @@ Single-product ecommerce landing page or PDP hybrid for cold Meta paid traffic.
 
 ## What To Override
 
-### Replace cart patterns with direct-buy patterns
-The page should not use cart language or cart flows.
+### Replace cart patterns with direct-buy checkout patterns
+The page should not use cart language or cart UI. It should use visible marketing offer options that route to `/checkout?offer=<offerOptionKey>`. The underlying vendor APIs may use a `cart` parameter, but shoppers must not see cart concepts.
 
 Override these common ecommerce defaults:
 - `Add to Cart` -> `Buy Now`
@@ -54,13 +54,13 @@ A direct-response page can still have section anchors or FAQ toggles, but there 
 ## Section Order Default
 When the input does not specify another structure, use this mobile-first order:
 1. hero media plus buy box with recommended offer preselected
-2. fast proof or before-and-after block
+2. purchase moment or trigger
 3. offer stack and savings math
-4. surface compatibility or use-case proof
+4. emotional driver
 5. how it works
-6. rinse and reuse proof
+6. core promise
 7. testimonials or usage stories
-8. shipping, support, guarantee, and FAQ
+8. shipping, support, guarantee, and FAQ focused on objections relief
 9. final CTA
 
 ## Visual Tokens
@@ -110,13 +110,13 @@ Offer cards should:
 
 ### Proof Sections
 Favor concrete demonstrations:
-- before and after on a familiar surface
+- before and after
 - material close-up
-- rinse-clean demo
+- use case demo
 - testimonial with specific use case
 
 ### FAQ And Detail Blocks
-Use vertically collapsed sections or accordions. Avoid sending users to internal subpages for major product information.
+Avoid sending users to internal subpages for major product information by optionally using vertically collapsed sections or accordions. 
 
 ## Trust System
 Keep trust near the buy area and again near the final CTA.
@@ -124,7 +124,7 @@ Keep trust near the buy area and again near the final CTA.
 Good trust signals:
 - clear delivery window
 - simple returns or support policy
-- secure checkout reassurance
+- secure in-site checkout reassurance
 - visible contact email
 - authentic testimonials or UGC-style proof
 
@@ -140,3 +140,25 @@ Avoid:
 - parallax
 - count-up gimmicks
 - attention-seeking badges or timers
+
+
+## Checkout Continuity
+The `/checkout` page should feel like the next purchase step from the landing page, not a generic payment form.
+
+Requirements:
+- reduced navigation and fewer distractions than the landing page
+- same typography, card style, radius, and trust tone as the landing page
+- visible order summary using quote-derived price data
+- clear secure-payment reassurance near the Stripe Payment Element
+- required/optional field labels that match the target country
+- billing fields collapsed behind a same-as-shipping choice
+- coupon field visible enough for users who have one, but not visually dominant over payment completion
+
+## Required Subscription Form
+The landing page must include a small marketing email subscription form near the footer or in the footer.
+
+It should:
+- collect email only
+- avoid becoming a competing hero CTA
+- use loading, disabled, success, and retry-error states
+- use the vendor subscription integration rather than a generic newsletter/waitlist pattern

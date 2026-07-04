@@ -50,14 +50,15 @@ namespace Niobium.AI.Ecommerce.Workflows
             ProductOnboardingOutput result = new()
             {
                 JobId = input.JobId,
-                CandidateId = input.CandidateId,
-                ListingId = Guid.NewGuid(),
+                SignalId = input.SignalId,
+                CandidateId = Guid.NewGuid(),
+                TargetCountry = input.TargetCountry,
                 MarketingStrategy = marketingStrategy,
                 ImageStrategy = imageStrategy,
             };
 
-            string artifactName = $"listing/{result.CandidateId}/{result.ListingId}.json";
-            await context.CallActivityAsync(nameof(PublishArtifact), new PublishArtifactInput(artifactName, result));
+            string artifactName = $"candidates/{result.SignalId}/{result.CandidateId}.json";
+            await context.CallActivityAsync(nameof(PublishArtifact), new PublishArtifactInput(artifactName, result, result.GetType()));
             logger.LogInformation("Published product onboarding result to artifact storage with name: {ArtifactName}", artifactName);
             return result;
         }

@@ -5,35 +5,35 @@ using Niobium.AI.Ecommerce.Contracts;
 namespace Niobium.AI.Ecommerce.Workflows
 {
     [DurableTask]
-    internal class PublishCandidate : TaskActivity<ProductDiscoveryOutput, Guid?>
+    internal class PublishSignal : TaskActivity<ProductDiscoveryOutput, Guid?>
     {
         public override async Task<Guid?> RunAsync(TaskActivityContext context, ProductDiscoveryOutput input)
         {
             bool newPublish = true;
-            string candidatePath = $"/artifacts/candidates/{input.CandidateId}.json";
-            string candidateDir = Path.GetDirectoryName(candidatePath)!;
-            if (!Directory.Exists(candidateDir))
+            string signalPath = $"/artifacts/signal/{input.SignalId}.json";
+            string signalDir = Path.GetDirectoryName(signalPath)!;
+            if (!Directory.Exists(signalDir))
             {
-                Directory.CreateDirectory(candidateDir);
+                Directory.CreateDirectory(signalDir);
             }
 
-            string indexDir = $"/artifacts/candidates/index";
+            string indexDir = $"/artifacts/signal/index";
             if (!Directory.Exists(indexDir))
             {
                 Directory.CreateDirectory(indexDir);
             }
 
-            string newCandidateId = input.CandidateId.ToString();
+            string newSignalId = input.SignalId.ToString();
             IEnumerable<string> adArchiveIds = input.Ads.Where(ad => !String.IsNullOrWhiteSpace(ad.AdArchiveId)).Select(ad => ad.AdArchiveId!).Distinct();
             foreach (string? adArchiveId in adArchiveIds)
             {
                 string indexFile = Path.Combine(indexDir, $"{adArchiveId}.txt");
                 if (File.Exists(indexFile))
                 {
-                    string[] existingCandidates = await File.ReadAllLinesAsync(indexFile);
-                    if (!existingCandidates.Contains(newCandidateId))
+                    string[] existingSignals = await File.ReadAllLinesAsync(indexFile);
+                    if (!existingSignals.Contains(newSignalId))
                     {
-                        await File.WriteAllLinesAsync(indexFile, existingCandidates.Concat([newCandidateId]));
+                        await File.WriteAllLinesAsync(indexFile, existingSignals.Concat([newSignalId]));
                     }
                     else
                     {
@@ -42,13 +42,13 @@ namespace Niobium.AI.Ecommerce.Workflows
                 }
                 else
                 {
-                    await File.WriteAllTextAsync(indexFile, newCandidateId);
+                    await File.WriteAllTextAsync(indexFile, newSignalId);
                 }
             }
 
             string json = JsonSerializer.Serialize(input, SerializationOptions.SnakeCase);
-            await File.WriteAllTextAsync(candidatePath, json);
-            return newPublish ? input.CandidateId : null;
+            await File.WriteAllTextAsync(signalPath, json);
+            return newPublish ? input.SignalId : null;
         }
     }
 }

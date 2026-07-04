@@ -4,7 +4,7 @@ namespace Niobium.AI.Ecommerce.Contracts
     {
         public required Guid JobId { get; init; }
 
-        public required Guid CandidateId { get; init; }
+        public required Guid SignalId { get; init; }
 
         public required string SourceCountry { get; init; }
 

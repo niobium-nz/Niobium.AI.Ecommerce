@@ -4,7 +4,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Niobium.AI
 {
-    public abstract class TypedResponseAgent<TInput, TOutput>(IChatClientFactory clientFactory, ILogger logger) : GenericResponseAgent(clientFactory, logger), IResponseGenerator<TInput, TOutput>
+    public abstract class TypedResponseAgent<TInput, TOutput>(IChatClientFactory clientFactory, ILogger logger)
+        : GenericResponseAgent(clientFactory, logger), IResponseGenerator<TInput, TOutput>
         where TOutput : class
     {
         public virtual async Task<TOutput> RunAsync(TInput input, CancellationToken? cancellationToken = null)

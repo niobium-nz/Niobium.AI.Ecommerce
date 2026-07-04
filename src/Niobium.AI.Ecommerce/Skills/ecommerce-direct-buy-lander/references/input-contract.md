@@ -1,13 +1,60 @@
 # Input Contract
 
 ## Purpose
-Use the input JSON as a structured brief, not just as raw content. The agent should convert the brief into a direct-buy landing page that reflects the paid-ad angle, the strongest offer economics, and the product's validated claims.
+Use the input JSON as a structured brief, not just as raw content. The agent should convert the brief into a direct-buy landing page and in-site checkout webapp that reflects the paid-ad angle, the strongest offer economics, the product's validated claims, and the explicit offer-option purchase mapping.
 
 ## Source-Of-Truth Hierarchy
 1. Explicit user instructions in the current conversation.
 2. Live input JSON.
 3. This skill's rules and defaults.
 4. The bundled example input as shape reference only.
+
+## Required Top-Level Fields
+
+### `shortProductName`
+Required. A short, URL-safe product slug used to derive deterministic app names.
+
+Rules:
+- lowercase letters, numbers, and hyphens only
+- no leading or trailing hyphen
+- keep it short enough for Cloudflare Pages project names
+
+App names derived from it:
+- dev: `niobiumecomm-{shortProductName}-dev`
+- test: `niobiumecomm-{shortProductName}-test`
+- prod: `niobiumecomm-{shortProductName}`
+
+### `targetCountry`
+Required. Must be one of:
+
+```txt
+US
+UK
+CA
+AU
+SG
+NZ
+IE
+```
+
+Use this value to set `TARGET_COUNTRY`. The checkout page must not ask the customer to select a country.
+
+### `vendorIntegration`
+Required for a working checkout and support flow. The generated project maps this block to shell-safe environment variables:
+
+```json
+{
+  "tenantId": "TENANT_ID value",
+  "googleRecaptchaSiteKey": "GOOGLE_RECAPTCHA_SITE_KEY value",
+  "storeIntegrationEndpoint": "STORE_INTEGRATION_ENDPOINT value",
+  "notificationIntegrationEndpoint": "NOTIFICATION_INTEGRATION_ENDPOINT value",
+  "stripePublicKey": "STRIPE_PUBLIC_KEY value",
+  "shippingOptionId": "SHIPPING_OPTION_ID value",
+  "fallbackCoupon": "optional FALLBACK_COUPON value"
+}
+```
+
+Do not add currency. Currency comes from quote responses only.
 
 ## What To Pull From Each Input Area
 
@@ -17,18 +64,21 @@ Use the brand name, logo path, and colors directly.
 Honor `fontStrategy` exactly. If the input says `system fonts only`, do not introduce hosted or custom fonts.
 
 ### `trackingSpec`
-Use the platform IDs exactly as provided.
+Use the platform IDs exactly as provided and map them to environment variables:
+- `metaPixelId` -> `META_PIXEL_ID`
+- `ga4Id` -> `GOOGLE_TAG`
+- `microsoftClarity` -> `CLARITY_ID`
 
-Preserve only the query params listed in `preserveQueryParams`.
+Preserve only the query params listed in `preserveQueryParams`. Additionally, pass through `coupon` only when the URL contains it.
 
-Treat `trackEvents` as the required landing-page event vocabulary.
+Treat `trackEvents` as a source of landing-page vocabulary, but checkout-related event timing must follow `references/tracking-and-performance.md`.
 
-### `checkoutUrl`
-This is the only purchase destination. The landing page does not own checkout.
+### Deprecated `checkoutUrl`
+The previous contract used `checkoutUrl` and `:offer-short-name`. That behavior is deprecated for this skill.
 
-Replace `:offer-short-name` with the selected offer's short name.
+Generated projects must implement checkout inside the website at `/checkout`. Do not require, render, or route to an external checkout URL.
 
-Do not introduce cart or add-to-cart routing.
+If a live input still contains `checkoutUrl`, ignore it for purchase routing and add a short migration note in the final output.
 
 ### `productDetails`
 This is the truth boundary for claims.
@@ -44,13 +94,70 @@ Pull:
 Use `fulfillmentAndRefundAssumptions` for internal copy judgment. Do not expose internal economics directly to shoppers.
 
 ### `pricingEconomicsAndOffers`
-Use this block to decide which offer should be visually dominant.
+Use this block to decide visible offer order, highlight, and purchase mapping.
+
+Required nested fields:
+- `offerStack`
+- `offerOptionsMapping`
 
 The economics are mainly internal and should guide page emphasis, offer order, savings framing, and CTA copy. Do not surface internal CPA or margin math to customers unless the user explicitly asks for it.
 
-Use the offer names, prices, and descriptions exactly or with only minimal copy compression.
+Use the offer names and descriptions exactly or with only minimal copy compression.
 
-Default selection should follow `recommendedPrimaryOffer`.
+Displayed price claims must come from vendor quote responses, not from the static input's old modeled `pricePoint` values. The old `pricePoint` strings may be used as copy-planning hints only until live quote data arrives.
+
+### `pricingEconomicsAndOffers.offerStack`
+`offerStack` contains shopper-facing marketing offer metadata keyed by source offer key:
+
+```json
+"offerStack": {
+  "singleUnitOffer": {
+    "name": "FurSweep Glove — Single",
+    "pricePoint": "A$24.95",
+    "description": "Entry option for one primary fur zone."
+  }
+}
+```
+
+The source offer key is used by `offerOptionsMapping[].sourceOfferKey`.
+
+### `pricingEconomicsAndOffers.offerOptionsMapping`
+Required. This array defines the visible sale options, their purchase option key, and the exact cart JSON for each option.
+
+Example:
+
+```json
+"offerOptionsMapping": [
+  {
+    "sourceOfferKey": "singleUnitOffer",
+    "offerOptionKey": "1",
+    "optionConfiguration": [
+      { "Listing": 1, "Option": "Default", "Quantity": 1 }
+    ],
+    "recommended": false
+  },
+  {
+    "sourceOfferKey": "bestSellerBundle",
+    "offerOptionKey": "2",
+    "optionConfiguration": [
+      { "Listing": 1, "Option": "Default", "Quantity": 2 },
+      { "Listing": 2, "Option": "Default", "Quantity": 4 }
+    ],
+    "recommended": true
+  }
+]
+```
+
+Rules:
+- Preserve the array order as the visible offer order. Do not sort by `offerOptionKey`.
+- `sourceOfferKey` must exist in `offerStack`.
+- `offerOptionKey` must be a positive integer or digit string and maps directly to `OFFER_OPTION__{offerOptionKey}`.
+- `optionConfiguration` is the exact JSON array value assigned to the matching environment variable at deployment/build time.
+- Each `optionConfiguration` item must contain only `Listing`, `Option`, and `Quantity`.
+- `Listing` and `Quantity` must be positive integers.
+- `Option` must be a non-empty string.
+- Do not place labels, badges, savings text, product names, or ordering metadata inside `optionConfiguration`.
+- Exactly one mapping should normally have `recommended: true`; if this is missing or ambiguous, stop and ask.
 
 ### `mobileFirstLandingPagePlan`
 This is the most important structural guide.
@@ -62,7 +169,7 @@ Use it to derive:
 - friction points to pre-handle
 - mobile interaction choices
 
-If this block conflicts with a generic ecommerce pattern, prefer this block.
+If this block says `add-to-cart`, translate it to `Buy Now` and the in-site `/checkout?offer=<key>` flow.
 
 ### `customerSegment`
 This drives ad-message continuity.
@@ -78,8 +185,10 @@ The first viewport should usually reflect the named angle and trigger.
 ### `trustSignal`
 Use these to build trust honestly:
 - policy content and links
-- contact email
-- social links when useful in footer only
+- `contactEmail` -> `CONTACT_EMAIL`
+- `facebookPage` -> `FACEBOOK_URL`
+- `instagramPage` -> `INSTAGRAM_URL`
+- legacy typo fallback: `InstrgramPage` may be read only if `instagramPage` is absent
 - testimonials and reviewer locations
 
 Testimonials can be edited for length, but do not change meaning.
@@ -87,37 +196,54 @@ Testimonials can be edited for length, but do not change meaning.
 ### `assetLibrary`
 Use the provided asset plan to decide what each section needs. If a listed asset file is only a placeholder, keep the section structure and use a fallback visual treatment rather than claiming the final media exists.
 
-## Offer Short Name Rules
-Offer short names must be:
-- alphabetic only
-- lowercase in code and URLs
-- stable across the same input
-- tied to the selected offer, not to cart state
+## Environment Variable Mapping
+Generated projects should create a browser-safe public config at build time from these semantic source variables:
 
-Preferred derivation order:
-1. unique descriptive words in the offer name after removing product-name tokens and generic words like `pack`, `bundle`, `offer`, `glove`, `mitt`
-2. pack-size fallback such as `single`, `twopack`, `threepack`
-3. sanitized offer key fallback
+```txt
+APP_NAME
+TENANT_ID
+GOOGLE_RECAPTCHA_SITE_KEY
+STORE_INTEGRATION_ENDPOINT
+NOTIFICATION_INTEGRATION_ENDPOINT
+STRIPE_PUBLIC_KEY
+SHIPPING_OPTION_ID
+TARGET_COUNTRY
+FALLBACK_COUPON
+OFFER_OPTION__1
+OFFER_OPTION__2
+OFFER_OPTION__3
+META_PIXEL_ID
+GOOGLE_TAG
+CLARITY_ID
+FACEBOOK_URL
+INSTAGRAM_URL
+CONTACT_EMAIL
+```
 
-Example from the bundled sample:
-- `FurSweep Glove - Single` -> `single`
-- `Daily Reset 2-Pack` -> `dailyreset`
-- `Whole-Home 3-Pack` -> `wholehome`
+Deploy-only variables:
 
-If two offers would collide, append a pack-size word to the shorter duplicate.
+```txt
+CLOUDFLARE_ACCOUNT_ID
+CLOUDFLARE_API_TOKEN
+```
+
+Deploy-only variables must never be copied to public config, bundled JavaScript, static HTML, or `out/`.
 
 ## Copy Guardrails
-- Never invent performance claims or social proof.
+- Never invent performance claims or social proof unless the input provided them.
 - Never add countdowns or scarcity unless the input validates them.
 - Do not imply local fulfillment if the input says overseas fulfillment.
 - If refund terms are uncertain, use the most supportable version.
 - If using testimonial excerpts, keep them faithful.
+- Do not hardcode prices. Use loading, pending, or quote-derived values instead.
 
 ## Page-Decision Defaults
-If a live input omits a decision, use these defaults:
+If a live input omits a non-critical decision, use these defaults:
 - visual mood: warm, natural, premium, direct-response
 - headline style: short, outcome-led, concrete
 - first proof block: before and after result on the primary surface
-- offer emphasis: recommended primary offer first, single offer last
+- offer emphasis: recommended mapping highlighted in place; do not move it unless the mapping order itself places it first
 - CTA copy: `Buy Now`
 - policy routes: `/privacy-policy`, `/terms`, `/returns-policy`, `/shipping-policy`
+
+If a live input omits required `shortProductName`, `targetCountry`, `vendorIntegration`, or `offerOptionsMapping`, stop and ask.

@@ -16,6 +16,7 @@
     <EmbeddedResource Include="Agents\KeywordsExpander.md" />
     <EmbeddedResource Include="Agents\MarketStrategist.md" />
     <EmbeddedResource Include="Agents\ProductProfiler-WebBrowser.md" />
+    <EmbeddedResource Include="Agents\ReviewSimulator.md" />
     <EmbeddedResource Include="Agents\ProductTransformer.md" />
     <EmbeddedResource Include="Agents\ProductNormalizer.md" />
     <EmbeddedResource Include="Agents\ProductProfiler.md" />

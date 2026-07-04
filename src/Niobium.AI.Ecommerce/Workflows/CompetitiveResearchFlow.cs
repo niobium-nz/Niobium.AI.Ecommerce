@@ -29,7 +29,7 @@ namespace Niobium.AI.Ecommerce.Workflows
                 return null;
             }
 
-            bool isDuplicate = await context.CallActivityAsync<bool>(nameof(CheckDuplicateCandidate), input.Ads.Where(a => !String.IsNullOrEmpty(a.AdArchiveId)).Select(a => a.AdArchiveId!));
+            bool isDuplicate = await context.CallActivityAsync<bool>(nameof(CheckDuplicateSignal), input.Ads.Where(a => !String.IsNullOrEmpty(a.AdArchiveId)).Select(a => a.AdArchiveId!));
             if (isDuplicate)
             {
                 logger.LogWarning("Cluster {ClusterId} contains duplicate candidates. Skipping this cluster.", input.Product.ClusterId);
@@ -101,7 +101,7 @@ namespace Niobium.AI.Ecommerce.Workflows
             ProductDiscoveryOutput result = new()
             {
                 JobId = input.Job.JobId,
-                CandidateId = Guid.NewGuid(),
+                SignalId = Guid.NewGuid(),
                 Keyword = input.Job.Keyword,
                 SourceCountry = input.Job.SourceCountry,
                 TargetCountry = input.Job.TargetCountry,
@@ -111,22 +111,22 @@ namespace Niobium.AI.Ecommerce.Workflows
                 Score = productScore
             };
 
-            Guid? newPublishedCandidateId = await context.CallActivityAsync<Guid?>(nameof(PublishCandidate), result);
+            Guid? newPublishedCandidateId = await context.CallActivityAsync<Guid?>(nameof(PublishSignal), result);
             if (newPublishedCandidateId.HasValue)
             {
-                logger.LogInformation("Published product candidate {productName} with id {candidateId} to database with new candidate id {newCandidateId}",
-                    input.Product.LikelyProductName, result.CandidateId, newPublishedCandidateId);
+                logger.LogInformation("Published product candidate {productName} with id {signalId} to database with new candidate id {newCandidateId}",
+                    input.Product.LikelyProductName, result.SignalId, newPublishedCandidateId);
             }
             else
             {
-                logger.LogWarning("Duplicate found on product candidate {productName} with id {candidateId}.",
-                    input.Product.LikelyProductName, result.CandidateId);
+                logger.LogWarning("Duplicate found on product candidate {productName} with id {signalId}.",
+                    input.Product.LikelyProductName, result.SignalId);
             }
 
-            string artifactName = $"discovery/{input.Job.JobId}/{result.CandidateId}.json";
-            await context.CallActivityAsync(nameof(PublishArtifact), new PublishArtifactInput(artifactName, result));
-            logger.LogInformation("Published product candidate {productName} with id {candidateId} to artifact {artifactName}",
-                input.Product.LikelyProductName, result.CandidateId, artifactName);
+            string artifactName = $"discovery/{input.Job.JobId}/{result.SignalId}.json";
+            await context.CallActivityAsync(nameof(PublishArtifact), new PublishArtifactInput(artifactName, result, result.GetType()));
+            logger.LogInformation("Published product candidate {productName} with id {signalId} to artifact {artifactName}",
+                input.Product.LikelyProductName, result.SignalId, artifactName);
             return result;
         }
     }

@@ -50,7 +50,7 @@ namespace Niobium.AI.Ecommerce.Workflows
             }
 
             string artifactName = $"discovery/{input.JobId}.json";
-            await context.CallActivityAsync(nameof(PublishArtifact), new PublishArtifactInput(artifactName, result));
+            await context.CallActivityAsync(nameof(PublishArtifact), new PublishArtifactInput(artifactName, result, result.GetType()));
             logger.LogInformation("Published discovery results artifact {ArtifactName} for {Keyword} in {TargetCountry}", artifactName, input.Keyword, input.TargetCountry);
 
             IEnumerable<Task> tasks = result.Select(r => context.CallSubOrchestratorAsync(nameof(CompetitiveResearchFlow), r));

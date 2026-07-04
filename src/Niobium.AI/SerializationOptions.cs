@@ -5,10 +5,13 @@ namespace Niobium.AI
 {
     public class SerializationOptions
     {
-        public static JsonSerializerOptions SnakeCase = new()
+        public readonly static JsonSerializerOptions SnakeCase = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
+            DictionaryKeyPolicy = JsonNamingPolicy.SnakeCaseLower,
             TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
         };
+
+        public readonly static JsonSerializerOptions Web = JsonSerializerOptions.Web;
     }
 }

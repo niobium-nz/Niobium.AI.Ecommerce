@@ -15,9 +15,6 @@ public record ProductDetails
     public List<string> PrimaryUseCases { get; init; } = [];
     public string MaterialsOrConstructionSummary { get; init; } = string.Empty;
     public string FulfillmentAndRefundAssumptions { get; init; } = string.Empty;
-    public List<string> SuggestedProductNames { get; init; } = [];
-    public string RecommendedPrimaryProductName { get; init; } = string.Empty;
-    public string RecommendedPrimaryProductNameRationale { get; init; } = string.Empty;
 }
 
 public record PricingEconomicsAndOffers
@@ -139,6 +136,14 @@ public record AngleTrigger
     public int AngleNumber { get; init; }
     public string AngleName { get; init; } = string.Empty;
     public string Trigger { get; init; } = string.Empty;
+    public List<string> SuggestedProductNamesForThisAngle { get; init; } = [];
+    public string RecommendedProductNameForThisAngle { get; init; } = string.Empty;
+    public string RecommendedProductNameForThisAngleRationale { get; init; } = string.Empty;
+    public string RecommendedShortProductCode { get; init; } = string.Empty;
+    public string RecommendedWebsitePrimaryColorForThisAngle { get; init; } = string.Empty;
+    public string RecommendedWebsiteSecondaryColorForThisAngle { get; init; } = string.Empty;
+    public string RecommendedWebsiteAccentColorForThisAngle { get; init; } = string.Empty;
+    public string RecommendedWebsiteColorThemeForThisAngleRationale { get; init; } = string.Empty;
     public string CorePromise { get; init; } = string.Empty;
     public string MessageTerritory { get; init; } = string.Empty;
     public string WhyThisAngleShouldConvertOnMeta { get; init; } = string.Empty;
