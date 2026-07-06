@@ -41,6 +41,8 @@ project-root/
     shipping-policy/page.tsx
     not-found.tsx
   components/
+    brand/
+      site-logo.tsx
     checkout/
       checkout-form.tsx
       checkout-shell.tsx
@@ -91,6 +93,7 @@ project-root/
   scripts/
     export-offer-env.mjs
     generate-public-env.mjs
+    prepare-logo-assets.mjs
     deploy-cloudflare-pages.mjs
   .github/workflows/
     test.yml
@@ -98,6 +101,8 @@ project-root/
   public/
     assets/
       ...copied or organized media assets
+      logo-primary.png
+      logo-inverse.png
   .env.example
   components.json
   next.config.mjs
@@ -187,6 +192,19 @@ Each policy page should:
 - render the provided body content with simple, readable styling
 - avoid heavy conversion logic
 
+### `components/brand/site-logo.tsx`
+Centralize all logo rendering here so header, footer, checkout, contact, order, and policy pages use one consistent brand treatment.
+
+Required behavior:
+- Read the logo path and brand colors from the generated site data/config derived from `brandSystem`.
+- Check whether the logo is SVG using the input contract rules.
+- For SVG logos, assume the source is black/white monochrome, recolor it during preprocessing, and export website-ready PNG assets while preserving `viewBox` and aspect ratio in the source transformation step.
+- Provide at least normal/light-surface and inverse/dark-surface variants when both are needed, typically as PNG outputs such as `logo-primary.png` and `logo-inverse.png`.
+- Use the generated PNG assets in the actual site UI instead of embedding the raw SVG directly in page markup.
+- Size the logo responsively with explicit dimensions or CSS constraints to avoid layout shift.
+- For non-SVG logos, render the asset through a standard static-export-safe image approach without color replacement.
+- If the asset is unavailable, render a styled text fallback using the brand name.
+
 ### `components/forms/subscription-form.tsx`
 Required near the landing page footer or inside the footer.
 
@@ -208,6 +226,18 @@ Required behavior:
 - locally, write or update a local env file used by build scripts, without overwriting hand-edited secrets
 - preserve mapping order in output logs
 - fail on duplicate, missing, or invalid offer option keys
+
+### `scripts/prepare-logo-assets.mjs`
+Runs before `next build` when the input logo is SVG.
+
+Required behavior:
+- detect whether `brandSystem.logoFile` is SVG using the input-contract rules
+- load the source SVG
+- apply the selected brand color treatment and appropriate size constraints for website placements
+- export optimized PNG logo assets into `public/assets/` for actual site use
+- produce at least the variants the site needs for light and dark surfaces
+- fail clearly if export is impossible, or emit a documented fallback path that still keeps the final site on explicit image assets
+- avoid exposing or embedding deploy secrets
 
 ### `scripts/generate-public-env.mjs`
 Creates the frontend-safe runtime config before `next build`.
@@ -393,6 +423,7 @@ Before finalizing, confirm:
 - checkout fields follow the country rules document
 - analytics IDs are wired behind guards
 - checkout analytics event timing follows `references/tracking-and-performance.md`
+- SVG logos are detected, recolored from the input palette, converted into appropriately sized PNG assets, and used without stretching when `brandSystem.logoFile` is SVG
 - major above-the-fold media has explicit dimensions
 - hero media is not lazy-loaded
 - below-the-fold media is lazy-loaded

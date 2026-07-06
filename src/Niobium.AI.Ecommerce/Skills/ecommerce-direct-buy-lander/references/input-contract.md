@@ -61,6 +61,35 @@ Do not add currency. Currency comes from quote responses only.
 ### `brandSystem`
 Use the brand name, logo path, and colors directly.
 
+Before coding the logo, check `brandSystem.logoFile`.
+
+Treat the logo as SVG when either condition is true:
+- the logo path extension is `.svg`, case-insensitive, ignoring query strings or hashes
+- the asset file is available and its trimmed content starts with `<svg`
+
+When the logo is SVG, assume the supplied artwork is a black/white monochrome source asset. The generated site workflow should apply the input color scheme to the logo, size it appropriately for website use, render/export website-ready PNG assets from the adjusted SVG, and use those PNG assets in the final site rather than embedding the original raw SVG directly in page markup.
+
+SVG logo handling rules:
+- Preserve the SVG `viewBox` and aspect ratio.
+- Prepare the SVG as a source asset only; do not rely on serving the raw SVG directly in the final page UI when a PNG export can be produced.
+- Replace solid black/white fills and strokes with `currentColor` or a CSS variable derived from the input palette during preprocessing. Preserve `fill="none"`, clipping paths, masks, and transparent regions.
+- Use `primaryColor` for the normal logo on light surfaces.
+- Use `secondaryColor`, white, or a derived light neutral for the logo on dark primary-color surfaces.
+- Use `accentColor` only for a deliberate alternate mark, badge, or hover treatment; do not make the logo multicolor unless the design direction explicitly benefits from it.
+- Do not hardcode black or white as the final visible logo color unless those colors are actually the selected brand palette for that surface.
+- Export optimized PNG files from the recolored/sized SVG for the actual website, ideally at least a standard/light-surface variant and an inverse/dark-surface variant when both are needed.
+- The generated site should reference the derived PNG logo assets in headers, footers, checkout, and policy pages.
+- If the SVG cannot be safely parsed or transformed, document the fallback clearly and still avoid inventing a new logo.
+
+Logo sizing rules:
+- Keep the header logo compact and tap-safe: approximately `28-34px` tall on mobile and `32-40px` tall on desktop.
+- Clamp wide wordmarks with a sensible max width, usually `160-180px` in the header and up to `200px` in the footer.
+- Use `width: auto`, preserve aspect ratio, and avoid stretching.
+- Provide explicit width/height or CSS dimensions to avoid layout shift.
+- Ensure the logo remains legible in the checkout, contact, track-order, order-status, and policy layouts.
+
+For non-SVG logos, preserve the provided image asset and do not attempt color replacement. Still size it explicitly and render a graceful text-brand fallback if the asset is unavailable.
+
 Honor `fontStrategy` exactly. If the input says `system fonts only`, do not introduce hosted or custom fonts.
 
 ### `trackingSpec`

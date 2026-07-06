@@ -26,23 +26,24 @@ The generated webapp is a frontend-only static export. It must use browser-side 
 1. Read the input JSON. Use `references/example_input.json` only as a shape reference when the live input is missing examples.
 2. Validate top-level `shortProductName`, top-level `targetCountry`, and `pricingEconomicsAndOffers.offerOptionsMapping` before coding.
 3. Run `scripts/derive_offer_map.py <input-json>` and use its output as the offer-option map. Preserve the array order in `offerOptionsMapping`; never sort offers by numeric option key.
-4. Identify the page's message-match anchor from `customerSegment.angleAndTrigger`, `segmentLandingPageAdaptation`, and `mobileFirstLandingPagePlan`.
-5. Pick one clear art direction using `references/design-direction.md` and `references/design-system.md`.
-6. Build the project tree from `references/output-contract.md`.
-7. Wire environment variables, offer-option bootstrapping, Cloudflare deployment, and GitHub workflows according to `references/environment-and-deployment.md`.
-8. Wire vendor quote/order/subscription/contact/track integrations according to `references/vendor-integrations.md`.
-9. Localize checkout fields according to `references/country-checkout-field-rules.md`.
-10. Apply checkout UX guidance from `references/checkout-principles.md` where it fits the static, in-site checkout flow.
-11. Wire analytics, query-param persistence, and performance rules from `references/tracking-and-performance.md`.
-12. Generate the policy pages with the shared header and footer, but keep their bodies simple.
-13. Run `scripts/validate_bundle.py <project-dir> <input-json>` and fix all errors before finalizing.
-14. Run the generated project's lint and build commands when code execution is available. Lint must pass with zero warnings.
-15. Return the complete code bundle plus the required summary: changes, generated/modified files, environment checklist, workflow behavior, Cloudflare behavior, route list, validation results, and unresolved issues if any.
+4. Check `brandSystem.logoFile` before coding the header/footer logo. If the logo is SVG, treat it as a monochrome source asset, apply the input color scheme, size it appropriately, then render/export website-ready PNG logo assets from that adjusted SVG. Use the generated PNG assets in the real website while preserving aspect ratio.
+5. Identify the page's message-match anchor from `customerSegment.angleAndTrigger`, `segmentLandingPageAdaptation`, and `mobileFirstLandingPagePlan`.
+6. Pick one clear art direction using `references/design-direction.md` and `references/design-system.md`.
+7. Build the project tree from `references/output-contract.md`.
+8. Wire environment variables, offer-option bootstrapping, Cloudflare deployment, and GitHub workflows according to `references/environment-and-deployment.md`.
+9. Wire vendor quote/order/subscription/contact/track integrations according to `references/vendor-integrations.md`.
+10. Localize checkout fields according to `references/country-checkout-field-rules.md`.
+11. Apply checkout UX guidance from `references/checkout-principles.md` where it fits the static, in-site checkout flow.
+12. Wire analytics, query-param persistence, and performance rules from `references/tracking-and-performance.md`.
+13. Generate the policy pages with the shared header and footer, but keep their bodies simple.
+14. Run `scripts/validate_bundle.py <project-dir> <input-json>` and fix all errors before finalizing.
+15. Run the generated project's lint and build commands when code execution is available. Lint must pass with zero warnings.
+16. Return the complete code bundle plus the required summary: changes, generated/modified files, environment checklist, workflow behavior, Cloudflare behavior, route list, validation results, and unresolved issues if any.
 
 ## Input Handling
 Treat the input JSON as the source of truth for:
 - `shortProductName`, used to derive deterministic environment-specific `APP_NAME` values
-- brand name, colors, logo, and font strategy
+- brand name, colors, logo path, SVG-logo status, logo recolor/export treatment, generated PNG logo asset plan, and font strategy
 - product definition, validated claims, limits, and use cases
 - offer names, descriptions, visual order, recommended highlight, and `offerOptionsMapping`
 - target country and checkout field localization
@@ -90,6 +91,7 @@ If the input conflicts with itself, prioritize in this order:
 - The marketing email subscription form is required near the footer. It is the only allowed email capture and must use the vendor subscription library.
 - Keep policy pages simple and styled like the same site.
 - Use SVG or CSS icons when possible. Avoid heavy icon dependencies if they hurt bundle size.
+- Centralize brand logo rendering in one component. If `brandSystem.logoFile` is an SVG, assume the supplied logo is monochrome black/white, recolor it from the input palette, size it for the website, render/export PNG variants for actual site use, and use those PNG assets consistently across header, footer, checkout, and policy layouts.
 - Keep all major product content on the main page. Do not hide key proof in subpages or secondary routes.
 - Prefer vertically collapsed sections or accordions over tabs or mobile subpages when content is long.
 - Use thumbnails for image galleries, not dot-only controls.
@@ -178,6 +180,7 @@ The policy route convention above is confirmed for this skill. Footer navigation
 - Reject generic newsletter/waitlist patterns. The required footer-area marketing subscription form is allowed only because it is vendor-backed and collects email only.
 - Reject dual-CTA frameworks that split purchase attention.
 - If the input says `system fonts only`, use system fonts and create distinction with spacing, hierarchy, weight, composition, icon treatment, and section rhythm.
+- If the logo asset is SVG, preserve its shape/viewBox while replacing black/white visual output with brand colors from the input. Use the primary color on light surfaces, a light/secondary color on dark surfaces, and an accent variant only when it improves brand integration. After recoloring and sizing the SVG, export optimized PNG assets and use those PNGs in the shipped website instead of embedding the raw SVG directly in page markup.
 
 ## Analytics Rules
 - Wire GA4, Meta Pixel, and Microsoft Clarity from environment variables derived from the input IDs:

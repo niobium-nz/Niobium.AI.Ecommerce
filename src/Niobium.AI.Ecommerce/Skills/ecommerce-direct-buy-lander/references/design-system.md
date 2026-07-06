@@ -89,6 +89,16 @@ If the input does not constrain fonts, choose a clean, warm sans stack that stil
 ### Header
 Minimal. Do not include store navigation, category links, search, or social clutter.
 
+### Logo
+Use the brand logo as part of the color system, not as an unstyled dropped-in asset.
+
+If `brandSystem.logoFile` is SVG, treat it as a monochrome black/white source logo, recolor it from the input palette, then export a website-ready PNG version for actual use in the site:
+- primary brand color on light header/footer surfaces
+- secondary, white, or a derived light neutral on dark brand surfaces
+- accent color only for a deliberate alternate state, not as the default wordmark color
+
+Implementation should preserve the SVG viewBox/aspect ratio during preprocessing and use `currentColor`, CSS variables, or a mask-based approach to recolor the source. Then render/export optimized PNG assets and use those PNGs in the live website. Size the logo deliberately: compact in the header, slightly more generous in the footer, and never stretched. If the file is not SVG, keep it as an image asset and size it explicitly without attempting recoloring.
+
 ### Hero
 The first proof moment should be visible or understandable immediately.
 

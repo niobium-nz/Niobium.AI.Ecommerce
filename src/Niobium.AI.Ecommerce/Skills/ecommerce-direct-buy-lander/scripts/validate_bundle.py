@@ -31,6 +31,7 @@ REQUIRED_SCRIPTS = [
     "scripts/deploy-cloudflare-pages.mjs",
     "scripts/generate-public-env.mjs",
     "scripts/export-offer-env.mjs",
+    "scripts/prepare-logo-assets.mjs",
 ]
 
 FORBIDDEN_PATTERNS = {
@@ -68,8 +69,34 @@ def read_text(path: Path) -> str:
         return ""
 
 
+
+
+def strip_asset_suffix(value: str) -> str:
+    return re.split(r"[?#]", value, maxsplit=1)[0]
+
+
+def detect_svg_logo_input(input_data: dict[str, Any], input_json_dir: Path) -> bool:
+    brand = input_data.get("brandSystem")
+    logo_file = brand.get("logoFile") if isinstance(brand, dict) else None
+    if not isinstance(logo_file, str) or not logo_file.strip():
+        return False
+    asset_path = strip_asset_suffix(logo_file.strip())
+    if asset_path.lower().endswith(".svg"):
+        return True
+    if re.match(r"^[a-z][a-z0-9+.-]*://", asset_path, re.IGNORECASE):
+        return False
+    candidate = Path(asset_path)
+    if not candidate.is_absolute():
+        candidate = input_json_dir / candidate
+    try:
+        if candidate.is_file():
+            return candidate.read_text(encoding="utf-8", errors="ignore")[:512].lstrip().startswith("<svg")
+    except OSError:
+        return False
+    return False
+
 def collect_text_files(project_dir: Path) -> list[Path]:
-    exts = {".ts", ".tsx", ".js", ".jsx", ".mjs", ".md", ".css", ".json", ".yml", ".yaml"}
+    exts = {".ts", ".tsx", ".js", ".jsx", ".mjs", ".md", ".css", ".json", ".yml", ".yaml", ".svg"}
     ignored_parts = {"node_modules", ".next", "out", ".git"}
     return [
         path
@@ -146,7 +173,9 @@ def main() -> int:
     args = parser.parse_args()
 
     project_dir = args.project_dir.resolve()
-    input_data = load_json(args.input_json.resolve())
+    input_json_path = args.input_json.resolve()
+    input_data = load_json(input_json_path)
+    svg_logo_input = detect_svg_logo_input(input_data, input_json_path.parent)
     errors: list[str] = []
     warnings: list[str] = []
 
@@ -215,6 +244,47 @@ def main() -> int:
     text_files = collect_text_files(project_dir)
     all_text = "\n".join(read_text(path) for path in text_files)
     lower_text = all_text.lower()
+
+
+    if svg_logo_input:
+        colorization_markers = [
+            "currentColor",
+            "mask-image",
+            "WebkitMask",
+            "--logo",
+            "logoColor",
+            "fill: var(",
+            "stroke: var(",
+            "primaryColor",
+            "secondaryColor",
+        ]
+        png_export_markers = [
+            "logo-primary.png",
+            "logo-inverse.png",
+            "prepare-logo-assets",
+            "public/assets/logo",
+            "resvg",
+            "sharp",
+            "png",
+        ]
+        sizing_markers = [
+            "viewBox",
+            "max-w",
+            "maxWidth",
+            "height:",
+            "width:",
+            "aspectRatio",
+        ]
+        if not any(marker in all_text for marker in colorization_markers):
+            errors.append(
+                "input SVG logo detected; project must recolor the assumed monochrome logo from the input palette before export"
+            )
+        if not any(marker in all_text for marker in png_export_markers):
+            errors.append(
+                "input SVG logo detected; project must export and use PNG logo assets rather than relying only on raw SVG rendering"
+            )
+        if not any(marker in all_text for marker in sizing_markers):
+            warnings.append("input SVG logo detected; explicit logo sizing/aspect-ratio handling is not obvious")
 
     if "buy now" not in lower_text:
         warnings.append("no visible 'Buy Now' string found; check CTA wording")

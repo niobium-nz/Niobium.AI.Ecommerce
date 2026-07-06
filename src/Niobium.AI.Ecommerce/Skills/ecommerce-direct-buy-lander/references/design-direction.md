@@ -90,6 +90,7 @@ If the project uses system fonts only, create personality through:
 - reserve the accent color for offer emphasis and select proof chips
 - avoid introducing bright alarm colors unless tied to a truthful warning or error state
 - keep backgrounds warm and calm so product proof stays legible
+- when the logo is SVG, assume the source mark is monochrome, recolor it from the brand palette, size it for the layout, and export PNG logo assets so the final site uses lightweight fitted raster versions rather than dropping the raw SVG into the page
 
 ## Motion Guidance
 - use only subtle motion that helps clarity

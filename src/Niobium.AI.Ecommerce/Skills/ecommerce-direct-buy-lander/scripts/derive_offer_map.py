@@ -20,6 +20,50 @@ SHORT_PRODUCT_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 CART_ITEM_KEYS = {"Listing", "Option", "Quantity"}
 
 
+def strip_asset_suffix(value: str) -> str:
+    return re.split(r"[?#]", value, maxsplit=1)[0]
+
+
+def detect_svg_logo(data: dict[str, Any], input_json: Path | None = None) -> dict[str, Any]:
+    brand = data.get("brandSystem")
+    logo_file = brand.get("logoFile") if isinstance(brand, dict) else None
+    if not isinstance(logo_file, str) or not logo_file.strip():
+        return {
+            "path": logo_file if isinstance(logo_file, str) else None,
+            "isSvg": False,
+            "svgColorizationRequired": False,
+            "websiteAssetFormat": "original",
+        }
+
+    logo_file = logo_file.strip()
+    asset_path = strip_asset_suffix(logo_file)
+    is_svg = asset_path.lower().endswith(".svg")
+
+    if not is_svg and input_json is not None and not re.match(r"^[a-z][a-z0-9+.-]*://", asset_path, re.IGNORECASE):
+        candidate = Path(asset_path)
+        if not candidate.is_absolute():
+            candidate = input_json.resolve().parent / candidate
+        try:
+            if candidate.is_file():
+                head = candidate.read_text(encoding="utf-8", errors="ignore")[:512].lstrip()
+                is_svg = head.startswith("<svg")
+        except OSError:
+            pass
+
+    return {
+        "path": logo_file,
+        "isSvg": is_svg,
+        "svgColorizationRequired": is_svg,
+        "websiteAssetFormat": "png" if is_svg else "original",
+        "expectedTreatment": (
+            "Assume monochrome black/white SVG; recolor the source from the input palette, size it for website placements, "
+            "export optimized PNG assets for actual site use, and preserve viewBox/aspect ratio in the preprocessing step."
+            if is_svg
+            else "Render as a normal static asset with explicit dimensions; do not recolor."
+        ),
+    }
+
+
 def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as f:
         data = json.load(f)
@@ -82,7 +126,7 @@ def validate_cart_item(item: Any, mapping_index: int, item_index: int) -> dict[s
     return {"Listing": listing, "Option": option.strip(), "Quantity": quantity}
 
 
-def build_offer_option_map(data: dict[str, Any]) -> dict[str, Any]:
+def build_offer_option_map(data: dict[str, Any], input_json: Path | None = None) -> dict[str, Any]:
     short_product_name = require_short_product_name(data)
     target_country = require_target_country(data)
 
@@ -161,6 +205,7 @@ def build_offer_option_map(data: dict[str, Any]) -> dict[str, Any]:
             "prod": f"niobiumecomm-{short_product_name}",
         },
         "brandName": data.get("brandSystem", {}).get("brandName"),
+        "logo": detect_svg_logo(data, input_json),
         "visibleOffers": visible_offers,
     }
 
@@ -171,7 +216,7 @@ def main() -> int:
     args = parser.parse_args()
 
     data = load_json(args.input_json)
-    result = build_offer_option_map(data)
+    result = build_offer_option_map(data, args.input_json)
     print(json.dumps(result, indent=2, ensure_ascii=True))
     return 0
 

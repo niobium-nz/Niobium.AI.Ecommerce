@@ -13,7 +13,7 @@
     "brandSystem": {
         "brandName": "Niobium Studio",
         "description": "ANZ local online pet shop for pet essentials, treats & toys. Quality products for happy paws, delivered ANZ-wide!",
-        "logoFile": "./assets/logo.png",
+        "logoFile": "./assets/logo.svg",
         "primaryColor": "#372010",
         "secondaryColor": "#FAF3E0",
         "accentColor": "#6F7D45",
