@@ -38,7 +38,7 @@ const response = await niobium.store.getQuote(
 
 ### Landing Page Quote Behavior
 On landing page load:
-- call quote for all visible offers listed in `offerOptionsMapping`
+- call quote for all visible offers listed in `offer_options_mapping`
 - parallel quote calls are allowed
 - display quote-derived pricing as each offer returns
 - keep pending/loading states for offers still waiting

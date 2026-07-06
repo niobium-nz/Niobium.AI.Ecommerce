@@ -11,16 +11,16 @@ Generated projects must support:
 `test` and `prod` must be deployable side by side without conflict, using separate Cloudflare Pages projects and separate GitHub Environments.
 
 ## Deterministic APP_NAME
-The input must contain top-level `shortProductName`.
+The input must contain top-level `short_product_name`.
 
 Use this deterministic naming pattern:
 
 ```txt
 # dev and test
-niobiumecomm-{shortProductName}-{environment}
+niobiumecomm-{short_product_name}-{environment}
 
 # prod
-niobiumecomm-{shortProductName}
+niobiumecomm-{short_product_name}
 ```
 
 Examples:
@@ -92,42 +92,41 @@ Do not define currency as an environment variable. Currency comes from quote res
 Use these mappings:
 
 ```txt
-shortProductName + environment -> APP_NAME
-vendorIntegration.tenantId -> TENANT_ID
-vendorIntegration.googleRecaptchaSiteKey -> GOOGLE_RECAPTCHA_SITE_KEY
-vendorIntegration.storeIntegrationEndpoint -> STORE_INTEGRATION_ENDPOINT
-vendorIntegration.notificationIntegrationEndpoint -> NOTIFICATION_INTEGRATION_ENDPOINT
-vendorIntegration.stripePublicKey -> STRIPE_PUBLIC_KEY
-vendorIntegration.shippingOptionId -> SHIPPING_OPTION_ID
-targetCountry -> TARGET_COUNTRY
-vendorIntegration.fallbackCoupon -> FALLBACK_COUPON
-pricingEconomicsAndOffers.offerOptionsMapping[].optionConfiguration -> OFFER_OPTION__{offerOptionKey}
-trackingSpec.metaPixelId -> META_PIXEL_ID
-trackingSpec.ga4Id -> GOOGLE_TAG
-trackingSpec.microsoftClarity -> CLARITY_ID
-trustSignal.facebookPage -> FACEBOOK_URL
-trustSignal.instagramPage -> INSTAGRAM_URL
-trustSignal.contactEmail -> CONTACT_EMAIL
+short_product_name + environment -> APP_NAME
+vendor_integration.tenant_id -> TENANT_ID
+vendor_integration.google_recaptcha_site_key -> GOOGLE_RECAPTCHA_SITE_KEY
+vendor_integration.store_integration_endpoint -> STORE_INTEGRATION_ENDPOINT
+vendor_integration.notification_integration_endpoint -> NOTIFICATION_INTEGRATION_ENDPOINT
+vendor_integration.stripe_public_key -> STRIPE_PUBLIC_KEY
+vendor_integration.shipping_option_id -> SHIPPING_OPTION_ID
+target_country -> TARGET_COUNTRY
+vendor_integration.fallback_coupon -> FALLBACK_COUPON
+pricing_economics_and_offers.offer_options_mapping[].option_configuration -> OFFER_OPTION__{offer_option_key}
+tracking_spec.meta_pixel_id -> META_PIXEL_ID
+tracking_spec.ga4_id -> GOOGLE_TAG
+tracking_spec.microsoft_clarity -> CLARITY_ID
+trust_signal.facebook_page -> FACEBOOK_URL
+trust_signal.instagram_page -> INSTAGRAM_URL
+trust_signal.contact_email -> CONTACT_EMAIL
 ```
 
-Legacy fallback: `trustSignal.InstrgramPage` may be used only if `trustSignal.instagramPage` is absent.
 
-## Offer Option Environment Generation
-The source of truth is `pricingEconomicsAndOffers.offerOptionsMapping`.
+## Offer option Environment Generation
+The source of truth is `pricing_economics_and_offers.offer_options_mapping`.
 
 For every mapping:
-- read `offerOptionKey`
-- serialize `optionConfiguration` as compact JSON
-- set `OFFER_OPTION__{offerOptionKey}` to that compact JSON
+- read `offer_option_key`
+- serialize `option_configuration` as compact JSON
+- set `OFFER_OPTION__{offer_option_key}` to that compact JSON
 
 Example:
 
 ```json
 {
-  "offerOptionKey": "2",
-  "optionConfiguration": [
-    { "Listing": 1, "Option": "Default", "Quantity": 2 },
-    { "Listing": 2, "Option": "Default", "Quantity": 4 }
+  "offer_option_key": "2",
+  "option_configuration": [
+    { "listing": 1, "option": "Default", "quantity": 2 },
+    { "listing": 2, "option": "Default", "quantity": 4 }
   ]
 }
 ```
@@ -135,7 +134,7 @@ Example:
 Produces:
 
 ```txt
-OFFER_OPTION__2=[{"Listing":1,"Option":"Default","Quantity":2},{"Listing":2,"Option":"Default","Quantity":4}]
+OFFER_OPTION__2=[{"listing":1,"option":"Default","quantity":2},{"listing":2,"option":"Default","quantity":4}]
 ```
 
 The generated project must include `scripts/export-offer-env.mjs` and call it in workflows before build. This script should append the values to `$GITHUB_ENV` in GitHub Actions so the build and deploy steps consume normal environment variables.
@@ -161,7 +160,7 @@ When branch/environment detection does not identify `test` or `prod`, local comm
 
 Recommended local behavior:
 - `scripts/export-offer-env.mjs` writes offer option values to a local generated env file or logs shell export commands.
-- `scripts/generate-public-env.mjs` resolves `APP_NAME` as `niobiumecomm-{shortProductName}-dev` if `APP_NAME` is absent.
+- `scripts/generate-public-env.mjs` resolves `APP_NAME` as `niobiumecomm-{short_product_name}-dev` if `APP_NAME` is absent.
 - `.env.example` documents required local values and notes that Cloudflare secrets are needed only for deploy.
 
 ## npm Scripts

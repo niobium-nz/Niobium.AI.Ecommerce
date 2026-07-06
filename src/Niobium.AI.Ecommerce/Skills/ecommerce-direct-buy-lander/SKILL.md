@@ -24,10 +24,10 @@ The generated webapp is a frontend-only static export. It must use browser-side 
 
 ## Workflow
 1. Read the input JSON. Use `references/example_input.json` only as a shape reference when the live input is missing examples.
-2. Validate top-level `shortProductName`, top-level `targetCountry`, and `pricingEconomicsAndOffers.offerOptionsMapping` before coding.
-3. Run `scripts/derive_offer_map.py <input-json>` and use its output as the offer-option map. Preserve the array order in `offerOptionsMapping`; never sort offers by numeric option key.
-4. Check `brandSystem.logoFile` before coding the header/footer logo. If the logo is SVG, treat it as a monochrome source asset, apply the input color scheme, size it appropriately, then render/export website-ready PNG logo assets from that adjusted SVG. Use the generated PNG assets in the real website while preserving aspect ratio.
-5. Identify the page's message-match anchor from `customerSegment.angleAndTrigger`, `segmentLandingPageAdaptation`, and `mobileFirstLandingPagePlan`.
+2. Validate top-level `short_product_name`, top-level `target_country`, and `pricing_economics_and_offers.offer_options_mapping` before coding.
+3. Run `scripts/derive_offer_map.py <input-json>` and use its output as the offer-option map. Preserve the array order in `offer_options_mapping`; never sort offers by numeric option key.
+4. Check `brand_system.logo_file` before coding the header/footer logo. If the logo is SVG, treat it as a monochrome source asset, apply the input color scheme, size it appropriately, then render/export website-ready PNG logo assets from that adjusted SVG. Use the generated PNG assets in the real website while preserving aspect ratio.
+5. Identify the page's message-match anchor from `customer_segment.angle_and_trigger`, `segment_landing_page_adaptation`, and `mobile_first_landing_page_plan`.
 6. Pick one clear art direction using `references/design-direction.md` and `references/design-system.md`.
 7. Build the project tree from `references/output-contract.md`.
 8. Wire environment variables, offer-option bootstrapping, Cloudflare deployment, and GitHub workflows according to `references/environment-and-deployment.md`.
@@ -42,10 +42,10 @@ The generated webapp is a frontend-only static export. It must use browser-side 
 
 ## Input Handling
 Treat the input JSON as the source of truth for:
-- `shortProductName`, used to derive deterministic environment-specific `APP_NAME` values
+- `short_product_name`, used to derive deterministic environment-specific `APP_NAME` values
 - brand name, colors, logo path, SVG-logo status, logo recolor/export treatment, generated PNG logo asset plan, and font strategy
 - product definition, validated claims, limits, and use cases
-- offer names, descriptions, visual order, recommended highlight, and `offerOptionsMapping`
+- offer names, descriptions, visual order, recommended highlight, and `offer_options_mapping`
 - target country and checkout field localization
 - customer segment, ad angle, hero continuity, and objections
 - shipping, refund, and support constraints
@@ -84,37 +84,37 @@ If the input conflicts with itself, prioritize in this order:
 - Do not use `Add to Cart` copy in shopper-facing UI.
 - Implement in-site checkout at `/checkout`; do not hand off to an external checkout URL.
 - Use a single dominant purchase CTA: `Buy Now`.
-- Permit offer selection, but every visible sale option must map to an explicit `offerOptionKey` from `pricingEconomicsAndOffers.offerOptionsMapping`.
-- The landing page must navigate to `/checkout?offer=<offerOptionKey>` and preserve only allowed query params, plus `coupon` when present.
+- Permit offer selection, but every visible sale option must map to an explicit `offer_option_key` from `pricing_economics_and_offers.offer_options_mapping`.
+- The landing page must navigate to `/checkout?offer=<offer_option_key>` and preserve only allowed query params, plus `coupon` when present.
 - If `/checkout` is opened without a valid `offer` query param, show a user-facing error and do not silently select a fallback offer.
 - Preselect the mapping marked `recommended: true` unless the input explicitly instructs otherwise.
 - The marketing email subscription form is required near the footer. It is the only allowed email capture and must use the vendor subscription library.
 - Keep policy pages simple and styled like the same site.
 - Use SVG or CSS icons when possible. Avoid heavy icon dependencies if they hurt bundle size.
-- Centralize brand logo rendering in one component. If `brandSystem.logoFile` is an SVG, assume the supplied logo is monochrome black/white, recolor it from the input palette, size it for the website, render/export PNG variants for actual site use, and use those PNG assets consistently across header, footer, checkout, and policy layouts.
+- Centralize brand logo rendering in one component. If `brand_system.logo_file` is an SVG, assume the supplied logo is monochrome black/white, recolor it from the input palette, size it for the website, render/export PNG variants for actual site use, and use those PNG assets consistently across header, footer, checkout, and policy layouts.
 - Keep all major product content on the main page. Do not hide key proof in subpages or secondary routes.
 - Prefer vertically collapsed sections or accordions over tabs or mobile subpages when content is long.
 - Use thumbnails for image galleries, not dot-only controls.
 
 ## Offer-Option Mapping Rules
-`pricingEconomicsAndOffers.offerOptionsMapping` is required. Each mapping must contain:
+`pricing_economics_and_offers.offer_options_mapping` is required. Each mapping must contain:
 
 ```json
 {
-  "sourceOfferKey": "bestSellerBundle",
-  "offerOptionKey": "2",
-  "optionConfiguration": [
-    { "Listing": 1, "Option": "Default", "Quantity": 2 }
+  "source_offer_key": "best_seller_bundle",
+  "offer_option_key": "2",
+  "option_configuration": [
+    { "listing": 1, "option": "Default", "quantity": 2 }
   ],
   "recommended": true
 }
 ```
 
 Rules:
-- `sourceOfferKey` must match a key inside `pricingEconomicsAndOffers.offerStack`.
-- `offerOptionKey` is the direct numeric key used by the webapp and by the environment variable name. `offerOptionKey: "2"` maps to `OFFER_OPTION__2` and `/checkout?offer=2`.
-- `optionConfiguration` is the exact JSON array value for the matching `OFFER_OPTION__n` environment variable.
-- `optionConfiguration` items must contain only `Listing`, `Option`, and `Quantity`.
+- `source_offer_key` must match a key inside `pricing_economics_and_offers.offer_stack`.
+- `offer_option_key` is the direct numeric key used by the webapp and by the environment variable name. `offer_option_key: "2"` maps to `OFFER_OPTION__2` and `/checkout?offer=2`.
+- `option_configuration` is the exact JSON array value for the matching `OFFER_OPTION__n` environment variable.
+- `option_configuration` items must contain only `listing`, `option`, and `quantity`.
 - UI labels, badges, descriptions, product names, and ordering metadata must stay in the marketing offer data, not in `OFFER_OPTION__n` values.
 - The visible offer order is the array order. Do not sort numerically.
 - Exactly one mapping should normally be marked `recommended: true`; if not, stop and ask rather than guessing the highlighted offer.
@@ -126,11 +126,11 @@ Rules:
 - `test` and `prod` must be deployable side by side without conflict, using separate Cloudflare Pages projects.
 - Use shell-safe environment variable names only.
 - Use deterministic app names:
-  - dev/test: `niobiumecomm-{shortProductName}-{environment}`
-  - prod: `niobiumecomm-{shortProductName}`
+  - dev/test: `niobiumecomm-{short_product_name}-{environment}`
+  - prod: `niobiumecomm-{short_product_name}`
 - Treat `APP_NAME` as both the Cloudflare Pages project name and the public app name for frontend vendor calls.
 - `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` are deploy-only and must never appear in frontend bundles, generated public config files, or static files.
-- `OFFER_OPTION__n` variables must be generated from `offerOptionsMapping[].optionConfiguration` at workflow/deploy time and made available to the build/runtime config layer.
+- `OFFER_OPTION__n` variables must be generated from `offer_options_mapping[].option_configuration` at workflow/deploy time and made available to the build/runtime config layer.
 - Currency is never an environment variable. It must come from the quote response.
 
 See `references/environment-and-deployment.md` for the required scripts, workflow behavior, and Cloudflare Pages deployment behavior.
@@ -184,9 +184,9 @@ The policy route convention above is confirmed for this skill. Footer navigation
 
 ## Analytics Rules
 - Wire GA4, Meta Pixel, and Microsoft Clarity from environment variables derived from the input IDs:
-  - `trackingSpec.metaPixelId` -> `META_PIXEL_ID`
-  - `trackingSpec.ga4Id` -> `GOOGLE_TAG`
-  - `trackingSpec.microsoftClarity` -> `CLARITY_ID`
+  - `tracking_spec.meta_pixel_id` -> `META_PIXEL_ID`
+  - `tracking_spec.ga4_id` -> `GOOGLE_TAG`
+  - `tracking_spec.microsoft_clarity` -> `CLARITY_ID`
 - Fire at minimum:
   - `PageView` on every page load to GA4 and Meta Pixel
   - `CTAClick` when any `Buy Now` control is pressed

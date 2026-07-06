@@ -26,7 +26,7 @@ Single-product ecommerce landing page or PDP hybrid for cold Meta paid traffic.
 ## What To Override
 
 ### Replace cart patterns with direct-buy checkout patterns
-The page should not use cart language or cart UI. It should use visible marketing offer options that route to `/checkout?offer=<offerOptionKey>`. The underlying vendor APIs may use a `cart` parameter, but shoppers must not see cart concepts.
+The page should not use cart language or cart UI. It should use visible marketing offer options that route to `/checkout?offer=<offer_option_key>`. The underlying vendor APIs may use a `cart` parameter, but shoppers must not see cart concepts.
 
 Override these common ecommerce defaults:
 - `Add to Cart` -> `Buy Now`
@@ -92,7 +92,7 @@ Minimal. Do not include store navigation, category links, search, or social clut
 ### Logo
 Use the brand logo as part of the color system, not as an unstyled dropped-in asset.
 
-If `brandSystem.logoFile` is SVG, treat it as a monochrome black/white source logo, recolor it from the input palette, then export a website-ready PNG version for actual use in the site:
+If `brand_system.logo_file` is SVG, treat it as a monochrome black/white source logo, recolor it from the input palette, then export a website-ready PNG version for actual use in the site:
 - primary brand color on light header/footer surfaces
 - secondary, white, or a derived light neutral on dark brand surfaces
 - accent color only for a deliberate alternate state, not as the default wordmark color

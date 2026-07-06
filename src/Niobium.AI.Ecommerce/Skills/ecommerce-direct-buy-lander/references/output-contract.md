@@ -130,9 +130,9 @@ Assemble the landing page sections in the chosen order.
 
 Must include:
 - message-matched hero
-- visible offer selector using `offerOptionsMapping` order
+- visible offer selector using `offer_options_mapping` order
 - quote-driven pricing states for all visible offers
-- `Buy Now` CTA linking to `/checkout?offer=<offerOptionKey>`
+- `Buy Now` CTA linking to `/checkout?offer=<offer_option_key>`
 - `coupon` pass-through only when present in the landing-page URL
 - marketing email subscription form near the footer or in the footer
 
@@ -196,7 +196,7 @@ Each policy page should:
 Centralize all logo rendering here so header, footer, checkout, contact, order, and policy pages use one consistent brand treatment.
 
 Required behavior:
-- Read the logo path and brand colors from the generated site data/config derived from `brandSystem`.
+- Read the logo path and brand colors from the generated site data/config derived from `brand_system`.
 - Check whether the logo is SVG using the input contract rules.
 - For SVG logos, assume the source is black/white monochrome, recolor it during preprocessing, and export website-ready PNG assets while preserving `viewBox` and aspect ratio in the source transformation step.
 - Provide at least normal/light-surface and inverse/dark-surface variants when both are needed, typically as PNG outputs such as `logo-primary.png` and `logo-inverse.png`.
@@ -214,12 +214,12 @@ Fields:
 Must validate email, load the vendor subscription script client-side, disable during submit, show a spinner/loading state, show success, and show a user-facing retry error on failure.
 
 ### `config/offer-options.json`
-Generated from `pricingEconomicsAndOffers.offerOptionsMapping`. It should preserve input array order and contain only safe app-facing offer mapping metadata and exact cart values needed for workflow env export.
+Generated from `pricing_economics_and_offers.offer_options_mapping`. It should preserve input array order and contain only safe app-facing offer mapping metadata and exact cart values needed for workflow env export.
 
 Do not include Cloudflare secrets.
 
 ### `scripts/export-offer-env.mjs`
-Reads `config/offer-options.json` and sets `OFFER_OPTION__n` values from each mapping's `optionConfiguration`.
+Reads `config/offer-options.json` and sets `OFFER_OPTION__n` values from each mapping's `option_configuration`.
 
 Required behavior:
 - in GitHub Actions, append `OFFER_OPTION__n=<compact JSON>` to `$GITHUB_ENV`
@@ -231,7 +231,7 @@ Required behavior:
 Runs before `next build` when the input logo is SVG.
 
 Required behavior:
-- detect whether `brandSystem.logoFile` is SVG using the input-contract rules
+- detect whether `brand_system.logo_file` is SVG using the input-contract rules
 - load the source SVG
 - apply the selected brand color treatment and appropriate size constraints for website placements
 - export optimized PNG logo assets into `public/assets/` for actual site use
@@ -305,7 +305,7 @@ npm run deploy
 
 ### `lib/offers.ts`
 - expose visible offer metadata in input order
-- map `offerOptionKey` to `OFFER_OPTION__n`
+- map `offer_option_key` to `OFFER_OPTION__n`
 - parse expected cart JSON from public config/environment
 - throw visible runtime errors for missing or invalid expected offer options
 - never silently fall back to another offer
@@ -373,7 +373,7 @@ Do not add `npm test` yet.
 
 ## CTA Rules
 - Every purchase CTA says `Buy Now` or a very close variant that still clearly means immediate purchase.
-- The CTA must lead to `/checkout?offer=<offerOptionKey>`, not to cart.
+- The CTA must lead to `/checkout?offer=<offer_option_key>`, not to cart.
 - The selected offer and coupon pass-through should be reflected in the checkout URL.
 
 ## Footer Requirements
@@ -409,9 +409,9 @@ Before finalizing, confirm:
 - no cart route or shopper-facing `Add to Cart` language remains
 - all required routes exist
 - footer links to required pages and subscription area
-- CTA uses `/checkout?offer=<offerOptionKey>`
-- `offerOptionsMapping` order is preserved
-- `OFFER_OPTION__n` values are generated from `optionConfiguration`
+- CTA uses `/checkout?offer=<offer_option_key>`
+- `offer_options_mapping` order is preserved
+- `OFFER_OPTION__n` values are generated from `option_configuration`
 - missing/invalid offer option config throws runtime errors
 - quote behavior exists on landing and checkout
 - displayed prices are quote-derived
@@ -423,7 +423,7 @@ Before finalizing, confirm:
 - checkout fields follow the country rules document
 - analytics IDs are wired behind guards
 - checkout analytics event timing follows `references/tracking-and-performance.md`
-- SVG logos are detected, recolored from the input palette, converted into appropriately sized PNG assets, and used without stretching when `brandSystem.logoFile` is SVG
+- SVG logos are detected, recolored from the input palette, converted into appropriately sized PNG assets, and used without stretching when `brand_system.logo_file` is SVG
 - major above-the-fold media has explicit dimensions
 - hero media is not lazy-loaded
 - below-the-fold media is lazy-loaded

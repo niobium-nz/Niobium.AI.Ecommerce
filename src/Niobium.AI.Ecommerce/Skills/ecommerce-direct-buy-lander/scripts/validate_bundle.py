@@ -76,8 +76,8 @@ def strip_asset_suffix(value: str) -> str:
 
 
 def detect_svg_logo_input(input_data: dict[str, Any], input_json_dir: Path) -> bool:
-    brand = input_data.get("brandSystem")
-    logo_file = brand.get("logoFile") if isinstance(brand, dict) else None
+    brand = input_data.get("brand_system")
+    logo_file = brand.get("logo_file") if isinstance(brand, dict) else None
     if not isinstance(logo_file, str) or not logo_file.strip():
         return False
     asset_path = strip_asset_suffix(logo_file.strip())
@@ -113,56 +113,56 @@ def check_exists(path: Path, rel: str, errors: list[str]) -> None:
 def validate_input_contract(input_data: dict[str, Any], errors: list[str]) -> list[str]:
     expected_offer_keys: list[str] = []
 
-    short_product = input_data.get("shortProductName")
+    short_product = input_data.get("short_product_name")
     if not isinstance(short_product, str) or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", short_product.strip()):
-        errors.append("input shortProductName is missing or not a lowercase hyphen slug")
+        errors.append("input short_product_name is missing or not a lowercase hyphen slug")
 
-    target_country = input_data.get("targetCountry")
+    target_country = input_data.get("target_country")
     if not isinstance(target_country, str) or target_country.upper() not in SUPPORTED_COUNTRIES:
-        errors.append(f"input targetCountry must be one of {sorted(SUPPORTED_COUNTRIES)}")
+        errors.append(f"input target_country must be one of {sorted(SUPPORTED_COUNTRIES)}")
 
-    pricing = input_data.get("pricingEconomicsAndOffers", {})
-    offer_stack = pricing.get("offerStack") if isinstance(pricing, dict) else None
-    mappings = pricing.get("offerOptionsMapping") if isinstance(pricing, dict) else None
+    pricing = input_data.get("pricing_economics_and_offers", {})
+    offer_stack = pricing.get("offer_stack") if isinstance(pricing, dict) else None
+    mappings = pricing.get("offer_options_mapping") if isinstance(pricing, dict) else None
     if not isinstance(offer_stack, dict) or not offer_stack:
-        errors.append("input missing pricingEconomicsAndOffers.offerStack")
+        errors.append("input missing pricing_economics_and_offers.offer_stack")
     if not isinstance(mappings, list) or not mappings:
-        errors.append("input missing pricingEconomicsAndOffers.offerOptionsMapping")
+        errors.append("input missing pricing_economics_and_offers.offer_options_mapping")
         return expected_offer_keys
 
     seen: set[str] = set()
     recommended_count = 0
     for index, mapping in enumerate(mappings):
         if not isinstance(mapping, dict):
-            errors.append(f"offerOptionsMapping[{index}] must be an object")
+            errors.append(f"offer_options_mapping[{index}] must be an object")
             continue
-        source = mapping.get("sourceOfferKey")
+        source = mapping.get("source_offer_key")
         if not isinstance(source, str) or not source:
-            errors.append(f"offerOptionsMapping[{index}].sourceOfferKey missing")
+            errors.append(f"offer_options_mapping[{index}].source_offer_key missing")
         elif isinstance(offer_stack, dict) and source not in offer_stack:
-            errors.append(f"offerOptionsMapping[{index}].sourceOfferKey not found in offerStack: {source}")
-        raw_key = mapping.get("offerOptionKey")
+            errors.append(f"offer_options_mapping[{index}].source_offer_key not found in offer_stack: {source}")
+        raw_key = mapping.get("offer_option_key")
         key = str(raw_key).strip() if isinstance(raw_key, (str, int)) else ""
         if not re.fullmatch(r"[1-9][0-9]*", key):
-            errors.append(f"offerOptionsMapping[{index}].offerOptionKey must be positive integer/digit string")
+            errors.append(f"offer_options_mapping[{index}].offer_option_key must be positive integer/digit string")
         elif key in seen:
-            errors.append(f"duplicate offerOptionKey in input: {key}")
+            errors.append(f"duplicate offer_option_key in input: {key}")
         else:
             seen.add(key)
             expected_offer_keys.append(key)
         if mapping.get("recommended") is True:
             recommended_count += 1
         elif mapping.get("recommended") is not False:
-            errors.append(f"offerOptionsMapping[{index}].recommended must be boolean")
-        config = mapping.get("optionConfiguration")
+            errors.append(f"offer_options_mapping[{index}].recommended must be boolean")
+        config = mapping.get("option_configuration")
         if not isinstance(config, list) or not config:
-            errors.append(f"offerOptionsMapping[{index}].optionConfiguration must be non-empty array")
+            errors.append(f"offer_options_mapping[{index}].option_configuration must be non-empty array")
         else:
             for item_index, item in enumerate(config):
-                if not isinstance(item, dict) or set(item.keys()) != {"Listing", "Option", "Quantity"}:
-                    errors.append(f"offerOptionsMapping[{index}].optionConfiguration[{item_index}] must contain only Listing, Option, Quantity")
+                if not isinstance(item, dict) or set(item.keys()) != {"listing", "option", "quantity"}:
+                    errors.append(f"offer_options_mapping[{index}].option_configuration[{item_index}] must contain only listing, option, quantity")
     if recommended_count != 1:
-        errors.append(f"offerOptionsMapping must contain exactly one recommended=true mapping; found {recommended_count}")
+        errors.append(f"offer_options_mapping must contain exactly one recommended=true mapping; found {recommended_count}")
     return expected_offer_keys
 
 
@@ -255,8 +255,8 @@ def main() -> int:
             "logoColor",
             "fill: var(",
             "stroke: var(",
-            "primaryColor",
-            "secondaryColor",
+            "primary_color",
+            "secondary_color",
         ]
         png_export_markers = [
             "logo-primary.png",
@@ -314,7 +314,7 @@ def main() -> int:
         env_name = f"OFFER_OPTION__{key}"
         if env_name not in all_text:
             errors.append(f"expected offer option env variable not found in project source: {env_name}")
-        if f"offer={key}" not in all_text and f"offerOptionKey: \"{key}\"" not in all_text and f"offerOptionKey\": \"{key}\"" not in all_text:
+        if f"offer={key}" not in all_text and f"offer_option_key: \"{key}\"" not in all_text and f"offer_option_key\": \"{key}\"" not in all_text:
             warnings.append(f"offer option key {key} not obvious in checkout routing/source")
 
     for env_name in [
@@ -346,7 +346,7 @@ def main() -> int:
     if deploy_public_leaks:
         errors.append("Cloudflare deploy-only variables appear in frontend/public source files: " + ", ".join(deploy_public_leaks))
 
-    preserve_params = input_data.get("trackingSpec", {}).get("preserveQueryParams", [])
+    preserve_params = input_data.get("tracking_spec", {}).get("preserve_query_params", [])
     if preserve_params:
         if not any(str(param) in all_text for param in preserve_params):
             warnings.append("preserved query params are not obvious in source; verify CTA and footer link handling")
