@@ -9,6 +9,6 @@ namespace Niobium.AI.Ecommerce.Agents
     {
         public override string Id => nameof(ImageStrategist);
 
-        protected override ReasoningEffort Reasoning => ReasoningEffort.High;
+        protected override ReasoningEffort Reasoning => ReasoningEffort.ExtraHigh;
     }
 }
