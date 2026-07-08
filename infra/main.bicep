@@ -27,6 +27,7 @@ var storageAccountName = replace('${appName}-sa', '-', '')
 var environmentStorageName = '${appName}-caes'
 var schedulerName = '${appName}-dts'
 var taskHubName = '${appName}-hub'
+var containerAppResourceId = resourceId('Microsoft.App/containerApps', containerAppName)
 
 var derivedSecrets = [for setting in appSettings: {
   name: toLower(replace(string(setting.name), '_', '-'))
@@ -111,7 +112,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.13.3' = {
   }
 }
 
-var currentImage = appExists ? reference(resourceId('Microsoft.App/containerApps', containerAppName), '2026-01-01').template.containers[0].image : 'mcr.microsoft.com/dotnet/samples:dotnetapp'
+var currentImage = appExists ? reference(containerAppResourceId, '2026-01-01').template.containers[0].image : 'mcr.microsoft.com/dotnet/samples:dotnetapp'
 module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
   params: {
     name: containerAppName
@@ -172,7 +173,7 @@ module fileShare 'br/public:avm/res/storage/storage-account/file-service/share:0
 }
 
 var durableTaskDataContributorRoleId = '0ad04412-c4d5-4796-b79c-f76d14c8d402'
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!appExists) {
   name: guid(durableTaskScheduler.id, containerApp.name, durableTaskDataContributorRoleId)
   scope: durableTaskScheduler
   properties: {
