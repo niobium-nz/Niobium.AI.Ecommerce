@@ -1,0 +1,23 @@
+# Retained Project Templates
+
+- `.github/workflows/test.yml`: copy as the all-non-main push/PR plus manual test workflow.
+- `.github/workflows/prod.yml`: copy as main PR validation and main push/manual production deployment workflow.
+- `.npmrc`: enables strict npm install-script approval.
+- `.vscode/launch.json`: clean isolated client browser; workspace source maps only; extensions and node_modules source maps disabled.
+- `AGENTS.md`: generated-project ownership/handoff contract.
+- `next.config.mjs`: static export, LAN-safe `allowedDevOrigins`, and browser warning forwarding.
+- `lib/env.ts`: strict positive-integer `SHIPPING_OPTION_ID` plus required integration endpoint parsing.
+- `lib/utils.ts`: integer-cent validation and display formatting; invalid values return clear customer text, never an em dash.
+- `lib/vendor-response.ts`: raw `Promise<Response>` status/JSON parser with safe operation-specific errors.
+- `lib/offer-pricing.ts`: immediate integer-cent defaults plus non-blocking landing quote replacement/retention helpers.
+- `components/layout/home-link.tsx`: visible accessible return path on every non-home route.
+- `styles/mobile-typography.css`: retained narrow-phone heading, balanced-wrap, and minimum control-height safeguards.
+- `tests/unit/dev-runtime-classification.test.mjs`: verifies narrow source-aware diagnostic classification.
+- `tests/unit/project-boundaries.test.mjs`: verifies external-path detection.
+- `tests/e2e/mobile-customer-ui.spec.ts`: mobile typography, customer-copy, testimonial, coupon, and overflow checks.
+- `scripts/prepare-logo-assets.mjs`: deterministic black/white SVG to transparent themed PNG pipeline using only in-project source paths.
+- `scripts/check-dependency-freshness.mjs`: caret-range and latest-stable-compatible-resolution gate.
+- `scripts/check-dependency-health.mjs`: lockfile, engine, warning, and version-qualified install-script allowlist gate.
+- `scripts/check-project-boundaries.mjs`: rejects machine-specific or escaping paths, local file dependencies, and external symlinks.
+- `scripts/check-customer-facing-copy.mjs`: audits built HTML for customer perspective, em dash, testimonials, coupon wording, and home navigation.
+- `scripts/check-dev-runtime.mjs`: clean-browser localhost/LAN runtime gate with narrow source-aware handling of known external diagnostics.

@@ -61,6 +61,7 @@ CLARITY_ID
 FACEBOOK_URL
 INSTAGRAM_URL
 CONTACT_EMAIL
+DEV_ALLOWED_ORIGINS
 ```
 
 Offer option variables must use the double-underscore format:
@@ -84,9 +85,13 @@ These must never be included in frontend bundles, public config, static files, g
 
 `APP_NAME` is safe to expose and required by vendor frontend integrations.
 
-All other app-facing variables above are safe to expose in the browser bundle because the generated app is frontend-only and the vendor libraries require them.
+All other app-facing variables above are safe to expose in the browser bundle because the generated app is frontend-only and the vendor libraries require them, except `DEV_ALLOWED_ORIGINS`, which is local-development configuration and must remain in Next.js config/runtime tooling rather than the public app config.
 
 Do not define currency as an environment variable. Currency comes from quote responses.
+
+Endpoint routing is fixed:
+- `STORE_INTEGRATION_ENDPOINT` is browser-safe and must be passed as the last argument to `niobium.store.getQuote`, `niobium.store.makeOrder`, and `niobium.store.trackOrder`.
+- `NOTIFICATION_INTEGRATION_ENDPOINT` is browser-safe and must be passed as the last argument to `niobium.notification.subscribe` and `niobium.notification.contactUs`.
 
 ## Input-To-Environment Mapping
 Use these mappings:
@@ -98,7 +103,7 @@ vendor_integration.google_recaptcha_site_key -> GOOGLE_RECAPTCHA_SITE_KEY
 vendor_integration.store_integration_endpoint -> STORE_INTEGRATION_ENDPOINT
 vendor_integration.notification_integration_endpoint -> NOTIFICATION_INTEGRATION_ENDPOINT
 vendor_integration.stripe_public_key -> STRIPE_PUBLIC_KEY
-vendor_integration.shipping_option_id -> SHIPPING_OPTION_ID
+vendor_integration.shipping_option_id (positive integer) -> SHIPPING_OPTION_ID (decimal environment string, strictly parsed back to number)
 target_country -> TARGET_COUNTRY
 vendor_integration.fallback_coupon -> FALLBACK_COUPON
 pricing_economics_and_offers.offer_options_mapping[].option_configuration -> OFFER_OPTION__{offer_option_key}
@@ -108,16 +113,26 @@ tracking_spec.microsoft_clarity -> CLARITY_ID
 trust_signal.facebook_page -> FACEBOOK_URL
 trust_signal.instagram_page -> INSTAGRAM_URL
 trust_signal.contact_email -> CONTACT_EMAIL
+DEV_ALLOWED_ORIGINS
 ```
 
 
-## Offer option Environment Generation
+## Shipping Option Integer Contract
+`vendor_integration.shipping_option_id` must be a positive JSON integer.
+
+Environment transport converts it to text, so `SHIPPING_OPTION_ID` must contain only ASCII decimal digits with no sign, whitespace, decimal point, exponent, or suffix. The generated public environment layer must validate the full string, convert it once to a JavaScript `number`, assert `Number.isSafeInteger(value) && value > 0`, and expose only the numeric value to application code.
+
+Never pass the raw env string to quote or order vendor calls. Both `getQuote` and `makeOrder` must receive numeric shipping IDs.
+
+## Offer Option Environment Generation
 The source of truth is `pricing_economics_and_offers.offer_options_mapping`.
 
 For every mapping:
 - read `offer_option_key`
-- serialize `option_configuration` as compact JSON
-- set `OFFER_OPTION__{offer_option_key}` to that compact JSON
+- validate lower-snake-case input cart fields `listing`, `option`, and `quantity`
+- transform each item to vendor wire keys `Listing`, `Option`, and `Quantity`
+- serialize the transformed array as compact JSON
+- set `OFFER_OPTION__{offer_option_key}` to that compact vendor JSON
 
 Example:
 
@@ -134,7 +149,7 @@ Example:
 Produces:
 
 ```txt
-OFFER_OPTION__2=[{"listing":1,"option":"Default","quantity":2},{"listing":2,"option":"Default","quantity":4}]
+OFFER_OPTION__2=[{"Listing":1,"Option":"Default","Quantity":2},{"Listing":2,"Option":"Default","Quantity":4}]
 ```
 
 The generated project must include `scripts/export-offer-env.mjs` and call it in workflows before build. This script should append the values to `$GITHUB_ENV` in GitHub Actions so the build and deploy steps consume normal environment variables.
@@ -158,26 +173,64 @@ Local values may come from `.env`, `.env.local`, or a generated local env file.
 
 When branch/environment detection does not identify `test` or `prod`, local commands should default to `dev`.
 
-Recommended local behavior:
+Required local behavior:
 - `scripts/export-offer-env.mjs` writes offer option values to a local generated env file or logs shell export commands.
 - `scripts/generate-public-env.mjs` resolves `APP_NAME` as `niobiumecomm-{short_product_name}-dev` if `APP_NAME` is absent.
 - `.env.example` documents required local values and notes that Cloudflare secrets are needed only for deploy.
+- `.env.example` may include optional `DEV_ALLOWED_ORIGINS` as a comma-separated list of extra development hostnames/IP addresses.
+- `next.config.mjs` automatically includes localhost and detected non-internal LAN IPv4 addresses in `allowedDevOrigins`, merges explicitly configured `DEV_ALLOWED_ORIGINS`, and does not use a permissive wildcard.
+- `next.config.mjs` sets `logging.browserToTerminal` to at least `"warn"` so client warnings/errors appear in the dev terminal.
+- `npm run dev` binds to `0.0.0.0` so local devices can test the site without a cross-origin warning.
+- `.vscode/launch.json` includes a Next.js client-side browser debug configuration for `http://localhost:3000`, keeps source maps enabled for workspace application code, and uses `skipFiles` plus `resolveSourceMapLocations` to exclude `node_modules` source maps.
+- Normal React DevTools suggestions and HMR connection messages are informational. Application warnings/errors remain fatal; malformed or missing third-party framework source-map lookups are prevented through the debugger configuration rather than hidden after they occur.
+
+## Self-Contained Project Paths
+Every generated project must be runnable after checkout on a clean CI runner without access to the original skill input directory or generation machine.
+
+- Copy the input SVG logo into `source-assets/logo.svg` before any generated task references it.
+- Store only project-relative paths in generated config and manifests.
+- Do not emit absolute Windows, Linux, macOS, workspace, temporary, or `file://` paths.
+- Do not use dependencies with local `file:` references.
+- Do not create symlinks that resolve outside the generated project.
+- Run `npm run project:boundaries` in the quality gate.
 
 ## npm Scripts
 Generated projects must provide:
 
 ```txt
+npm run prepare:app
+npm run dev
+npm run deps:check
+npm run deps:health
 npm run lint
+npm run typecheck
+npm run test
+npm run test:coverage
+npm run serve:static
+npm run test:e2e
+npm run test:runtime
+npm run quality
 npm run build
 npm run deploy
 ```
 
 Expected behavior:
+- `npm run prepare:app`: prepares local offer env values, transparent logo PNGs, and browser-safe public configuration.
+- `npm run dev`: runs `prepare:app`, then starts `next dev --hostname 0.0.0.0` with dynamic `allowedDevOrigins`.
+- `npm run deps:check`: verifies every direct dependency is exact and matches the npm stable `latest` tag.
+- `npm run deps:health`: verifies the lockfile, peer graph, package engines, and dry-run install are warning-free.
 - `npm run lint`: runs ESLint with zero-warning enforcement.
-- `npm run build`: generates public env safely and runs `next build` to produce `out/`.
+- `npm run typecheck`: runs `tsc --noEmit`.
+- `npm run test`: runs Vitest once, not watch mode.
+- `npm run test:coverage`: runs Vitest with 100% statement, branch, function, and line thresholds.
+- `npm run serve:static`: serves the built `out/` directory on the fixed local E2E port without downloading packages at runtime.
+- `npm run test:e2e`: runs Playwright against that built static export for all required routes and flows with browser error listeners.
+- `npm run test:runtime`: starts the dev server, visits localhost and a LAN origin when available, verifies clickable home navigation on every non-home route, and fails on terminal/browser warnings or runtime errors while ignoring only normal info/log messages.
+- `npm run quality`: runs every freshness, static, test, runtime, and build gate required by `references/quality-and-testing.md`.
+- `npm run build`: runs `prepare:app`, then `next build` to produce `out/`.
 - `npm run deploy`: deploys `out/` to Cloudflare Pages using active environment variables.
 
-Do not add `npm test` yet.
+Do not call the project complete unless `npm run quality` exits successfully with no warnings.
 
 ## Required Workflows
 Create two workflows:
@@ -187,22 +240,33 @@ Create two workflows:
 .github/workflows/prod.yml
 ```
 
-Both workflows should install dependencies and run `node scripts/export-offer-env.mjs` before the required npm commands.
+Both workflows must use the Node version declared by the generated project, install from the committed lockfile with `npm ci --strict-allow-scripts`, treat install warnings as failures through `npm run deps:health`, install required Playwright browser dependencies, run `node scripts/export-offer-env.mjs`, and execute the complete warning-free quality gate before any deployment.
 
 ### Test Workflow
-Trigger only on pull requests from `feature/*` branches.
+The test workflow must be available for every non-main branch, whether work reaches it by push or pull request, and must support manual execution.
 
-Use GitHub Environment `test`.
+Required trigger block:
 
-All `feature/*` branches share one test Cloudflare Pages project and one test deployment environment.
-
-Required commands:
-
-```bash
-npm run lint
-npm run build
-npm run deploy
+```yaml
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    branches-ignore:
+      - main
+  workflow_dispatch:
 ```
+
+Requirements:
+- Do not restrict the workflow to `feature/*` branches.
+- Do not add conditions such as `startsWith(github.head_ref, 'feature/')`.
+- Use the GitHub Environment named `test`.
+- All non-main branches share the test Cloudflare Pages project selected by the test environment variables.
+- Install with `npm ci --strict-allow-scripts`.
+- Install the Playwright Chromium runtime.
+- Run `npm run quality` before `npm run deploy`.
+- A warning, failed gate, or unreviewed install script blocks deployment.
 
 ### Prod Workflow
 Trigger on:
@@ -212,15 +276,19 @@ Trigger on:
 For pull requests targeting `main`, run validation only:
 
 ```bash
-npm run lint
-npm run build
+npm ci --strict-allow-scripts
+npx playwright install --with-deps chromium
+node scripts/export-offer-env.mjs
+npm run quality
 ```
 
 For pushes to `main`, use GitHub Environment `prod` and run:
 
 ```bash
-npm run lint
-npm run build
+npm ci --strict-allow-scripts
+npx playwright install --with-deps chromium
+node scripts/export-offer-env.mjs
+npm run quality
 npm run deploy
 ```
 

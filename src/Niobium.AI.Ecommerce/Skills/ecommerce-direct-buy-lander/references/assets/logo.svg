@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80" role="img" aria-labelledby="title">
+  <title id="title">Example monochrome logo</title>
+  <rect width="240" height="80" fill="#fff"/>
+  <circle cx="36" cy="40" r="22" fill="#000"/>
+  <path d="M28 40h16M36 32v16" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+  <path d="M72 25h18c18 0 29 10 29 27 0 3-.3 5.7-1 8H99c.8-2.2 1.2-4.7 1.2-7.5 0-8.7-4.5-13.5-12.7-13.5H72V25Zm0 24h17v14H72V49Zm55-24h17v38h-17V25Zm25 0h18l16 23V25h17v38h-18l-16-23v23h-17V25Z" fill="#000"/>
+</svg>

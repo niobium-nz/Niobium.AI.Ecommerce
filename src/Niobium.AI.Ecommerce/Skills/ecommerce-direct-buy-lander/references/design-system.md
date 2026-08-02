@@ -37,16 +37,17 @@ Override these common ecommerce defaults:
 ### Remove unsupported urgency
 Do not add limited-batch claims, scarcity chips, or countdown timers unless the input validates them.
 
-### Delivery copy must be concrete
-When possible, phrase delivery in terms of what the customer receives, not abstract speed labels.
+### Delivery copy must be concrete and origin-neutral
+Use `product_details.shipping_details.carrier_delivery_estimate` wherever delivery timing is shown. When `shipping_details.tracked` is true, it is appropriate to say the package is tracked and that tracking details will be supplied. Do not emphasize where fulfillment originates, do not use `oversea`/`overseas` in shopper-facing copy, and do not falsely claim local dispatch.
 
 Good:
-- `Estimated AU delivery: 7-14 days`
-- `Most orders arrive in about 7-14 days across Australia`
+- `Estimated AU carrier delivery: 7 - 14 business days`
+- `Tracked delivery  -  tracking details are emailed after dispatch`
 
-Avoid vague language such as:
+Avoid vague or origin-focused language such as:
 - `Fast shipping`
 - `Quick dispatch`
+- origin labels that reduce confidence without helping the customer understand ETA or tracking
 
 ### Use a single dominant action per viewport
 A direct-response page can still have section anchors or FAQ toggles, but there should only be one dominant purchase action visible at a time.
@@ -73,6 +74,17 @@ Default style goals:
 - rounded, premium cards
 - section backgrounds alternating between warm base and white or a very light tint
 
+## Mobile Typography Guardrails
+Design from narrow phones first and verify 320, 360, 390, and 430 CSS-pixel widths.
+Use semantic `h1`-`h6`, `role="heading"`, or `data-headline="true"` markup for every visible headline so no display heading can bypass automated mobile checks.
+
+- Use fluid heading sizes with `clamp()` or explicit responsive classes.
+- From 361px through 430px, hero `h1` must not exceed 40px, section `h2` 36px, and card/form `h3` 32px. At 320px and 360px, use the tighter caps of 36px, 32px, and 28px respectively unless computed line-count tests prove an even smaller accessible size is needed.
+- Do not place short headings in unnecessarily narrow max-width containers.
+- Any visible heading with at most six words and 42 characters must fit within two rendered lines at all required widths.
+- Keep normal body text at least 16px and interactive controls normally at least 44px in their actionable dimension.
+- Fail the design when any required mobile viewport has horizontal overflow, clipped text, or controls that cannot be used.
+
 ## Typography
 If the input requires system fonts, use a strong system stack and create distinction with:
 - larger size jumps
@@ -89,15 +101,17 @@ If the input does not constrain fonts, choose a clean, warm sans stack that stil
 ### Header
 Minimal. Do not include store navigation, category links, search, or social clutter.
 
+On `/`, the linked logo may be the primary brand anchor. On every other route, include both a linked logo and a visible text `Home` or `Back to home` link to `/` in the first usable viewport. The text link is mandatory because a logo-only return path is too easy to miss.
+
 ### Logo
 Use the brand logo as part of the color system, not as an unstyled dropped-in asset.
 
-If `brand_system.logo_file` is SVG, treat it as a monochrome black/white source logo, recolor it from the input palette, then export a website-ready PNG version for actual use in the site:
+If `brand_system.logo_file` is SVG, treat black (`#000`) as foreground and white (`#fff`) as background. Convert white to transparent alpha, recolor black foreground marks from the input palette, then export website-ready transparent PNG versions for actual use in the site:
 - primary brand color on light header/footer surfaces
 - secondary, white, or a derived light neutral on dark brand surfaces
 - accent color only for a deliberate alternate state, not as the default wordmark color
 
-Implementation should preserve the SVG viewBox/aspect ratio during preprocessing and use `currentColor`, CSS variables, or a mask-based approach to recolor the source. Then render/export optimized PNG assets and use those PNGs in the live website. Size the logo deliberately: compact in the header, slightly more generous in the footer, and never stretched. If the file is not SVG, keep it as an image asset and size it explicitly without attempting recoloring.
+Implementation must preserve the SVG viewBox/aspect ratio during preprocessing, use luminance/alpha conversion so white becomes transparent and antialiased edges retain partial alpha, and map black foreground pixels to the chosen theme color. Export optimized RGBA PNG assets and use only those PNGs in the live website; do not inline or CSS-mask the raw SVG. Size the logo deliberately: compact in the header, slightly more generous in the footer, and never stretched. If the file is not SVG, keep it as an image asset and size it explicitly without attempting recoloring.
 
 ### Hero
 The first proof moment should be visible or understandable immediately.
@@ -115,8 +129,20 @@ Preferred hierarchy:
 Offer cards should:
 - make the recommended offer visually dominant
 - show the shopper-relevant use case, not internal margin logic
-- keep savings math obvious
+- render `default_price` immediately in the first paint
+- update the displayed amount/currency unobtrusively when a valid background quote differs
+- retain the default price and usable CTA when a landing quote fails
+- keep savings math obvious and use only cent-safe values
 - stay tap-friendly on mobile
+
+### Testimonials And Proof
+Customer feedback is mandatory, not an optional filler section.
+
+- Render at least three supplied `trust_signal.testimonials` entries on the home page.
+- Mark the section with `data-testimonials="true"` and each item with `data-testimonial="true"`.
+- Keep at least three items immediately visible in normal document flow, not all hidden in a carousel/modal/tab.
+- Never invent feedback, names, locations, ratings, or purchase claims.
+- Put customer feedback before the final CTA/footer and near a relevant proof or offer section.
 
 ### Proof Sections
 Favor concrete demonstrations:
@@ -158,7 +184,7 @@ The `/checkout` page should feel like the next purchase step from the landing pa
 Requirements:
 - reduced navigation and fewer distractions than the landing page
 - same typography, card style, radius, and trust tone as the landing page
-- visible order summary using quote-derived price data
+- visible order summary using validated live quote data in integer cents; landing defaults never enter checkout/payment calculations
 - clear secure-payment reassurance near the Stripe Payment Element
 - required/optional field labels that match the target country
 - billing fields collapsed behind a same-as-shipping choice

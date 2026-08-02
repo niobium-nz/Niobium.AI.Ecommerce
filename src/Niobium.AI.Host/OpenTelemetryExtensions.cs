@@ -14,7 +14,7 @@ namespace Niobium.AI.Host
 {
     internal static class OpenTelemetryExtensions
     {
-        public static HostApplicationBuilder ConfigureOpenTelemetry(this HostApplicationBuilder builder)
+        public static IHostApplicationBuilder ConfigureOpenTelemetry(this IHostApplicationBuilder builder)
         {
             string? applicationInsightsConnectionString = builder.Configuration.GetValue<string>("APPLICATION_INSIGHTS_CONNECTION_STRING");
             string? otlpEndpoint = builder.Configuration.GetValue<string>("OTEL_EXPORTER_OTLP_ENDPOINT");

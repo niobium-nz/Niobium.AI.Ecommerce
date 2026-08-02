@@ -32,8 +32,15 @@ namespace Niobium.AI.Ecommerce.Workflows
             for (int i = 0; i < reviews.Count; i++)
             {
                 string txt = reviews[i].ReviewText
-                    .Replace("Fictional internal-use-only draft", "")
+                    .Replace("Fictional customer-voice simulation for internal use", "")
+                    .Replace("Fictional internal review draft", "")
                     .Replace("Fictional internal-use draft", "")
+                    .Replace("Fictional internal-use-only draft", "")
+                    .Replace("Fictional internal-use-only review draft", "")
+                    .Replace("Internal-use-only fictional feedback", "")
+                    .Replace("Internal-use-only fictional review draft", "")
+                    .Replace("Simulated customer voice draft", "")
+                    .Replace("Simulated internal review draft", "")
                     .Trim();
                 if (txt.StartsWith(":"))
                 {
@@ -57,6 +64,8 @@ namespace Niobium.AI.Ecommerce.Workflows
                     Name = nameCityPairs[i].FirstName,
                 });
             }
+
+            result.ShortProductName = result.ShortProductName.ToLowerInvariant();
 
             string artifactName = $"listings/{input.SignalId}/{input.CandidateId}.json";
             await context.CallActivityAsync(nameof(PublishArtifact), new PublishArtifactInput(artifactName, result, result.GetType()));

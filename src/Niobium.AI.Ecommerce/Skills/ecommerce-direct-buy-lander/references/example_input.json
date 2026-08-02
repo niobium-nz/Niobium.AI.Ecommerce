@@ -4,10 +4,10 @@
   "vendor_integration": {
     "tenant_id": "tenant_fursweep_demo",
     "google_recaptcha_site_key": "REPLACE_WITH_RECAPTCHA_SITE_KEY",
-    "store_integration_endpoint": "https://example.invalid/niobium/store-webhook",
-    "notification_integration_endpoint": "https://example.invalid/niobium/notification-webhook",
+    "store_integration_endpoint": "https://example.invalid/niobium/store-integration",
+    "notification_integration_endpoint": "https://example.invalid/niobium/notification-integration",
     "stripe_public_key": "pk_test_replace_me",
-    "shipping_option_id": "standard-au-delivery",
+    "shipping_option_id": 101,
     "fallback_coupon": ""
   },
   "brand_system": {
@@ -51,7 +51,12 @@
       "Daily maintenance of fabric-heavy pet zones between deeper cleans"
     ],
     "materials_or_construction_summary": "Durable mesh cloth backing, soft brush cloth bristles, food-grade silicone bristles, reinforced stitching, and a polyester cuff suggest a lightweight, reusable glove built for repeated swipe-rinse-dry usage.",
-    "fulfillment_and_refund_assumptions": "Assume shipping is already embedded in COGS, parcels ship per order rather than per unit, overseas fulfillment means a realistic AU delivery window of about 7-14 days, and low-cost approved refunds can be treated internally as keep-the-item economics. Customer-facing refund language should stay simple, truthful, and operationally supportable.",
+    "fulfillment_and_refund_assumptions": "Assume shipping is already embedded in COGS, parcels ship per order rather than per unit, carrier delivery is expected in about 7 - 14 business days for AU customers, and low-cost approved refunds can be treated internally as keep-the-item economics. Customer-facing refund and delivery language should stay simple, truthful, and operationally supportable.",
+    "shipping_details": {
+      "tracked": true,
+      "carrier_delivery_estimate": "7 - 14 business days",
+      "tracking_message": "Tracking details are emailed after dispatch."
+    },
     "suggested_product_names": [
       "FurSweep Glove",
       "ShedSweep Mitt",
@@ -83,22 +88,31 @@
     },
     "offer_stack": {
       "single_unit_offer": {
-        "name": "FurSweep Glove — Single",
-        "price_point": "A$24.95",
+        "name": "FurSweep Glove  -  Single",
+        "default_price": {
+          "amount_cents": 2495,
+          "currency": "AUD"
+        },
         "description": "Entry option for one primary fur zone or more price-sensitive buyers. Keep this secondary so it functions as a price ladder into the stronger bundle economics."
       },
       "best_seller_bundle": {
         "name": "Daily Reset 2-Pack",
-        "price_point": "A$39.95",
+        "default_price": {
+          "amount_cents": 3995,
+          "currency": "AUD"
+        },
         "description": "Best balance of impulse conversion and margin. Frame as two everyday zones: couch + bed, home + car, or home + handbag."
       },
       "higher_aov_bundle": {
         "name": "Whole-Home 3-Pack",
-        "price_point": "A$54.95",
+        "default_price": {
+          "amount_cents": 5495,
+          "currency": "AUD"
+        },
         "description": "For heavier-shed homes or buyers who want immediate coverage across lounge, bedroom, and car without rotating one glove around."
       }
     },
-    "recommended_primary_offer": "Daily Reset 2-Pack at A$39.95.",
+    "recommended_primary_offer": "Daily Reset 2-Pack.",
     "recommended_primary_offer_rationale": "It is the cleanest profit-first offer for cold Meta traffic: the use case is easy to justify, the implied per-unit value improves versus the single, it keeps the headline price below A$40, and it nearly doubles contribution margin versus a single-unit order without creating the extra friction of a 3-Pack-first page.",
     "offer_options_mapping": [
       {
@@ -166,7 +180,7 @@
       {
         "section_name": "Sticky CTA plus hero demo",
         "assets": [
-          "6_8_second_vertical_video_showing_the_first_swipe_on_a_dark_hairy_fabric_surface",
+          "asset_6_8_second_vertical_video_showing_the_first_swipe_on_a_dark_hairy_fabric_surface",
           "fallback_static_before_after_hero_image",
           "offer_selector_visual_with_2_pack_preselected",
           "visible_price_delivery_window_and_cta_in_the_first_viewport"
@@ -191,7 +205,7 @@
       {
         "section_name": "Surface compatibility proof grid",
         "assets": [
-          "4_6_micro_demos_across_sofa_bedding_clothing_and_car_upholstery",
+          "asset_4_6_micro_demos_across_sofa_bedding_clothing_and_car_upholstery",
           "simple_icon_row_showing_common_target_surfaces",
           "if_needed_a_spot_test_note_for_delicate_fabrics"
         ]
@@ -254,13 +268,13 @@
     "segment_name": "Couch & Bedding Resetters",
     "shared_context_snapshot": {
       "recommended_product_name": "FurSweep Glove",
-      "core_offer_stack": "FurSweep Glove — Single A$24.95 / Daily Reset 2-Pack A$39.95 / Whole-Home 3-Pack A$54.95. Keep the 2-Pack preselected on paid-traffic landers.",
+      "core_offer_stack": "FurSweep Glove  -  Single A$24.95 / Daily Reset 2-Pack A$39.95 / Whole-Home 3-Pack A$54.95. Keep the 2-Pack preselected on paid-traffic landers.",
       "key_price_points": [
         "Single: A$24.95",
         "Daily Reset 2-Pack: A$39.95",
         "Whole-Home 3-Pack: A$54.95"
       ],
-      "shipping_reality": "Transparent 7-14 day AU delivery from overseas fulfillment; state it near the first CTA and in FAQ.",
+      "shipping_reality": "Tracked delivery with a clear 7 - 14 business-day carrier estimate; state the ETA near the first CTA and in FAQ without emphasizing fulfillment origin.",
       "guarantee_or_refund_framing": "Preferred: a plain 30-day satisfaction guarantee only if operations can honor it. Fallback: transparent support plus damaged/defective replacements without stronger promises.",
       "landing_page_role_in_funnel": "Convert short-form demo interest into purchase by proving performance on common fabric surfaces fast, steering shoppers to the 2-Pack, and resolving fabric-safety, cleaning, and delivery objections before checkout."
     },
@@ -438,7 +452,7 @@
     "instagram_page": "https://www.instagram.com/niobium_studio"
   },
   "asset_library": {
-    "6_8_second_vertical_video_showing_the_first_swipe_on_a_dark_hairy_fabric_surface": {
+    "asset_6_8_second_vertical_video_showing_the_first_swipe_on_a_dark_hairy_fabric_surface": {
       "path": "./assets/placeholder.png",
       "media_ratio": "1:1"
     },
@@ -478,7 +492,7 @@
       "path": "./assets/placeholder.png",
       "media_ratio": "1:1"
     },
-    "4_6_micro_demos_across_sofa_bedding_clothing_and_car_upholstery": {
+    "asset_4_6_micro_demos_across_sofa_bedding_clothing_and_car_upholstery": {
       "path": "./assets/placeholder.png",
       "media_ratio": "1:1"
     },

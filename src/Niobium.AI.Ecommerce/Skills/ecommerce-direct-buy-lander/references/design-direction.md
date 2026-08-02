@@ -90,13 +90,25 @@ If the project uses system fonts only, create personality through:
 - reserve the accent color for offer emphasis and select proof chips
 - avoid introducing bright alarm colors unless tied to a truthful warning or error state
 - keep backgrounds warm and calm so product proof stays legible
-- when the logo is SVG, assume the source mark is monochrome, recolor it from the brand palette, size it for the layout, and export PNG logo assets so the final site uses lightweight fitted raster versions rather than dropping the raw SVG into the page
+- when the logo is SVG, treat black marks as foreground and white as background, convert white to transparent alpha, recolor black from the brand palette, size it for the layout, and export transparent PNG logo assets so the final site never drops the raw SVG or a white logo rectangle into the page
+
+## Delivery And Support Copy Direction
+Keep fulfillment messaging focused on what helps the shopper decide: whether tracking is provided, the carrier delivery estimate, when tracking details arrive, and how to contact support. Never emphasize fulfillment origin or use `oversea`/`overseas` in shopper-facing copy. Do not imply local dispatch unless the input proves it.
+
+Every support, tracking, order-status, checkout, and policy page must include a visible text link back to the product page. A clickable logo can reinforce navigation but cannot be the only path home.
 
 ## Motion Guidance
 - use only subtle motion that helps clarity
 - prefer CSS transforms and opacity
 - keep sticky bar reveals smooth and low-jank
 - avoid motion that competes with the CTA
+
+## Customer Perspective Test
+Before approving any visible heading, label, helper, empty state, or error, ask whether a potential customer would naturally read it on a storefront.
+
+Do not render design/strategy/operator terms such as conversion-focused, low-friction purchase flow, message-matched landing page, offer stack, or guest-checkout commentary. Translate internal intent into a useful customer promise or instruction.
+
+Do not use the Unicode em dash in rendered wording. Rewrite with punctuation or a spaced hyphen (` - `).
 
 ## Practical Test
 Before finalizing, ask:

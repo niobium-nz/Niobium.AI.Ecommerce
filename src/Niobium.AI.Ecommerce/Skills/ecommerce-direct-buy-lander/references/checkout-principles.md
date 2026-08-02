@@ -7,7 +7,7 @@ Apply these principles to the generated `/checkout` page where they fit this ski
 - browser-side vendor integrations only
 - no cart UI
 - single selected marketing offer
-- quote-driven pricing
+- live-quote checkout pricing in integer cents
 - Stripe Payment Element deferred-intent flow
 - one target country per generated site
 
@@ -61,7 +61,7 @@ For most countries, it should be optional and visually secondary. Where unit/flo
 Coupon entry is allowed and required by this skill, but it should not dominate the payment path.
 
 Checkout must:
-- show the active coupon if one is present
+- when a coupon is present, label it exactly `Coupon applied to this order`
 - allow the customer to change it
 - refresh quote immediately after coupon change
 - show loading while quote refreshes
@@ -69,8 +69,8 @@ Checkout must:
 
 Do not hardcode discount claims.
 
-### 7. Show Quote-Derived Order Summary
-Use quote response data for every price, shipping, tax, discount, currency, and total claim.
+### 7. Show Live-Quote Order Summary
+Use a successfully parsed, validated 2xx quote response for every checkout price, shipping, tax, discount, currency, and total claim. Vendor amounts are integer cents; format them through the cent-safe display helper and pass the untouched cent total to Stripe. Never use the landing-page default price in checkout.
 
 Recommended display:
 - product/offer summary
@@ -93,7 +93,7 @@ Use:
 - no fake security badges or unsupported payment claims
 
 ### 9. Use Adaptive, Helpful Errors
-Error messages should tell the customer what failed and what to try next.
+Vendor methods return raw `Promise<Response>` values. Handle rejected promises, non-2xx status, malformed/empty JSON, and unexpected body shapes before consuming any fields. Error messages should tell the customer what failed and what to try next without showing raw backend response text.
 
 Examples:
 - missing offer: “We could not identify the selected offer. Please return to the product page and choose an offer again.”
@@ -114,7 +114,7 @@ During quote refresh, order creation, Stripe Element submission, and Stripe conf
 Use a simplified shell for `/checkout`:
 - minimal header
 - no large navigation
-- clear way back to product page if needed
+- a visible text `Back to home` link to `/` near the top; do not rely on a logo-only path
 - no social feeds or unrelated promotional blocks
 - focused order summary + form + payment layout
 
@@ -133,3 +133,7 @@ The following Baymard Institute resources informed these principles:
 - Baymard's checkout UX best-practices article emphasizes prominent guest checkout, marking required/optional fields, using adaptive error messages, choosing the right interface for optional inputs, and explaining phone-number requests: https://baymard.com/blog/current-state-of-checkout-ux
 - Baymard's payment UX guide stresses that unclear, untrustworthy, or hard-to-recover payment forms can lose users at the point they are ready to complete purchase: https://baymard.com/learn/payment-ux
 - Baymard's checkout usability research hub states that it has repeatedly tested checkout flows of leading ecommerce sites and uses large-scale qualitative studies and audits: https://baymard.com/research/checkout-usability
+
+
+### 13. Keep Delivery Reassurance Useful
+When the input confirms tracking, say the package is tracked and show the supplied carrier delivery estimate. Keep the wording focused on ETA, tracking, and support. Do not emphasize fulfillment origin, do not use `oversea` or `overseas` in customer-facing copy, and do not invent local-dispatch claims.

@@ -46,7 +46,7 @@ Trigger `PageView` to both GA4 and Meta Pixel when any page loads. Guard missing
 - `OfferSelect`: fire when the visible selected offer changes.
 - `VideoPlay`: fire when a demo video begins playback.
 
-The landing page should not emit final purchase-completion events.
+The landing page should not emit final purchase-completion events. Its initial price source is each offer's required input `default_price`; background quote refreshes must not delay event wiring or CTA availability.
 
 ### StartCheckoutForm
 Trigger `StartCheckoutForm` only once per checkout page session.
@@ -81,7 +81,9 @@ For checkout-related events, include only:
 - country
 - topmost listing ID with the highest line total
 
-The topmost listing ID means the listing ID from the quote line with the highest `lineTotal`.
+Vendor `order total` and every quote `lineTotal` are integer cents. Keep the canonical internal fields as `order_total_cents`/cent values. If an analytics platform specifically requires major currency units, divide by 100 exactly once inside that platform adapter; never change the value used by Stripe, quote comparison, or order logic.
+
+The topmost listing ID means the listing ID from the quote line with the highest cent-valued `lineTotal`.
 
 Do not include customer PII in analytics payloads.
 
@@ -103,6 +105,14 @@ Preserve them across:
 Do not preserve arbitrary or unknown query params.
 
 Exception: pass through `coupon` only when the current URL contains it. Do not invent a coupon query param.
+
+## Landing Price Hydration
+- Every mapped offer must render its input `default_price.amount_cents` and `default_price.currency` in the first usable render.
+- Start quote requests after the page is interactive; parallel requests are allowed.
+- A valid parsed 2xx quote may replace the corresponding price immediately, whether it is higher or lower.
+- If the quote matches the default, keep the presentation stable.
+- A network, HTTP, JSON, or body-validation failure keeps the default price, leaves `Buy Now` enabled, and may show a quiet non-blocking freshness note/retry affordance.
+- Default prices are display fallbacks only. Checkout, Stripe Elements, order creation, and checkout analytics must use a validated live quote.
 
 ## Coupon Rules
 Coupon priority on checkout:
@@ -134,7 +144,7 @@ The deployable build output is `out/`.
 The site is always deployed at the root of its domain. Internal URLs do not need subfolder-safe handling.
 
 ### Browser-Only Runtime Integrations
-All vendor interactions run in the browser:
+All vendor interactions run in the browser and return raw `Promise<Response>` values. Shared integration code must check status, parse JSON once, validate the body, and map failures to user-facing messages before application components consume data:
 - quote calls
 - order creation calls
 - Stripe Elements mounting/submission/confirmation
@@ -174,7 +184,9 @@ These are the skill's internal guardrails for PageSpeed-oriented output:
 
 ## Async UI States Checklist
 Every async vendor or payment action must show clear UI states:
-- quote loading and quote error
+- landing quote refresh in progress without obscuring/removing the input default price
+- landing quote refresh failure that retains the default price and CTA
+- checkout quote loading and blocking quote error
 - offer-selection quote refresh
 - coupon quote refresh
 - subscription submit
@@ -195,9 +207,16 @@ Requirements:
 
 ## Mobile Performance Checklist
 Before finalizing, confirm:
-- the first viewport renders without waiting on analytics
+- the first viewport renders offer prices from validated defaults without waiting on analytics or vendor quote responses
 - the hero media is dimensioned and not lazy-loaded
 - the sticky buy bar does not shift layout when shown
 - accordions animate cheaply and do not relayout the whole page unnecessarily
 - policy pages reuse the same shell without loading landing-page-only interactive code
 - checkout loads only the vendor scripts needed for checkout
+
+
+## Internal Navigation And Support-Page Performance
+Every non-home route must provide a visible text link to `/` in its first usable viewport. Keep this link in the shared shell or a tiny retained `HomeLink` component so support/policy routes do not hydrate landing-page conversion code merely to provide navigation. Test the link by clicking it on every required route.
+
+## Fulfillment Copy
+Use only `product_details.shipping_details` for tracked/ETA claims. A tracked package may be described as tracked, and the supplied carrier delivery estimate may be shown. Do not emphasize fulfillment origin, do not use `oversea` or `overseas` in shopper-facing copy, and do not falsely claim local dispatch.

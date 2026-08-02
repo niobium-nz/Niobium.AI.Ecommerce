@@ -2,7 +2,7 @@ namespace Niobium.AI.Ecommerce.Contracts
 {
     internal record WebsiteBuildingOutput
     {
-        public required string ShortProductName { get; init; }
+        public required string ShortProductName { get; set; }
         public required string TargetCountry { get; init; }
         public required VendorIntegration VendorIntegration { get; init; }
         public required BrandSystem BrandSystem { get; init; }

@@ -14,7 +14,7 @@ namespace Niobium.AI.Ecommerce.Contracts
         public required Guid TenantId { get; init; }
         public required string GoogleRecaptchaSiteKey { get; init; }
         public required string StripePublicKey { get; init; }
-        public required string ShippingOptionId { get; init; }
+        public required int ShippingOptionId { get; init; }
         public required string FallbackCoupon { get; init; }
         public required string StoreIntegrationEndpoint { get; init; }
         public required string NotificationIntegrationEndpoint { get; init; }

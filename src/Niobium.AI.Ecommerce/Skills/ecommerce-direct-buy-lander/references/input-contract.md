@@ -9,6 +9,17 @@ Use the input JSON as a structured brief, not just as raw content. The agent sho
 3. This skill's rules and defaults.
 4. The bundled example input as shape reference only.
 
+## JSON Field Naming
+Every input JSON object key must use lower snake case and match:
+
+```txt
+^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
+```
+
+This rule applies recursively to top-level fields, nested fields, dynamic offer keys, segment keys, and asset identifiers. Vendor wire formats are separate: the skill may transform lower-snake-case input fields into vendor-required property names only at the vendor/environment boundary.
+
+This is the current schema, not a compatibility layer. Reject obsolete input fields such as `checkout_url`, `price_point`, `subscription_integration_endpoint`, `contact_us_integration_endpoint` instead of silently translating them.
+
 ## Required Top-Level Fields
 
 ### `short_product_name`
@@ -49,12 +60,16 @@ Required for a working checkout and support flow. The generated project maps thi
   "store_integration_endpoint": "STORE_INTEGRATION_ENDPOINT value",
   "notification_integration_endpoint": "NOTIFICATION_INTEGRATION_ENDPOINT value",
   "stripe_public_key": "STRIPE_PUBLIC_KEY value",
-  "shipping_option_id": "SHIPPING_OPTION_ID value",
+  "shipping_option_id": 101,
   "fallback_coupon": "optional FALLBACK_COUPON value"
 }
 ```
 
-Do not add currency. Currency comes from quote responses only.
+`shipping_option_id` is required and must be a positive JSON integer within the JavaScript safe-integer range. Do not accept a string, decimal, zero, negative value, boolean, exponent-form value, unsafe integer, or numeric-looking token. Environment variables are strings by transport, so serialize this integer as the decimal value of `SHIPPING_OPTION_ID`, validate it strictly, and convert it back to a JavaScript `number` before passing it to any vendor function.
+
+`store_integration_endpoint` and `notification_integration_endpoint` are required non-empty strings. The store endpoint is the final argument to `getQuote`, `makeOrder`, and `trackOrder`. The notification endpoint is the final argument to `subscribe` and `contactUs`.
+
+Do not add a currency environment variable. Each visible offer supplies a required display-only `default_price.currency` for immediate landing-page rendering, while the live quote response remains authoritative for refreshed landing pricing and all checkout/payment pricing.
 
 ## What To Pull From Each Input Area
 
@@ -67,24 +82,36 @@ Treat the logo as SVG when either condition is true:
 - the logo path extension is `.svg`, case-insensitive, ignoring query strings or hashes
 - the asset file is available and its trimmed content starts with `<svg`
 
-When the logo is SVG, assume the supplied artwork is a black/white monochrome source asset. The generated site workflow should apply the input color scheme to the logo, size it appropriately for website use, render/export website-ready PNG assets from the adjusted SVG, and use those PNG assets in the final site rather than embedding the original raw SVG directly in page markup.
+When the logo is SVG, the source contract is strict:
+- foreground signs are black only: `#000`, `#000000`, or `black`
+- background is white only: `#fff`, `#ffffff`, or `white`
+- `none` or `transparent` is allowed where transparency already exists
+- omitted SVG fill is treated as the default black foreground
 
-SVG logo handling rules:
+Do not guess when another visible color, gradient, external image, script, external stylesheet, or remote resource is present. The generated logo preparation script must fail clearly.
+
+The SVG source file must be locally available to the generation workflow. A missing file or remote-only URL is a blocking input error because the colors, transparency conversion, output dimensions, and PNG content cannot otherwise be verified.
+
+The SVG is a preprocessing source asset only. The final site must use generated transparent PNG assets and must not inline, mask, or directly display the raw SVG.
+
+SVG logo conversion rules:
 - Preserve the SVG `viewBox` and aspect ratio.
-- Prepare the SVG as a source asset only; do not rely on serving the raw SVG directly in the final page UI when a PNG export can be produced.
-- Replace solid black/white fills and strokes with `currentColor` or a CSS variable derived from the input palette during preprocessing. Preserve `fill="none"`, clipping paths, masks, and transparent regions.
-- Use `primary_color` for the normal logo on light surfaces.
-- Use `secondary_color`, white, or a derived light neutral for the logo on dark primary-color surfaces.
-- Use `accent_color` only for a deliberate alternate mark, badge, or hover treatment; do not make the logo multicolor unless the design direction explicitly benefits from it.
-- Do not hardcode black or white as the final visible logo color unless those colors are actually the selected brand palette for that surface.
-- Export optimized PNG files from the recolored/sized SVG for the actual website, ideally at least a standard/light-surface variant and an inverse/dark-surface variant when both are needed.
-- The generated site should reference the derived PNG logo assets in headers, footers, checkout, and policy pages.
-- If the SVG cannot be safely parsed or transformed, document the fallback clearly and still avoid inventing a new logo.
+- Convert every source white background pixel to alpha transparency.
+- Convert every source black foreground pixel to the selected theme foreground color.
+- Preserve antialiased edges by converting grey edge pixels into partial alpha rather than leaving grey or white halos.
+- Use `primary_color` for the normal light-surface variant.
+- Use `secondary_color` or another explicitly selected high-contrast palette color for an inverse/dark-surface variant.
+- White source pixels always become transparent; they never become the inverse foreground color.
+- Export RGBA PNGs without flattening them onto an opaque background.
+- Verify that an alpha channel exists, transparent pixels exist when the source has white background, no opaque white rectangle remains, the foreground color is correct, and dimensions preserve aspect ratio.
+- Keep the original SVG out of shopper-facing component paths. Use the generated PNGs in headers, footers, checkout, contact, track-order, order-status, and policy pages.
+- Follow `references/logo-processing.md` for the complete transformation and test contract.
 
 Logo sizing rules:
 - Keep the header logo compact and tap-safe: approximately `28-34px` tall on mobile and `32-40px` tall on desktop.
 - Clamp wide wordmarks with a sensible max width, usually `160-180px` in the header and up to `200px` in the footer.
 - Use `width: auto`, preserve aspect ratio, and avoid stretching.
+- Export at least 2x the largest intended CSS size, but do not preserve an arbitrary oversized vector coordinate size.
 - Provide explicit width/height or CSS dimensions to avoid layout shift.
 - Ensure the logo remains legible in the checkout, contact, track-order, order-status, and policy layouts.
 
@@ -111,9 +138,27 @@ Pull:
 - primary use cases
 - materials or construction summary
 - fulfillment and refund assumptions
+- structured shipping details
 - recommended product name
 
-Use `fulfillment_and_refund_assumptions` for internal copy judgment. Do not expose internal economics directly to shoppers.
+Use `fulfillment_and_refund_assumptions` for internal copy judgment. Do not expose internal economics or fulfillment origin directly to shoppers.
+
+`product_details.shipping_details` is required and must contain:
+
+```json
+{
+  "tracked": true,
+  "carrier_delivery_estimate": "7 - 14 business days",
+  "tracking_message": "Tracking details are emailed after dispatch."
+}
+```
+
+Rules:
+- `tracked` must be a boolean. Mention tracked delivery only when it is `true`.
+- `carrier_delivery_estimate` must be a non-empty, operationally supported customer-facing ETA.
+- `tracking_message` is optional, but when supplied it must remain truthful.
+- Customer-facing copy may say `Tracked delivery`, show the carrier ETA, and explain that tracking details are emailed after dispatch.
+- Never use the words `oversea` or `overseas` in shopper-facing copy, and do not emphasize fulfillment origin. Do not falsely imply local dispatch or a domestic warehouse.
 
 ### `pricing_economics_and_offers`
 Use this block to decide visible offer order, highlight, and purchase mapping.
@@ -126,7 +171,9 @@ The economics are mainly internal and should guide page emphasis, offer order, s
 
 Use the offer names and descriptions exactly or with only minimal copy compression.
 
-Displayed price claims must come from vendor quote responses, not from the static input's old modeled `price_point` values. The old `price_point` strings may be used as copy-planning hints only until live quote data arrives.
+Every visible offer must define a structured `default_price`. The landing page renders this price immediately, without waiting for a vendor request, then starts quote requests in the background after hydration. A successful quote replaces the displayed amount and currency when they differ. A failed landing quote keeps the default price visible and shows only a non-blocking, user-friendly live-pricing notice when useful.
+
+The default price is display-only. Never use it to initialize Stripe, create an order, calculate tax/shipping/discount, or bypass a live checkout quote. Checkout must obtain and validate a successful live quote before enabling payment.
 
 ### `pricing_economics_and_offers.offer_stack`
 `offer_stack` contains shopper-facing marketing offer metadata keyed by source offer key:
@@ -134,14 +181,24 @@ Displayed price claims must come from vendor quote responses, not from the stati
 ```json
 "offer_stack": {
   "single_unit_offer": {
-    "name": "FurSweep Glove — Single",
-    "price_point": "A$24.95",
+    "name": "FurSweep Glove  -  Single",
+    "default_price": {
+      "amount_cents": 2495,
+      "currency": "AUD"
+    },
     "description": "Entry option for one primary fur zone."
   }
 }
 ```
 
 The source offer key is used by `offer_options_mapping[].source_offer_key`.
+
+`default_price` rules:
+- required for every offer declared in `offer_stack`, including every offer referenced by `offer_options_mapping`
+- `amount_cents` must be a positive safe JSON integer and represents cents, not dollars
+- `currency` must be a three-letter uppercase ISO currency code
+- it is safe app-facing configuration and belongs in `config/offer-options.json`, not in `OFFER_OPTION__n`
+- it is the immediate landing-page display fallback only; quote response data supersedes it when available
 
 ### `pricing_economics_and_offers.offer_options_mapping`
 Required. This array defines the visible sale options, their purchase option key, and the exact cart JSON for each option.
@@ -174,10 +231,10 @@ Rules:
 - Preserve the array order as the visible offer order. Do not sort by `offer_option_key`.
 - `source_offer_key` must exist in `offer_stack`.
 - `offer_option_key` must be a positive integer or digit string and maps directly to `OFFER_OPTION__{offer_option_key}`.
-- `option_configuration` is the exact JSON array value assigned to the matching environment variable at deployment/build time.
-- Each `option_configuration` item must contain only `listing`, `option`, and `quantity`.
+- Each input `option_configuration` item must contain only `listing`, `option`, and `quantity`.
 - `listing` and `quantity` must be positive integers.
 - `option` must be a non-empty string.
+- At deployment/build time, transform each item to the vendor wire keys `Listing`, `Option`, and `Quantity`; compact JSON of that transformed array is the exact matching environment-variable value.
 - Do not place labels, badges, savings text, product names, or ordering metadata inside `option_configuration`.
 - Exactly one mapping should normally have `recommended: true`; if this is missing or ambiguous, stop and ask.
 
@@ -205,17 +262,20 @@ Use:
 The first viewport should usually reflect the named angle and trigger.
 
 ### `trust_signal`
-Use these to build trust honestly:
-- policy content and links
-- `contact_email` -> `CONTACT_EMAIL`
-- `facebook_page` -> `FACEBOOK_URL`
-- `instagram_page` -> `INSTAGRAM_URL`
-- testimonials and reviewer locations
+Required trust fields:
+- `contact_email`
+- `facebook_page`
+- `instagram_page`
+- `testimonials`
 
-Testimonials can be edited for length, but do not change meaning.
+`testimonials` must be an array with at least three genuine entries. Each entry must contain non-empty `name` and `testimonial` fields; optional location/rating/media may be used only when supplied and truthful.
+
+Render at least three testimonials in the normal home-page document flow with the selectors required by `references/customer-facing-copy.md`. Do not omit customer feedback because an image is missing; use a well-designed text treatment.
+
+Use only `instagram_page` for Instagram. There is no compatibility alias for alternative spellings.
 
 ### `asset_library`
-Use the provided asset plan to decide what each section needs. If a listed asset file is only a placeholder, keep the section structure and use a fallback visual treatment rather than claiming the final media exists.
+Use the provided asset plan to decide what each section needs. Copy every available local asset into `source-assets/` or `public/assets/` inside the generated project and rewrite generated references to those project-relative locations. If a listed local asset is missing or only a placeholder, keep the section structure and use an in-project fallback visual treatment rather than claiming the final media exists. Never preserve an absolute, machine-specific, `file:` URL, or escaping relative path from the input in generated source, configuration, tests, scripts, manifests, package tasks, or static output.
 
 ## Environment Variable Mapping
 Generated projects should create a browser-safe public config at build time from these semantic source variables:
@@ -241,6 +301,8 @@ INSTAGRAM_URL
 CONTACT_EMAIL
 ```
 
+`SHIPPING_OPTION_ID` must contain only the decimal representation of the positive integer from `vendor_integration.shipping_option_id`. Application config must expose it as `number`, not `string`, after strict validation. Never pass the raw environment string to `niobium.store.getQuote` or `niobium.store.makeOrder`.
+
 Deploy-only variables:
 
 ```txt
@@ -250,13 +312,21 @@ CLOUDFLARE_API_TOKEN
 
 Deploy-only variables must never be copied to public config, bundled JavaScript, static HTML, or `out/`.
 
+## Customer-Facing Copy And Mobile Guardrails
+Every visible string must address a potential customer, not describe the website to its owner, developer, designer, or operator. Apply `references/customer-facing-copy.md` across every route.
+
+The generated UI must contain no Unicode em dash. Coupon-applied state must say `Coupon applied to this order`. All required mobile widths and testimonial selectors are mandatory acceptance criteria.
+
 ## Copy Guardrails
 - Never invent performance claims or social proof unless the input provided them.
 - Never add countdowns or scarcity unless the input validates them.
-- Do not imply local fulfillment if the input says overseas fulfillment.
+- Never use `oversea` or `overseas` in shopper-facing copy and never emphasize fulfillment origin.
+- Do not falsely claim local dispatch, a domestic warehouse, or a shipping origin that the input does not support.
+- When `shipping_details.tracked` is true, it is appropriate to say `Tracked delivery` and show the supported carrier ETA.
 - If refund terms are uncertain, use the most supportable version.
 - If using testimonial excerpts, keep them faithful.
-- Do not hardcode prices. Use loading, pending, or quote-derived values instead.
+- Render each offer's required default price immediately on the landing page, then replace it with validated quote pricing when the background quote returns.
+- Checkout prices, Stripe amounts, and order totals must always come from the live quote response.
 
 ## Page-Decision Defaults
 If a live input omits a non-critical decision, use these defaults:
@@ -267,4 +337,4 @@ If a live input omits a non-critical decision, use these defaults:
 - CTA copy: `Buy Now`
 - policy routes: `/privacy-policy`, `/terms`, `/returns-policy`, `/shipping-policy`
 
-If a live input omits required `short_product_name`, `target_country`, `vendor_integration`, or `offer_options_mapping`, stop and ask.
+If a live input omits required `short_product_name`, `target_country`, `vendor_integration`, positive-integer `vendor_integration.shipping_option_id`, `product_details.shipping_details`, `offer_options_mapping`, or any mapped offer's valid `default_price`, stop and ask.

@@ -1,0 +1,38 @@
+/* Merge these safeguards into app/globals.css. Keep equivalent rules if the design system uses utilities. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 7.8vw, 3.75rem);
+    line-height: 1.05;
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 6.5vw, 3rem);
+    line-height: 1.1;
+  }
+
+  h3 {
+    font-size: clamp(1.5rem, 5.5vw, 2.25rem);
+    line-height: 1.15;
+  }
+
+  button,
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea,
+  [data-primary-action="true"] {
+    min-height: 44px;
+  }
+
+  @media (max-width: 360px) {
+    h1 { font-size: min(2.25rem, 11vw); }
+    h2 { font-size: min(2rem, 9.5vw); }
+    h3 { font-size: min(1.75rem, 8.5vw); }
+  }
+}
