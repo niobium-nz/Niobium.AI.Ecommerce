@@ -199,7 +199,7 @@ Set `NODE_OPTIONS` for the check so unhandled rejections and deprecations fail r
 
 This must handle local access through an address such as `192.168.x.x` without producing the Next.js cross-origin warning.
 
-`.vscode/launch.json` must keep workspace source maps enabled but set `skipFiles` and `resolveSourceMapLocations` so `node_modules` maps are not resolved. This avoids the known class of malformed/missing framework source-map lookups while preserving debugging of application TypeScript/TSX.
+`.vscode/launch.json` must exactly use the retained full-stack `node-terminal` profile: `npm run dev` plus `serverReadyAction` with `debugWithChrome`. Client-only browser profiles are not acceptable.
 
 ## Required Scripts
 At minimum, preserve these gates:
@@ -237,3 +237,28 @@ The final response for a generated project must report actual command results fo
 - structural validator
 
 Do not claim a command passed unless it was run successfully. If execution is unavailable, clearly state that the files were generated but the command could not be executed.
+
+## Complete Testimonial And Legal Fidelity Gates
+- Assert `config/testimonials.json` deep-equals the complete input array.
+- Assert the home page imports that JSON file and passes the imported array, without filtering or replacement, to `<Testimonials>`.
+- Assert the initial visible count follows the 1-6/all, 7-9/four, 10+/six heuristic.
+- Repeatedly activate `data-load-more-testimonials` until it disappears; final rendered count must equal input length and every name/text string must match verbatim.
+- Compare each generated `content/policies/*.md` file byte-for-byte with its input source and verify the SHA-256 in `config/legal-content-manifest.json`.
+- Assert `lib/legal-content.ts` maps all four paths and reads them as UTF-8 at build time, and every policy route calls `readPolicySource` for its own input field.
+- Fail on any one-character policy difference or route-to-source mismatch. Test every policy route using the exact bound file.
+
+## Checkout Hierarchy Gates
+At 320, 360, 390, 430, and desktop widths, assert the order-summary bounding-box top precedes shipping and payment. Assert the coupon container is a descendant of the order summary and is exposed by a compact toggle rather than a full-width page-top section.
+
+## Canonical Integration Gates
+Statically assert `next/script`, canonical Google/Meta/Clarity markers, all five vendor script URLs, and official Stripe React primitives. Fail when a generic `loadExternalScript`, `injectScript`, or `ensureScript` helper exists, or when either integration endpoint is passed directly to `fetch`.
+
+## Package Script 100% Coverage Gate
+Parse every command in `package.json`. For every local JavaScript/TypeScript executable invoked by `node`:
+1. require the file to exist;
+2. require dedicated tests covering success, invalid input, runtime failure, and exit behavior where applicable;
+3. include `scripts/**` in Vitest V8 coverage and forbid script exclusions;
+4. require actual per-file 100% statements, branches, functions, and lines;
+5. run `npm run test:coverage` and inspect its report before completion.
+
+A declared threshold without exercising a script is insufficient. Uncovered files, ignored files, or an empty coverage set are blocking failures.

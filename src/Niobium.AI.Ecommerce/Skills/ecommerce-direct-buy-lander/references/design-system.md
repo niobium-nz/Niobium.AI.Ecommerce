@@ -138,9 +138,9 @@ Offer cards should:
 ### Testimonials And Proof
 Customer feedback is mandatory, not an optional filler section.
 
-- Render at least three supplied `trust_signal.testimonials` entries on the home page.
+- Render every supplied `trust_signal.testimonials` entry on the home page without altering any field.
 - Mark the section with `data-testimonials="true"` and each item with `data-testimonial="true"`.
-- Keep at least three items immediately visible in normal document flow, not all hidden in a carousel/modal/tab.
+- Keep the required UX-sized subset immediately visible in normal document flow and provide load-more until every entry is rendered.
 - Never invent feedback, names, locations, ratings, or purchase claims.
 - Put customer feedback before the final CTA/footer and near a relevant proof or offer section.
 
@@ -152,7 +152,7 @@ Favor concrete demonstrations:
 - testimonial with specific use case
 
 ### FAQ And Detail Blocks
-Avoid sending users to internal subpages for major product information by optionally using vertically collapsed sections or accordions. 
+Avoid sending users to internal subpages for major product information by optionally using vertically collapsed sections or accordions.
 
 ## Trust System
 Keep trust near the buy area and again near the final CTA.

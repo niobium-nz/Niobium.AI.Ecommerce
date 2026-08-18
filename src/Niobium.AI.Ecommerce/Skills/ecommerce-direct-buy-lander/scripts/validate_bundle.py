@@ -10,6 +10,7 @@ present before completion.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -60,6 +61,8 @@ REQUIRED_PROJECT_FILES = [
     "playwright.config.ts",
     "config/offer-options.json",
     "config/site-input-summary.json",
+    "config/testimonials.json",
+    "config/legal-content-manifest.json",
 ]
 
 REQUIRED_PACKAGE_SCRIPTS = [
@@ -132,6 +135,20 @@ NOTIFICATION_ENDPOINT_RE = re.compile(
 MAX_SAFE_INTEGER = 9_007_199_254_740_991
 CURRENCY_RE = re.compile(r"^[A-Z]{3}$")
 FORBIDDEN_ORIGIN_WORDING_RE = re.compile(r"\boverseas?\b", re.IGNORECASE)
+POLICY_FIELDS = {
+    "privacy_policy": "content/policies/privacy-policy.md",
+    "terms": "content/policies/terms.md",
+    "returns_policy": "content/policies/returns-policy.md",
+    "shipping_policy": "content/policies/shipping-policy.md",
+}
+CANONICAL_VENDOR_SCRIPT_URLS = [
+    "https://assets.store.niobium.co.nz/quote.js",
+    "https://assets.store.niobium.co.nz/order.js",
+    "https://assets.notification.niobium.co.nz/subscribe.js",
+    "https://assets.notification.niobium.co.nz/contact-us.js",
+    "https://assets.store.niobium.co.nz/track.js",
+]
+
 OBSOLETE_INPUT_FIELDS = {
     "checkout_url",
     "price_point",
@@ -560,7 +577,7 @@ def validate_input_contract(input_data: dict[str, Any], errors: list[str]) -> li
     if not isinstance(trust, dict):
         errors.append("input trust_signal must be an object")
     else:
-        for trust_key in ("contact_email", "facebook_page", "instagram_page"):
+        for trust_key in ("contact_email", "facebook_page", "instagram_page", *POLICY_FIELDS.keys()):
             trust_value = trust.get(trust_key)
             if not isinstance(trust_value, str) or not trust_value.strip():
                 errors.append(f"input trust_signal.{trust_key} must be a non-empty string")
@@ -666,40 +683,26 @@ def validate_launch_json(project_dir: Path, errors: list[str]) -> None:
     except json.JSONDecodeError:
         errors.append(".vscode/launch.json is not valid JSON")
         return
-    configs = data.get("configurations") if isinstance(data, dict) else None
-    if not isinstance(configs, list):
-        errors.append(".vscode/launch.json missing configurations array")
-        return
-    client = [
-        item
-        for item in configs
-        if isinstance(item, dict)
-        and item.get("request") == "launch"
-        and item.get("type") in {"chrome", "msedge", "pwa-chrome", "pwa-msedge"}
-        and item.get("url") == "http://localhost:3000"
-    ]
-    if not client:
-        errors.append(".vscode/launch.json missing Next.js client-side browser launch config for http://localhost:3000")
-        return
-    config = client[0]
-    if config.get("sourceMaps") is not True:
-        errors.append(".vscode/launch.json must enable application sourceMaps")
-    skip_files = config.get("skipFiles")
-    if not isinstance(skip_files, list) or not any("node_modules" in str(item) for item in skip_files):
-        errors.append(".vscode/launch.json skipFiles must exclude node_modules")
-    source_locations = config.get("resolveSourceMapLocations")
-    if (
-        not isinstance(source_locations, list)
-        or not any("${workspaceFolder}/**" in str(item) for item in source_locations)
-        or not any(str(item).startswith("!") and "node_modules" in str(item) for item in source_locations)
-    ):
-        errors.append(".vscode/launch.json resolveSourceMapLocations must include workspace code and exclude node_modules")
-    runtime_args = config.get("runtimeArgs")
-    if not isinstance(runtime_args, list) or "--disable-extensions" not in runtime_args:
-        errors.append(".vscode/launch.json must launch a clean debug browser with --disable-extensions")
-    user_data_dir = config.get("userDataDir")
-    if not isinstance(user_data_dir, str) or not user_data_dir.startswith("${workspaceFolder}/"):
-        errors.append(".vscode/launch.json userDataDir must be an isolated profile inside the workspace")
+    expected = {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Next.js: debug full stack",
+                "type": "node-terminal",
+                "request": "launch",
+                "command": "npm run dev",
+                "serverReadyAction": {
+                    "pattern": "- Local:.+(https?://.+)",
+                    "uriFormat": "%s",
+                    "action": "debugWithChrome",
+                },
+            }
+        ],
+    }
+    if data != expected:
+        errors.append(
+            ".vscode/launch.json must exactly use the supported Next.js full-stack node-terminal debug configuration"
+        )
 
 
 def validate_dependency_ranges(package_data: dict[str, Any], errors: list[str]) -> None:
@@ -746,6 +749,290 @@ def validate_allow_scripts(package_data: dict[str, Any], lock_data: dict[str, An
         errors.append("resolved workerd install script must be explicitly approved in allowScripts")
 
 
+def resolve_input_local_file(input_json_path: Path, raw: str) -> Path:
+    cleaned = strip_asset_suffix(raw.strip())
+    if re.match(r"^[a-z][a-z0-9+.-]*://", cleaned, re.IGNORECASE):
+        raise ValueError("remote URLs are not accepted for binding legal policy content")
+    path = Path(cleaned)
+    if not path.is_absolute():
+        path = input_json_path.parent / path
+    return path.resolve()
+
+
+def validate_testimonial_contract(
+    project_dir: Path,
+    input_data: dict[str, Any],
+    source_text: str,
+    test_text: str,
+    errors: list[str],
+) -> None:
+    expected = input_data.get("trust_signal", {}).get("testimonials", [])
+    testimonial_path = project_dir / "config" / "testimonials.json"
+    try:
+        actual = json.loads(read_text(testimonial_path))
+    except json.JSONDecodeError:
+        actual = None
+        errors.append("config/testimonials.json is not valid JSON")
+    if actual != expected:
+        errors.append("config/testimonials.json must preserve every input testimonial and field exactly, in input order")
+
+    required_source_markers = [
+        'data-testimonials="true"',
+        'data-testimonials-total',
+        'data-testimonials-visible',
+        'data-testimonial="true"',
+        'data-load-more-testimonials="true"',
+        'visibleCount',
+        '.slice(0, visibleCount)',
+        '{item.name}',
+        '{item.testimonial}',
+    ]
+    require_markers(source_text, required_source_markers, "testimonial implementation", errors)
+    if re.search(r"(?:item\.testimonial|testimonial\.testimonial|testimonialText)\s*\.\s*(?:slice|substring)\s*\(", source_text, re.IGNORECASE):
+        errors.append("testimonial text must not be shortened, truncated, or paraphrased")
+
+    home_path = next(
+        (
+            candidate
+            for candidate in [project_dir / "app" / "page.tsx", project_dir / "src" / "app" / "page.tsx"]
+            if candidate.is_file()
+        ),
+        None,
+    )
+    if home_path is not None:
+        home_text = read_text(home_path)
+        import_match = re.search(
+            r'''import\s+([A-Za-z_$][\w$]*)\s+from\s+["'][^"']*config/testimonials\.json["']''',
+            home_text,
+        )
+        if import_match is None:
+            errors.append("home page must import config/testimonials.json as the sole testimonial data source")
+        else:
+            identifier = re.escape(import_match.group(1))
+            if not re.search(
+                rf"<Testimonials\b[^>]*\btestimonials\s*=\s*\{{\s*{identifier}\s*\}}",
+                home_text,
+                re.DOTALL,
+            ):
+                errors.append("home page must pass the complete imported testimonial array to <Testimonials>")
+
+    for marker in [
+        "data-load-more-testimonials",
+        "testimonialCount",
+        "while",
+        "toHaveCount",
+        "testimonials.json",
+        "testimonial.name",
+        "testimonial.testimonial",
+    ]:
+        if marker not in test_text:
+            errors.append(f"tests missing testimonial completeness/load-more marker: {marker}")
+
+
+def validate_legal_policy_contract(
+    project_dir: Path,
+    input_json_path: Path,
+    input_data: dict[str, Any],
+    source_text: str,
+    test_text: str,
+    errors: list[str],
+) -> None:
+    trust = input_data.get("trust_signal")
+    if not isinstance(trust, dict):
+        return
+    manifest_path = project_dir / "config" / "legal-content-manifest.json"
+    try:
+        manifest = json.loads(read_text(manifest_path))
+    except json.JSONDecodeError:
+        manifest = None
+        errors.append("config/legal-content-manifest.json is not valid JSON")
+    if not isinstance(manifest, dict):
+        manifest = {}
+        errors.append("config/legal-content-manifest.json must be an object keyed by policy input field")
+
+    legal_helper = find_config(project_dir, ["lib/legal-content.ts", "src/lib/legal-content.ts"])
+    legal_helper_text = read_text(legal_helper) if legal_helper is not None else ""
+    require_markers(
+        legal_helper_text,
+        ["readFileSync", "process.cwd()", "content/policies", "utf8", "readPolicySource"],
+        "byte-bound legal content helper",
+        errors,
+    )
+
+    app_root = next(
+        (candidate for candidate in [project_dir / "app", project_dir / "src" / "app"] if candidate.is_dir()),
+        None,
+    )
+    route_by_field = {
+        "privacy_policy": "privacy-policy/page.tsx",
+        "terms": "terms/page.tsx",
+        "returns_policy": "returns-policy/page.tsx",
+        "shipping_policy": "shipping-policy/page.tsx",
+    }
+
+    for field, relative in POLICY_FIELDS.items():
+        raw = trust.get(field)
+        if not isinstance(raw, str) or not raw.strip():
+            continue
+        try:
+            source_path = resolve_input_local_file(input_json_path, raw)
+        except ValueError as exc:
+            errors.append(f"input trust_signal.{field}: {exc}")
+            continue
+        if not source_path.is_file():
+            errors.append(f"input legal policy source does not exist: trust_signal.{field}={raw}")
+            continue
+        generated_path = project_dir / relative
+        if not generated_path.is_file():
+            errors.append(f"missing generated legal policy file: {relative}")
+            continue
+        expected_bytes = source_path.read_bytes()
+        actual_bytes = generated_path.read_bytes()
+        if actual_bytes != expected_bytes:
+            errors.append(f"{relative} must be a byte-for-byte copy of input trust_signal.{field}")
+        expected_hash = hashlib.sha256(expected_bytes).hexdigest()
+        entry = manifest.get(field)
+        if not isinstance(entry, dict):
+            errors.append(f"legal manifest missing object entry: {field}")
+        else:
+            if entry.get("project_path") != relative or entry.get("sha256") != expected_hash:
+                errors.append(f"legal manifest entry {field} must bind {relative} to the exact input SHA-256")
+        if relative not in legal_helper_text:
+            errors.append(f"legal content helper must map the exact policy file: {relative}")
+        if app_root is not None:
+            route_path = app_root / route_by_field[field]
+            route_text = read_text(route_path)
+            bound_call = re.search(
+                rf'''readPolicySource\s*\(\s*["']{re.escape(field)}["']\s*\)''',
+                route_text,
+            )
+            source_marker = re.search(
+                rf'''data-policy-source\s*=\s*["']{re.escape(field)}["']''',
+                route_text,
+            )
+            if bound_call is None or source_marker is None:
+                errors.append(
+                    f"policy route must render exact source through readPolicySource({field}): {route_by_field[field]}"
+                )
+        if relative not in test_text or expected_hash not in test_text or "readPolicySource" not in test_text:
+            errors.append(f"tests must verify exact legal policy bytes/hash and source rendering for {relative}")
+
+
+def validate_canonical_integration_contract(source_text: str, errors: list[str]) -> None:
+    require_markers(
+        source_text,
+        [
+            "next/script",
+            "https://www.googletagmanager.com/gtag/js?id=",
+            "window.dataLayer",
+            "gtag('config'",
+            "https://connect.facebook.net/en_US/fbevents.js",
+            "fbq('init'",
+            "fbq('track', 'PageView'",
+            "https://www.clarity.ms/tag/",
+        ] + CANONICAL_VENDOR_SCRIPT_URLS,
+        "canonical third-party script integration",
+        errors,
+    )
+    if re.search(r"\b(?:loadExternalScript|injectScript|ensureScript|appendVendorScript|createScriptTag)\b", source_text):
+        errors.append("custom client-side script loaders are forbidden; render canonical snippets with next/script")
+    if not re.search(r'''import\s+Script\s+from\s+["']next/script["']''', source_text):
+        errors.append("canonical third-party snippets must import the default Script component from next/script")
+    if "<Script" not in source_text:
+        errors.append("canonical third-party snippets must render Next.js <Script> elements")
+    if re.search(
+        r"fetch\s*\([^)]*(?:STORE_INTEGRATION_ENDPOINT|storeIntegrationEndpoint|store_integration_endpoint|NOTIFICATION_INTEGRATION_ENDPOINT|notificationIntegrationEndpoint|notification_integration_endpoint)",
+        source_text,
+        re.DOTALL,
+    ):
+        errors.append("do not fetch integration endpoints directly; pass them only to the documented vendor globals")
+    if not re.search(r'''from\s+["']@stripe/stripe-js["']''', source_text) or not re.search(
+        r'''from\s+["']@stripe/react-stripe-js["']''', source_text
+    ):
+        errors.append("Stripe Payment Element must use the official @stripe/stripe-js and @stripe/react-stripe-js packages")
+    require_markers(
+        source_text,
+        [
+            "loadStripe",
+            "Elements",
+            "PaymentElement",
+            "useStripe",
+            "useElements",
+            "elements.submit",
+            "stripe.confirmPayment",
+            "mode",
+            "amount",
+            "currency",
+        ],
+        "canonical Stripe React integration",
+        errors,
+    )
+
+
+def validate_checkout_contract(source_text: str, test_text: str, errors: list[str]) -> None:
+    markers = [
+        'data-checkout-order-summary="true"',
+        'data-checkout-coupon="true"',
+        'data-coupon-toggle="true"',
+        'data-checkout-shipping-form="true"',
+        'data-checkout-payment="true"',
+    ]
+    require_markers(source_text, markers, "checkout information hierarchy", errors)
+    positions = [source_text.find(marker) for marker in markers]
+    if all(position >= 0 for position in positions):
+        summary, coupon, _toggle, shipping, payment = positions
+        if not (summary < shipping and summary < payment):
+            errors.append("checkout order summary must appear before shipping and payment in source/DOM order")
+        if not (summary <= coupon < shipping):
+            errors.append("compact coupon UI must be embedded in the order-summary region, not above checkout")
+    for marker in [
+        "data-checkout-order-summary",
+        "data-checkout-coupon",
+        "data-checkout-shipping-form",
+        "data-checkout-payment",
+        "boundingBox",
+        "toBeLessThan",
+    ]:
+        if marker not in test_text:
+            errors.append(f"tests missing checkout hierarchy/compact-coupon marker: {marker}")
+
+
+def validate_local_script_coverage(
+    project_dir: Path,
+    package_data: dict[str, Any],
+    vitest_text: str,
+    test_text: str,
+    errors: list[str],
+) -> None:
+    scripts = package_data.get("scripts") if isinstance(package_data, dict) else None
+    if not isinstance(scripts, dict):
+        return
+    local_paths: set[str] = set()
+    for command in scripts.values():
+        if not isinstance(command, str):
+            continue
+        patterns = [
+            r"(?:^|[;&|]\s*|\s)(?:node|tsx|ts-node)\s+([\w./-]+\.(?:mjs|js|cjs|mts|ts))",
+            r"(?:^|[;&|]\s*|\s)(\.?/?scripts/[\w./-]+\.(?:mjs|js|cjs|mts|ts))",
+        ]
+        for pattern in patterns:
+            for match in re.finditer(pattern, command):
+                local_paths.add(match.group(1).lstrip("./"))
+    if local_paths and not re.search(
+        r'''include\s*:\s*\[[^\]]*["']scripts/\*\*(?:/\*)?["']''',
+        vitest_text,
+        re.DOTALL,
+    ):
+        errors.append("Vitest coverage include must explicitly cover scripts/** used by package.json")
+    if re.search(r"exclude\s*:\s*\[[^\]]*scripts", vitest_text, re.DOTALL):
+        errors.append("Vitest coverage must not exclude local scripts referenced by package.json")
+    for relative in sorted(local_paths):
+        if not (project_dir / relative).is_file():
+            errors.append(f"package.json references missing local script: {relative}")
+        if relative not in test_text and Path(relative).name not in test_text:
+            errors.append(f"local package script lacks explicit test coverage reference: {relative}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("project_dir", type=Path, help="Path to generated project")
@@ -787,12 +1074,16 @@ def main() -> int:
     for label, candidates in [
         ("vendor response helper", ["lib/vendor-response.ts", "src/lib/vendor-response.ts"]),
         ("offer pricing helper", ["lib/offer-pricing.ts", "src/lib/offer-pricing.ts"]),
+        ("byte-bound legal content helper", ["lib/legal-content.ts", "src/lib/legal-content.ts"]),
         ("money helper", ["lib/utils.ts", "src/lib/utils.ts"]),
         ("visible home-link component", ["components/layout/home-link.tsx", "src/components/layout/home-link.tsx"]),
+        ("testimonial load-more component", ["components/sections/testimonials.tsx", "src/components/sections/testimonials.tsx"]),
+        ("canonical third-party scripts component", ["components/integrations/third-party-scripts.tsx", "src/components/integrations/third-party-scripts.tsx"]),
     ]:
         if find_config(project_dir, candidates) is None:
             errors.append(f"missing required {label}: expected one of {candidates}")
 
+    vitest_text = ""
     vitest_path = find_config(project_dir, ["vitest.config.mts", "vitest.config.ts", "vitest.config.mjs", "vitest.config.js"])
     if vitest_path is None:
         errors.append("missing Vitest config")
@@ -807,6 +1098,8 @@ def main() -> int:
         for metric in ["statements", "branches", "functions", "lines"]:
             if not re.search(rf"{metric}\s*:\s*100\b", vitest_text):
                 errors.append(f"Vitest coverage threshold for {metric} must be 100")
+        if not re.search(r"perFile\s*:\s*true\b", vitest_text):
+            errors.append("Vitest coverage thresholds must set perFile: true so every local script reaches 100%")
 
     tests_dir = project_dir / "tests"
     test_files = [] if not tests_dir.is_dir() else [
@@ -1227,6 +1520,16 @@ def main() -> int:
             errors.append("shopper-facing source must use generated logo-primary.png")
 
     test_text = collect_source_text(test_files)
+    checkout_sources: list[Path] = []
+    for candidate in [project_dir / "app" / "checkout", project_dir / "src" / "app" / "checkout", project_dir / "components" / "checkout", project_dir / "src" / "components" / "checkout"]:
+        if candidate.is_dir():
+            checkout_sources.extend(path for path in candidate.rglob("*") if path.is_file() and path.suffix.lower() in {".ts", ".tsx", ".js", ".jsx"})
+    checkout_text = collect_source_text(checkout_sources)
+    validate_testimonial_contract(project_dir, input_data, source_text, test_text, errors)
+    validate_legal_policy_contract(project_dir, input_json_path, input_data, source_text, test_text, errors)
+    validate_canonical_integration_contract(source_text, errors)
+    validate_checkout_contract(checkout_text, test_text, errors)
+    validate_local_script_coverage(project_dir, package_data, vitest_text, test_text, errors)
     for marker in ["page.on", "console", "pageerror", "requestfailed"]:
         if marker not in test_text:
             errors.append(f"Playwright tests missing browser error gate marker: {marker}")
@@ -1290,6 +1593,8 @@ def main() -> int:
             "external-diagnostic",
             "--disable-extensions",
             "data-testimonials",
+            "data-testimonials-total",
+            "data-load-more-testimonials",
             "MOBILE_VIEWPORTS",
             "320",
             "360",

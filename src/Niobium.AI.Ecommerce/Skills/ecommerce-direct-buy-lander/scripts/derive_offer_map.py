@@ -16,6 +16,7 @@ white-background source contract.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import xml.etree.ElementTree as ET
@@ -33,6 +34,13 @@ FORBIDDEN_SVG_TAGS = {"script", "image", "lineargradient", "radialgradient", "pa
 MAX_SAFE_INTEGER = 9_007_199_254_740_991
 CURRENCY_RE = re.compile(r"^[A-Z]{3}$")
 FORBIDDEN_ORIGIN_WORDING_RE = re.compile(r"\boverseas?\b", re.IGNORECASE)
+POLICY_FIELDS = {
+    "privacy_policy": "content/policies/privacy-policy.md",
+    "terms": "content/policies/terms.md",
+    "returns_policy": "content/policies/returns-policy.md",
+    "shipping_policy": "content/policies/shipping-policy.md",
+}
+
 OBSOLETE_INPUT_FIELDS = {
     "checkout_url",
     "price_point",
@@ -285,6 +293,54 @@ def require_default_price(offer: Any, offer_path: str) -> dict[str, Any]:
 
 
 
+def choose_initial_testimonial_count(total: int) -> int:
+    """Choose a compact initial home-page testimonial count without dropping data."""
+    if total <= 0:
+        return 0
+    if total <= 6:
+        return total
+    if total <= 9:
+        return 4
+    return 6
+
+
+def require_legal_policies(data: dict[str, Any], input_json: Path | None) -> list[dict[str, Any]]:
+    trust = data.get("trust_signal")
+    if not isinstance(trust, dict):
+        raise ValueError("missing required top-level trust_signal object")
+    if input_json is None:
+        raise ValueError("input JSON path is required to validate legal policy source files")
+
+    policies: list[dict[str, Any]] = []
+    for field, project_path in POLICY_FIELDS.items():
+        raw = trust.get(field)
+        if not isinstance(raw, str) or not raw.strip():
+            raise ValueError(f"trust_signal.{field} must be a non-empty local file path")
+        source_value = strip_asset_suffix(raw.strip())
+        if re.match(r"^[a-z][a-z0-9+.-]*://", source_value, re.IGNORECASE):
+            raise ValueError(f"trust_signal.{field} must reference a local file, not a remote URL")
+        source_path = Path(source_value)
+        if not source_path.is_absolute():
+            source_path = input_json.resolve().parent / source_path
+        if not source_path.is_file():
+            raise ValueError(f"trust_signal.{field} source file does not exist: {raw}")
+        payload = source_path.read_bytes()
+        try:
+            payload.decode("utf-8")
+        except UnicodeDecodeError as exc:
+            raise ValueError(f"trust_signal.{field} source file must be UTF-8 text") from exc
+        policies.append(
+            {
+                "input_field": field,
+                "source": raw.strip(),
+                "project_path": project_path,
+                "sha256": hashlib.sha256(payload).hexdigest(),
+                "byte_length": len(payload),
+            }
+        )
+    return policies
+
+
 def require_testimonials(data: dict[str, Any]) -> list[dict[str, Any]]:
     trust = data.get("trust_signal")
     if not isinstance(trust, dict):
@@ -415,6 +471,7 @@ def build_offer_option_map(data: dict[str, Any], input_json: Path | None = None)
     store_integration_endpoint, notification_integration_endpoint = require_integration_endpoints(data)
     shipping_details = require_shipping_details(data)
     testimonials = require_testimonials(data)
+    legal_policies = require_legal_policies(data, input_json)
 
     pricing = data.get("pricing_economics_and_offers")
     if not isinstance(pricing, dict):
@@ -494,6 +551,13 @@ def build_offer_option_map(data: dict[str, Any], input_json: Path | None = None)
         "target_country": target_country,
         "shipping_details": shipping_details,
         "testimonial_count": len(testimonials),
+        "testimonials": testimonials,
+        "testimonial_rendering": {
+            "initial_count": choose_initial_testimonial_count(len(testimonials)),
+            "load_more_required": len(testimonials) > choose_initial_testimonial_count(len(testimonials)),
+            "all_entries_must_remain_available_on_home_page": True,
+        },
+        "legal_policies": legal_policies,
         "shipping_option_id": shipping_option_id,
         "integration_endpoints": {
             "store": store_integration_endpoint,
@@ -506,9 +570,9 @@ def build_offer_option_map(data: dict[str, Any], input_json: Path | None = None)
             "vendor_input_type": "number",
         },
         "app_names": {
-            "dev": f"niobiumecomm-{short_product_name}-dev",
-            "test": f"niobiumecomm-{short_product_name}-test",
-            "prod": f"niobiumecomm-{short_product_name}",
+            "dev": f"ecom-{short_product_name}-dev",
+            "test": f"ecom-{short_product_name}-test",
+            "prod": f"ecom-{short_product_name}",
         },
         "brand_name": data.get("brand_system", {}).get("brand_name"),
         "logo": detect_svg_logo(data, input_json),

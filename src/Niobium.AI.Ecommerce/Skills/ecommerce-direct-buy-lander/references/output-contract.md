@@ -89,7 +89,6 @@ project-root/
     coupon.ts
     query-params.ts
     tracking.ts
-    vendor-scripts.ts
     vendor-response.ts
     offer-pricing.ts
     utils.ts
@@ -494,38 +493,31 @@ In addition to `output: "export"`:
 - keep configuration static-export compatible
 
 ## `.vscode/launch.json`
-Include a valid VS Code client-side browser debug configuration equivalent to:
+Use the exact retained full-stack configuration:
 
 ```json
 {
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Next.js: debug client-side",
-      "type": "chrome",
+      "name": "Next.js: debug full stack",
+      "type": "node-terminal",
       "request": "launch",
-      "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}",
-      "sourceMaps": true,
-      "smartStep": true,
-      "skipFiles": [
-        "<node_internals>/**",
-        "${workspaceFolder}/node_modules/**",
-        "**/node_modules/**"
-      ],
-      "resolveSourceMapLocations": [
-        "${workspaceFolder}/**",
-        "!**/node_modules/**"
-      ]
+      "command": "npm run dev",
+      "serverReadyAction": {
+        "pattern": "- Local:.+(https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
     }
   ]
 }
 ```
 
-Additional server/full-stack configurations are allowed, but the client-side configuration is mandatory. Source maps must remain enabled for workspace application code while `node_modules` source maps are excluded, preventing the debugger from trying to resolve malformed or missing third-party Next.js/React maps. Normal React DevTools suggestions and HMR connection notices are informational rather than warning-gate failures.
+Do not substitute a client-only Chrome/Edge profile. The `node-terminal` session must start the same `npm run dev` command used locally and open the detected Next.js local URL in the debugger.
 
 ## Test Configuration
-- `vitest.config.mts` must use V8 coverage with 100% statements, branches, functions, and lines.
+- `vitest.config.mts` must use V8 coverage, include `scripts/**`, set `thresholds.perFile: true`, and require 100% statements, branches, functions, and lines.
 - Coverage exclusions must be narrow and mechanical only.
 - `playwright.config.ts` must use `webServer.command: "npm run serve:static"`, use a base URL on the matching fixed port, retain failure artifacts, and run route/flow tests.
 - Browser listeners must be installed before navigation and fail on warnings/errors/page errors/request failures; informational `console.log`/`console.info` messages such as DevTools suggestions or HMR connectivity are not failures.
@@ -579,7 +571,7 @@ Before finalizing, confirm:
 - every visible string is written for potential customers, not the owner/operator/developer
 - built HTML contains no Unicode em dash
 - headings pass 320px, 360px, 390px, and 430px viewport checks without overflow; short headings fit within two lines
-- at least three supplied testimonials render visibly with required data attributes
+- every supplied testimonial is preserved exactly; the defined subset renders initially and load-more reaches the complete input count
 - checkout uses `Coupon applied to this order` for an applied coupon and never renders `Active coupon`
 - all project files/tasks use self-contained project-relative resources; source SVG is copied to `source-assets/logo.svg`
 - direct dependencies use caret ranges, lockfile resolutions are current within declared caret ranges, and reviewed install scripts are represented in `allowScripts`
@@ -612,7 +604,7 @@ Before finalizing, confirm:
 - hero media is not lazy-loaded
 - below-the-fold media is lazy-loaded
 - `shipping_option_id` is an input integer and vendor `shippingId` is a JavaScript number
-- `.vscode/launch.json` includes client-side Next.js debugging, enables workspace source maps, skips `node_modules`, and restricts source-map resolution to application code
+- `.vscode/launch.json` exactly matches the retained full-stack `node-terminal` configuration and opens Chrome through `serverReadyAction`
 - `scripts/prepare-logo-assets.mjs` is based on `templates/scripts/prepare-logo-assets.mjs` and preserves the white-to-transparent alpha transform
 - `next.config.mjs` handles LAN `allowedDevOrigins` and forwards browser warnings/errors
 - direct dependency declarations use stable caret ranges and exact lockfile resolutions are current within the declared caret ranges according to `npm run deps:check`
@@ -623,3 +615,42 @@ Before finalizing, confirm:
 - `npm run test:runtime` passes with no terminal/browser warnings or runtime errors
 - `npm run build` passes
 - validator passes with no warnings
+
+## Binding Content, Checkout, Integration, And Coverage Addendum
+The generated tree must additionally contain:
+- `components/sections/testimonials.tsx`, adapted from the retained load-more template
+- `components/integrations/third-party-scripts.tsx`, adapted from the retained canonical `next/script` template
+- `lib/legal-content.ts`, copied/adapted from the retained byte-bound legal source reader
+- `config/testimonials.json`, exactly equal to the input testimonial array
+- `config/legal-content-manifest.json`, with policy project paths and exact input SHA-256 values
+- `content/policies/privacy-policy.md`
+- `content/policies/terms.md`
+- `content/policies/returns-policy.md`
+- `content/policies/shipping-policy.md`
+
+Do not create `lib/vendor-scripts.ts` or another generic custom script loader. The shared layout and route components must render canonical analytics/vendor snippets with `next/script`; Stripe must use official React Stripe.js primitives.
+
+The home page must import `config/testimonials.json` directly, pass that complete array to `<Testimonials>`, preload a UX-sized subset, and provide `data-load-more-testimonials="true"` until all exact input entries are rendered. Every policy route must call `readPolicySource` from `lib/legal-content.ts` and render the corresponding byte-copied source under `data-policy-source`. The checkout source must place `data-checkout-order-summary="true"` before `data-checkout-shipping-form="true"` and `data-checkout-payment="true"`, with `data-checkout-coupon="true"` inside the summary.
+
+Every local executable referenced by any `package.json` script must exist, have explicit success/failure tests, be included by `scripts/**` in V8 coverage, and achieve 100% statements, branches, functions, and lines in the actual `npm run test:coverage` run. Coverage exclusions may not remove these scripts.
+
+The required `.vscode/launch.json` is exactly:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Next.js: debug full stack",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev",
+      "serverReadyAction": {
+        "pattern": "- Local:.+(https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    }
+  ]
+}
+```

@@ -31,9 +31,9 @@ Rules:
 - keep it short enough for Cloudflare Pages project names
 
 App names derived from it:
-- dev: `niobiumecomm-{short_product_name}-dev`
-- test: `niobiumecomm-{short_product_name}-test`
-- prod: `niobiumecomm-{short_product_name}`
+- dev: `ecom-{short_product_name}-dev`
+- test: `ecom-{short_product_name}-test`
+- prod: `ecom-{short_product_name}`
 
 ### `target_country`
 Required. Must be one of:
@@ -266,11 +266,15 @@ Required trust fields:
 - `contact_email`
 - `facebook_page`
 - `instagram_page`
+- `privacy_policy`
+- `terms`
+- `returns_policy`
+- `shipping_policy`
 - `testimonials`
 
 `testimonials` must be an array with at least three genuine entries. Each entry must contain non-empty `name` and `testimonial` fields; optional location/rating/media may be used only when supplied and truthful.
 
-Render at least three testimonials in the normal home-page document flow with the selectors required by `references/customer-facing-copy.md`. Do not omit customer feedback because an image is missing; use a well-designed text treatment.
+Render every testimonial in the normal home-page document flow with the selectors required by `references/customer-facing-copy.md`. Preload the defined subset and load the remainder on demand. Do not omit customer feedback because an image is missing; use a well-designed text treatment.
 
 Use only `instagram_page` for Instagram. There is no compatibility alias for alternative spellings.
 
@@ -338,3 +342,18 @@ If a live input omits a non-critical decision, use these defaults:
 - policy routes: `/privacy-policy`, `/terms`, `/returns-policy`, `/shipping-policy`
 
 If a live input omits required `short_product_name`, `target_country`, `vendor_integration`, positive-integer `vendor_integration.shipping_option_id`, `product_details.shipping_details`, `offer_options_mapping`, or any mapped offer's valid `default_price`, stop and ask.
+
+
+## Binding Legal-Content Inputs
+`trust_signal.privacy_policy`, `trust_signal.terms`, `trust_signal.returns_policy`, and `trust_signal.shipping_policy` are required local UTF-8 file paths. Remote URLs, missing files, or undecodable files are blocking errors.
+
+Copy each source file byte-for-byte into the generated project:
+- `privacy_policy` -> `content/policies/privacy-policy.md`
+- `terms` -> `content/policies/terms.md`
+- `returns_policy` -> `content/policies/returns-policy.md`
+- `shipping_policy` -> `content/policies/shipping-policy.md`
+
+Record each project path, byte length, and SHA-256 in `config/legal-content-manifest.json`. Copy/adapt `templates/lib/legal-content.ts`, and require every policy route to call `readPolicySource` with its matching input field. Legal words, punctuation, capitalization, order, and spelling are immutable. Only the page shell, typography, spacing, headings derived from the source itself, and responsive layout may change.
+
+## Testimonial Data Contract
+Copy `trust_signal.testimonials` unchanged to `config/testimonials.json`. Import that exact file directly from the home route and pass the complete array to `<Testimonials>`. Preserve array order and every supplied field, including names, locations, media references, ratios, ratings, and testimonial text. The home page must make all entries reachable without navigation to a separate page.

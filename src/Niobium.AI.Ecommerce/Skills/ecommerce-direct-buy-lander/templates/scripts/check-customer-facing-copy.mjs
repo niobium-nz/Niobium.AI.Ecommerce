@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 import { extname, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -12,6 +13,13 @@ const FORBIDDEN_RENDERED_PATTERNS = [
   ["owner/operator terminology", /\bwebsite owner\b|\bsite owner\b|\bbusiness operator\b/i],
   ["ambiguous coupon label", /\bactive coupon\b/i],
 ];
+
+function initialTestimonialCount(total) {
+  if (total <= 0) return 0;
+  if (total <= 6) return total;
+  if (total <= 9) return 4;
+  return 6;
+}
 
 async function collectHtml(root) {
   const result = [];
@@ -40,7 +48,10 @@ export function routeForHtml(outDir, filePath) {
   return `/${rel.replace(/\/index\.html$/i, "").replace(/\.html$/i, "")}`;
 }
 
-export async function checkCustomerFacingCopy({ outDir = resolve(process.cwd(), "out") } = {}) {
+export async function checkCustomerFacingCopy({
+  outDir = resolve(process.cwd(), "out"),
+  projectDir = process.cwd(),
+} = {}) {
   const htmlFiles = await collectHtml(outDir);
   if (htmlFiles.length === 0) throw new Error(`No static HTML files found under ${outDir}; run npm run build first`);
 
@@ -59,19 +70,35 @@ export async function checkCustomerFacingCopy({ outDir = resolve(process.cwd(), 
     }
   }
 
-  const homePath = resolve(outDir, "index.html");
-  const home = await readFile(homePath, "utf8");
+  const testimonials = JSON.parse(await readFile(resolve(projectDir, "config/testimonials.json"), "utf8"));
+  if (!Array.isArray(testimonials)) defects.push("config/testimonials.json must be an array");
+  const testimonialTotal = Array.isArray(testimonials) ? testimonials.length : 0;
+  const expectedInitial = initialTestimonialCount(testimonialTotal);
+  const home = await readFile(resolve(outDir, "index.html"), "utf8");
   if (!/data-testimonials=["']true["']/i.test(home)) defects.push("home page is missing data-testimonials=\"true\"");
+  if (!new RegExp(`data-testimonials-total=["']?${testimonialTotal}["']?`, "i").test(home)) defects.push("home page testimonial total does not match config/testimonials.json");
   const testimonialCount = [...home.matchAll(/data-testimonial=["']true["']/gi)].length;
-  if (testimonialCount < 3) defects.push(`home page renders only ${testimonialCount} testimonial(s); at least 3 are required`);
+  if (testimonialCount !== expectedInitial) defects.push(`home page initially renders ${testimonialCount} testimonials; expected ${expectedInitial} from ${testimonialTotal}`);
+  if (testimonialTotal > expectedInitial && !/data-load-more-testimonials=["']true["']/i.test(home)) defects.push("home page is missing the load-more testimonial control");
+
+  const manifest = JSON.parse(await readFile(resolve(projectDir, "config/legal-content-manifest.json"), "utf8"));
+  for (const [field, entry] of Object.entries(manifest)) {
+    if (!entry || typeof entry !== "object" || typeof entry.project_path !== "string" || typeof entry.sha256 !== "string") {
+      defects.push(`legal manifest entry ${field} is invalid`);
+      continue;
+    }
+    const bytes = await readFile(resolve(projectDir, entry.project_path));
+    const hash = createHash("sha256").update(bytes).digest("hex");
+    if (hash !== entry.sha256) defects.push(`${entry.project_path} does not match its binding legal-content hash`);
+  }
 
   if (defects.length > 0) throw new Error(`Customer-facing copy check failed:\n- ${defects.join("\n- ")}`);
-  return { htmlFiles: htmlFiles.length, testimonialCount };
+  return { htmlFiles: htmlFiles.length, testimonialCount, testimonialTotal };
 }
 
 async function main() {
   const result = await checkCustomerFacingCopy();
-  process.stdout.write(`Customer-facing copy check passed across ${result.htmlFiles} HTML files with ${result.testimonialCount} testimonials.\n`);
+  process.stdout.write(`Customer-facing copy check passed across ${result.htmlFiles} HTML files with ${result.testimonialCount}/${result.testimonialTotal} testimonials initially visible.\n`);
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {

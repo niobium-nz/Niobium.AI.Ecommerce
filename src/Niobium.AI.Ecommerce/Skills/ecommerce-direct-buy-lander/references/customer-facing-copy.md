@@ -52,28 +52,26 @@ Use clear action labels such as:
 Do not expose technical state labels such as `quote state`, `selected option key`, `payment intent state`, or `vendor response`.
 
 ## Testimonials
-`trust_signal.testimonials` is required and must contain at least three genuine customer feedback entries.
+Render the complete `trust_signal.testimonials` array on the home page without altering any entry. Persist the exact input array in `config/testimonials.json`, import that file directly in the home route, and pass the imported array unchanged to `<Testimonials>`; names, text, location fields, media fields, ratings, spelling, punctuation, and order are immutable. Never shorten, paraphrase, merge, filter, replace, rank away, or invent feedback.
 
-The home page must render a visible customer-feedback section marked with:
-
+Use these markers:
 ```html
-<section data-testimonials="true">
+<section data-testimonials="true" data-testimonials-total="..." data-testimonials-visible="...">
+<article data-testimonial="true" data-testimonial-index="...">
+<button data-load-more-testimonials="true">Load more testimonials</button>
 ```
 
-Each rendered testimonial must use:
+Initial-load heuristic:
+- 1-6 entries: render all.
+- 7-9 entries: render 4.
+- 10 or more entries: render 6.
 
-```html
-data-testimonial="true"
-```
+When entries remain, show an accessible load-more button on the same home-page section. Load another batch on each activation, preserve order, update the visible-count marker, and remove the button only after every supplied entry is rendered. Do not hide all feedback in a carousel, modal, tab, or separate route. Missing media must fall back to a well-designed text card rather than removing the testimonial.
 
-Requirements:
-- Render at least three testimonials on the home page.
-- Place the section before the final purchase CTA/footer area and near a relevant proof or offer section.
-- Do not hide all feedback behind a carousel, modal, tab, or interaction.
-- Preserve the meaning of every supplied testimonial; shortening is allowed only when faithful.
-- Never invent names, locations, ratings, purchases, or feedback.
-- If testimonial media is missing or a placeholder is unavailable, render a well-designed text testimonial rather than omitting the feedback.
-- Use a customer-facing section heading such as `What customers say` or `Customer feedback`.
+Component and E2E tests must load the exact input data, assert the initial count, activate load-more until it disappears, assert final count equals the input length, and verify every supplied name and testimonial text verbatim.
+
+## Legal Policy Copy Fidelity
+Treat all four policy files as legally binding. Copy input bytes exactly into `content/policies/`, bind SHA-256 values in `config/legal-content-manifest.json`, and use `lib/legal-content.ts` plus `readPolicySource` as the only route content source. Render those files without rewriting, summarizing, correcting, translating, inserting, deleting, or reordering wording. Design and formatting may change, but text content must not. Validation and tests must fail on a one-character difference or a route bound to the wrong policy.
 
 ## Mobile Typography And Layout
 The generated site must remain readable from narrow phones through large phones, not only at one flagship viewport.

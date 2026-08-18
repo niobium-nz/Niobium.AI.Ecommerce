@@ -80,6 +80,10 @@ export function classifyBrowserConsoleMessage({ type, text, sourceUrl }, firstPa
 }
 
 async function checkCustomerFacingUi(page, location, routePath, defects) {
+  if (routePath === "/") {
+    const loadMore = page.locator('[data-load-more-testimonials="true"]');
+    while (await loadMore.count()) await loadMore.click();
+  }
   const result = await page.evaluate(({ forbiddenSources }) => {
     const patterns = forbiddenSources.map(([label, source, flags]) => [label, new RegExp(source, flags)]);
     const text = document.body.innerText;
@@ -127,7 +131,10 @@ async function checkCustomerFacingUi(page, location, routePath, defects) {
       viewportWidth,
       overflow: document.documentElement.scrollWidth > viewportWidth + 1,
       testimonialCount: document.querySelectorAll('[data-testimonial="true"]').length,
+      testimonialTotal: Number(document.querySelector('[data-testimonials="true"]')?.getAttribute("data-testimonials-total") ?? "0"),
+      testimonialVisible: Number(document.querySelector('[data-testimonials="true"]')?.getAttribute("data-testimonials-visible") ?? "0"),
       hasTestimonials: Boolean(document.querySelector('[data-testimonials="true"]')),
+      hasLoadMoreTestimonials: Boolean(document.querySelector('[data-load-more-testimonials="true"]')),
     };
   }, { forbiddenSources: FORBIDDEN_CUSTOMER_PATTERNS.map(([label, pattern]) => [label, pattern.source, pattern.flags]) });
 
@@ -135,8 +142,14 @@ async function checkCustomerFacingUi(page, location, routePath, defects) {
   for (const item of result.headingDefects) defects.push(`${location} mobile heading defect: ${item}`);
   for (const item of result.interactiveDefects) defects.push(`${location} mobile interaction defect: ${item}`);
   if (result.overflow) defects.push(`${location} has horizontal overflow at ${result.viewportWidth}px`);
-  if (routePath === "/" && (!result.hasTestimonials || result.testimonialCount < 3)) {
-    defects.push(`${location} must visibly render at least 3 testimonials`);
+  if (routePath === "/" && (
+    !result.hasTestimonials
+    || result.testimonialTotal <= 0
+    || result.testimonialCount !== result.testimonialTotal
+    || result.testimonialVisible !== result.testimonialTotal
+    || result.hasLoadMoreTestimonials
+  )) {
+    defects.push(`${location} must load every testimonial declared by data-testimonials-total`);
   }
 }
 

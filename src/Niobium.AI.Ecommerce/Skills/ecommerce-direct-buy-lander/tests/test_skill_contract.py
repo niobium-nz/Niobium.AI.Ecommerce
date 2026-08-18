@@ -68,6 +68,24 @@ class DeriveOfferMapTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, key):
                     derive.build_offer_option_map(data, self.example_path)
 
+
+    def test_testimonial_rendering_and_legal_policy_bindings_are_reported(self) -> None:
+        result = derive.build_offer_option_map(self.example, self.example_path)
+        self.assertEqual(result["testimonial_count"], len(self.example["trust_signal"]["testimonials"]))
+        self.assertEqual(result["testimonials"], self.example["trust_signal"]["testimonials"])
+        self.assertEqual(result["testimonial_rendering"]["initial_count"], 6)
+        self.assertTrue(result["testimonial_rendering"]["load_more_required"])
+        self.assertEqual(len(result["legal_policies"]), 4)
+        for policy in result["legal_policies"]:
+            self.assertRegex(policy["sha256"], r"^[0-9a-f]{64}$")
+            self.assertTrue(policy["project_path"].startswith("content/policies/"))
+
+    def test_missing_legal_policy_source_is_rejected(self) -> None:
+        data = json.loads(json.dumps(self.example))
+        data["trust_signal"]["terms"] = "./assets/missing-terms.md"
+        with self.assertRaisesRegex(ValueError, "source file does not exist"):
+            derive.build_offer_option_map(data, self.example_path)
+
     def test_camel_case_input_field_is_rejected(self) -> None:
         data = json.loads(json.dumps(self.example))
         data["vendor_integration"]["shippingOptionId"] = data["vendor_integration"].pop("shipping_option_id")
@@ -271,11 +289,11 @@ class ValidatorAndDocumentationTests(unittest.TestCase):
             "STORE_INTEGRATION_ENDPOINT",
             "NOTIFICATION_INTEGRATION_ENDPOINT",
             "OfferSelect",
-            "Promise<Response>",
+            "PaymentElement",
             "default_price.amount_cents",
             "formatMoneyFromCents",
             "Back to home",
-            "resolveSourceMapLocations",
+            "serverReadyAction",
         ]:
             with self.subTest(marker=marker):
                 self.assertIn(marker, skill)
@@ -347,31 +365,29 @@ class ValidatorAndDocumentationTests(unittest.TestCase):
             with self.subTest(marker=marker):
                 self.assertIn(marker, script)
 
-    def test_retained_launch_template_is_valid_client_debug_config(self) -> None:
+    def test_retained_launch_template_is_valid_full_stack_debug_config(self) -> None:
         path = ROOT / "templates" / ".vscode" / "launch.json"
         self.assertTrue(path.is_file())
         data = json.loads(path.read_text(encoding="utf-8"))
-        configs = data.get("configurations", [])
-        self.assertTrue(
-            any(
-                item.get("request") == "launch"
-                and item.get("type") in {"chrome", "msedge", "pwa-chrome", "pwa-msedge"}
-                and item.get("url") == "http://localhost:3000"
-                for item in configs
-            )
+        self.assertEqual(
+            data,
+            {
+                "version": "0.2.0",
+                "configurations": [
+                    {
+                        "name": "Next.js: debug full stack",
+                        "type": "node-terminal",
+                        "request": "launch",
+                        "command": "npm run dev",
+                        "serverReadyAction": {
+                            "pattern": "- Local:.+(https?://.+)",
+                            "uriFormat": "%s",
+                            "action": "debugWithChrome",
+                        },
+                    }
+                ],
+            },
         )
-        client_config = next(item for item in configs if item.get("url") == "http://localhost:3000")
-        self.assertTrue(client_config.get("sourceMaps"))
-        self.assertTrue(any("node_modules" in item for item in client_config.get("skipFiles", [])))
-        self.assertIn("${workspaceFolder}/**", client_config.get("resolveSourceMapLocations", []))
-        self.assertTrue(
-            any(
-                item.startswith("!") and "node_modules" in item
-                for item in client_config.get("resolveSourceMapLocations", [])
-            )
-        )
-        self.assertIn("--disable-extensions", client_config.get("runtimeArgs", []))
-        self.assertTrue(str(client_config.get("userDataDir", "")).startswith("${workspaceFolder}/"))
 
     def test_retained_dev_runtime_gate_covers_server_and_browser_failures(self) -> None:
         script = (ROOT / "templates" / "scripts" / "check-dev-runtime.mjs").read_text(encoding="utf-8")
@@ -422,7 +438,7 @@ class ValidatorAndDocumentationTests(unittest.TestCase):
     def test_customer_experience_contract_is_enforced(self) -> None:
         copy_doc = (ROOT / "references" / "customer-facing-copy.md").read_text(encoding="utf-8")
         mobile_test = (ROOT / "templates" / "tests" / "e2e" / "mobile-customer-ui.spec.ts").read_text(encoding="utf-8")
-        for marker in ["320", "360", "390", "430", "Coupon applied to this order", "data-testimonials", "at least three", "customer-facing"]:
+        for marker in ["320", "360", "390", "430", "Coupon applied to this order", "data-testimonials", "data-load-more-testimonials", "customer-facing"]:
             self.assertIn(marker, copy_doc + mobile_test)
         self.assertNotIn(chr(0x2014), copy_doc)
 

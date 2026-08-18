@@ -160,3 +160,36 @@ test("applied coupon wording is explicit", async ({ page }) => {
   await expect(label).toContainText("Coupon applied to this order");
   await expect(page.getByText(/active coupon/i)).toHaveCount(0);
 });
+
+test("home page loads every supplied testimonial in exact order", async ({ page }) => {
+  const testimonials = (await import("../../config/testimonials.json")).default;
+  const testimonialCount = testimonials.length;
+  await page.goto("/");
+  const section = page.locator('[data-testimonials="true"]');
+  await expect(section).toHaveAttribute("data-testimonials-total", String(testimonialCount));
+  const initialExpected = testimonialCount <= 6 ? testimonialCount : testimonialCount <= 9 ? 4 : 6;
+  await expect(section.locator('[data-testimonial="true"]')).toHaveCount(initialExpected);
+  const loadMore = section.locator('[data-load-more-testimonials="true"]');
+  while (await loadMore.count()) await loadMore.click();
+  await expect(section.locator('[data-testimonial="true"]')).toHaveCount(testimonialCount);
+  for (const testimonial of testimonials) {
+    await expect(section.getByText(testimonial.name, { exact: true })).toBeVisible();
+    await expect(section.getByText(testimonial.testimonial, { exact: true })).toBeVisible();
+  }
+});
+
+test("checkout shows order information before forms and keeps coupon compact", async ({ page }) => {
+  await page.goto("/checkout?offer=1&coupon=TESTCODE");
+  const summary = page.locator('[data-checkout-order-summary="true"]');
+  const coupon = summary.locator('[data-checkout-coupon="true"]');
+  const shipping = page.locator('[data-checkout-shipping-form="true"]');
+  const payment = page.locator('[data-checkout-payment="true"]');
+  await expect(summary).toBeVisible();
+  await expect(coupon).toBeVisible();
+  await expect(coupon.locator('[data-coupon-toggle="true"]')).toBeVisible();
+  const summaryBox = await summary.boundingBox();
+  const shippingBox = await shipping.boundingBox();
+  const paymentBox = await payment.boundingBox();
+  expect(summaryBox?.y).toBeLessThan(shippingBox?.y ?? Number.POSITIVE_INFINITY);
+  expect(summaryBox?.y).toBeLessThan(paymentBox?.y ?? Number.POSITIVE_INFINITY);
+});

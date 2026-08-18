@@ -17,9 +17,9 @@ CLARITY_ID
 ### Script Placement
 Use a shared layout-level integration so analytics can load on all routes.
 
-For Next.js, prefer `next/script` for third-party tracking. Analytics scripts are good candidates for the `afterInteractive` strategy.
+Use `next/script` directly for every required third-party snippet. Render the canonical Google tag, Meta Pixel, and Microsoft Clarity bootstrap code in the shared layout with `afterInteractive`; do not create hooks or utilities that append script elements.
 
-Vendor quote/order/contact/track/subscription scripts should load only on the pages/components that need them, not globally unless the implementation has a clear performance reason.
+Render vendor quote/order/contact/track/subscription URLs directly as route-scoped `next/script` components on only the pages that need them. Do not wrap them in a custom script loader.
 
 ### Event Wiring
 Centralize event helpers in `lib/tracking.ts`.
@@ -220,3 +220,9 @@ Every non-home route must provide a visible text link to `/` in its first usable
 
 ## Fulfillment Copy
 Use only `product_details.shipping_details` for tracked/ETA claims. A tracked package may be described as tracked, and the supplied carrier delivery estimate may be shown. Do not emphasize fulfillment origin, do not use `oversea` or `overseas` in shopper-facing copy, and do not falsely claim local dispatch.
+
+
+## Canonical Script Enforcement
+Copy/adapt `templates/components/integrations/third-party-scripts.tsx`. Required source markers include `next/script`, the Google gtag URL and bootstrap, Meta `fbevents.js` bootstrap and PageView call, Microsoft Clarity bootstrap, and the five documented Niobium vendor script URLs. Custom `loadExternalScript`, `injectScript`, or `ensureScript` helpers are forbidden. `STORE_INTEGRATION_ENDPOINT` and `NOTIFICATION_INTEGRATION_ENDPOINT` are final arguments to documented globals, never URLs for a direct custom `fetch`.
+
+Stripe is the exception to generic `next/script` loading: use the official React Stripe.js packages and their canonical primitives (`loadStripe`, `Elements`, `PaymentElement`, `useStripe`, `useElements`, `elements.submit`, `stripe.confirmPayment`). Do not inject, self-host, or duplicate Stripe.js.

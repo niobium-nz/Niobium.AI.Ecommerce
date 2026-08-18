@@ -57,8 +57,8 @@ Address line 2 should not create friction.
 
 For most countries, it should be optional and visually secondary. Where unit/floor is common, such as Singapore, keep it easy to find but still optional unless the customer chooses to enter it.
 
-### 6. Make Coupon Handling Clear But Not Dominant
-Coupon entry is allowed and required by this skill, but it should not dominate the payment path.
+### 6. Embed A Compact Coupon Control Inside The Order Summary
+Coupon entry is allowed and required, but it must be a compact inline row or collapsed disclosure inside the order-summary container. Never render it as a standalone section above the summary, shipping form, or payment form.
 
 Checkout must:
 - when a coupon is present, label it exactly `Coupon applied to this order`
@@ -69,8 +69,8 @@ Checkout must:
 
 Do not hardcode discount claims.
 
-### 7. Show Live-Quote Order Summary
-Use a successfully parsed, validated 2xx quote response for every checkout price, shipping, tax, discount, currency, and total claim. Vendor amounts are integer cents; format them through the cent-safe display helper and pass the untouched cent total to Stripe. Never use the landing-page default price in checkout.
+### 7. Show The Live-Quote Order Summary First
+Place the order summary first in DOM and visual order at every viewport, before shipping fields and payment, so customers see what they are buying before entering details. Use a successfully parsed, validated 2xx quote response for every checkout price, shipping, tax, discount, currency, and total claim. Vendor amounts are integer cents; format them through the cent-safe display helper and pass the untouched cent total to Stripe. Never use the landing-page default price in checkout.
 
 Recommended display:
 - product/offer summary
@@ -137,3 +137,18 @@ The following Baymard Institute resources informed these principles:
 
 ### 13. Keep Delivery Reassurance Useful
 When the input confirms tracking, say the package is tracked and show the supplied carrier delivery estimate. Keep the wording focused on ETA, tracking, and support. Do not emphasize fulfillment origin, do not use `oversea` or `overseas` in customer-facing copy, and do not invent local-dispatch claims.
+
+
+## Required Checkout Structure Markers
+Use one semantic summary container and keep the compact coupon control inside it:
+```tsx
+<section data-checkout-order-summary="true">
+  {/* offer, items, subtotal, shipping, tax, total */}
+  <div data-checkout-coupon="true">
+    <button data-coupon-toggle="true">Add or change coupon</button>
+  </div>
+</section>
+<form data-checkout-shipping-form="true">...</form>
+<section data-checkout-payment="true">...</section>
+```
+E2E must assert the coupon locator is a descendant of the summary, the summary bounding-box top is above shipping and payment, and the same relationship holds at 320, 360, 390, and 430 pixels.

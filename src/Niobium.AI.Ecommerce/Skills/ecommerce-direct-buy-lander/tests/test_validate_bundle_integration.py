@@ -40,25 +40,60 @@ def build_valid_fixture(root: Path) -> None:
         "app/shipping-policy/page.tsx",
     ]
     home_source = r'''
+import { Testimonials } from '../components/sections/testimonials';
+import testimonials from '../config/testimonials.json';
 export const copy = `Buy Now /checkout?offer= offer=1 offer=2 offer=3
 /contact /track-order /privacy-policy /terms /returns-policy /shipping-policy
+content/policies/privacy-policy.md content/policies/terms.md content/policies/returns-policy.md content/policies/shipping-policy.md
 StartCheckoutForm OfferSelect InitiatePurchase PurchaseSuccess PurchaseFailed redirect_status
 stripe.confirmPayment logo-primary.png transparent carrier_delivery_estimate tracked`;
 export const pricingKeys = { default_price: { amount_cents: 2495, currency: 'AUD' } };
-export default function Home(){ return <main><h1 className="text-balance" style={{fontSize:'clamp(2rem,7vw,3rem)', textWrap:'balance'}}>Remove pet hair in minutes</h1><section data-testimonials="true"><article data-testimonial="true">A</article><article data-testimonial="true">B</article><article data-testimonial="true">C</article></section><a data-primary-action="true" href="/checkout?offer=1">Buy Now</a></main>; }
+export default function Home(){ return <main><h1 className="text-balance" style={{fontSize:'clamp(2rem,7vw,3rem)', textWrap:'balance'}}>Remove pet hair in minutes</h1><Testimonials testimonials={testimonials} /><a data-primary-action="true" href="/checkout?offer=1">Buy Now</a></main>; }
+'''
+    checkout_source = r'''
+import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { HomeLink } from '../../components/layout/home-link';
+const stripePromise = loadStripe('pk_test');
+export async function submit(){ const stripe = useStripe(); const elements = useElements(); await elements.submit(); return stripe.confirmPayment({ elements, clientSecret: '', confirmParams: {} }); }
+export default function Page(){ return <main><h1 className="text-balance" style={{fontSize:'clamp(2rem,7vw,3rem)', textWrap:'balance'}}>Complete your order</h1><section data-checkout-order-summary="true"><p>Order information</p><div data-checkout-coupon="true"><button data-coupon-toggle="true">Add or change coupon</button><p data-coupon-applied="true">Coupon applied to this order</p></div></section><form data-checkout-shipping-form="true">Shipping</form><section data-checkout-payment="true"><Elements stripe={stripePromise} options={{ mode: 'payment', amount: 2495, currency: 'aud' }}><PaymentElement /></Elements></section><HomeLink /></main>; }
 '''
     other_source = r'''
 import { HomeLink } from '../../components/layout/home-link';
-export default function Page(){ return <main><h1 className="text-balance" style={{fontSize:'clamp(2rem,7vw,3rem)', textWrap:'balance'}}>Complete your order</h1><p data-coupon-applied="true">Coupon applied to this order</p><HomeLink /></main>; }
+export default function Page(){ return <main><h1 className="text-balance" style={{fontSize:'clamp(2rem,7vw,3rem)', textWrap:'balance'}}>Customer information</h1><HomeLink /></main>; }
 '''
+
+    policy_route_fields = {
+        "app/privacy-policy/page.tsx": "privacy_policy",
+        "app/terms/page.tsx": "terms",
+        "app/returns-policy/page.tsx": "returns_policy",
+        "app/shipping-policy/page.tsx": "shipping_policy",
+    }
+
     for index, route in enumerate(routes):
-        write(root, route, home_source if index == 0 else other_source)
+        if index == 0:
+            source = home_source
+        elif route == "app/checkout/page.tsx":
+            source = checkout_source
+        elif route in policy_route_fields:
+            field = policy_route_fields[route]
+            source = f'''
+import {{ readPolicySource }} from '../../lib/legal-content';
+import {{ HomeLink }} from '../../components/layout/home-link';
+export default function Page(){{ const source = readPolicySource('{field}'); return <main><article data-policy-source="{field}">{{source}}</article><HomeLink /></main>; }}
+'''
+        else:
+            source = other_source
+        write(root, route, source)
 
     write(root, "components/layout/home-link.tsx", '''
 import Link from 'next/link';
 export function HomeLink(){ return <Link data-home-link="true" href="/">Back to home</Link>; }
 ''')
     write(root, "components/brand/site-logo.tsx", "export const logo = '/assets/logo-primary.png';\n")
+    write(root, "components/sections/testimonials.tsx", (ROOT / "templates/components/sections/testimonials.tsx").read_text(encoding="utf-8"))
+    write(root, "components/integrations/third-party-scripts.tsx", (ROOT / "templates/components/integrations/third-party-scripts.tsx").read_text(encoding="utf-8"))
+    write(root, "lib/legal-content.ts", (ROOT / "templates/lib/legal-content.ts").read_text(encoding="utf-8"))
 
     write(root, "lib/env.ts", r'''
 const SHIPPING_OPTION_ID_PATTERN = /^[1-9]\d*$/;
@@ -126,8 +161,27 @@ export async function refreshOfferPriceInBackground(){ return applyLiveQuotePric
     ]
     write(root, "config/offer-options.json", json.dumps(offer_options))
     write(root, "config/site-input-summary.json", json.dumps({"brand_system": {"logo_file": "source-assets/logo.svg", "primary_color": "#372010", "secondary_color": "#faf3e0"}}))
-    source_logo = (ROOT / "references" / "assets" / "logo.svg").read_text(encoding="utf-8")
-    write(root, "source-assets/logo.svg", source_logo)
+    input_data = json.loads(EXAMPLE_INPUT.read_text(encoding="utf-8"))
+    write(root, "config/testimonials.json", json.dumps(input_data["trust_signal"]["testimonials"], ensure_ascii=False))
+    import hashlib
+    policy_map = {
+        "privacy_policy": "content/policies/privacy-policy.md",
+        "terms": "content/policies/terms.md",
+        "returns_policy": "content/policies/returns-policy.md",
+        "shipping_policy": "content/policies/shipping-policy.md",
+    }
+    manifest = {}
+    for field, project_path in policy_map.items():
+        source_path = EXAMPLE_INPUT.parent / input_data["trust_signal"][field]
+        payload = source_path.read_bytes()
+        target = root / project_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(payload)
+        manifest[field] = {"project_path": project_path, "sha256": hashlib.sha256(payload).hexdigest()}
+    write(root, "config/legal-content-manifest.json", json.dumps(manifest))
+    target_logo = root / "source-assets/logo.svg"
+    target_logo.parent.mkdir(parents=True, exist_ok=True)
+    target_logo.write_bytes((ROOT / "references/assets/logo.svg").read_bytes())
 
     write(root, "next.config.mjs", '''
 import { networkInterfaces } from 'node:os';
@@ -137,13 +191,18 @@ export default { output: 'export', allowedDevOrigins: ['localhost', configured, 
     write(root, ".vscode/launch.json", json.dumps({
         "version": "0.2.0",
         "configurations": [{
-            "name": "Next.js: debug client-side", "type": "chrome", "request": "launch",
-            "url": "http://localhost:3000", "webRoot": "${workspaceFolder}", "sourceMaps": True,
-            "smartStep": True, "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
-            "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
-            "runtimeArgs": ["--disable-extensions"], "userDataDir": "${workspaceFolder}/.vscode/.debug-profile",
+            "name": "Next.js: debug full stack",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "npm run dev",
+            "serverReadyAction": {
+                "pattern": "- Local:.+(https?://.+)",
+                "uriFormat": "%s",
+                "action": "debugWithChrome",
+            },
         }],
     }))
+
 
     versions = {
         "next": "16.2.11", "react": "19.2.0", "react-dom": "19.2.0", "typescript": "7.0.2",
@@ -188,7 +247,7 @@ export default { output: 'export', allowedDevOrigins: ['localhost', configured, 
     write(root, "eslint.config.mjs", "export default []\n")
     write(root, "playwright.config.ts", "export default { webServer: { command: 'npm run serve:static' }, use: { baseURL: 'http://127.0.0.1:4173' } };\n")
     write(root, "tsconfig.json", "{}")
-    write(root, "vitest.config.mts", "export default { test: { coverage: { provider: 'v8', thresholds: { statements: 100, branches: 100, functions: 100, lines: 100 } } } };\n")
+    write(root, "vitest.config.mts", "export default { test: { coverage: { provider: 'v8', include: ['app/**', 'components/**', 'lib/**', 'scripts/**'], thresholds: { perFile: true, statements: 100, branches: 100, functions: 100, lines: 100 } } } };\n")
 
     write(root, "scripts/deploy-cloudflare-pages.mjs", "// deploy\n")
     write(root, "scripts/generate-public-env.mjs", "// public env\n")
@@ -197,8 +256,8 @@ export default { output: 'export', allowedDevOrigins: ['localhost', configured, 
     write(root, "scripts/check-dependency-freshness.mjs", "// npm dependencies devDependencies dist-tags.latest latest CARET_STABLE_SEMVER latest stable compatible queryLatestStableWithinRange isCaretCompatible\n")
     write(root, "scripts/check-dependency-health.mjs", "// npm ci --dry-run --strict-allow-scripts approve-scripts --allow-scripts-pending --json allowScripts workerd engines warn npm ls\n")
     write(root, "scripts/check-project-boundaries.mjs", "// findAbsoluteLocalReferences findEscapingRelativeReferences isSymbolicLink file: link: Project boundary check failed\n")
-    write(root, "scripts/check-customer-facing-copy.mjs", "// data-testimonials data-testimonial data-home-link Coupon applied to this order active coupon em dash\n")
-    write(root, "scripts/check-dev-runtime.mjs", "// 0.0.0.0 networkInterfaces console pageerror requestfailed warning outdated cross-origin source-map new Response data-home-link waitForURL React DevTools HMR classifyBrowserConsoleMessage external-diagnostic --disable-extensions data-testimonials MOBILE_VIEWPORTS 320 360 390 430 interactiveDefects EXPECTED_INFORMATIONAL_DEV_MESSAGES ObjectMultiplex MaxListenersExceededWarning private-token\n")
+    write(root, "scripts/check-customer-facing-copy.mjs", "// data-testimonials data-testimonials-total data-testimonials-visible data-load-more-testimonials data-testimonial data-home-link Coupon applied to this order active coupon em dash config/testimonials.json legal-content-manifest\n")
+    write(root, "scripts/check-dev-runtime.mjs", "// 0.0.0.0 networkInterfaces console pageerror requestfailed warning outdated cross-origin source-map new Response data-home-link waitForURL React DevTools HMR classifyBrowserConsoleMessage external-diagnostic --disable-extensions data-testimonials data-testimonials-total data-load-more-testimonials MOBILE_VIEWPORTS 320 360 390 430 interactiveDefects EXPECTED_INFORMATIONAL_DEV_MESSAGES ObjectMultiplex MaxListenersExceededWarning private-token\n")
 
     write(root, "tests/e2e/all.spec.ts", '''
 // page.on console pageerror requestfailed
@@ -206,8 +265,14 @@ export default { output: 'export', allowedDevOrigins: ['localhost', configured, 
 // formatMoneyFromCents SHIPPING_OPTION_ID shippingId STORE_INTEGRATION_ENDPOINT NOTIFICATION_INTEGRATION_ENDPOINT
 // OfferSelect logo-primary.png transparent response.ok response.status response.json VendorResponseError
 // 400 429 500 amount_cents 2495 24.95 refreshOfferPriceInBackground data-home-link pathname
-// data-testimonials data-testimonial Coupon applied to this order 320 360 390 430 horizontal overflow project boundary
+// data-testimonials data-testimonial data-load-more-testimonials testimonialCount while toHaveCount testimonials.json testimonial.name testimonial.testimonial Coupon applied to this order 320 360 390 430 horizontal overflow project boundary
+// data-checkout-order-summary data-checkout-coupon data-checkout-shipping-form data-checkout-payment boundingBox toBeLessThan
+// readPolicySource data-policy-source
+// scripts/deploy-cloudflare-pages.mjs scripts/generate-public-env.mjs scripts/export-offer-env.mjs scripts/prepare-logo-assets.mjs scripts/check-dependency-freshness.mjs scripts/check-dependency-health.mjs scripts/check-dev-runtime.mjs scripts/check-project-boundaries.mjs scripts/check-customer-facing-copy.mjs
 ''')
+    policy_test_markers = '\n'.join(f"{entry['project_path']} {entry['sha256']}" for entry in manifest.values())
+    with (root / "tests/e2e/all.spec.ts").open("a", encoding="utf-8") as handle:
+        handle.write("\n// " + policy_test_markers.replace("\n", "\n// ") + "\n")
 
     readme_markers = '''
 APP_NAME CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_API_TOKEN TENANT_ID GOOGLE_RECAPTCHA_SITE_KEY
@@ -327,18 +392,18 @@ class ValidateBundleIntegrationTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("formatMoneyFromCents", result.stdout)
 
-    def test_missing_node_modules_source_map_exclusion_is_rejected(self) -> None:
+    def test_incorrect_full_stack_debug_command_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             project = Path(temp) / "project"
             project.mkdir()
             build_valid_fixture(project)
             launch_path = project / ".vscode/launch.json"
             launch = json.loads(launch_path.read_text(encoding="utf-8"))
-            launch["configurations"][0].pop("resolveSourceMapLocations")
+            launch["configurations"][0]["command"] = "next dev"
             launch_path.write_text(json.dumps(launch), encoding="utf-8")
             result = run_validator(project)
             self.assertNotEqual(result.returncode, 0)
-            self.assertIn("resolveSourceMapLocations", result.stdout)
+            self.assertIn("full-stack node-terminal", result.stdout)
 
     def test_removed_bundle_event_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -413,8 +478,8 @@ class ValidateBundleIntegrationTests(unittest.TestCase):
             project = Path(temp) / "project"
             project.mkdir()
             build_valid_fixture(project)
-            page_path = project / "app/page.tsx"
-            page_path.write_text(page_path.read_text(encoding="utf-8").replace('data-testimonials="true"', 'data-proof="true"'), encoding="utf-8")
+            component_path = project / "components/sections/testimonials.tsx"
+            component_path.write_text(component_path.read_text(encoding="utf-8").replace('data-testimonials="true"', 'data-proof="true"'), encoding="utf-8")
             result = run_validator(project)
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("data-testimonials", result.stdout)
@@ -441,18 +506,18 @@ class ValidateBundleIntegrationTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("em_dash", result.stdout)
 
-    def test_clean_debug_browser_configuration_is_required(self) -> None:
+    def test_full_stack_server_ready_action_is_required(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             project = Path(temp) / "project"
             project.mkdir()
             build_valid_fixture(project)
             launch_path = project / ".vscode/launch.json"
             launch = json.loads(launch_path.read_text(encoding="utf-8"))
-            launch["configurations"][0].pop("runtimeArgs")
+            launch["configurations"][0].pop("serverReadyAction")
             launch_path.write_text(json.dumps(launch), encoding="utf-8")
             result = run_validator(project)
             self.assertNotEqual(result.returncode, 0)
-            self.assertIn("--disable-extensions", result.stdout)
+            self.assertIn("full-stack node-terminal", result.stdout)
 
     def test_strict_npmrc_and_workerd_approval_are_required(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -480,6 +545,146 @@ class ValidateBundleIntegrationTests(unittest.TestCase):
             result = run_validator(project)
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("fulfillment_origin_wording", result.stdout)
+
+
+    def test_reworded_or_missing_testimonial_data_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project = Path(temp) / "project"
+            project.mkdir()
+            build_valid_fixture(project)
+            path = project / "config/testimonials.json"
+            testimonials = json.loads(path.read_text(encoding="utf-8"))
+            testimonials[0]["testimonial"] += " Changed."
+            path.write_text(json.dumps(testimonials), encoding="utf-8")
+            result = run_validator(project)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("preserve every input testimonial", result.stdout)
+
+    def test_home_page_must_pass_complete_imported_testimonial_array(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project = Path(temp) / "project"
+            project.mkdir()
+            build_valid_fixture(project)
+            path = project / "app/page.tsx"
+            path.write_text(
+                path.read_text(encoding="utf-8").replace(
+                    "<Testimonials testimonials={testimonials} />",
+                    "<Testimonials testimonials={[]} />",
+                ),
+                encoding="utf-8",
+            )
+            result = run_validator(project)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("pass the complete imported testimonial array", result.stdout)
+
+    def test_changed_legal_policy_character_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project = Path(temp) / "project"
+            project.mkdir()
+            build_valid_fixture(project)
+            path = project / "content/policies/privacy-policy.md"
+            path.write_bytes(path.read_bytes() + b" ")
+            result = run_validator(project)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("byte-for-byte", result.stdout)
+
+    def test_policy_route_must_render_its_bound_source(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project = Path(temp) / "project"
+            project.mkdir()
+            build_valid_fixture(project)
+            path = project / "app/privacy-policy/page.tsx"
+            path.write_text(
+                path.read_text(encoding="utf-8").replace(
+                    "readPolicySource('privacy_policy')",
+                    "'rewritten privacy copy'",
+                ),
+                encoding="utf-8",
+            )
+            result = run_validator(project)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("policy route must render exact source", result.stdout)
+
+    def test_custom_script_loader_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project = Path(temp) / "project"
+            project.mkdir()
+            build_valid_fixture(project)
+            path = project / "components/integrations/third-party-scripts.tsx"
+            path.write_text(path.read_text(encoding="utf-8") + "\nfunction loadExternalScript() {}\n", encoding="utf-8")
+            result = run_validator(project)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("custom client-side script loaders", result.stdout)
+
+    def test_custom_arrow_script_loader_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project = Path(temp) / "project"
+            project.mkdir()
+            build_valid_fixture(project)
+            path = project / "components/integrations/third-party-scripts.tsx"
+            path.write_text(path.read_text(encoding="utf-8") + "\nconst injectScript = () => undefined;\n", encoding="utf-8")
+            result = run_validator(project)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("custom client-side script loaders", result.stdout)
+
+    def test_direct_integration_endpoint_fetch_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project = Path(temp) / "project"
+            project.mkdir()
+            build_valid_fixture(project)
+            path = project / "lib/vendor-support.ts"
+            path.write_text(
+                path.read_text(encoding="utf-8") + "\nexport const badFetch = fetch(process.env.STORE_INTEGRATION_ENDPOINT);\n",
+                encoding="utf-8",
+            )
+            result = run_validator(project)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("do not fetch integration endpoints directly", result.stdout)
+
+    def test_checkout_summary_after_shipping_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project = Path(temp) / "project"
+            project.mkdir()
+            build_valid_fixture(project)
+            path = project / "app/checkout/page.tsx"
+            source = path.read_text(encoding="utf-8")
+            source = source.replace(
+                '<section data-checkout-order-summary="true"><p>Order information</p><div data-checkout-coupon="true"><button data-coupon-toggle="true">Add or change coupon</button><p data-coupon-applied="true">Coupon applied to this order</p></div></section><form data-checkout-shipping-form="true">Shipping</form>',
+                '<form data-checkout-shipping-form="true">Shipping</form><section data-checkout-order-summary="true"><p>Order information</p><div data-checkout-coupon="true"><button data-coupon-toggle="true">Add or change coupon</button><p data-coupon-applied="true">Coupon applied to this order</p></div></section>',
+            )
+            path.write_text(source, encoding="utf-8")
+            result = run_validator(project)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("order summary must appear before shipping", result.stdout)
+
+    def test_local_package_script_must_be_in_coverage(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project = Path(temp) / "project"
+            project.mkdir()
+            build_valid_fixture(project)
+            path = project / "vitest.config.mts"
+            path.write_text(
+                path.read_text(encoding="utf-8").replace(", 'scripts/**'", "") + "\n// scripts/** is not an include entry\n",
+                encoding="utf-8",
+            )
+            result = run_validator(project)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("include must explicitly cover scripts/**", result.stdout)
+
+    def test_new_local_package_script_requires_explicit_tests(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project = Path(temp) / "project"
+            project.mkdir()
+            build_valid_fixture(project)
+            package_path = project / "package.json"
+            package = json.loads(package_path.read_text(encoding="utf-8"))
+            package["scripts"]["extra:check"] = "node scripts/extra-check.mjs"
+            package_path.write_text(json.dumps(package), encoding="utf-8")
+            write(project, "scripts/extra-check.mjs", "export const ok = true;\n")
+            result = run_validator(project)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("lacks explicit test coverage reference", result.stdout)
+
 
 
 if __name__ == "__main__":

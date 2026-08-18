@@ -9,7 +9,7 @@ Own customer-facing language, mobile readability, testimonials, checkout clarity
 - Remove internal UX/marketing labels from rendered headings and helper text.
 - Prevent the Unicode em dash character from reaching generated UI or static HTML.
 - Use `Coupon applied to this order` when a coupon is present and reject `Active coupon`.
-- Render at least three supplied testimonials in a visible home-page section.
+- Render every supplied testimonial exactly; show the required initial subset and load the remainder on the same home page.
 - Verify heading scale, line count, horizontal overflow, body readability, and tap targets at 320, 360, 390, and 430 CSS pixels.
 - Provide required data attributes for automated testimonial and navigation checks.
 - Hand copy/layout defects to the orchestrator and quality agent with route, viewport, selector, and observed value.

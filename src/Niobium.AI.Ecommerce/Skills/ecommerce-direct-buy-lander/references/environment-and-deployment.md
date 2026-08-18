@@ -17,18 +17,18 @@ Use this deterministic naming pattern:
 
 ```txt
 # dev and test
-niobiumecomm-{short_product_name}-{environment}
+ecom-{short_product_name}-{environment}
 
 # prod
-niobiumecomm-{short_product_name}
+ecom-{short_product_name}
 ```
 
 Examples:
 
 ```txt
-niobiumecomm-hair-remover-dev
-niobiumecomm-hair-remover-test
-niobiumecomm-hair-remover
+ecom-hair-remover-dev
+ecom-hair-remover-test
+ecom-hair-remover
 ```
 
 Treat `APP_NAME` as:
@@ -175,14 +175,14 @@ When branch/environment detection does not identify `test` or `prod`, local comm
 
 Required local behavior:
 - `scripts/export-offer-env.mjs` writes offer option values to a local generated env file or logs shell export commands.
-- `scripts/generate-public-env.mjs` resolves `APP_NAME` as `niobiumecomm-{short_product_name}-dev` if `APP_NAME` is absent.
+- `scripts/generate-public-env.mjs` resolves `APP_NAME` as `ecom-{short_product_name}-dev` if `APP_NAME` is absent.
 - `.env.example` documents required local values and notes that Cloudflare secrets are needed only for deploy.
 - `.env.example` may include optional `DEV_ALLOWED_ORIGINS` as a comma-separated list of extra development hostnames/IP addresses.
 - `next.config.mjs` automatically includes localhost and detected non-internal LAN IPv4 addresses in `allowedDevOrigins`, merges explicitly configured `DEV_ALLOWED_ORIGINS`, and does not use a permissive wildcard.
 - `next.config.mjs` sets `logging.browserToTerminal` to at least `"warn"` so client warnings/errors appear in the dev terminal.
 - `npm run dev` binds to `0.0.0.0` so local devices can test the site without a cross-origin warning.
-- `.vscode/launch.json` includes a Next.js client-side browser debug configuration for `http://localhost:3000`, keeps source maps enabled for workspace application code, and uses `skipFiles` plus `resolveSourceMapLocations` to exclude `node_modules` source maps.
-- Normal React DevTools suggestions and HMR connection messages are informational. Application warnings/errors remain fatal; malformed or missing third-party framework source-map lookups are prevented through the debugger configuration rather than hidden after they occur.
+- `.vscode/launch.json` uses the retained Next.js full-stack `node-terminal` profile, runs `npm run dev`, and opens the URL matched by `serverReadyAction` through `debugWithChrome`.
+- Normal React DevTools suggestions and HMR connection messages are informational. Application warnings/errors remain fatal; the debugger follows the same full-stack development command used by the project.
 
 ## Self-Contained Project Paths
 Every generated project must be runnable after checkout on a clean CI runner without access to the original skill input directory or generation machine.

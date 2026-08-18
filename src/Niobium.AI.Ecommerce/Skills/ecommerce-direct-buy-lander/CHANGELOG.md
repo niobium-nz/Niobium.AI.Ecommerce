@@ -36,7 +36,7 @@ This package is maintained as one current specification. Generated projects must
 
 ## Debugging and runtime quality
 
-- `.vscode/launch.json` keeps source maps for workspace code but excludes `node_modules` using `skipFiles` and `resolveSourceMapLocations`.
+- Historical debugger profile was replaced on 2026-08-04 by the exact full-stack `node-terminal` configuration.
 - Informational React DevTools prompts and `[HMR] connected` messages are not treated as defects.
 - Browser warnings/errors, page exceptions, hydration errors, first-party request failures, malformed framework source-map lookups, cross-origin warnings, deprecations, and outdated dependency notices fail the runtime gate. Known browser-extension liveness/listener messages and the Google reCAPTCHA `private-token` diagnostic are classified only by verified external source; the same text from first-party or unknown sources remains fatal.
 - Local development is tested through localhost and an available LAN address.
@@ -56,3 +56,11 @@ This package is maintained as one current specification. Generated projects must
 - The test workflow runs for pushes to every non-main branch, pull requests whose base is non-main, and manual dispatch; it has no feature-branch-only condition.
 - Lint, type checking, 100% testable-code coverage thresholds, static build, static-export E2E, dependency health, and warning-free development-runtime checks must all pass before completion.
 - Focused agent roles cover orchestration, platform/dependencies, customer experience, brand assets, commerce/checkout, quality/runtime, and deployment; the same responsibilities are followed sequentially when native sub-agents are unavailable.
+
+## 2026-08-04 - Binding content and runtime quality hardening
+- Preserve every input testimonial exactly, preload a UX-sized subset, and load all remaining entries on the home page.
+- Bind legal pages to byte-identical input policy files with SHA-256 manifests.
+- Require order summary first and compact coupon placement inside the summary.
+- Replace custom third-party loaders with canonical `next/script` analytics/vendor snippets and official React Stripe.js primitives.
+- Require actual 100% coverage for every local executable referenced by `package.json`.
+- Replace the broken client-only VS Code profile with the supported full-stack `node-terminal` configuration.

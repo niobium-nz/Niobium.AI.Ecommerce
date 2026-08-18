@@ -24,6 +24,10 @@ The generated webapp is a frontend-only static export. It must use browser-side 
 - Resolve the latest stable compatible direct dependencies from npm at generation time, declare them with caret ranges, and lock the exact installed versions; do not cross the declared caret range automatically or rely on remembered versions.
 - Treat every lint, type, test, coverage, dev-server, browser-console, dependency, or build warning/error as unfinished work.
 - Use the sub-agent role contracts in `agents/` when delegation is available, and execute the same roles sequentially otherwise.
+- Preserve all supplied testimonials exactly and keep every entry available on the home page; preload a UX-sized subset and expose the remainder through an accessible load-more control.
+- Treat every supplied policy file as legally binding source text: copy bytes exactly and change presentation only.
+- Use canonical third-party snippets/URLs through `next/script`; never replace them with a custom loader or custom endpoint fetch implementation.
+- Require 100% coverage for every executable local script referenced by `package.json`, not only application components.
 
 ## Workflow
 1. Read the input JSON. Use `references/example_input.json` only as a shape reference when the live input is missing examples.
@@ -36,12 +40,12 @@ The generated webapp is a frontend-only static export. It must use browser-side 
 8. Resolve latest stable compatible dependency versions, declare caret ranges, generate the reviewed install-script allowlist, and lock exact resolutions according to `references/dependency-policy.md` before scaffolding the project.
 9. Build the project tree from `references/output-contract.md`, copying/adapting retained files in `templates/`, including `.vscode/launch.json`, `AGENTS.md`, `next.config.mjs`, `lib/env.ts`, `lib/utils.ts`, `lib/vendor-response.ts`, `lib/offer-pricing.ts`, `components/layout/home-link.tsx`, logo/dependency/runtime scripts, and retained regression tests. Do not weaken their contracts.
 10. Wire environment variables, strict integer parsing, offer-option bootstrapping, Cloudflare deployment, and GitHub workflows according to `references/environment-and-deployment.md`.
-11. Wire vendor quote/order/subscription/contact/track integrations according to `references/vendor-integrations.md`. Treat every vendor result as `Promise<Response>`, parse one JSON body only after transport handling, validate HTTP status and response shape, and keep all vendor monetary amounts in integer cents.
+11. Render Meta Pixel, Google Analytics, Microsoft Clarity, and every vendor script from their canonical snippets/URLs with `next/script`; use the official React Stripe.js `loadStripe`, `Elements`, and `PaymentElement` flow. Do not create custom script loaders or direct `fetch` replacements for vendor globals. Then wire vendor calls according to `references/vendor-integrations.md`.
 12. Localize checkout fields according to `references/country-checkout-field-rules.md`.
-13. Apply checkout UX guidance from `references/checkout-principles.md` where it fits the static, in-site checkout flow.
+13. Put the live-quote order summary first in checkout DOM and visual order, before shipping and payment. Embed coupon entry as a compact control inside that summary, then apply the remaining guidance from `references/checkout-principles.md`.
 14. Wire analytics, query-param persistence, and performance rules from `references/tracking-and-performance.md`.
-15. Generate the policy pages with the shared header and footer, but keep their bodies simple.
-16. Add unit, component, integration, E2E, asset, and runtime tests according to `references/quality-and-testing.md`. Add a regression test before fixing every discovered runtime defect.
+15. Copy each policy source into `content/policies/` byte-for-byte and render that exact content through the shared policy shell. Change only presentation; never rewrite, summarize, reorder, correct, or normalize legal wording.
+16. Add unit, component, integration, E2E, asset, and runtime tests according to `references/quality-and-testing.md`. Include every local script referenced by any `package.json` script in V8 coverage and hold each script to 100% statements, branches, functions, and lines. Add a regression test before fixing every discovered defect.
 17. Run `scripts/validate_bundle.py <project-dir> <input-json>` and fix every error and warning before finalizing.
 18. Run dependency freshness and resolution/install-script health, project-boundary audit, lint, typecheck, 100% coverage, build, rendered-content audit, E2E against the static export, and warning-free dev runtime. Fix all failures and warnings; do not lower thresholds or suppress messages.
 19. Return the complete code bundle plus the required summary: changes, generated/modified files, dependency versions, environment checklist, workflow behavior, Cloudflare behavior, route list, coverage and validation results, and unresolved issues if any.
@@ -57,7 +61,7 @@ Treat the input JSON as the source of truth for:
 - shipping, refund, support, `shipping_details.tracked`, truthful carrier delivery estimate, and optional tracking message constraints
 - analytics IDs and query params to preserve
 - vendor integration values, positive-integer shipping option ID, and deployment-safe environment variables
-- legal policy content, at least three required testimonials, and self-contained asset paths
+- byte-exact legal policy source files, every supplied testimonial without rewriting, and self-contained asset paths
 - contact email and social links for trust signals
 
 Do not invent claims, certifications, timelines, savings, prices, discounts, stock status, use cases, or vendor request shapes that are not supported by the input, quote response, or this skill's contracts.
@@ -73,6 +77,13 @@ If the input conflicts with itself, prioritize in this order:
 4. deployment-secret safety
 5. direct-response conversion quality
 6. visual-system defaults
+
+## Binding Content And Integration Rules
+- Write the complete input testimonial array, unchanged and in order, to `config/testimonials.json`. Import that file directly on the home page and pass the complete imported array to the retained `Testimonials` component. Show all when there are six or fewer; preload four for seven to nine; preload six for ten or more; load additional entries in batches until none remain. Do not shorten or paraphrase testimonial text.
+- Resolve `trust_signal.privacy_policy`, `terms`, `returns_policy`, and `shipping_policy` as required local UTF-8 files. Copy them byte-for-byte to `content/policies/`, record SHA-256 values in `config/legal-content-manifest.json`, and render them only through the retained `lib/legal-content.ts` source reader. Test byte equality and route binding.
+- Use the retained `components/integrations/third-party-scripts.tsx` pattern. Render Google tag, Meta Pixel, Microsoft Clarity, and vendor URLs directly with `next/script`. Use canonical inline bootstrap code where the vendor snippet requires it.
+- Use Stripe through `@stripe/stripe-js` and `@stripe/react-stripe-js`: `loadStripe`, `Elements`, `PaymentElement`, `useStripe`, `useElements`, `elements.submit()`, and `stripe.confirmPayment()`. Do not inject Stripe manually.
+- In checkout, mark and order the summary, compact coupon, shipping form, and payment section with the contract markers in `references/checkout-principles.md`; E2E must verify both DOM/visual ordering and coupon containment.
 
 ## Non-Negotiable Build Rules
 - Output a static site only:
@@ -132,8 +143,8 @@ Rules:
 - `test` and `prod` must be deployable side by side without conflict, using separate Cloudflare Pages projects.
 - Use shell-safe environment variable names only.
 - Use deterministic app names:
-  - dev/test: `niobiumecomm-{short_product_name}-{environment}`
-  - prod: `niobiumecomm-{short_product_name}`
+  - dev/test: `ecom-{short_product_name}-{environment}`
+  - prod: `ecom-{short_product_name}`
 - Treat `APP_NAME` as both the Cloudflare Pages project name and the public app name for frontend vendor calls.
 - `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` are deploy-only and must never appear in frontend bundles, generated public config files, or static files.
 - `OFFER_OPTION__n` variables must be generated from `offer_options_mapping[].option_configuration` at workflow/deploy time by converting lower-snake-case cart items into the vendor wire keys `Listing`, `Option`, and `Quantity`, then made available to the build/runtime config layer.
@@ -174,7 +185,7 @@ The policy route convention above is confirmed for this skill. Footer navigation
 - Prefer an estimated delivery date only when the business can state it truthfully. Otherwise use a transparent delivery window.
 - Keep copy blocks short for mobile paid traffic. Every visible word must address a potential customer, not the website owner or operator; follow `references/customer-facing-copy.md`.
 - Do not use the Unicode em dash character in customer-facing source or rendered HTML. Use a spaced hyphen (` - `) or rewrite the sentence.
-- Render at least three supplied testimonials in a visible `data-testimonials="true"` home-page section; do not hide all feedback behind an interaction.
+- Render every supplied testimonial exactly in a visible `data-testimonials="true"` home-page section. Preload the required UX-sized subset and expose the remainder through `data-load-more-testimonials="true"` until all entries are visible.
 - Use responsive/fluid headings and validate 320px, 360px, 390px, and 430px widths. A short heading of at most six words and 42 characters must fit within two lines at every required mobile width.
 - Repeat the main CTA roughly every 1 to 1.5 mobile screens without creating competing actions.
 - Keep proof close to CTA blocks: demo/result, testimonial or review, support or guarantee, transparent shipping or returns, and secure checkout reassurance.
@@ -241,10 +252,10 @@ Follow `references/output-contract.md`.
 Unless the user explicitly asks for a different framework, return a complete Next.js App Router project with:
 - `app/` routes for the landing page, checkout, contact, track order, order status, and policy pages
 - reusable `components/`, including a shared visible home-return link used on every non-home route
-- `lib/` helpers for offers, quotes, order creation, raw `Response` parsing, cent-based money, checkout fields, tracking, query params, vendor scripts, and content mapping
+- `lib/` helpers for offers, quotes, order creation, raw `Response` parsing, cent-based money, checkout fields, tracking, query params, vendor response handling, and content mapping
 - `scripts/` for build-time public env generation, offer-env export, and Cloudflare Pages deployment
 - `.github/workflows/` for test and prod
-- `.vscode/launch.json` for Next.js client-side debugging, copied from the retained template in this skill
+- `.vscode/launch.json` using the retained full-stack `node-terminal` profile, `npm run dev`, and `serverReadyAction` with `debugWithChrome`
 - `tests/`, Vitest, and Playwright configuration with 100% coverage thresholds
 - scripts for app preparation, dependency freshness/health, and warning-free local runtime checks
 - `source-assets/` and `public/` for copied input assets and generated transparent PNG assets, with no generated reference to an external local filesystem path
@@ -260,7 +271,7 @@ When code execution is possible, create the files. When it is not, emit the full
 - If a non-logo local asset path is provided but unavailable, show a graceful in-project fallback and report the missing logical asset without copying its external machine path into the project. If an SVG logo source is unavailable, fail clearly and request/provide the actual local source before completion.
 - If an analytics ID is missing, guard the integration and keep the build working.
 - If any generated project command emits a warning, fails a test, reports incomplete coverage, or produces a browser/runtime error, keep fixing it before completion.
-- Do not suppress first-party application, dependency, Next.js, React, browser, or test warnings to make the gate pass. Classify only narrowly identified browser-extension diagnostics and the known Google reCAPTCHA `private-token` feature diagnostic by verified external source; all first-party and unexpected external warnings remain fatal. Configure VS Code client debugging with `skipFiles` and `resolveSourceMapLocations` so source maps resolve only from workspace application code and `node_modules` maps are excluded; a malformed third-party framework source map must not be requested. Normal informational development messages such as React DevTools suggestions and HMR connection notices are not warnings; actual `console.warn`, `console.error`, page errors, request failures, and server warnings remain fatal.
+- Do not suppress first-party application, dependency, Next.js, React, browser, or test warnings to make the gate pass. Classify only narrowly identified browser-extension diagnostics and the known Google reCAPTCHA `private-token` feature diagnostic by verified external source; all first-party and unexpected external warnings remain fatal. Keep `.vscode/launch.json` exactly aligned with the retained full-stack `node-terminal` template and its `serverReadyAction`; do not substitute a client-only browser profile. Normal informational development messages such as React DevTools suggestions and HMR connection notices are not warnings; actual `console.warn`, `console.error`, page errors, request failures, and server warnings remain fatal.
 - If a requested design choice conflicts with conversion clarity, trust, static-export constraints, or truthfulness, choose the safer direct-response implementation and explain the tradeoff briefly.
 
 ## References
@@ -280,14 +291,17 @@ When code execution is possible, create the files. When it is not, emit the full
 - `references/sub-agent-orchestration.md` - role delegation, ownership, handoffs, and merge order
 - `agents/` - coordinator and focused sub-agent role instructions
 - `templates/.npmrc` - retained strict install-script approval configuration
-- `templates/.vscode/launch.json` - retained Next.js client-side VS Code debug template
+- `templates/.vscode/launch.json` - retained Next.js full-stack `node-terminal` VS Code debug template
 - `templates/AGENTS.md` - retained generated-project role ownership and handoff template
 - `templates/next.config.mjs` - retained static-export, LAN-origin, and browser-warning configuration
 - `templates/lib/env.ts` - retained strict positive-integer environment parser
 - `templates/lib/utils.ts` - retained integer-cent validation and defensive display formatter
 - `templates/lib/vendor-response.ts` - retained raw `Response` status/JSON parser and user-safe vendor error contract
 - `templates/lib/offer-pricing.ts` - retained immediate default-price and non-blocking live-quote refresh state helpers
+- `templates/lib/legal-content.ts` - retained build-time reader that binds policy routes to byte-copied legal source files
 - `templates/components/layout/home-link.tsx` - retained visible, accessible return-to-home link
+- `templates/components/sections/testimonials.tsx` - retained exact-data testimonial list with UX-sized initial load and accessible load-more behavior
+- `templates/components/integrations/third-party-scripts.tsx` - retained canonical `next/script` snippets for analytics and vendor scripts
 - `templates/styles/mobile-typography.css` - retained narrow-phone heading, balanced-wrap, and minimum control-height safeguards
 - `templates/tests/e2e/mobile-customer-ui.spec.ts` - retained all-route mobile readability/customer-copy/testimonial/coupon tests
 - `templates/tests/unit/dev-runtime-classification.test.mjs` - retained source-aware external diagnostic tests

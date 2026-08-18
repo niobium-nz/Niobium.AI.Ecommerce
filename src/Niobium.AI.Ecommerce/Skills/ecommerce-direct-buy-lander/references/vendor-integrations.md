@@ -424,7 +424,7 @@ First-name matching is case-insensitive. Order numbers are numeric with no leadi
 Script:
 
 ```html
-<script src="https://assets.notification.niobium.co.nz/track.js?siteKey=PUT-GOOGLE-RECAPTCHA-SITE-KEY-HERE"></script>
+<script src="https://assets.store.niobium.co.nz/track.js?siteKey=PUT-GOOGLE-RECAPTCHA-SITE-KEY-HERE"></script>
 ```
 
 Email + order number:
@@ -519,3 +519,31 @@ Missing/unknown/uncertain:
 - do not provide a definitive order/payment update
 - say status cannot be confirmed from this page
 - link to contact/support
+
+## Canonical Script Loading Contract
+Use `next/script` directly; do not implement a generic client-side script loader, a hook that appends `<script>` nodes, or a custom `fetch` implementation for the integration endpoints.
+
+Render the vendor libraries with route-scoped components equivalent to:
+
+```tsx
+import Script from "next/script";
+
+<Script src={`https://assets.store.niobium.co.nz/quote.js?siteKey=${encodeURIComponent(siteKey)}`} strategy="afterInteractive" />
+<Script src={`https://assets.store.niobium.co.nz/order.js?siteKey=${encodeURIComponent(siteKey)}`} strategy="afterInteractive" />
+<Script src={`https://assets.notification.niobium.co.nz/subscribe.js?siteKey=${encodeURIComponent(siteKey)}`} strategy="afterInteractive" />
+<Script src={`https://assets.notification.niobium.co.nz/contact-us.js?siteKey=${encodeURIComponent(siteKey)}`} strategy="afterInteractive" />
+<Script src={`https://assets.store.niobium.co.nz/track.js?siteKey=${encodeURIComponent(siteKey)}`} strategy="afterInteractive" />
+```
+
+`STORE_INTEGRATION_ENDPOINT` and `NOTIFICATION_INTEGRATION_ENDPOINT` are browser-safe endpoint arguments passed only as the final argument to the documented `niobium` global methods. Never call `fetch(STORE_INTEGRATION_ENDPOINT, ...)` or `fetch(NOTIFICATION_INTEGRATION_ENDPOINT, ...)` as a replacement for those methods.
+
+Use Stripe's official React integration rather than a handwritten Stripe script loader:
+
+```tsx
+const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
+<Elements stripe={stripePromise} options={{ mode: "payment", amount: quote.total, currency: quote.currency.toLowerCase() }}>
+  <PaymentElement />
+</Elements>
+```
+
+The submit component must use `useStripe`, `useElements`, `elements.submit()`, and `stripe.confirmPayment()`. Do not inject, proxy, self-host, or duplicate Stripe.js.
