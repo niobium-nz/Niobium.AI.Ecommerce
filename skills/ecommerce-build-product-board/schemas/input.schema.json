@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ecommerce Build Product Board input",
+  "description": "Accept a source list or a structured request. Direct host attachments are also accepted by the workflow; this schema does not serialize image bytes.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/source_list"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "reference_images": {
+          "$ref": "#/$defs/source_list"
+        },
+        "product_notes": {
+          "type": "string",
+          "default": ""
+        },
+        "required_views": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "default": []
+        },
+        "critical_features": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "default": []
+        },
+        "allow_incomplete_coverage": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "reference_images"
+      ],
+      "additionalProperties": false
+    }
+  ],
+  "$defs": {
+    "http_image_url": {
+      "type": "string",
+      "pattern": "^[Hh][Tt][Tt][Pp][Ss]?://[^\\s/?#]+(?:[^\\s]*)$",
+      "format": "uri"
+    },
+    "local_path": {
+      "type": "string",
+      "pattern": "\\S",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "[\\x00\\r\\n]"
+          }
+        },
+        {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z]:[\\\\/]"
+            },
+            {
+              "not": {
+                "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:"
+              }
+            }
+          ]
+        }
+      ],
+      "description": "A real local path accessible to the host; resolve relative paths only in a known authorized directory. Syntax alone does not establish availability."
+    },
+    "source": {
+      "oneOf": [
+        {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/http_image_url"
+            },
+            {
+              "$ref": "#/$defs/local_path"
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source_type": {
+              "enum": [
+                "attachment",
+                "local_path",
+                "url"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "view_hint": {
+              "type": "string"
+            },
+            "notes": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source_type",
+            "source"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "source_type": {
+                    "const": "url"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "source": {
+                    "$ref": "#/$defs/http_image_url"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "source_type": {
+                    "const": "local_path"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "source": {
+                    "$ref": "#/$defs/local_path"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "source_list": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    }
+  }
+}

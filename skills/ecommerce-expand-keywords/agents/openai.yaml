@@ -1,0 +1,14 @@
+interface:
+  display_name: Ecommerce Expand Keywords
+  short_description: Country-scoped ecommerce keyword research with strict JSON
+  default_prompt: Use the Ecommerce Expand Keywords workflow on the supplied JSON
+    input. Research the specified country before generating keywords.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  allow_implicit_invocation: true
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas

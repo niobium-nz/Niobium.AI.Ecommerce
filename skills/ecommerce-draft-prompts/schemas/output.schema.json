@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ecommerce Draft Prompts output",
+  "description": "Compact image-prompt output with the project-wide error extension for non-success outcomes. No image files, URIs, summary or image_concepts fields.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/success"
+    },
+    {
+      "$ref": "#/$defs/needs_clarification"
+    },
+    {
+      "$ref": "#/$defs/error"
+    }
+  ],
+  "$defs": {
+    "image_prompt_asset": {
+      "type": "object",
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "description": "Unique within this output. Preserve an existing source asset ID exactly for its primary matching concept."
+        },
+        "orientation": {
+          "type": "string",
+          "enum": [
+            "square",
+            "portrait",
+            "landscape"
+          ]
+        },
+        "overlay_copy_suggestion": {
+          "type": "string",
+          "description": "Use an empty string when no overlay is suggested. It is not automatically an instruction to render text."
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^\\S[\\s\\S]*Aspect ratio: [1-9][0-9]*:[1-9][0-9]*\\.(?![\\s\\S])",
+          "description": "Self-contained production prompt. Start with commercial intent and desired feeling; end exactly with Aspect ratio: W:H. Both dimensions must be positive integers. Orientation consistency, claim support and fidelity require semantic checks."
+        }
+      },
+      "required": [
+        "asset_id",
+        "orientation",
+        "overlay_copy_suggestion",
+        "prompt"
+      ],
+      "additionalProperties": false
+    },
+    "success": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "ok"
+        },
+        "image_prompts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/image_prompt_asset"
+          }
+        }
+      },
+      "required": [
+        "status",
+        "image_prompts"
+      ],
+      "additionalProperties": false
+    },
+    "needs_clarification": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "needs_clarification"
+        },
+        "image_prompts": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "error": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "description": "State the material blocker and the specific correction or information needed. Use the project-wide error field rather than introducing clarifications_needed."
+        }
+      },
+      "required": [
+        "status",
+        "image_prompts",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

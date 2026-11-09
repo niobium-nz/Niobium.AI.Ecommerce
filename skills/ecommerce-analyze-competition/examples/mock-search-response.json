@@ -1,0 +1,63 @@
+{
+  "success": true,
+  "searchResults": [
+    {
+      "ad_archive_id": "demo-ad-1",
+      "page_id": "demo-page-1",
+      "page_name": "Example Glove Shop A",
+      "is_active": true,
+      "start_date": 1780272000,
+      "snapshot": {
+        "title": "Pet hair removal glove",
+        "body": {
+          "text": "Pet hair removal glove for sofas."
+        },
+        "link_url": "https://demo-page-1.example/glove"
+      }
+    },
+    {
+      "ad_archive_id": "demo-ad-2",
+      "page_id": "demo-page-2",
+      "page_name": "Example Glove Shop B",
+      "is_active": true,
+      "start_date": 1782864000,
+      "snapshot": {
+        "title": "Pet hair removal glove",
+        "body": {
+          "text": "Reusable pet hair removal glove for upholstery."
+        },
+        "link_url": "https://demo-page-2.example/glove"
+      }
+    },
+    {
+      "ad_archive_id": "demo-ad-3",
+      "page_id": "demo-page-3",
+      "page_name": "Example New Glove Shop",
+      "is_active": true,
+      "start_date": 1790812800,
+      "snapshot": {
+        "title": "Pet hair removal glove",
+        "body": {
+          "text": "New pet hair removal glove."
+        },
+        "link_url": "https://demo-page-3.example/glove"
+      }
+    },
+    {
+      "ad_archive_id": "demo-ad-4",
+      "page_id": "demo-page-4",
+      "page_name": "Example Roller Shop",
+      "is_active": true,
+      "start_date": 1777593600,
+      "snapshot": {
+        "title": "Pet hair removal glove",
+        "body": {
+          "text": "Compare our lint roller with a pet hair removal glove."
+        },
+        "link_url": "https://demo-page-4.example/glove"
+      }
+    }
+  ],
+  "searchResultsCount": 120,
+  "cursor": "synthetic-next-cursor"
+}

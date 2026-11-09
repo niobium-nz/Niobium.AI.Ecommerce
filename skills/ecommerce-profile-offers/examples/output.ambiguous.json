@@ -1,0 +1,17 @@
+{
+  "url": "https://shop.example.com/collection",
+  "final_url": "https://shop.example.com/collection",
+  "retrieval_date_time_utc": "2026-11-08T00:00:00Z",
+  "product": null,
+  "vendor": {
+    "brand_name": "Example Goods",
+    "domain": "example.com",
+    "platform_detected": "Unknown",
+    "policy_urls": null,
+    "trust_signals": []
+  },
+  "blockers": [
+    "Several unrelated products are shown with no clearly identifiable primary offer."
+  ],
+  "error": "Provide a product-specific landing_page_url; no primary product was selected from this collection."
+}

@@ -1,0 +1,41 @@
+{
+  "query": "pet hair removal glove",
+  "country": "AUS",
+  "raw_ads_discovered": {
+    "tool_call_made": true,
+    "raw_ads_count": 0,
+    "distinct_advertisers_count": 0,
+    "notable_raw_patterns": [
+      "The successful response explicitly contained searchResults: []."
+    ],
+    "snippets": [],
+    "limitations": [
+      "Run date 2026-11-04 in Pacific/Auckland; cutoff 2026-08-04. This example uses a frozen synthetic run date.",
+      "Input country AUS mapped to tool country AU.",
+      "One search attempted; one empty result page retrieved; pagination stopped.",
+      "The request start_date is an impressions-date filter, not proof of minimum ad age; the returned per-ad start dates were separately checked.",
+      "Exact-phrase search and total_impressions ordering select a bounded, nonrepresentative sample; unvisited pages and recent ads are not assessed.",
+      "A current active flag and old start date do not establish uninterrupted delivery, demand or profitability."
+    ]
+  },
+  "exclusion_filtering": {
+    "exclusion_terms_provided": true,
+    "filtering_possible": true,
+    "excluded_ads_count": 0,
+    "in_scope_ads_count": 0,
+    "top_matched_exclusion_terms": [],
+    "scope_note": "No ads were returned, so no exclusion or age checks were needed. The supplied glove-only notes did not produce observations."
+  },
+  "competition_signal": {
+    "rating0_to10": -1,
+    "evidence_signals": [
+      "The selected exact-phrase request returned no ad records."
+    ],
+    "inference": [
+      "No demand or whole-market competition conclusion follows from this empty query result."
+    ],
+    "confidence0_to10": 2,
+    "justification": "There is insufficient observed evidence to rate competition. Zero returned rows do not prove an absence of competitors.",
+    "operational_definition": "Qualitative competition within this exact-query AU sample: currently active ads with actual start dates on/before 2026-08-04, passing supplied exclusions and scope. Scale: -1 unknown, 0 none observed in an assessable sample, 1-3 limited, 4-6 meaningful diverse presence, 7-10 substantial diverse presence. Advertiser diversity matters more than repeated ads from one page. This is not a calibrated market or demand measure."
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "status": "ok",
+  "image_prompts": [
+    {
+      "asset_id": "lp-hero-01",
+      "orientation": "portrait",
+      "overlay_copy_suggestion": "",
+      "prompt": "Help a desk user understand the cable-resting role and feel a small sense of order before considering purchase. Address the user returning to reconnect the verified cable, who currently has a loose endpoint and wants to see the actual item clearly; shift the belief from an unexplained accessory to a visible placement in the verified setup. Show a simple desk at the reconnecting moment with the complete product and supplied verified cable placement as the first focal point, and a generic non-identifiable hand approaching naturally without obscuring the product. The proof need is a legible view of the provided setup, not an invented demonstration of strength or measured speed. Use the supplied clean multi-view product reference board as the authoritative visual reference for one single product/SKU, not separate products or included accessories. Preserve its exact geometry, proportions, color, visible features, evidenced materials and supported markings; do not redesign or recolor it. Use a restrained, realistic photographic treatment, a gentle three-quarter camera view, soft daylight and an ordinary calm desk environment. Leave clear space above the subject for separate page copy; render no overlay text and do not add a product name to its physical surface. Do not invent features, hidden fixing methods, wrong materials, accessories, packaging, logos, reviews, authority cues, guarantees, scarcity or unsupported performance claims. Do not depict invalid use cases or imply universal compatibility. This is an illustrative commercial scene, not recorded customer or test evidence. Aspect ratio: 9:16."
+    }
+  ]
+}

@@ -1,0 +1,748 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ecommerce Score Products output",
+  "description": "A complete score with an optional partial-research error, or an error-only object without a score. Arithmetic consistency and evidence support require the semantic checklist.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/score"
+    },
+    {
+      "$ref": "#/$defs/error_only"
+    }
+  ],
+  "$defs": {
+    "score": {
+      "type": "object",
+      "properties": {
+        "score_version": {
+          "type": "string",
+          "const": "Ecommerce-PaidSocial-v1"
+        },
+        "target_country": {
+          "type": "string",
+          "enum": [
+            "AD",
+            "AE",
+            "AF",
+            "AG",
+            "AI",
+            "AL",
+            "AM",
+            "AO",
+            "AQ",
+            "AR",
+            "AS",
+            "AT",
+            "AU",
+            "AW",
+            "AX",
+            "AZ",
+            "BA",
+            "BB",
+            "BD",
+            "BE",
+            "BF",
+            "BG",
+            "BH",
+            "BI",
+            "BJ",
+            "BL",
+            "BM",
+            "BN",
+            "BO",
+            "BQ",
+            "BR",
+            "BS",
+            "BT",
+            "BV",
+            "BW",
+            "BY",
+            "BZ",
+            "CA",
+            "CC",
+            "CD",
+            "CF",
+            "CG",
+            "CH",
+            "CI",
+            "CK",
+            "CL",
+            "CM",
+            "CN",
+            "CO",
+            "CR",
+            "CU",
+            "CV",
+            "CW",
+            "CX",
+            "CY",
+            "CZ",
+            "DE",
+            "DJ",
+            "DK",
+            "DM",
+            "DO",
+            "DZ",
+            "EC",
+            "EE",
+            "EG",
+            "EH",
+            "ER",
+            "ES",
+            "ET",
+            "FI",
+            "FJ",
+            "FK",
+            "FM",
+            "FO",
+            "FR",
+            "GA",
+            "GB",
+            "GD",
+            "GE",
+            "GF",
+            "GG",
+            "GH",
+            "GI",
+            "GL",
+            "GM",
+            "GN",
+            "GP",
+            "GQ",
+            "GR",
+            "GS",
+            "GT",
+            "GU",
+            "GW",
+            "GY",
+            "HK",
+            "HM",
+            "HN",
+            "HR",
+            "HT",
+            "HU",
+            "ID",
+            "IE",
+            "IL",
+            "IM",
+            "IN",
+            "IO",
+            "IQ",
+            "IR",
+            "IS",
+            "IT",
+            "JE",
+            "JM",
+            "JO",
+            "JP",
+            "KE",
+            "KG",
+            "KH",
+            "KI",
+            "KM",
+            "KN",
+            "KP",
+            "KR",
+            "KW",
+            "KY",
+            "KZ",
+            "LA",
+            "LB",
+            "LC",
+            "LI",
+            "LK",
+            "LR",
+            "LS",
+            "LT",
+            "LU",
+            "LV",
+            "LY",
+            "MA",
+            "MC",
+            "MD",
+            "ME",
+            "MF",
+            "MG",
+            "MH",
+            "MK",
+            "ML",
+            "MM",
+            "MN",
+            "MO",
+            "MP",
+            "MQ",
+            "MR",
+            "MS",
+            "MT",
+            "MU",
+            "MV",
+            "MW",
+            "MX",
+            "MY",
+            "MZ",
+            "NA",
+            "NC",
+            "NE",
+            "NF",
+            "NG",
+            "NI",
+            "NL",
+            "NO",
+            "NP",
+            "NR",
+            "NU",
+            "NZ",
+            "OM",
+            "PA",
+            "PE",
+            "PF",
+            "PG",
+            "PH",
+            "PK",
+            "PL",
+            "PM",
+            "PN",
+            "PR",
+            "PS",
+            "PT",
+            "PW",
+            "PY",
+            "QA",
+            "RE",
+            "RO",
+            "RS",
+            "RU",
+            "RW",
+            "SA",
+            "SB",
+            "SC",
+            "SD",
+            "SE",
+            "SG",
+            "SH",
+            "SI",
+            "SJ",
+            "SK",
+            "SL",
+            "SM",
+            "SN",
+            "SO",
+            "SR",
+            "SS",
+            "ST",
+            "SV",
+            "SX",
+            "SY",
+            "SZ",
+            "TC",
+            "TD",
+            "TF",
+            "TG",
+            "TH",
+            "TJ",
+            "TK",
+            "TL",
+            "TM",
+            "TN",
+            "TO",
+            "TR",
+            "TT",
+            "TV",
+            "TW",
+            "TZ",
+            "UA",
+            "UG",
+            "UM",
+            "US",
+            "UY",
+            "UZ",
+            "VA",
+            "VC",
+            "VE",
+            "VG",
+            "VI",
+            "VN",
+            "VU",
+            "WF",
+            "WS",
+            "YE",
+            "YT",
+            "ZA",
+            "ZM",
+            "ZW"
+          ],
+          "description": "Normalized uppercase alpha-2 code corresponding to input.target_country."
+        },
+        "product_name": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "normalized_product_type": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "final_score": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "priority_band": {
+          "type": "string",
+          "enum": [
+            "TEST_FIRST",
+            "STRONG_CANDIDATE",
+            "VIABLE_NOT_FIRST",
+            "WEAK",
+            "DO_NOT_TEST"
+          ]
+        },
+        "subscores": {
+          "type": "object",
+          "properties": {
+            "impulse_fit": {
+              "type": "integer",
+              "enum": [
+                0,
+                5,
+                10,
+                15,
+                20
+              ]
+            },
+            "target_market_demand_evidence": {
+              "type": "integer",
+              "enum": [
+                0,
+                3,
+                6,
+                9,
+                12,
+                15
+              ]
+            },
+            "competition_advantage": {
+              "type": "integer",
+              "enum": [
+                0,
+                3,
+                6,
+                9,
+                12,
+                15
+              ]
+            },
+            "pricing_headroom": {
+              "type": "integer",
+              "enum": [
+                0,
+                2,
+                4,
+                6,
+                8,
+                10
+              ]
+            },
+            "creative_transfer": {
+              "type": "integer",
+              "enum": [
+                0,
+                2,
+                4,
+                6,
+                8,
+                10
+              ]
+            },
+            "ops_simplicity": {
+              "type": "integer",
+              "enum": [
+                0,
+                2,
+                4,
+                6,
+                8,
+                10
+              ]
+            },
+            "compliance_safety": {
+              "type": "integer",
+              "enum": [
+                0,
+                5,
+                10,
+                15,
+                20
+              ]
+            }
+          },
+          "required": [
+            "impulse_fit",
+            "target_market_demand_evidence",
+            "competition_advantage",
+            "pricing_headroom",
+            "creative_transfer",
+            "ops_simplicity",
+            "compliance_safety"
+          ],
+          "additionalProperties": false
+        },
+        "caps_applied": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "top_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "maxItems": 3
+        },
+        "key_risks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "maxItems": 3
+        },
+        "evidence_confidence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "sources_checked": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "error": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "score_version",
+        "target_country",
+        "product_name",
+        "normalized_product_type",
+        "final_score",
+        "priority_band",
+        "subscores",
+        "caps_applied",
+        "top_reasons",
+        "key_risks",
+        "evidence_confidence",
+        "sources_checked"
+      ],
+      "additionalProperties": false,
+      "description": "Complete scored result, with error only when this run has partial research-tool failures. Subscores are already component-capped. Reconcile sum, caps and target country using the contract checklist.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "final_score": {
+                "minimum": 90,
+                "maximum": 100
+              }
+            },
+            "required": [
+              "final_score"
+            ]
+          },
+          "then": {
+            "properties": {
+              "priority_band": {
+                "const": "TEST_FIRST"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "final_score": {
+                "minimum": 75,
+                "maximum": 89
+              }
+            },
+            "required": [
+              "final_score"
+            ]
+          },
+          "then": {
+            "properties": {
+              "priority_band": {
+                "const": "STRONG_CANDIDATE"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "final_score": {
+                "minimum": 60,
+                "maximum": 74
+              }
+            },
+            "required": [
+              "final_score"
+            ]
+          },
+          "then": {
+            "properties": {
+              "priority_band": {
+                "const": "VIABLE_NOT_FIRST"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "final_score": {
+                "minimum": 40,
+                "maximum": 59
+              }
+            },
+            "required": [
+              "final_score"
+            ]
+          },
+          "then": {
+            "properties": {
+              "priority_band": {
+                "const": "WEAK"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "final_score": {
+                "minimum": 0,
+                "maximum": 39
+              }
+            },
+            "required": [
+              "final_score"
+            ]
+          },
+          "then": {
+            "properties": {
+              "priority_band": {
+                "const": "DO_NOT_TEST"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "caps_applied": {
+                "contains": {
+                  "type": "string",
+                  "pattern": "^PROHIBITED_OR_RESTRICTED_15:"
+                }
+              }
+            },
+            "required": [
+              "caps_applied"
+            ]
+          },
+          "then": {
+            "properties": {
+              "final_score": {
+                "maximum": 15
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "caps_applied": {
+                "contains": {
+                  "type": "string",
+                  "pattern": "^UNRESOLVED_COMPLIANCE_35:"
+                }
+              }
+            },
+            "required": [
+              "caps_applied"
+            ]
+          },
+          "then": {
+            "properties": {
+              "final_score": {
+                "maximum": 35
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "caps_applied": {
+                "contains": {
+                  "type": "string",
+                  "pattern": "^THIN_EVIDENCE_60:"
+                }
+              }
+            },
+            "required": [
+              "caps_applied"
+            ]
+          },
+          "then": {
+            "properties": {
+              "final_score": {
+                "maximum": 60
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "caps_applied": {
+                "contains": {
+                  "type": "string",
+                  "pattern": "^COMMODITY_COMPETITION_6:"
+                }
+              }
+            },
+            "required": [
+              "caps_applied"
+            ]
+          },
+          "then": {
+            "properties": {
+              "subscores": {
+                "properties": {
+                  "competition_advantage": {
+                    "maximum": 6
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "caps_applied": {
+                "contains": {
+                  "type": "string",
+                  "pattern": "^COMMODITY_PRICING_4:"
+                }
+              }
+            },
+            "required": [
+              "caps_applied"
+            ]
+          },
+          "then": {
+            "properties": {
+              "subscores": {
+                "properties": {
+                  "pricing_headroom": {
+                    "maximum": 4
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "caps_applied": {
+                "contains": {
+                  "type": "string",
+                  "pattern": "^OPS_COMPLEXITY_4:"
+                }
+              }
+            },
+            "required": [
+              "caps_applied"
+            ]
+          },
+          "then": {
+            "properties": {
+              "subscores": {
+                "properties": {
+                  "ops_simplicity": {
+                    "maximum": 4
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "caps_applied": {
+                "contains": {
+                  "type": "string",
+                  "pattern": "^UNPROVEN_DEMAND_COMPETITION_6:"
+                }
+              }
+            },
+            "required": [
+              "caps_applied"
+            ]
+          },
+          "then": {
+            "properties": {
+              "subscores": {
+                "properties": {
+                  "competition_advantage": {
+                    "maximum": 6
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "error_only": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

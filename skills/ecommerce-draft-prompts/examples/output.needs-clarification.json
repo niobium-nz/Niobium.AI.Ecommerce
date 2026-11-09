@@ -1,0 +1,5 @@
+{
+  "status": "needs_clarification",
+  "image_prompts": [],
+  "error": "The supplied board could not be opened for visual inspection. Provide a reachable HTTP(S) image URL or an image file path available to this host; no appearance or fidelity assessment was made."
+}

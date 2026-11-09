@@ -1,0 +1,95 @@
+{
+  "url": "https://shop.example.com/products/travel-mug?utm_source=sample",
+  "final_url": "https://shop.example.com/products/travel-mug",
+  "retrieval_date_time_utc": "2026-11-08T00:00:00Z",
+  "product": {
+    "name": "Travel Mug",
+    "price": 24,
+    "currency": "USD",
+    "variants": [
+      "Blue",
+      "Grey"
+    ],
+    "bundle_offers": [
+      "Two mugs for USD 44, as displayed."
+    ],
+    "key_claims": [
+      "Page says the mug keeps drinks warm during a commute.",
+      "Page says the locking lid reduces accidental spills."
+    ],
+    "ingredients_or_materials": [
+      "Stainless steel body"
+    ],
+    "images": [
+      "https://cdn.example.com/travel-mug.jpg"
+    ],
+    "videos": [],
+    "how_it_wins": {
+      "positioning": [
+        "For commuters"
+      ],
+      "differentiators": [
+        "Merchant calls the lid its exclusive TwistSeal design."
+      ],
+      "proof_points": [
+        "Page displays a 4.6/5 rating from 128 reviews."
+      ],
+      "target_customer": [
+        "Commuters"
+      ],
+      "objection_handling": [
+        "Page states a 30-day return window; return postage is paid by the customer."
+      ],
+      "comparison_claims": [
+        "Merchant compares its locking lid with standard open-top cups."
+      ],
+      "calls_to_action": [
+        "Add to Cart"
+      ],
+      "offers_and_guarantees": [
+        "USD 24 primary price; USD 30 comparison price displayed.",
+        "Free shipping for orders over USD 50."
+      ],
+      "risk_reducers": [
+        "Links to a return policy and a support email are visible."
+      ],
+      "social_proof": [
+        "Page labels the 128 displayed reviews as verified-buyer reviews."
+      ],
+      "urgency_scarcity": [
+        "Page displays 7 units remaining at the time of the synthetic observation."
+      ],
+      "compliance_language": [
+        "Page states that displayed stock figures may change."
+      ]
+    }
+  },
+  "vendor": {
+    "brand_name": "Example Goods",
+    "domain": "example.com",
+    "platform_detected": "Unknown",
+    "policy_urls": {
+      "shipping": "https://shop.example.com/policies/shipping",
+      "returns": "https://shop.example.com/policies/returns",
+      "privacy": "https://shop.example.com/policies/privacy"
+    },
+    "trust_signals": [
+      {
+        "type": "support_email",
+        "value": "support@example.com",
+        "source_url": "https://shop.example.com/products/travel-mug"
+      },
+      {
+        "type": "social_link",
+        "value": "https://social.example.net/example-goods",
+        "source_url": "https://shop.example.com/products/travel-mug"
+      }
+    ]
+  },
+  "blockers": [
+    "Fewer than five distinct customer-facing benefits were visible; no claims were added to meet the target.",
+    "Product video not observed on the inspected pages.",
+    "Store platform not established by visible evidence.",
+    "No eligible links remain in the queue."
+  ]
+}

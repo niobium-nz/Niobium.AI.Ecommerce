@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "skill_name": "ecommerce-profile-offers",
+  "browser": {
+    "real_headed_browser_required": true,
+    "computer_use_control_required": true,
+    "headless_fallback_allowed": false,
+    "static_fetch_fallback_allowed": false,
+    "blocking_overlay_handling_required": true,
+    "ordinary_consent_to_access_allowed": true,
+    "expanded_accordion_or_tab_interactions_allowed": false,
+    "script_execution_required": false,
+    "paid_ad_calls_allowed": false
+  },
+  "navigation": {
+    "max_unique_page_attempts": 10,
+    "max_depth_clicks": 2,
+    "entry_attempts_max": 2,
+    "other_page_attempts_max": 1,
+    "deliberate_load_attempts_max": 11,
+    "entry_redirect_hops_max": 3,
+    "post_entry_off_scope_redirect_prevention_required": true,
+    "no_progress_page_slots": 3,
+    "actual_cycle_recent_keys": 3,
+    "serial_only": true
+  },
+  "progress_paths": [
+    "product.name",
+    "product.price",
+    "vendor.policy_urls.shipping",
+    "vendor.policy_urls.returns",
+    "vendor.policy_urls.privacy",
+    "vendor.trust_signals"
+  ],
+  "how_it_wins_fields": [
+    "positioning",
+    "differentiators",
+    "proof_points",
+    "target_customer",
+    "objection_handling",
+    "comparison_claims",
+    "calls_to_action",
+    "offers_and_guarantees",
+    "risk_reducers",
+    "social_proof",
+    "urgency_scarcity",
+    "compliance_language"
+  ],
+  "link_rank": [
+    "price_or_offer",
+    "guarantee_or_returns",
+    "shipping",
+    "reviews_or_proof",
+    "materials_or_ingredients",
+    "other_eligible_schema_completion"
+  ],
+  "original_source_files_bundled": false
+}

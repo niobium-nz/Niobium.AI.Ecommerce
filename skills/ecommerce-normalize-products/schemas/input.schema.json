@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ecommerce Normalize Products input",
+  "type": "object",
+  "properties": {
+    "product_name": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "country": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 3,
+      "pattern": "^(?:[Aa][Bb][Ww]|[Aa][Dd]|[Aa][Ee]|[Aa][Ff]|[Aa][Ff][Gg]|[Aa][Gg]|[Aa][Gg][Oo]|[Aa][Ii]|[Aa][Ii][Aa]|[Aa][Ll]|[Aa][Ll][Aa]|[Aa][Ll][Bb]|[Aa][Mm]|[Aa][Nn][Dd]|[Aa][Oo]|[Aa][Qq]|[Aa][Rr]|[Aa][Rr][Ee]|[Aa][Rr][Gg]|[Aa][Rr][Mm]|[Aa][Ss]|[Aa][Ss][Mm]|[Aa][Tt]|[Aa][Tt][Aa]|[Aa][Tt][Ff]|[Aa][Tt][Gg]|[Aa][Uu]|[Aa][Uu][Ss]|[Aa][Uu][Tt]|[Aa][Ww]|[Aa][Xx]|[Aa][Zz]|[Aa][Zz][Ee]|[Bb][Aa]|[Bb][Bb]|[Bb][Dd]|[Bb][Dd][Ii]|[Bb][Ee]|[Bb][Ee][Ll]|[Bb][Ee][Nn]|[Bb][Ee][Ss]|[Bb][Ff]|[Bb][Ff][Aa]|[Bb][Gg]|[Bb][Gg][Dd]|[Bb][Gg][Rr]|[Bb][Hh]|[Bb][Hh][Rr]|[Bb][Hh][Ss]|[Bb][Ii]|[Bb][Ii][Hh]|[Bb][Jj]|[Bb][Ll]|[Bb][Ll][Mm]|[Bb][Ll][Rr]|[Bb][Ll][Zz]|[Bb][Mm]|[Bb][Mm][Uu]|[Bb][Nn]|[Bb][Oo]|[Bb][Oo][Ll]|[Bb][Qq]|[Bb][Rr]|[Bb][Rr][Aa]|[Bb][Rr][Bb]|[Bb][Rr][Nn]|[Bb][Ss]|[Bb][Tt]|[Bb][Tt][Nn]|[Bb][Vv]|[Bb][Vv][Tt]|[Bb][Ww]|[Bb][Ww][Aa]|[Bb][Yy]|[Bb][Zz]|[Cc][Aa]|[Cc][Aa][Ff]|[Cc][Aa][Nn]|[Cc][Cc]|[Cc][Cc][Kk]|[Cc][Dd]|[Cc][Ff]|[Cc][Gg]|[Cc][Hh]|[Cc][Hh][Ee]|[Cc][Hh][Ll]|[Cc][Hh][Nn]|[Cc][Ii]|[Cc][Ii][Vv]|[Cc][Kk]|[Cc][Ll]|[Cc][Mm]|[Cc][Mm][Rr]|[Cc][Nn]|[Cc][Oo]|[Cc][Oo][Dd]|[Cc][Oo][Gg]|[Cc][Oo][Kk]|[Cc][Oo][Ll]|[Cc][Oo][Mm]|[Cc][Pp][Vv]|[Cc][Rr]|[Cc][Rr][Ii]|[Cc][Uu]|[Cc][Uu][Bb]|[Cc][Uu][Ww]|[Cc][Vv]|[Cc][Ww]|[Cc][Xx]|[Cc][Xx][Rr]|[Cc][Yy]|[Cc][Yy][Mm]|[Cc][Yy][Pp]|[Cc][Zz]|[Cc][Zz][Ee]|[Dd][Ee]|[Dd][Ee][Uu]|[Dd][Jj]|[Dd][Jj][Ii]|[Dd][Kk]|[Dd][Mm]|[Dd][Mm][Aa]|[Dd][Nn][Kk]|[Dd][Oo]|[Dd][Oo][Mm]|[Dd][Zz]|[Dd][Zz][Aa]|[Ee][Cc]|[Ee][Cc][Uu]|[Ee][Ee]|[Ee][Gg]|[Ee][Gg][Yy]|[Ee][Hh]|[Ee][Rr]|[Ee][Rr][Ii]|[Ee][Ss]|[Ee][Ss][Hh]|[Ee][Ss][Pp]|[Ee][Ss][Tt]|[Ee][Tt]|[Ee][Tt][Hh]|[Ff][Ii]|[Ff][Ii][Nn]|[Ff][Jj]|[Ff][Jj][Ii]|[Ff][Kk]|[Ff][Ll][Kk]|[Ff][Mm]|[Ff][Oo]|[Ff][Rr]|[Ff][Rr][Aa]|[Ff][Rr][Oo]|[Ff][Ss][Mm]|[Gg][Aa]|[Gg][Aa][Bb]|[Gg][Bb]|[Gg][Bb][Rr]|[Gg][Dd]|[Gg][Ee]|[Gg][Ee][Oo]|[Gg][Ff]|[Gg][Gg]|[Gg][Gg][Yy]|[Gg][Hh]|[Gg][Hh][Aa]|[Gg][Ii]|[Gg][Ii][Bb]|[Gg][Ii][Nn]|[Gg][Ll]|[Gg][Ll][Pp]|[Gg][Mm]|[Gg][Mm][Bb]|[Gg][Nn]|[Gg][Nn][Bb]|[Gg][Nn][Qq]|[Gg][Pp]|[Gg][Qq]|[Gg][Rr]|[Gg][Rr][Cc]|[Gg][Rr][Dd]|[Gg][Rr][Ll]|[Gg][Ss]|[Gg][Tt]|[Gg][Tt][Mm]|[Gg][Uu]|[Gg][Uu][Ff]|[Gg][Uu][Mm]|[Gg][Uu][Yy]|[Gg][Ww]|[Gg][Yy]|[Hh][Kk]|[Hh][Kk][Gg]|[Hh][Mm]|[Hh][Mm][Dd]|[Hh][Nn]|[Hh][Nn][Dd]|[Hh][Rr]|[Hh][Rr][Vv]|[Hh][Tt]|[Hh][Tt][Ii]|[Hh][Uu]|[Hh][Uu][Nn]|[Ii][Dd]|[Ii][Dd][Nn]|[Ii][Ee]|[Ii][Ll]|[Ii][Mm]|[Ii][Mm][Nn]|[Ii][Nn]|[Ii][Nn][Dd]|[Ii][Oo]|[Ii][Oo][Tt]|[Ii][Qq]|[Ii][Rr]|[Ii][Rr][Ll]|[Ii][Rr][Nn]|[Ii][Rr][Qq]|[Ii][Ss]|[Ii][Ss][Ll]|[Ii][Ss][Rr]|[Ii][Tt]|[Ii][Tt][Aa]|[Jj][Aa][Mm]|[Jj][Ee]|[Jj][Ee][Yy]|[Jj][Mm]|[Jj][Oo]|[Jj][Oo][Rr]|[Jj][Pp]|[Jj][Pp][Nn]|[Kk][Aa][Zz]|[Kk][Ee]|[Kk][Ee][Nn]|[Kk][Gg]|[Kk][Gg][Zz]|[Kk][Hh]|[Kk][Hh][Mm]|[Kk][Ii]|[Kk][Ii][Rr]|[Kk][Mm]|[Kk][Nn]|[Kk][Nn][Aa]|[Kk][Oo][Rr]|[Kk][Pp]|[Kk][Rr]|[Kk][Ww]|[Kk][Ww][Tt]|[Kk][Yy]|[Kk][Zz]|[Ll][Aa]|[Ll][Aa][Oo]|[Ll][Bb]|[Ll][Bb][Nn]|[Ll][Bb][Rr]|[Ll][Bb][Yy]|[Ll][Cc]|[Ll][Cc][Aa]|[Ll][Ii]|[Ll][Ii][Ee]|[Ll][Kk]|[Ll][Kk][Aa]|[Ll][Rr]|[Ll][Ss]|[Ll][Ss][Oo]|[Ll][Tt]|[Ll][Tt][Uu]|[Ll][Uu]|[Ll][Uu][Xx]|[Ll][Vv]|[Ll][Vv][Aa]|[Ll][Yy]|[Mm][Aa]|[Mm][Aa][Cc]|[Mm][Aa][Ff]|[Mm][Aa][Rr]|[Mm][Cc]|[Mm][Cc][Oo]|[Mm][Dd]|[Mm][Dd][Aa]|[Mm][Dd][Gg]|[Mm][Dd][Vv]|[Mm][Ee]|[Mm][Ee][Xx]|[Mm][Ff]|[Mm][Gg]|[Mm][Hh]|[Mm][Hh][Ll]|[Mm][Kk]|[Mm][Kk][Dd]|[Mm][Ll]|[Mm][Ll][Ii]|[Mm][Ll][Tt]|[Mm][Mm]|[Mm][Mm][Rr]|[Mm][Nn]|[Mm][Nn][Ee]|[Mm][Nn][Gg]|[Mm][Nn][Pp]|[Mm][Oo]|[Mm][Oo][Zz]|[Mm][Pp]|[Mm][Qq]|[Mm][Rr]|[Mm][Rr][Tt]|[Mm][Ss]|[Mm][Ss][Rr]|[Mm][Tt]|[Mm][Tt][Qq]|[Mm][Uu]|[Mm][Uu][Ss]|[Mm][Vv]|[Mm][Ww]|[Mm][Ww][Ii]|[Mm][Xx]|[Mm][Yy]|[Mm][Yy][Ss]|[Mm][Yy][Tt]|[Mm][Zz]|[Nn][Aa]|[Nn][Aa][Mm]|[Nn][Cc]|[Nn][Cc][Ll]|[Nn][Ee]|[Nn][Ee][Rr]|[Nn][Ff]|[Nn][Ff][Kk]|[Nn][Gg]|[Nn][Gg][Aa]|[Nn][Ii]|[Nn][Ii][Cc]|[Nn][Ii][Uu]|[Nn][Ll]|[Nn][Ll][Dd]|[Nn][Oo]|[Nn][Oo][Rr]|[Nn][Pp]|[Nn][Pp][Ll]|[Nn][Rr]|[Nn][Rr][Uu]|[Nn][Uu]|[Nn][Zz]|[Nn][Zz][Ll]|[Oo][Mm]|[Oo][Mm][Nn]|[Pp][Aa]|[Pp][Aa][Kk]|[Pp][Aa][Nn]|[Pp][Cc][Nn]|[Pp][Ee]|[Pp][Ee][Rr]|[Pp][Ff]|[Pp][Gg]|[Pp][Hh]|[Pp][Hh][Ll]|[Pp][Kk]|[Pp][Ll]|[Pp][Ll][Ww]|[Pp][Mm]|[Pp][Nn]|[Pp][Nn][Gg]|[Pp][Oo][Ll]|[Pp][Rr]|[Pp][Rr][Ii]|[Pp][Rr][Kk]|[Pp][Rr][Tt]|[Pp][Rr][Yy]|[Pp][Ss]|[Pp][Ss][Ee]|[Pp][Tt]|[Pp][Ww]|[Pp][Yy]|[Pp][Yy][Ff]|[Qq][Aa]|[Qq][Aa][Tt]|[Rr][Ee]|[Rr][Ee][Uu]|[Rr][Oo]|[Rr][Oo][Uu]|[Rr][Ss]|[Rr][Uu]|[Rr][Uu][Ss]|[Rr][Ww]|[Rr][Ww][Aa]|[Ss][Aa]|[Ss][Aa][Uu]|[Ss][Bb]|[Ss][Cc]|[Ss][Dd]|[Ss][Dd][Nn]|[Ss][Ee]|[Ss][Ee][Nn]|[Ss][Gg]|[Ss][Gg][Pp]|[Ss][Gg][Ss]|[Ss][Hh]|[Ss][Hh][Nn]|[Ss][Ii]|[Ss][Jj]|[Ss][Jj][Mm]|[Ss][Kk]|[Ss][Ll]|[Ss][Ll][Bb]|[Ss][Ll][Ee]|[Ss][Ll][Vv]|[Ss][Mm]|[Ss][Mm][Rr]|[Ss][Nn]|[Ss][Oo]|[Ss][Oo][Mm]|[Ss][Pp][Mm]|[Ss][Rr]|[Ss][Rr][Bb]|[Ss][Ss]|[Ss][Ss][Dd]|[Ss][Tt]|[Ss][Tt][Pp]|[Ss][Uu][Rr]|[Ss][Vv]|[Ss][Vv][Kk]|[Ss][Vv][Nn]|[Ss][Ww][Ee]|[Ss][Ww][Zz]|[Ss][Xx]|[Ss][Xx][Mm]|[Ss][Yy]|[Ss][Yy][Cc]|[Ss][Yy][Rr]|[Ss][Zz]|[Tt][Cc]|[Tt][Cc][Aa]|[Tt][Cc][Dd]|[Tt][Dd]|[Tt][Ff]|[Tt][Gg]|[Tt][Gg][Oo]|[Tt][Hh]|[Tt][Hh][Aa]|[Tt][Jj]|[Tt][Jj][Kk]|[Tt][Kk]|[Tt][Kk][Ll]|[Tt][Kk][Mm]|[Tt][Ll]|[Tt][Ll][Ss]|[Tt][Mm]|[Tt][Nn]|[Tt][Oo]|[Tt][Oo][Nn]|[Tt][Rr]|[Tt][Tt]|[Tt][Tt][Oo]|[Tt][Uu][Nn]|[Tt][Uu][Rr]|[Tt][Uu][Vv]|[Tt][Vv]|[Tt][Ww]|[Tt][Ww][Nn]|[Tt][Zz]|[Tt][Zz][Aa]|[Uu][Aa]|[Uu][Gg]|[Uu][Gg][Aa]|[Uu][Kk][Rr]|[Uu][Mm]|[Uu][Mm][Ii]|[Uu][Rr][Yy]|[Uu][Ss]|[Uu][Ss][Aa]|[Uu][Yy]|[Uu][Zz]|[Uu][Zz][Bb]|[Vv][Aa]|[Vv][Aa][Tt]|[Vv][Cc]|[Vv][Cc][Tt]|[Vv][Ee]|[Vv][Ee][Nn]|[Vv][Gg]|[Vv][Gg][Bb]|[Vv][Ii]|[Vv][Ii][Rr]|[Vv][Nn]|[Vv][Nn][Mm]|[Vv][Uu]|[Vv][Uu][Tt]|[Ww][Ff]|[Ww][Ll][Ff]|[Ww][Ss]|[Ww][Ss][Mm]|[Yy][Ee]|[Yy][Ee][Mm]|[Yy][Tt]|[Zz][Aa]|[Zz][Aa][Ff]|[Zz][Mm]|[Zz][Mm][Bb]|[Zz][Ww]|[Zz][Ww][Ee])(?![\\s\\S])",
+      "description": "Assigned ISO 3166-1 alpha-2 or alpha-3 letter code from the bundled snapshot, matched case-insensitively. Country names, numeric codes, aliases and surrounding whitespace are invalid."
+    },
+    "category_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "known_features": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "default": []
+    }
+  },
+  "required": [
+    "product_name",
+    "country"
+  ],
+  "additionalProperties": false
+}

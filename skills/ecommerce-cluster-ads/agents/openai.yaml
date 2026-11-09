@@ -1,0 +1,15 @@
+interface:
+  display_name: Ecommerce Cluster Ads
+  short_description: Turn supplied ecommerce ads into product and service clusters
+  default_prompt: Use Ecommerce Cluster Ads on the supplied JSON array. Use
+    only the supplied ad fields, split explicitly identifiable products, and return
+    the normalized JSON array or a JSON error.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  allow_implicit_invocation: true
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas

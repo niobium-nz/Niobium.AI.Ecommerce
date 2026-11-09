@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ecommerce Profile Offers Input",
+  "description": "One public HTTP/HTTPS landing page; real-browser profiling only.",
+  "type": "object",
+  "properties": {
+    "landing_page_url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^[Hh][Tt][Tt][Pp][Ss]?://[^\\s/#?@]+(?:[/?#][^\\s]*)?$"
+    }
+  },
+  "required": [
+    "landing_page_url"
+  ],
+  "additionalProperties": false
+}

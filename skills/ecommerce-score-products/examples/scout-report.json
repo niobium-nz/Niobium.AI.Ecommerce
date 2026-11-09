@@ -1,0 +1,39 @@
+{
+  "query": "pet hair removal mitt",
+  "country": "GB",
+  "raw_ads_discovered": {
+    "tool_call_made": true,
+    "raw_ads_count": 4,
+    "distinct_advertisers_count": 2,
+    "notable_raw_patterns": [
+      "Synthetic data: several ads repeat the same advertiser."
+    ],
+    "snippets": [
+      "Synthetic mitt ad text."
+    ],
+    "limitations": [
+      "Synthetic sample; not a live Ad Library search.",
+      "Limited older-active-ad sample, not full-market coverage."
+    ]
+  },
+  "exclusion_filtering": {
+    "exclusion_terms_provided": false,
+    "filtering_possible": true,
+    "excluded_ads_count": 0,
+    "in_scope_ads_count": 4,
+    "top_matched_exclusion_terms": [],
+    "scope_note": "Synthetic records are within the mitt scope and assumed eligible for fixture purposes only."
+  },
+  "competition_signal": {
+    "rating0_to10": 4,
+    "evidence_signals": [
+      "Synthetic sample: four in-scope ads from two advertisers."
+    ],
+    "inference": [
+      "Synthetic illustration only; no demand or sales conclusion."
+    ],
+    "confidence0_to10": 4,
+    "justification": "Synthetic report for contract testing.",
+    "operational_definition": "Qualitative sample competition, not a calibrated market statistic."
+  }
+}

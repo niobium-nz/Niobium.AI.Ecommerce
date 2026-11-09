@@ -1,0 +1,8 @@
+{
+  "reference_images": [
+    "https://images.example.invalid/item/front.png",
+    "https://images.example.invalid/item/rear.png"
+  ],
+  "product_notes": "I explicitly accept an incomplete board containing only the supported front and rear views. Do not invent other sides.",
+  "allow_incomplete_coverage": true
+}

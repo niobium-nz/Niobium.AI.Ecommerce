@@ -1,0 +1,659 @@
+{
+  "product_details": {
+    "working_product_definition": "Synthetic reference input describes one retail set of silicone cable clips. The set is the cost unit; exact contents, mounting method and fit are not supplied and require merchant confirmation.",
+    "core_problem_solved": "Proposed job: give a loose charging cable endpoint a defined accessible place. The competitor claim is an unverified reference, not substantiated performance for the offered item.",
+    "primary_use_cases": [
+      "Hypothesis: desk cable placement after unplugging a device.",
+      "Hypothesis: a second compatible bedside or household charging station.",
+      "Hypothesis: a planned workspace refresh with a simple demonstrated accessory."
+    ],
+    "materials_or_construction_summary": "Silicone cable clips are supplied as input. No adhesive type, dimensions, durability, safety certification or universal fit is established.",
+    "fulfillment_and_refund_assumptions": "Workflow assumption: overseas fulfillment, typically 1 to 2 weeks; shipping is included in prices and supplied costs. Confirm actual delivery capability before publishing. No customer-facing guarantee or keep-the-item refund promise is approved. Propose clear support and merchant-approved refund terms; the zero-return-shipping convention is internal only. Returning a refunded item is modeled as having zero shipping cost, but refund principal, fees, losses and overhead are not thereby zero.",
+    "suggested_product_names": [
+      "Docklet Cable Keepers",
+      "Cord Rest Kit",
+      "Desk Nook Cable Set",
+      "Line Haven Clips",
+      "Cable Landing Kit",
+      "Quiet Desk Clips"
+    ],
+    "recommended_primary_product_name": "Docklet Cable Keepers",
+    "recommended_primary_product_name_rationale": "Describes a small resting place for a cable without reusing ReferenceBrand. All suggested names are fictional test concepts; trademark and availability checks have not been performed."
+  },
+  "pricing_economics_and_offers": {
+    "given_inputs": [
+      "Synthetic target_market_country NZL resolves to NZ; currency NZD is supplied independently, not inferred.",
+      "First retail set cogs_per_unit = NZD 6.00; each extra set in the same order = NZD 2.00; shipping is included.",
+      "Caller-specified illustrative tax: 10% of tax-exclusive selling price, included in displayed price. This is test data, not an assertion about NZ tax.",
+      "Caller-specified illustrative processing fee: 2.9% of total customer charge plus NZD 0.30 once per order.",
+      "Input material: silicone cable clips. Competitor reference about cable placement is not verified product proof."
+    ],
+    "modeled_assumptions": [
+      "Synthetic arithmetic fixture, not researched market advice. Research was not used; there is no actual conversion, review, sales or ad-performance evidence.",
+      "Proposed prices NZD 22.00 / 33.00 / 44.00 include the illustrative tax. One unit means one retail set; exact clip count is unknown.",
+      "Hypothetical order mix: 50% one-set, 35% two-set, 15% three-set orders; weights total 100%. This is not an observed sales mix.",
+      "Assume CPC NZD 0.40, LPV/click 90%, checkout-start/LPV 12%, purchase/checkout-start 40%. These are uncalibrated test assumptions, not country or category benchmarks.",
+      "Assume a NZD 5.00 contribution buffer per order before unmodeled overhead/refund losses. This is a scenario guardrail, not a universal profit target.",
+      "Keep unrounded intermediate values; show NZD monetary outputs to two decimal places, rates to needed precision. Per-offer unrounded components are exposed for audit.",
+      "Overseas fulfillment 1 to 2 weeks and zero return shipping are workflow assumptions pending operational confirmation. App charges, refund principal, chargebacks and fixed overhead are excluded, not proven zero.",
+      "Three segment priorities are qualitative hypotheses; the common acquisition model is not a validated segment forecast."
+    ],
+    "landed_cost_model": "Synthetic tax-inclusive scenario: R=P; T=P*0.10/1.10; F=0.029*R+NZD 0.30 once per order; C_n=NZD 6.00+(n-1)*NZD 2.00; L=C_n+T+F; contribution M=R-L. One set: R NZD 22.00, C NZD 6.00, T NZD 2.00, F NZD 0.938, L NZD 8.938, M NZD 13.062 (NZD 13.06 displayed). Two sets: R NZD 33.00, C NZD 8.00, T NZD 3.00, F NZD 1.257, L NZD 12.257, M NZD 20.743 (NZD 20.74 displayed). Three sets: R NZD 44.00, C NZD 10.00, T NZD 4.00, F NZD 1.576, L NZD 15.576, M NZD 28.424 (NZD 28.42 displayed). At 50%/35%/15% mix: gross AOV NZD 29.15; blended C NZD 7.30, T NZD 2.65, F NZD 1.14535; blended L NZD 11.09535 (NZD 11.10); blended M NZD 18.05465 (NZD 18.05). Tax is deducted once using gross revenue; all excluded losses remain outside this contribution model.",
+    "recommended_single_unit_selling_price": "Proposed base-case NZD 22.00 including caller-modeled tax and shipping. Not a validated market price; test willingness to pay and actual product quality before launch.",
+    "optional_compare_at_or_anchor_price": null,
+    "direct_purchase_funnel_model": {
+      "assumed_cpc": "NZD 0.40 per click; synthetic assumption, not observed performance.",
+      "assumed_lpv_rate": "90% = 0.90 LPVs per click; synthetic assumption.",
+      "assumed_checkout_start_rate": "12% = 0.12 checkout starts per LPV; synthetic assumption.",
+      "assumed_purchase_rate": "40% = 0.40 purchases per checkout start; synthetic assumption.",
+      "derived_click_to_purchase_rate": "0.90 * 0.12 * 0.40 = 0.0432 = 4.32% of clicks.",
+      "estimated_blended_cpa": "NZD 0.40 / 0.0432 = NZD 9.259259... = NZD 9.26 per purchase.",
+      "break_even_blended_cpa": "NZD 18.05465 = NZD 18.05, equal to modeled blended contribution before advertising and excluded losses.",
+      "recommended_target_blended_cpa": "NZD 18.05465 - NZD 5.00 buffer = NZD 13.05465 = NZD 13.05; hypothetical planning ceiling, not an observed result.",
+      "funnel_logic_explanation": "At 1000 clicks, assume spend NZD 400.00, 900 LPVs, 108 checkout starts and 43.2 expected purchases; NZD 400.00 / 43.2 = NZD 9.26 CPA. These are expected cohort values, not fractional observed purchases. Base-case contribution after acquisition is NZD 18.05465 - NZD 9.259259... = NZD 8.80, before excluded losses. Estimated CPA is below the target NZD 13.05 and break-even NZD 18.05 only under these assumptions. Sensitivity: purchase-per-checkout-start falling to 25% gives 2.70% click-to-purchase conversion and NZD 14.81 CPA, missing the target while leaving only NZD 3.24 modeled contribution. Validate checkout completion, cost per click and offer mix; do not present this untested scenario as profitable fact."
+    },
+    "diagnostic_metrics": {
+      "estimated_cost_per_lpv": "NZD 0.40 / 0.90 = NZD 0.44 per LPV; diagnostic, not CPA.",
+      "estimated_cost_per_checkout_start": "NZD 0.40 / (0.90 * 0.12) = NZD 3.70 per checkout start; diagnostic, not CPA."
+    },
+    "offer_stack": {
+      "single_unit_offer": {
+        "name": "One-station set",
+        "price_point": "NZD 22.00 tax-inclusive total",
+        "description": "One retail set for one confirmed compatible use. Verify actual set contents before depicting quantities."
+      },
+      "best_seller_bundle": {
+        "name": "Two-station set",
+        "price_point": "NZD 33.00 tax-inclusive total",
+        "description": "Two identical retail sets for two compatible stations. This internal slot name does not establish bestseller status."
+      },
+      "higher_aov_bundle": {
+        "name": "Three-station set",
+        "price_point": "NZD 44.00 tax-inclusive total",
+        "description": "Three identical retail sets only for buyers with three plausible compatible locations or backup needs; do not pressure unnecessary quantity."
+      }
+    },
+    "bundle_rationale": "The second and third retail sets cost NZD 2.00 each before the offer-specific tax and fee effects, versus NZD 6.00 for the first set. Two or three distinct charging locations are a plausible but unverified use case. Do not infer the number of clips in a set. Remove a bundle rather than invent need if actual product suitability fails validation.",
+    "recommended_primary_offer": "Two-station set at NZD 33.00 tax-inclusive total.",
+    "recommended_primary_offer_rationale": "A proposed balance of understandable two-location value and NZD 20.74 per-order contribution before acquisition, compared with NZD 13.06 for one set. Demand, bundle uptake and product performance remain unvalidated; use the disclosed weighted mix, not this offer margin, for the blended CPA guardrail."
+  },
+  "mobile_first_landing_page_plan": {
+    "role_in_direct_purchase_funnel": "Direct purchase: move from a clearly shown cable-use problem to an honest demonstration, compatibility check, offer selection and purchase, without disguising checkout starts as purchases.",
+    "mobile_first_section_order": [
+      "Hero and everyday problem",
+      "Product demonstration",
+      "Fit and construction",
+      "Offer selection",
+      "Shipping and support",
+      "FAQ and objections",
+      "Final purchase recap"
+    ],
+    "creative_assets_needed_for_each_section": [
+      {
+        "section_name": "Hero and everyday problem",
+        "asset_needs": [
+          {
+            "asset_id": "lp-hero-01",
+            "asset_detailed_description": "Planned photo: show the actual cable-keeper set at a tidy working desk with one unplugged charging cable placed within reach. Frame the product and connector large enough for a narrow mobile crop and leave a clean text area above the hand position. Use a real sample and a compatible surface confirmed by the merchant; do not depict an unverified mounting mechanism. Pair the image with the proposed primary product name and a simple use-case description, not a quantified performance claim. This is a planned asset, not an existing photograph."
+          }
+        ]
+      },
+      {
+        "section_name": "Product demonstration",
+        "asset_needs": [
+          {
+            "asset_id": "lp-demo-01",
+            "asset_detailed_description": "Planned short video: in one continuous, honestly timed shot, show a charging cable before placement, the actual verified setup steps, and retrieving the connector after placement. Keep hands, product and cable in frame and use close-ups rather than invented outcome captions. Confirm fit, attachment method and surface suitability before filming. The video must show only the real product behavior and must not imply permanent adhesion or damage-free removal without tests. Provide a mobile crop and a still poster so the offer remains understandable when video does not play."
+          }
+        ]
+      },
+      {
+        "section_name": "Fit and construction",
+        "asset_needs": [
+          {
+            "asset_id": "lp-fit-01",
+            "asset_detailed_description": "Planned fit-reference photo and label panel: photograph the actual silicone clips with a measured scale and the cable diameters or connector constraints verified by the merchant. Show installation method only after it is confirmed. Use clear, large labels for compatible uses and exceptions; do not call the product universal. The visual should answer fit and surface questions before a shopper chooses a bundle, and should stay legible without zooming on a phone."
+          }
+        ]
+      },
+      {
+        "section_name": "Offer selection",
+        "asset_needs": [
+          {
+            "asset_id": "lp-offer-01",
+            "asset_detailed_description": "Planned offer comparison graphic: display one retail set, two retail sets and three retail sets at the proposed NZD 22.00, NZD 33.00 and NZD 44.00 tax-inclusive prices, respectively, only once merchant pricing is approved. Explain that a set is the supplied cost unit and confirm its contents before depicting clip quantities. Connect two sets to two distinct stations rather than fake popularity. Use no crossed-out historical price or bestseller badge. Show delivery expectation near the selection area, with touch-friendly spacing."
+          }
+        ]
+      },
+      {
+        "section_name": "Shipping and support",
+        "asset_needs": [
+          {
+            "asset_id": "lp-shipping-01",
+            "asset_detailed_description": "Planned shipping/support card: use text-first mobile layout to show the approved delivery estimate, overseas fulfillment disclosure, support route and actual refund policy link once available. Until merchant verification, the creative brief should label 1 to 2 weeks as a planning assumption and keep refund wording provisional. Do not show an invented local warehouse, secure-payment certification or keep-the-product guarantee. Repeat key delivery information beside the purchase recap."
+          }
+        ]
+      },
+      {
+        "section_name": "FAQ and objections",
+        "asset_needs": [
+          {
+            "asset_id": "lp-faq-01",
+            "asset_detailed_description": "Planned FAQ answer cards: give concise answers about clip fit, surface suitability, setup, set contents, delivery and support using only facts the business confirms. Use a verified product close-up for any answer that needs a diagram. Include space for limitations rather than hiding them below unrelated claims. Keep questions scannable on mobile and avoid testimonial screenshots or fabricated review stars."
+          }
+        ]
+      },
+      {
+        "section_name": "Final purchase recap",
+        "asset_needs": [
+          {
+            "asset_id": "lp-recap-01",
+            "asset_detailed_description": "Planned recap still: show the same real set and primary proposed offer as the ad and offer-selection module, with the approved tax-inclusive price, delivery estimate and a clear purchase CTA. Maintain the verified scale and color of the product; do not substitute a more impressive model. Leave enough spacing for mobile tap targets and do not cover shipping or support terms with a sticky control."
+          }
+        ]
+      }
+    ],
+    "proof_strategy_without_reviews_or_real_social_proof": "Create and verify actual sample demonstrations and a measured fit guide. Do not publish invented reviews, ratings, testimonials, customers, test data or certifications. Before/after must reflect the same genuine setup without overstating results. No proof asset currently exists in this synthetic example.",
+    "shipping_and_guarantee_messaging_guidance": "Workflow assumption: overseas fulfillment, typically 1 to 2 weeks; shipping is included in prices and supplied costs. Confirm actual delivery capability before publishing. No customer-facing guarantee or keep-the-item refund promise is approved. Propose clear support and merchant-approved refund terms; the zero-return-shipping convention is internal only.",
+    "faq_and_objection_handling_priorities": [
+      "Actual set contents and fit",
+      "Verified mounting method and surface limitations",
+      "Shipping estimate and overseas fulfillment",
+      "Approved refund/support terms",
+      "Why two sets may be useful without claiming popularity"
+    ],
+    "alignment_with_customer_segments_and_angle_trigger_matrix": "Keep the shared primary name and offer ladder constant. Start with the actual-use demonstration for desk users, emphasise verified two-location use for households, and explain the specific function for planned workspace refreshes. Segment priority is a hypothesis rather than measured audience performance.",
+    "mobile_ux_notes": "Plan short sections, clear mobile product crops, readable labels, deliberate thumb-accessible CTA placement and visible shipping/fit details. A sticky CTA must not cover terms or device controls. Optimize produced media for page speed and test on actual devices; this plan does not claim completed design or UX testing."
+  },
+  "customer_segments": [
+    {
+      "segment_number": 1,
+      "segment_name": "Desk users resetting a charging routine",
+      "shared_context_snapshot": {
+        "recommended_product_name": "Docklet Cable Keepers",
+        "core_offer_stack": "Synthetic NZ scenario in NZD: one set NZD 22.00; two-station set NZD 33.00 (primary proposal); three-station set NZD 44.00. Each cost unit is one retail set, not an individual clip. Prices include the caller-specified illustrative 10% tax; no established bestseller claim.",
+        "key_price_points": [
+          "NZD 22.00 for one set",
+          "NZD 33.00 for two sets",
+          "NZD 44.00 for three sets"
+        ],
+        "shipping_reality": "Workflow assumption: overseas fulfillment, typically 1 to 2 weeks; shipping is included in prices and supplied costs. Confirm actual delivery capability before publishing.",
+        "guarantee_or_refund_framing": "No customer-facing guarantee or keep-the-item refund promise is approved. Propose clear support and merchant-approved refund terms; the zero-return-shipping convention is internal only.",
+        "landing_page_role_in_funnel": "Direct purchase: move from a clearly shown cable-use problem to an honest demonstration, compatibility check, offer selection and purchase, without disguising checkout starts as purchases."
+      },
+      "segment_rating": {
+        "overall_priority_rating": 5,
+        "profit_potential_rating": 5,
+        "trigger_intensity_rating": 4,
+        "creative_clarity_rating": 5,
+        "funnel_fit_rating": 4,
+        "rationale": "The need is easy to demonstrate and repeats in a predictable routine. The two-station offer has a plausible purpose, but fit and actual setup still need verification."
+      },
+      "segment_summary": {
+        "who_this_segment_is": "People who regularly unplug a device at a home or work desk and want a defined place for the loose cable end; a situational hypothesis, not a measured audience.",
+        "need_state": "Keep the cable endpoint accessible during a repeated desk routine, subject to actual product fit.",
+        "purchase_moment_or_trigger_condition": "Rearranging a desk or reconnecting a charger during a work break.",
+        "emotional_driver": "Reduce small interruptions and feel in control of a familiar space.",
+        "main_objections": [
+          "Will the clips fit my cables?",
+          "How is the set attached?",
+          "Will the surface be suitable?"
+        ],
+        "economic_attractiveness": "Highest priority hypothesis because a second desk or bedside station gives a plausible two-set use case. Use the common modeled mix rather than inventing this segment's conversion data."
+      },
+      "angle_and_trigger_matrix": [
+        {
+          "angle_number": 1,
+          "angle_name": "A place for the loose cable",
+          "trigger": "Unplugging the device at the desk",
+          "suggested_product_names_for_this_angle": [
+            "Docklet Cable Keepers",
+            "Cable Landing Kit"
+          ],
+          "recommended_product_name_for_this_angle": "Docklet Cable Keepers",
+          "recommended_product_name_for_this_angle_rationale": "Un-cleared naming concept for this angle. Keep Docklet Cable Keepers as the shared primary product identity unless a separately approved name test replaces it.",
+          "recommended_short_product_code": "DCK-DESK",
+          "recommended_website_primary_color_for_this_angle": "#17324D",
+          "recommended_website_secondary_color_for_this_angle": "#F4F1EB",
+          "recommended_website_accent_color_for_this_angle": "#C6602A",
+          "recommended_website_color_theme_for_this_angle_rationale": "Proposed dark structural color, light reading surface and distinct offer accent. Verify contrast with the final typography before production; no accessibility test is claimed.",
+          "core_promise": "Show a defined resting place for the charging cable endpoint. Validate this behavior with the actual sample before using it as customer-facing proof.",
+          "message_territory": "Routine continuity, demonstrated in a single actual-use sequence.",
+          "why_this_angle_should_convert_on_meta": "Hypothesis: the visible use at the stated purchase moment can be understood quickly and leads naturally to the same offer on the page. This is not observed conversion performance.",
+          "objections_to_pre_handle": [
+            "Will the clips fit my cables?",
+            "How is the set attached?",
+            "Will the surface be suitable?"
+          ],
+          "proof_or_demo_assets_required": [
+            "lp-demo-01: a real uninterrupted cable-placement demonstration with verified setup.",
+            "lp-fit-01: measured compatibility and surface/attachment details confirmed by the business."
+          ],
+          "recommended_cta_or_roas_target": "CTA territory: See the setup and choose your set. Use the shared modeled target blended CPA of NZD 13.05; no angle-specific ROAS or conversion uplift is asserted.",
+          "creative_handoffs": {
+            "static_image_directions": [
+              "Plan a real product-in-use image for: Unplugging the device at the desk. Keep the cable endpoint and actual clip visible in a mobile crop; do not imply verified results before a sample test."
+            ],
+            "short_form_video_or_ugc_directions": [
+              "Plan a creator-style demonstration of: A place for the loose cable. Show the genuine setup and cable action, then the matching offer. This is a new demonstration brief, not a customer review or personal testimonial."
+            ],
+            "first_frame_or_thumb_stop_direction": "Open on the actual cable-use moment described by the trigger; show the endpoint and hand clearly without a fabricated failure or dramatic outcome.",
+            "copy_hook_territories": [
+              "Routine continuity, demonstrated in a single actual-use sequence.",
+              "Explain the actual action and fit limitation in plain language; treat claims as hypotheses pending sample verification."
+            ],
+            "headline_territories": [
+              "A place for the loose cable",
+              "Describe the use rather than claiming universal compatibility or quantified time savings."
+            ],
+            "visual_proof_moments": [
+              "Actual placement and retrieval shown continuously.",
+              "Measured cable/surface fit from lp-fit-01 with honest limitations."
+            ],
+            "continuity_notes_for_landing_page": "Repeat Docklet Cable Keepers, the proposed tax-inclusive NZD 22.00 / 33.00 / 44.00 offer ladder, the actual demonstrated setup and the 1 to 2 week overseas-delivery planning assumption. Use lp-demo-01 and lp-offer-01; do not hide fit or shipping."
+          }
+        },
+        {
+          "angle_number": 2,
+          "angle_name": "Reset the desk, keep the routine",
+          "trigger": "Tidying a workspace after moving equipment",
+          "suggested_product_names_for_this_angle": [
+            "Cord Rest Kit",
+            "Desk Nook Cable Set"
+          ],
+          "recommended_product_name_for_this_angle": "Cord Rest Kit",
+          "recommended_product_name_for_this_angle_rationale": "Un-cleared naming concept for this angle. Keep Docklet Cable Keepers as the shared primary product identity unless a separately approved name test replaces it.",
+          "recommended_short_product_code": "CRK-RESET",
+          "recommended_website_primary_color_for_this_angle": "#27483E",
+          "recommended_website_secondary_color_for_this_angle": "#F5F1E7",
+          "recommended_website_accent_color_for_this_angle": "#9C4A23",
+          "recommended_website_color_theme_for_this_angle_rationale": "Proposed dark structural color, light reading surface and distinct offer accent. Verify contrast with the final typography before production; no accessibility test is claimed.",
+          "core_promise": "Show a compact cable-placement step within an ordinary desk reset. Validate this behavior with the actual sample before using it as customer-facing proof.",
+          "message_territory": "A small organisation task, not a total-life transformation.",
+          "why_this_angle_should_convert_on_meta": "Hypothesis: the visible use at the stated purchase moment can be understood quickly and leads naturally to the same offer on the page. This is not observed conversion performance.",
+          "objections_to_pre_handle": [
+            "Will the clips fit my cables?",
+            "How is the set attached?",
+            "Will the surface be suitable?"
+          ],
+          "proof_or_demo_assets_required": [
+            "lp-demo-01: a real uninterrupted cable-placement demonstration with verified setup.",
+            "lp-fit-01: measured compatibility and surface/attachment details confirmed by the business."
+          ],
+          "recommended_cta_or_roas_target": "CTA territory: See the setup and choose your set. Use the shared modeled target blended CPA of NZD 13.05; no angle-specific ROAS or conversion uplift is asserted.",
+          "creative_handoffs": {
+            "static_image_directions": [
+              "Plan a real product-in-use image for: Tidying a workspace after moving equipment. Keep the cable endpoint and actual clip visible in a mobile crop; do not imply verified results before a sample test."
+            ],
+            "short_form_video_or_ugc_directions": [
+              "Plan a creator-style demonstration of: Reset the desk, keep the routine. Show the genuine setup and cable action, then the matching offer. This is a new demonstration brief, not a customer review or personal testimonial."
+            ],
+            "first_frame_or_thumb_stop_direction": "Open on the actual cable-use moment described by the trigger; show the endpoint and hand clearly without a fabricated failure or dramatic outcome.",
+            "copy_hook_territories": [
+              "A small organisation task, not a total-life transformation.",
+              "Explain the actual action and fit limitation in plain language; treat claims as hypotheses pending sample verification."
+            ],
+            "headline_territories": [
+              "Reset the desk, keep the routine",
+              "Describe the use rather than claiming universal compatibility or quantified time savings."
+            ],
+            "visual_proof_moments": [
+              "Actual placement and retrieval shown continuously.",
+              "Measured cable/surface fit from lp-fit-01 with honest limitations."
+            ],
+            "continuity_notes_for_landing_page": "Repeat Docklet Cable Keepers, the proposed tax-inclusive NZD 22.00 / 33.00 / 44.00 offer ladder, the actual demonstrated setup and the 1 to 2 week overseas-delivery planning assumption. Use lp-demo-01 and lp-offer-01; do not hide fit or shipping."
+          }
+        }
+      ],
+      "segment_landing_page_adaptation": {
+        "hero_direction": "Use lp-hero-01: actual cable set beside a desk device, with the cable endpoint visible and no unverified surface claims.",
+        "benefit_order": [
+          "Cable placement demonstrated",
+          "Confirmed setup and fit",
+          "Plausible second station"
+        ],
+        "faq_emphasis": [
+          "Verified cable fit",
+          "Confirmed setup method",
+          "Delivery and support"
+        ],
+        "section_emphasis": [
+          "Product demonstration",
+          "Fit and construction",
+          "Offer selection"
+        ],
+        "mobile_ux_notes": "Keep product action and actual fit information visible before a long scroll. Repeat the selected offer price and honest delivery timing near the CTA; test the final mobile layout rather than claiming it is already optimized.",
+        "asset_needs_specific_to_this_segment": [
+          "lp-demo-01: use the same verified cable-placement action in the segment's stated context.",
+          "lp-fit-01: repeat actual fit limitations relevant to this use. No new asset ID is claimed for an unchanged proof asset."
+        ]
+      }
+    },
+    {
+      "segment_number": 2,
+      "segment_name": "Households sharing charging spaces",
+      "shared_context_snapshot": {
+        "recommended_product_name": "Docklet Cable Keepers",
+        "core_offer_stack": "Synthetic NZ scenario in NZD: one set NZD 22.00; two-station set NZD 33.00 (primary proposal); three-station set NZD 44.00. Each cost unit is one retail set, not an individual clip. Prices include the caller-specified illustrative 10% tax; no established bestseller claim.",
+        "key_price_points": [
+          "NZD 22.00 for one set",
+          "NZD 33.00 for two sets",
+          "NZD 44.00 for three sets"
+        ],
+        "shipping_reality": "Workflow assumption: overseas fulfillment, typically 1 to 2 weeks; shipping is included in prices and supplied costs. Confirm actual delivery capability before publishing.",
+        "guarantee_or_refund_framing": "No customer-facing guarantee or keep-the-item refund promise is approved. Propose clear support and merchant-approved refund terms; the zero-return-shipping convention is internal only.",
+        "landing_page_role_in_funnel": "Direct purchase: move from a clearly shown cable-use problem to an honest demonstration, compatibility check, offer selection and purchase, without disguising checkout starts as purchases."
+      },
+      "segment_rating": {
+        "overall_priority_rating": 4,
+        "profit_potential_rating": 4,
+        "trigger_intensity_rating": 3,
+        "creative_clarity_rating": 4,
+        "funnel_fit_rating": 4,
+        "rationale": "Multiple use locations make the incremental-cost offer relevant, though compatibility creates more friction than the single desk demonstration."
+      },
+      "segment_summary": {
+        "who_this_segment_is": "Households with more than one recurring charging location; do not assume household size, protected traits or a specific income.",
+        "need_state": "Give each confirmed charging location its own compatible cable-placement setup.",
+        "purchase_moment_or_trigger_condition": "Setting up a second shared charging location or reorganising a bedside surface.",
+        "emotional_driver": "Make a shared routine feel less cluttered without promising a universal fix.",
+        "main_objections": [
+          "Do I need more than one set?",
+          "Are all surfaces compatible?",
+          "What is included in each set?"
+        ],
+        "economic_attractiveness": "Second priority hypothesis: two or three stations can support a larger order, but identifying enough compatible places requires more explanation. No household conversion uplift is assumed."
+      },
+      "angle_and_trigger_matrix": [
+        {
+          "angle_number": 1,
+          "angle_name": "Two places, one familiar setup",
+          "trigger": "Adding a second charging location",
+          "suggested_product_names_for_this_angle": [
+            "Two Nook Cable Set",
+            "Cord Rest Kit"
+          ],
+          "recommended_product_name_for_this_angle": "Two Nook Cable Set",
+          "recommended_product_name_for_this_angle_rationale": "Un-cleared naming concept for this angle. Keep Docklet Cable Keepers as the shared primary product identity unless a separately approved name test replaces it.",
+          "recommended_short_product_code": "DCK-TWO",
+          "recommended_website_primary_color_for_this_angle": "#294D5C",
+          "recommended_website_secondary_color_for_this_angle": "#F6F2EA",
+          "recommended_website_accent_color_for_this_angle": "#A94D27",
+          "recommended_website_color_theme_for_this_angle_rationale": "Proposed dark structural color, light reading surface and distinct offer accent. Verify contrast with the final typography before production; no accessibility test is claimed.",
+          "core_promise": "Show two verified uses for two retail sets without changing the product promise. Validate this behavior with the actual sample before using it as customer-facing proof.",
+          "message_territory": "Repeat a practical setup across compatible locations.",
+          "why_this_angle_should_convert_on_meta": "Hypothesis: the visible use at the stated purchase moment can be understood quickly and leads naturally to the same offer on the page. This is not observed conversion performance.",
+          "objections_to_pre_handle": [
+            "Do I need more than one set?",
+            "Are all surfaces compatible?",
+            "What is included in each set?"
+          ],
+          "proof_or_demo_assets_required": [
+            "lp-demo-01: a real uninterrupted cable-placement demonstration with verified setup.",
+            "lp-fit-01: measured compatibility and surface/attachment details confirmed by the business."
+          ],
+          "recommended_cta_or_roas_target": "CTA territory: See the setup and choose your set. Use the shared modeled target blended CPA of NZD 13.05; no angle-specific ROAS or conversion uplift is asserted.",
+          "creative_handoffs": {
+            "static_image_directions": [
+              "Plan a real product-in-use image for: Adding a second charging location. Keep the cable endpoint and actual clip visible in a mobile crop; do not imply verified results before a sample test."
+            ],
+            "short_form_video_or_ugc_directions": [
+              "Plan a creator-style demonstration of: Two places, one familiar setup. Show the genuine setup and cable action, then the matching offer. This is a new demonstration brief, not a customer review or personal testimonial."
+            ],
+            "first_frame_or_thumb_stop_direction": "Open on the actual cable-use moment described by the trigger; show the endpoint and hand clearly without a fabricated failure or dramatic outcome.",
+            "copy_hook_territories": [
+              "Repeat a practical setup across compatible locations.",
+              "Explain the actual action and fit limitation in plain language; treat claims as hypotheses pending sample verification."
+            ],
+            "headline_territories": [
+              "Two places, one familiar setup",
+              "Describe the use rather than claiming universal compatibility or quantified time savings."
+            ],
+            "visual_proof_moments": [
+              "Actual placement and retrieval shown continuously.",
+              "Measured cable/surface fit from lp-fit-01 with honest limitations."
+            ],
+            "continuity_notes_for_landing_page": "Repeat Docklet Cable Keepers, the proposed tax-inclusive NZD 22.00 / 33.00 / 44.00 offer ladder, the actual demonstrated setup and the 1 to 2 week overseas-delivery planning assumption. Use lp-demo-01 and lp-offer-01; do not hide fit or shipping."
+          }
+        },
+        {
+          "angle_number": 2,
+          "angle_name": "The bedside cable spot",
+          "trigger": "Unplugging a phone beside the bed",
+          "suggested_product_names_for_this_angle": [
+            "Cable Landing Kit",
+            "Nightstand Cable Place"
+          ],
+          "recommended_product_name_for_this_angle": "Cable Landing Kit",
+          "recommended_product_name_for_this_angle_rationale": "Un-cleared naming concept for this angle. Keep Docklet Cable Keepers as the shared primary product identity unless a separately approved name test replaces it.",
+          "recommended_short_product_code": "DCK-BED",
+          "recommended_website_primary_color_for_this_angle": "#283B54",
+          "recommended_website_secondary_color_for_this_angle": "#F0EDE5",
+          "recommended_website_accent_color_for_this_angle": "#B85C32",
+          "recommended_website_color_theme_for_this_angle_rationale": "Proposed dark structural color, light reading surface and distinct offer accent. Verify contrast with the final typography before production; no accessibility test is claimed.",
+          "core_promise": "Demonstrate the actual set in a compatible bedside charging arrangement. Validate this behavior with the actual sample before using it as customer-facing proof.",
+          "message_territory": "An everyday placement habit, not a sleep or wellbeing claim.",
+          "why_this_angle_should_convert_on_meta": "Hypothesis: the visible use at the stated purchase moment can be understood quickly and leads naturally to the same offer on the page. This is not observed conversion performance.",
+          "objections_to_pre_handle": [
+            "Do I need more than one set?",
+            "Are all surfaces compatible?",
+            "What is included in each set?"
+          ],
+          "proof_or_demo_assets_required": [
+            "lp-demo-01: a real uninterrupted cable-placement demonstration with verified setup.",
+            "lp-fit-01: measured compatibility and surface/attachment details confirmed by the business."
+          ],
+          "recommended_cta_or_roas_target": "CTA territory: See the setup and choose your set. Use the shared modeled target blended CPA of NZD 13.05; no angle-specific ROAS or conversion uplift is asserted.",
+          "creative_handoffs": {
+            "static_image_directions": [
+              "Plan a real product-in-use image for: Unplugging a phone beside the bed. Keep the cable endpoint and actual clip visible in a mobile crop; do not imply verified results before a sample test."
+            ],
+            "short_form_video_or_ugc_directions": [
+              "Plan a creator-style demonstration of: The bedside cable spot. Show the genuine setup and cable action, then the matching offer. This is a new demonstration brief, not a customer review or personal testimonial."
+            ],
+            "first_frame_or_thumb_stop_direction": "Open on the actual cable-use moment described by the trigger; show the endpoint and hand clearly without a fabricated failure or dramatic outcome.",
+            "copy_hook_territories": [
+              "An everyday placement habit, not a sleep or wellbeing claim.",
+              "Explain the actual action and fit limitation in plain language; treat claims as hypotheses pending sample verification."
+            ],
+            "headline_territories": [
+              "The bedside cable spot",
+              "Describe the use rather than claiming universal compatibility or quantified time savings."
+            ],
+            "visual_proof_moments": [
+              "Actual placement and retrieval shown continuously.",
+              "Measured cable/surface fit from lp-fit-01 with honest limitations."
+            ],
+            "continuity_notes_for_landing_page": "Repeat Docklet Cable Keepers, the proposed tax-inclusive NZD 22.00 / 33.00 / 44.00 offer ladder, the actual demonstrated setup and the 1 to 2 week overseas-delivery planning assumption. Use lp-demo-01 and lp-offer-01; do not hide fit or shipping."
+          }
+        }
+      ],
+      "segment_landing_page_adaptation": {
+        "hero_direction": "Adapt lp-hero-01 to a confirmed shared or bedside setting while preserving product scale and the same primary name.",
+        "benefit_order": [
+          "Confirmed fit at each station",
+          "Clear set contents",
+          "Transparent multiple-set economics"
+        ],
+        "faq_emphasis": [
+          "Set contents",
+          "Which surfaces have been tested?",
+          "What changes when ordering two sets?"
+        ],
+        "section_emphasis": [
+          "Fit and construction",
+          "Offer selection",
+          "Shipping and support"
+        ],
+        "mobile_ux_notes": "Keep product action and actual fit information visible before a long scroll. Repeat the selected offer price and honest delivery timing near the CTA; test the final mobile layout rather than claiming it is already optimized.",
+        "asset_needs_specific_to_this_segment": [
+          "lp-demo-01: use the same verified cable-placement action in the segment's stated context.",
+          "lp-fit-01: repeat actual fit limitations relevant to this use. No new asset ID is claimed for an unchanged proof asset."
+        ]
+      }
+    },
+    {
+      "segment_number": 3,
+      "segment_name": "Planned workspace refresh buyers",
+      "shared_context_snapshot": {
+        "recommended_product_name": "Docklet Cable Keepers",
+        "core_offer_stack": "Synthetic NZ scenario in NZD: one set NZD 22.00; two-station set NZD 33.00 (primary proposal); three-station set NZD 44.00. Each cost unit is one retail set, not an individual clip. Prices include the caller-specified illustrative 10% tax; no established bestseller claim.",
+        "key_price_points": [
+          "NZD 22.00 for one set",
+          "NZD 33.00 for two sets",
+          "NZD 44.00 for three sets"
+        ],
+        "shipping_reality": "Workflow assumption: overseas fulfillment, typically 1 to 2 weeks; shipping is included in prices and supplied costs. Confirm actual delivery capability before publishing.",
+        "guarantee_or_refund_framing": "No customer-facing guarantee or keep-the-item refund promise is approved. Propose clear support and merchant-approved refund terms; the zero-return-shipping convention is internal only.",
+        "landing_page_role_in_funnel": "Direct purchase: move from a clearly shown cable-use problem to an honest demonstration, compatibility check, offer selection and purchase, without disguising checkout starts as purchases."
+      },
+      "segment_rating": {
+        "overall_priority_rating": 3,
+        "profit_potential_rating": 3,
+        "trigger_intensity_rating": 2,
+        "creative_clarity_rating": 4,
+        "funnel_fit_rating": 3,
+        "rationale": "The visual story is simple, but the purchase is more discretionary. Keep this behind the recurring cable-use segments and avoid artificial deadlines."
+      },
+      "segment_summary": {
+        "who_this_segment_is": "People making a non-urgent workspace refresh and considering small organisation accessories; a use-case hypothesis.",
+        "need_state": "Add a clearly understood cable-placement accessory while reorganising a workspace.",
+        "purchase_moment_or_trigger_condition": "Planning a desk refresh in advance rather than needing emergency replacement delivery.",
+        "emotional_driver": "Enjoy a more intentional workspace through a modest functional change.",
+        "main_objections": [
+          "Is this necessary or just decorative?",
+          "What makes the use clear?",
+          "Will the order arrive for my plan?"
+        ],
+        "economic_attractiveness": "Third priority hypothesis: a visual reset can be clear, but urgency is lower and the accessory may remain optional. Do not claim profitable acquisition unless the shared CPA model is validated."
+      },
+      "angle_and_trigger_matrix": [
+        {
+          "angle_number": 1,
+          "angle_name": "One practical detail in a desk refresh",
+          "trigger": "Planning an orderly workspace layout",
+          "suggested_product_names_for_this_angle": [
+            "Quiet Desk Clips",
+            "Line Haven Clips"
+          ],
+          "recommended_product_name_for_this_angle": "Quiet Desk Clips",
+          "recommended_product_name_for_this_angle_rationale": "Un-cleared naming concept for this angle. Keep Docklet Cable Keepers as the shared primary product identity unless a separately approved name test replaces it.",
+          "recommended_short_product_code": "DCK-REF",
+          "recommended_website_primary_color_for_this_angle": "#37443A",
+          "recommended_website_secondary_color_for_this_angle": "#F2EEE4",
+          "recommended_website_accent_color_for_this_angle": "#9F542B",
+          "recommended_website_color_theme_for_this_angle_rationale": "Proposed dark structural color, light reading surface and distinct offer accent. Verify contrast with the final typography before production; no accessibility test is claimed.",
+          "core_promise": "Show the set as one specific functional component of a real desk layout. Validate this behavior with the actual sample before using it as customer-facing proof.",
+          "message_territory": "Useful product placement rather than luxury or status claims.",
+          "why_this_angle_should_convert_on_meta": "Hypothesis: the visible use at the stated purchase moment can be understood quickly and leads naturally to the same offer on the page. This is not observed conversion performance.",
+          "objections_to_pre_handle": [
+            "Is this necessary or just decorative?",
+            "What makes the use clear?",
+            "Will the order arrive for my plan?"
+          ],
+          "proof_or_demo_assets_required": [
+            "lp-demo-01: a real uninterrupted cable-placement demonstration with verified setup.",
+            "lp-fit-01: measured compatibility and surface/attachment details confirmed by the business."
+          ],
+          "recommended_cta_or_roas_target": "CTA territory: See the setup and choose your set. Use the shared modeled target blended CPA of NZD 13.05; no angle-specific ROAS or conversion uplift is asserted.",
+          "creative_handoffs": {
+            "static_image_directions": [
+              "Plan a real product-in-use image for: Planning an orderly workspace layout. Keep the cable endpoint and actual clip visible in a mobile crop; do not imply verified results before a sample test."
+            ],
+            "short_form_video_or_ugc_directions": [
+              "Plan a creator-style demonstration of: One practical detail in a desk refresh. Show the genuine setup and cable action, then the matching offer. This is a new demonstration brief, not a customer review or personal testimonial."
+            ],
+            "first_frame_or_thumb_stop_direction": "Open on the actual cable-use moment described by the trigger; show the endpoint and hand clearly without a fabricated failure or dramatic outcome.",
+            "copy_hook_territories": [
+              "Useful product placement rather than luxury or status claims.",
+              "Explain the actual action and fit limitation in plain language; treat claims as hypotheses pending sample verification."
+            ],
+            "headline_territories": [
+              "One practical detail in a desk refresh",
+              "Describe the use rather than claiming universal compatibility or quantified time savings."
+            ],
+            "visual_proof_moments": [
+              "Actual placement and retrieval shown continuously.",
+              "Measured cable/surface fit from lp-fit-01 with honest limitations."
+            ],
+            "continuity_notes_for_landing_page": "Repeat Docklet Cable Keepers, the proposed tax-inclusive NZD 22.00 / 33.00 / 44.00 offer ladder, the actual demonstrated setup and the 1 to 2 week overseas-delivery planning assumption. Use lp-demo-01 and lp-offer-01; do not hide fit or shipping."
+          }
+        },
+        {
+          "angle_number": 2,
+          "angle_name": "Know what the accessory actually does",
+          "trigger": "Comparing simple workspace accessories",
+          "suggested_product_names_for_this_angle": [
+            "Cable Landing Kit",
+            "Desk Nook Cable Set"
+          ],
+          "recommended_product_name_for_this_angle": "Cable Landing Kit",
+          "recommended_product_name_for_this_angle_rationale": "Un-cleared naming concept for this angle. Keep Docklet Cable Keepers as the shared primary product identity unless a separately approved name test replaces it.",
+          "recommended_short_product_code": "DCK-CLR",
+          "recommended_website_primary_color_for_this_angle": "#253B46",
+          "recommended_website_secondary_color_for_this_angle": "#F1F2EC",
+          "recommended_website_accent_color_for_this_angle": "#A85825",
+          "recommended_website_color_theme_for_this_angle_rationale": "Proposed dark structural color, light reading surface and distinct offer accent. Verify contrast with the final typography before production; no accessibility test is claimed.",
+          "core_promise": "Explain the actual cable-placement action before presenting the offer. Validate this behavior with the actual sample before using it as customer-facing proof.",
+          "message_territory": "Clarity-first demonstration with explicit fit limits.",
+          "why_this_angle_should_convert_on_meta": "Hypothesis: the visible use at the stated purchase moment can be understood quickly and leads naturally to the same offer on the page. This is not observed conversion performance.",
+          "objections_to_pre_handle": [
+            "Is this necessary or just decorative?",
+            "What makes the use clear?",
+            "Will the order arrive for my plan?"
+          ],
+          "proof_or_demo_assets_required": [
+            "lp-demo-01: a real uninterrupted cable-placement demonstration with verified setup.",
+            "lp-fit-01: measured compatibility and surface/attachment details confirmed by the business."
+          ],
+          "recommended_cta_or_roas_target": "CTA territory: See the setup and choose your set. Use the shared modeled target blended CPA of NZD 13.05; no angle-specific ROAS or conversion uplift is asserted.",
+          "creative_handoffs": {
+            "static_image_directions": [
+              "Plan a real product-in-use image for: Comparing simple workspace accessories. Keep the cable endpoint and actual clip visible in a mobile crop; do not imply verified results before a sample test."
+            ],
+            "short_form_video_or_ugc_directions": [
+              "Plan a creator-style demonstration of: Know what the accessory actually does. Show the genuine setup and cable action, then the matching offer. This is a new demonstration brief, not a customer review or personal testimonial."
+            ],
+            "first_frame_or_thumb_stop_direction": "Open on the actual cable-use moment described by the trigger; show the endpoint and hand clearly without a fabricated failure or dramatic outcome.",
+            "copy_hook_territories": [
+              "Clarity-first demonstration with explicit fit limits.",
+              "Explain the actual action and fit limitation in plain language; treat claims as hypotheses pending sample verification."
+            ],
+            "headline_territories": [
+              "Know what the accessory actually does",
+              "Describe the use rather than claiming universal compatibility or quantified time savings."
+            ],
+            "visual_proof_moments": [
+              "Actual placement and retrieval shown continuously.",
+              "Measured cable/surface fit from lp-fit-01 with honest limitations."
+            ],
+            "continuity_notes_for_landing_page": "Repeat Docklet Cable Keepers, the proposed tax-inclusive NZD 22.00 / 33.00 / 44.00 offer ladder, the actual demonstrated setup and the 1 to 2 week overseas-delivery planning assumption. Use lp-demo-01 and lp-offer-01; do not hide fit or shipping."
+          }
+        }
+      ],
+      "segment_landing_page_adaptation": {
+        "hero_direction": "Use lp-demo-01 poster: one clear, verified action rather than a staged luxury workspace or invented before/after benefit.",
+        "benefit_order": [
+          "Clear product function",
+          "Verified fit limits",
+          "Honest delivery timing"
+        ],
+        "faq_emphasis": [
+          "Actual use and setup",
+          "Compatibility",
+          "Delivery planning"
+        ],
+        "section_emphasis": [
+          "Product demonstration",
+          "FAQ and objections",
+          "Final purchase recap"
+        ],
+        "mobile_ux_notes": "Keep product action and actual fit information visible before a long scroll. Repeat the selected offer price and honest delivery timing near the CTA; test the final mobile layout rather than claiming it is already optimized.",
+        "asset_needs_specific_to_this_segment": [
+          "lp-demo-01: use the same verified cable-placement action in the segment's stated context.",
+          "lp-fit-01: repeat actual fit limitations relevant to this use. No new asset ID is claimed for an unchanged proof asset."
+        ]
+      }
+    }
+  ]
+}

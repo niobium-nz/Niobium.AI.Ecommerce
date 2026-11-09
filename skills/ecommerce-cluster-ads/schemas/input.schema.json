@@ -1,0 +1,367 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ecommerce Cluster Ads input",
+  "description": "One array of supplied ad records. Optional fields may be omitted; non-nullable arrays, booleans, and integers must have their declared types when present. Validate the full batch before processing.",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/ad"
+  },
+  "$defs": {
+    "ad": {
+      "type": "object",
+      "properties": {
+        "ad_archive_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "description": "Required source reference. Preserve the exact string; blank or missing fails the whole batch."
+        },
+        "collation_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "page_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "snapshot": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/snapshot"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "has_user_reported": {
+          "type": "boolean"
+        },
+        "page_is_deleted": {
+          "type": "boolean"
+        },
+        "page_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "contains_digital_created_media": {
+          "type": "boolean"
+        },
+        "end_date": {
+          "type": "integer"
+        },
+        "publisher_platform": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "start_date": {
+          "type": "integer"
+        },
+        "contains_sensitive_content": {
+          "type": "boolean"
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "start_date_string": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "end_date_string": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "ad_archive_id"
+      ]
+    },
+    "snapshot": {
+      "type": "object",
+      "properties": {
+        "page_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "page_profile_uri": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "page_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "page_profile_picture_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "display_format": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "page_categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "page_like_count": {
+          "type": "integer"
+        },
+        "is_reshared": {
+          "type": "boolean"
+        },
+        "body": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/snapshot_body"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cta_type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cta_text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "caption": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "link_description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "link_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "original_image_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resized_image_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/image"
+          },
+          "default": []
+        },
+        "videos": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/video"
+          },
+          "default": []
+        },
+        "cards": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/card"
+          },
+          "default": []
+        }
+      },
+      "additionalProperties": false
+    },
+    "snapshot_body": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "image": {
+      "type": "object",
+      "properties": {
+        "original_image_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resized_image_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "video": {
+      "type": "object",
+      "properties": {
+        "video_hd_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "video_preview_image_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "video_sd_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "card": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cta_type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cta_text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "caption": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "link_description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "link_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "original_image_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resized_image_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "video_hd_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "video_preview_image_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "video_sd_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "reference_images": [
+    {
+      "source_type": "attachment",
+      "source": "front.jpg",
+      "view_hint": "front"
+    },
+    {
+      "source_type": "local_path",
+      "source": "/mnt/data/rear.jpg",
+      "view_hint": "rear"
+    },
+    {
+      "source_type": "url",
+      "source": "https://images.example.invalid/product/left.png",
+      "view_hint": "left"
+    },
+    {
+      "source_type": "attachment",
+      "source": "right.jpg",
+      "view_hint": "right"
+    },
+    {
+      "source_type": "local_path",
+      "source": "/mnt/data/top.jpg",
+      "view_hint": "top"
+    },
+    {
+      "source_type": "url",
+      "source": "https://images.example.invalid/product/bottom.png",
+      "view_hint": "underside"
+    }
+  ],
+  "product_notes": "Fictional source example. The single hinged item is the product; the display stand is a prop. Use the closed state.",
+  "required_views": [
+    "front",
+    "rear",
+    "left",
+    "right",
+    "top",
+    "underside"
+  ],
+  "critical_features": [
+    "hinge",
+    "side opening",
+    "functional control markings"
+  ],
+  "allow_incomplete_coverage": false
+}

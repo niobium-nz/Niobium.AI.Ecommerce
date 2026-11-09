@@ -1,0 +1,496 @@
+{
+  "note": "All tax rates and monetary inputs are invented arithmetic fixtures, not country tax or campaign advice. Null expected ratios denote undefined division, not a zero acquisition cost.",
+  "cases": [
+    {
+      "id": "one_unit_inclusive",
+      "kind": "offer",
+      "inputs": {
+        "n": 1,
+        "displayed_price": "22",
+        "first_unit_cost": "6",
+        "extra_unit_cost": "2",
+        "tax_mode": "included_net_rate",
+        "tax_rate_or_fixed": ".1",
+        "fee_base_kind": "gross",
+        "fee_rate": ".029",
+        "fixed_fee": ".30",
+        "fixed_fee_scope": "order"
+      },
+      "expected": {
+        "customer_total": "22",
+        "tax": "2",
+        "fee_base": "22",
+        "fees": "0.938",
+        "product_cost": "6",
+        "landed_cost": "8.938",
+        "contribution": "13.062"
+      }
+    },
+    {
+      "id": "two_unit_inclusive",
+      "kind": "offer",
+      "inputs": {
+        "n": 2,
+        "displayed_price": "33",
+        "first_unit_cost": "6",
+        "extra_unit_cost": "2",
+        "tax_mode": "included_net_rate",
+        "tax_rate_or_fixed": ".1",
+        "fee_base_kind": "gross",
+        "fee_rate": ".029",
+        "fixed_fee": ".30",
+        "fixed_fee_scope": "order"
+      },
+      "expected": {
+        "customer_total": "33",
+        "tax": "3",
+        "fee_base": "33",
+        "fees": "1.257",
+        "product_cost": "8",
+        "landed_cost": "12.257",
+        "contribution": "20.743"
+      }
+    },
+    {
+      "id": "three_unit_inclusive",
+      "kind": "offer",
+      "inputs": {
+        "n": 3,
+        "displayed_price": "44",
+        "first_unit_cost": "6",
+        "extra_unit_cost": "2",
+        "tax_mode": "included_net_rate",
+        "tax_rate_or_fixed": ".1",
+        "fee_base_kind": "gross",
+        "fee_rate": ".029",
+        "fixed_fee": ".30",
+        "fixed_fee_scope": "order"
+      },
+      "expected": {
+        "customer_total": "44",
+        "tax": "4",
+        "fee_base": "44",
+        "fees": "1.576",
+        "product_cost": "10",
+        "landed_cost": "15.576",
+        "contribution": "28.424"
+      }
+    },
+    {
+      "id": "tax_added",
+      "kind": "offer",
+      "inputs": {
+        "n": 2,
+        "displayed_price": "30",
+        "first_unit_cost": "6",
+        "extra_unit_cost": "2",
+        "tax_mode": "added_net_rate",
+        "tax_rate_or_fixed": ".1",
+        "fee_base_kind": "gross",
+        "fee_rate": ".029",
+        "fixed_fee": ".30",
+        "fixed_fee_scope": "order"
+      },
+      "expected": {
+        "customer_total": "33.0",
+        "tax": "3.0",
+        "fee_base": "33.0",
+        "fees": "1.2570",
+        "product_cost": "8",
+        "landed_cost": "12.2570",
+        "contribution": "20.7430"
+      }
+    },
+    {
+      "id": "no_tax_or_fee",
+      "kind": "offer",
+      "inputs": {
+        "n": 1,
+        "displayed_price": "20",
+        "first_unit_cost": "6",
+        "extra_unit_cost": "2",
+        "tax_mode": "none",
+        "tax_rate_or_fixed": "0",
+        "fee_base_kind": "gross",
+        "fee_rate": "0",
+        "fixed_fee": "0",
+        "fixed_fee_scope": "order"
+      },
+      "expected": {
+        "customer_total": "20",
+        "tax": "0",
+        "fee_base": "20",
+        "fees": "0",
+        "product_cost": "6",
+        "landed_cost": "6",
+        "contribution": "14"
+      }
+    },
+    {
+      "id": "included_fixed_tax",
+      "kind": "offer",
+      "inputs": {
+        "n": 2,
+        "displayed_price": "30",
+        "first_unit_cost": "6",
+        "extra_unit_cost": "2",
+        "tax_mode": "included_fixed",
+        "tax_rate_or_fixed": "2",
+        "fee_base_kind": "gross",
+        "fee_rate": ".03",
+        "fixed_fee": ".20",
+        "fixed_fee_scope": "order"
+      },
+      "expected": {
+        "customer_total": "30",
+        "tax": "2",
+        "fee_base": "30",
+        "fees": "1.10",
+        "product_cost": "8",
+        "landed_cost": "11.10",
+        "contribution": "18.90"
+      }
+    },
+    {
+      "id": "added_fixed_tax",
+      "kind": "offer",
+      "inputs": {
+        "n": 2,
+        "displayed_price": "30",
+        "first_unit_cost": "6",
+        "extra_unit_cost": "2",
+        "tax_mode": "added_fixed",
+        "tax_rate_or_fixed": "2",
+        "fee_base_kind": "gross",
+        "fee_rate": ".03",
+        "fixed_fee": ".20",
+        "fixed_fee_scope": "order"
+      },
+      "expected": {
+        "customer_total": "32",
+        "tax": "2",
+        "fee_base": "32",
+        "fees": "1.16",
+        "product_cost": "8",
+        "landed_cost": "11.16",
+        "contribution": "20.84"
+      }
+    },
+    {
+      "id": "included_gross_rate",
+      "kind": "offer",
+      "inputs": {
+        "n": 1,
+        "displayed_price": "20",
+        "first_unit_cost": "6",
+        "extra_unit_cost": "2",
+        "tax_mode": "included_gross_rate",
+        "tax_rate_or_fixed": ".1",
+        "fee_base_kind": "gross",
+        "fee_rate": ".03",
+        "fixed_fee": ".20",
+        "fixed_fee_scope": "order"
+      },
+      "expected": {
+        "customer_total": "20",
+        "tax": "2.0",
+        "fee_base": "20",
+        "fees": "0.80",
+        "product_cost": "6",
+        "landed_cost": "8.80",
+        "contribution": "11.20"
+      }
+    },
+    {
+      "id": "net_fee_base",
+      "kind": "offer",
+      "inputs": {
+        "n": 2,
+        "displayed_price": "33",
+        "first_unit_cost": "6",
+        "extra_unit_cost": "2",
+        "tax_mode": "included_net_rate",
+        "tax_rate_or_fixed": ".1",
+        "fee_base_kind": "net",
+        "fee_rate": ".03",
+        "fixed_fee": ".30",
+        "fixed_fee_scope": "order"
+      },
+      "expected": {
+        "customer_total": "33",
+        "tax": "3",
+        "fee_base": "30",
+        "fees": "1.20",
+        "product_cost": "8",
+        "landed_cost": "12.20",
+        "contribution": "20.80"
+      }
+    },
+    {
+      "id": "per_unit_fixed_fee",
+      "kind": "offer",
+      "inputs": {
+        "n": 3,
+        "displayed_price": "44",
+        "first_unit_cost": "6",
+        "extra_unit_cost": "2",
+        "tax_mode": "included_net_rate",
+        "tax_rate_or_fixed": ".1",
+        "fee_base_kind": "gross",
+        "fee_rate": ".03",
+        "fixed_fee": ".20",
+        "fixed_fee_scope": "unit"
+      },
+      "expected": {
+        "customer_total": "44",
+        "tax": "4",
+        "fee_base": "44",
+        "fees": "1.92",
+        "product_cost": "10",
+        "landed_cost": "15.92",
+        "contribution": "28.08"
+      }
+    },
+    {
+      "id": "zero_cost",
+      "kind": "offer",
+      "inputs": {
+        "n": 1,
+        "displayed_price": "10",
+        "first_unit_cost": "0",
+        "extra_unit_cost": "0",
+        "tax_mode": "none",
+        "tax_rate_or_fixed": "0",
+        "fee_base_kind": "gross",
+        "fee_rate": "0",
+        "fixed_fee": "0",
+        "fixed_fee_scope": "order"
+      },
+      "expected": {
+        "customer_total": "10",
+        "tax": "0",
+        "fee_base": "10",
+        "fees": "0",
+        "product_cost": "0",
+        "landed_cost": "0",
+        "contribution": "10"
+      }
+    },
+    {
+      "id": "negative_margin",
+      "kind": "offer",
+      "inputs": {
+        "n": 1,
+        "displayed_price": "5",
+        "first_unit_cost": "8",
+        "extra_unit_cost": "2",
+        "tax_mode": "none",
+        "tax_rate_or_fixed": "0",
+        "fee_base_kind": "gross",
+        "fee_rate": ".03",
+        "fixed_fee": ".30",
+        "fixed_fee_scope": "order"
+      },
+      "expected": {
+        "customer_total": "5",
+        "tax": "0",
+        "fee_base": "5",
+        "fees": "0.45",
+        "product_cost": "8",
+        "landed_cost": "8.45",
+        "contribution": "-3.45"
+      }
+    },
+    {
+      "id": "high_incremental_cost",
+      "kind": "offer",
+      "inputs": {
+        "n": 3,
+        "displayed_price": "20",
+        "first_unit_cost": "6",
+        "extra_unit_cost": "8",
+        "tax_mode": "none",
+        "tax_rate_or_fixed": "0",
+        "fee_base_kind": "gross",
+        "fee_rate": ".03",
+        "fixed_fee": ".30",
+        "fixed_fee_scope": "order"
+      },
+      "expected": {
+        "customer_total": "20",
+        "tax": "0",
+        "fee_base": "20",
+        "fees": "0.90",
+        "product_cost": "22",
+        "landed_cost": "22.90",
+        "contribution": "-2.90"
+      }
+    },
+    {
+      "id": "zero_margin",
+      "kind": "offer",
+      "inputs": {
+        "n": 1,
+        "displayed_price": "6",
+        "first_unit_cost": "6",
+        "extra_unit_cost": "0",
+        "tax_mode": "none",
+        "tax_rate_or_fixed": "0",
+        "fee_base_kind": "gross",
+        "fee_rate": "0",
+        "fixed_fee": "0",
+        "fixed_fee_scope": "order"
+      },
+      "expected": {
+        "customer_total": "6",
+        "tax": "0",
+        "fee_base": "6",
+        "fees": "0",
+        "product_cost": "6",
+        "landed_cost": "6",
+        "contribution": "0"
+      }
+    },
+    {
+      "id": "base_funnel",
+      "kind": "funnel",
+      "inputs": {
+        "cpc": ".40",
+        "lpv_rate": ".90",
+        "checkout_rate": ".12",
+        "purchase_rate": ".40"
+      },
+      "expected": {
+        "click_to_purchase": "0.043200",
+        "cpa": "9.259259259259259259259259259",
+        "cost_per_lpv": "0.4444444444444444444444444444",
+        "cost_per_checkout": "3.703703703703703703703703704"
+      }
+    },
+    {
+      "id": "downside_funnel",
+      "kind": "funnel",
+      "inputs": {
+        "cpc": ".40",
+        "lpv_rate": ".90",
+        "checkout_rate": ".12",
+        "purchase_rate": ".25"
+      },
+      "expected": {
+        "click_to_purchase": "0.027000",
+        "cpa": "14.81481481481481481481481481",
+        "cost_per_lpv": "0.4444444444444444444444444444",
+        "cost_per_checkout": "3.703703703703703703703703704"
+      }
+    },
+    {
+      "id": "zero_purchase",
+      "kind": "funnel",
+      "inputs": {
+        "cpc": ".40",
+        "lpv_rate": ".90",
+        "checkout_rate": ".12",
+        "purchase_rate": "0"
+      },
+      "expected": {
+        "click_to_purchase": "0.0000",
+        "cpa": null,
+        "cost_per_lpv": "0.4444444444444444444444444444",
+        "cost_per_checkout": "3.703703703703703703703703704"
+      }
+    },
+    {
+      "id": "zero_lpv",
+      "kind": "funnel",
+      "inputs": {
+        "cpc": ".40",
+        "lpv_rate": "0",
+        "checkout_rate": ".12",
+        "purchase_rate": ".40"
+      },
+      "expected": {
+        "click_to_purchase": "0.0000",
+        "cpa": null,
+        "cost_per_lpv": null,
+        "cost_per_checkout": null
+      }
+    },
+    {
+      "id": "zero_checkout",
+      "kind": "funnel",
+      "inputs": {
+        "cpc": ".40",
+        "lpv_rate": ".90",
+        "checkout_rate": "0",
+        "purchase_rate": ".40"
+      },
+      "expected": {
+        "click_to_purchase": "0.0000",
+        "cpa": null,
+        "cost_per_lpv": "0.4444444444444444444444444444",
+        "cost_per_checkout": null
+      }
+    },
+    {
+      "id": "weighted_base_case",
+      "kind": "blend",
+      "inputs": {
+        "offer_ids": [
+          "one_unit_inclusive",
+          "two_unit_inclusive",
+          "three_unit_inclusive"
+        ],
+        "weights": [
+          ".50",
+          ".35",
+          ".15"
+        ],
+        "profit_buffer": "5"
+      },
+      "expected": {
+        "aov": "29.15",
+        "landed_cost": "11.09535",
+        "contribution": "18.05465",
+        "target_cpa": "13.05465"
+      }
+    },
+    {
+      "id": "single_offer_null_bundles",
+      "kind": "blend",
+      "inputs": {
+        "offer_ids": [
+          "one_unit_inclusive"
+        ],
+        "weights": [
+          "1"
+        ],
+        "profit_buffer": "5"
+      },
+      "expected": {
+        "aov": "22",
+        "landed_cost": "8.938",
+        "contribution": "13.062",
+        "target_cpa": "8.062"
+      }
+    },
+    {
+      "id": "nonpositive_target",
+      "kind": "blend",
+      "inputs": {
+        "offer_ids": [
+          "zero_margin"
+        ],
+        "weights": [
+          "1"
+        ],
+        "profit_buffer": "2"
+      },
+      "expected": {
+        "aov": "6",
+        "landed_cost": "6",
+        "contribution": "0",
+        "target_cpa": "-2"
+      }
+    }
+  ]
+}

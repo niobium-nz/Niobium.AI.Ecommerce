@@ -1,0 +1,1506 @@
+{
+  "purpose": "Synthetic contract fixtures. Expected outputs are authored examples, not live agent results. Research stubs are not real sources.",
+  "cases": [
+    {
+      "name": "clear_features_no_research",
+      "input": {
+        "product_name": "Reusable pet hair removal glove",
+        "country": "GB",
+        "category_name": "Upholstery cleaning",
+        "known_features": [
+          "Glove-shaped tool",
+          "Removes loose pet hair from upholstery",
+          "Reusable"
+        ]
+      },
+      "expected_output": {
+        "status": "ok",
+        "product_name_given": "Reusable pet hair removal glove",
+        "category_name_provided": "Upholstery cleaning",
+        "known_features_provided": [
+          "Glove-shaped tool",
+          "Removes loose pet hair from upholstery",
+          "Reusable"
+        ],
+        "normalization": {
+          "brand_model_tokens": [],
+          "base_category_inferred": "Upholstery cleaning accessory",
+          "observed_from_input": [
+            "The name and features identify a glove-shaped tool.",
+            "The supplied function is removal of loose pet hair from upholstery.",
+            "Reusable is explicitly supplied."
+          ],
+          "observed_from_web": [],
+          "assumptions": [
+            "High confidence: upholstery cleaning accessory is a base-category container inferred from the stated use, not an extra function."
+          ],
+          "confidence0_to10": 9
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": "Pet hair removal glove for upholstery",
+          "archetype_explanation": [
+            "Keep the glove form and upholstery hair-removal job together.",
+            "Do not broaden this product into direct animal grooming."
+          ],
+          "form_factor": "Glove",
+          "job_to_be_done": "Remove loose pet hair from upholstery",
+          "primary_target": "Pet hair on upholstery",
+          "qualifiers": [
+            "Reusable"
+          ],
+          "must_include_tokens": [
+            "glove",
+            "pet hair removal",
+            "upholstery"
+          ],
+          "near_miss_classes": [
+            "Vacuum cleaners",
+            "Lint rollers",
+            "Animal grooming brushes"
+          ],
+          "avoid_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ]
+        },
+        "product_interpretations": [
+          {
+            "interpreted_product_type": "Upholstery cleaning accessory",
+            "interpreted_archetype": "Pet hair removal glove for upholstery",
+            "why_this_interpretation": [
+              "The supplied form and function explicitly support this archetype."
+            ],
+            "confidence": "High"
+          }
+        ],
+        "web_research": {
+          "used": false,
+          "queries": [],
+          "key_takeaways": [],
+          "source_domains": []
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair"
+          ],
+          "tier_b_close_archetype_synonyms": [
+            "pet fur removal mitt for upholstery"
+          ],
+          "tier_c_brand_model_terms": [],
+          "tier_d_broad_context_terms": [
+            "pet hair remover"
+          ],
+          "avoid_or_exclusion_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ],
+          "recommended_mcp_queries": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair",
+            "pet fur removal mitt for upholstery"
+          ]
+        },
+        "notes_for_downstream_agent": [
+          "The nonempty features list limits functionality; do not add grooming, massage or direct use on animals.",
+          "Fewer than the target A/B counts are returned to avoid repetitive variants. No brand/model is supported, so Tier C is empty.",
+          "Must-include concepts allow equivalent wording such as glove/mitt and hair/fur here; every recommended A/B query retains the same form, job and target scope.",
+          "Tier D is context only and is excluded from recommendations because scoped A/B terms exist.",
+          "Near-miss classes are scope exclusions, not evidence about market competition."
+        ]
+      },
+      "notes": "Supplied features sufficient; no web evidence; sub-target counts and empty brand tier are valid."
+    },
+    {
+      "name": "sufficient_input_without_research_tools",
+      "input": {
+        "product_name": "Reusable pet hair removal glove",
+        "country": "GB",
+        "category_name": "Upholstery cleaning",
+        "known_features": [
+          "Glove-shaped tool",
+          "Removes loose pet hair from upholstery",
+          "Reusable"
+        ]
+      },
+      "expected_output": {
+        "status": "ok",
+        "product_name_given": "Reusable pet hair removal glove",
+        "category_name_provided": "Upholstery cleaning",
+        "known_features_provided": [
+          "Glove-shaped tool",
+          "Removes loose pet hair from upholstery",
+          "Reusable"
+        ],
+        "normalization": {
+          "brand_model_tokens": [],
+          "base_category_inferred": "Upholstery cleaning accessory",
+          "observed_from_input": [
+            "The name and features identify a glove-shaped tool.",
+            "The supplied function is removal of loose pet hair from upholstery.",
+            "Reusable is explicitly supplied."
+          ],
+          "observed_from_web": [],
+          "assumptions": [
+            "High confidence: upholstery cleaning accessory is a base-category container inferred from the stated use, not an extra function."
+          ],
+          "confidence0_to10": 9
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": "Pet hair removal glove for upholstery",
+          "archetype_explanation": [
+            "Keep the glove form and upholstery hair-removal job together.",
+            "Do not broaden this product into direct animal grooming."
+          ],
+          "form_factor": "Glove",
+          "job_to_be_done": "Remove loose pet hair from upholstery",
+          "primary_target": "Pet hair on upholstery",
+          "qualifiers": [
+            "Reusable"
+          ],
+          "must_include_tokens": [
+            "glove",
+            "pet hair removal",
+            "upholstery"
+          ],
+          "near_miss_classes": [
+            "Vacuum cleaners",
+            "Lint rollers",
+            "Animal grooming brushes"
+          ],
+          "avoid_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ]
+        },
+        "product_interpretations": [
+          {
+            "interpreted_product_type": "Upholstery cleaning accessory",
+            "interpreted_archetype": "Pet hair removal glove for upholstery",
+            "why_this_interpretation": [
+              "The supplied form and function explicitly support this archetype."
+            ],
+            "confidence": "High"
+          }
+        ],
+        "web_research": {
+          "used": false,
+          "queries": [],
+          "key_takeaways": [],
+          "source_domains": []
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair"
+          ],
+          "tier_b_close_archetype_synonyms": [
+            "pet fur removal mitt for upholstery"
+          ],
+          "tier_c_brand_model_terms": [],
+          "tier_d_broad_context_terms": [
+            "pet hair remover"
+          ],
+          "avoid_or_exclusion_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ],
+          "recommended_mcp_queries": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair",
+            "pet fur removal mitt for upholstery"
+          ]
+        },
+        "notes_for_downstream_agent": [
+          "The nonempty features list limits functionality; do not add grooming, massage or direct use on animals.",
+          "Fewer than the target A/B counts are returned to avoid repetitive variants. No brand/model is supported, so Tier C is empty.",
+          "Must-include concepts allow equivalent wording such as glove/mitt and hair/fur here; every recommended A/B query retains the same form, job and target scope.",
+          "Tier D is context only and is excluded from recommendations because scoped A/B terms exist.",
+          "Near-miss classes are scope exclusions, not evidence about market competition."
+        ]
+      },
+      "notes": "No browser or script execution is needed for this fixture.",
+      "runtime_stub": {
+        "research_tools_available": false,
+        "code_execution_available": false,
+        "research_necessary": false
+      }
+    },
+    {
+      "name": "features_omitted",
+      "input": {
+        "product_name": "Pet hair removal glove for upholstery",
+        "country": "NZL"
+      },
+      "expected_output": {
+        "status": "ok",
+        "product_name_given": "Pet hair removal glove for upholstery",
+        "category_name_provided": null,
+        "known_features_provided": [],
+        "normalization": {
+          "brand_model_tokens": [],
+          "base_category_inferred": "Upholstery cleaning accessory",
+          "observed_from_input": [
+            "The descriptive product name states glove, pet hair removal and upholstery."
+          ],
+          "observed_from_web": [],
+          "assumptions": [
+            "High confidence: upholstery cleaning accessory is inferred as a category container from the name."
+          ],
+          "confidence0_to10": 8
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": "Pet hair removal glove for upholstery",
+          "archetype_explanation": [
+            "Keep the glove form and upholstery hair-removal job together.",
+            "Do not broaden this product into direct animal grooming."
+          ],
+          "form_factor": "Glove",
+          "job_to_be_done": "Remove loose pet hair from upholstery",
+          "primary_target": "Pet hair on upholstery",
+          "qualifiers": [],
+          "must_include_tokens": [
+            "glove",
+            "pet hair removal",
+            "upholstery"
+          ],
+          "near_miss_classes": [
+            "Vacuum cleaners",
+            "Lint rollers",
+            "Animal grooming brushes"
+          ],
+          "avoid_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ]
+        },
+        "product_interpretations": [
+          {
+            "interpreted_product_type": "Upholstery cleaning accessory",
+            "interpreted_archetype": "Pet hair removal glove for upholstery",
+            "why_this_interpretation": [
+              "The descriptive name directly supplies the form, job and target."
+            ],
+            "confidence": "High"
+          }
+        ],
+        "web_research": {
+          "used": false,
+          "queries": [],
+          "key_takeaways": [],
+          "source_domains": []
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair"
+          ],
+          "tier_b_close_archetype_synonyms": [
+            "pet fur removal mitt for upholstery"
+          ],
+          "tier_c_brand_model_terms": [],
+          "tier_d_broad_context_terms": [
+            "pet hair remover"
+          ],
+          "avoid_or_exclusion_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ],
+          "recommended_mcp_queries": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair",
+            "pet fur removal mitt for upholstery"
+          ]
+        },
+        "notes_for_downstream_agent": [
+          "No known features were supplied. Do not add a material, mechanism or reusable claim absent evidence.",
+          "Keep the target upholstery; no direct animal-grooming function is established.",
+          "Tier counts are below targets to avoid filler; Tier C is empty because no brand/model is supported.",
+          "Tier D is excluded because Tier A/B are nonempty."
+        ]
+      },
+      "notes": "Omitted known_features is processed as []."
+    },
+    {
+      "name": "features_empty",
+      "input": {
+        "product_name": "Pet hair removal glove for upholstery",
+        "country": "NZL",
+        "known_features": []
+      },
+      "expected_output": {
+        "status": "ok",
+        "product_name_given": "Pet hair removal glove for upholstery",
+        "category_name_provided": null,
+        "known_features_provided": [],
+        "normalization": {
+          "brand_model_tokens": [],
+          "base_category_inferred": "Upholstery cleaning accessory",
+          "observed_from_input": [
+            "The descriptive product name states glove, pet hair removal and upholstery."
+          ],
+          "observed_from_web": [],
+          "assumptions": [
+            "High confidence: upholstery cleaning accessory is inferred as a category container from the name."
+          ],
+          "confidence0_to10": 8
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": "Pet hair removal glove for upholstery",
+          "archetype_explanation": [
+            "Keep the glove form and upholstery hair-removal job together.",
+            "Do not broaden this product into direct animal grooming."
+          ],
+          "form_factor": "Glove",
+          "job_to_be_done": "Remove loose pet hair from upholstery",
+          "primary_target": "Pet hair on upholstery",
+          "qualifiers": [],
+          "must_include_tokens": [
+            "glove",
+            "pet hair removal",
+            "upholstery"
+          ],
+          "near_miss_classes": [
+            "Vacuum cleaners",
+            "Lint rollers",
+            "Animal grooming brushes"
+          ],
+          "avoid_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ]
+        },
+        "product_interpretations": [
+          {
+            "interpreted_product_type": "Upholstery cleaning accessory",
+            "interpreted_archetype": "Pet hair removal glove for upholstery",
+            "why_this_interpretation": [
+              "The descriptive name directly supplies the form, job and target."
+            ],
+            "confidence": "High"
+          }
+        ],
+        "web_research": {
+          "used": false,
+          "queries": [],
+          "key_takeaways": [],
+          "source_domains": []
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair"
+          ],
+          "tier_b_close_archetype_synonyms": [
+            "pet fur removal mitt for upholstery"
+          ],
+          "tier_c_brand_model_terms": [],
+          "tier_d_broad_context_terms": [
+            "pet hair remover"
+          ],
+          "avoid_or_exclusion_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ],
+          "recommended_mcp_queries": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair",
+            "pet fur removal mitt for upholstery"
+          ]
+        },
+        "notes_for_downstream_agent": [
+          "No known features were supplied. Do not add a material, mechanism or reusable claim absent evidence.",
+          "Keep the target upholstery; no direct animal-grooming function is established.",
+          "Tier counts are below targets to avoid filler; Tier C is empty because no brand/model is supported.",
+          "Tier D is excluded because Tier A/B are nonempty."
+        ]
+      },
+      "notes": "Empty known_features has the same processing meaning as omission."
+    },
+    {
+      "name": "null_category",
+      "input": {
+        "product_name": "Pet hair removal glove for upholstery",
+        "country": "NZL",
+        "category_name": null
+      },
+      "expected_output": {
+        "status": "ok",
+        "product_name_given": "Pet hair removal glove for upholstery",
+        "category_name_provided": null,
+        "known_features_provided": [],
+        "normalization": {
+          "brand_model_tokens": [],
+          "base_category_inferred": "Upholstery cleaning accessory",
+          "observed_from_input": [
+            "The descriptive product name states glove, pet hair removal and upholstery."
+          ],
+          "observed_from_web": [],
+          "assumptions": [
+            "High confidence: upholstery cleaning accessory is inferred as a category container from the name."
+          ],
+          "confidence0_to10": 8
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": "Pet hair removal glove for upholstery",
+          "archetype_explanation": [
+            "Keep the glove form and upholstery hair-removal job together.",
+            "Do not broaden this product into direct animal grooming."
+          ],
+          "form_factor": "Glove",
+          "job_to_be_done": "Remove loose pet hair from upholstery",
+          "primary_target": "Pet hair on upholstery",
+          "qualifiers": [],
+          "must_include_tokens": [
+            "glove",
+            "pet hair removal",
+            "upholstery"
+          ],
+          "near_miss_classes": [
+            "Vacuum cleaners",
+            "Lint rollers",
+            "Animal grooming brushes"
+          ],
+          "avoid_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ]
+        },
+        "product_interpretations": [
+          {
+            "interpreted_product_type": "Upholstery cleaning accessory",
+            "interpreted_archetype": "Pet hair removal glove for upholstery",
+            "why_this_interpretation": [
+              "The descriptive name directly supplies the form, job and target."
+            ],
+            "confidence": "High"
+          }
+        ],
+        "web_research": {
+          "used": false,
+          "queries": [],
+          "key_takeaways": [],
+          "source_domains": []
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair"
+          ],
+          "tier_b_close_archetype_synonyms": [
+            "pet fur removal mitt for upholstery"
+          ],
+          "tier_c_brand_model_terms": [],
+          "tier_d_broad_context_terms": [
+            "pet hair remover"
+          ],
+          "avoid_or_exclusion_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ],
+          "recommended_mcp_queries": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair",
+            "pet fur removal mitt for upholstery"
+          ]
+        },
+        "notes_for_downstream_agent": [
+          "No known features were supplied. Do not add a material, mechanism or reusable claim absent evidence.",
+          "Keep the target upholstery; no direct animal-grooming function is established.",
+          "Tier counts are below targets to avoid filler; Tier C is empty because no brand/model is supported.",
+          "Tier D is excluded because Tier A/B are nonempty."
+        ]
+      },
+      "notes": "Nullable category is accepted."
+    },
+    {
+      "name": "blank_category_echo",
+      "input": {
+        "product_name": "Pet hair removal glove for upholstery",
+        "country": "NZL",
+        "category_name": "   "
+      },
+      "expected_output": {
+        "status": "ok",
+        "product_name_given": "Pet hair removal glove for upholstery",
+        "category_name_provided": "   ",
+        "known_features_provided": [],
+        "normalization": {
+          "brand_model_tokens": [],
+          "base_category_inferred": "Upholstery cleaning accessory",
+          "observed_from_input": [
+            "The descriptive product name states glove, pet hair removal and upholstery."
+          ],
+          "observed_from_web": [],
+          "assumptions": [
+            "High confidence: upholstery cleaning accessory is inferred as a category container from the name."
+          ],
+          "confidence0_to10": 8
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": "Pet hair removal glove for upholstery",
+          "archetype_explanation": [
+            "Keep the glove form and upholstery hair-removal job together.",
+            "Do not broaden this product into direct animal grooming."
+          ],
+          "form_factor": "Glove",
+          "job_to_be_done": "Remove loose pet hair from upholstery",
+          "primary_target": "Pet hair on upholstery",
+          "qualifiers": [],
+          "must_include_tokens": [
+            "glove",
+            "pet hair removal",
+            "upholstery"
+          ],
+          "near_miss_classes": [
+            "Vacuum cleaners",
+            "Lint rollers",
+            "Animal grooming brushes"
+          ],
+          "avoid_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ]
+        },
+        "product_interpretations": [
+          {
+            "interpreted_product_type": "Upholstery cleaning accessory",
+            "interpreted_archetype": "Pet hair removal glove for upholstery",
+            "why_this_interpretation": [
+              "The descriptive name directly supplies the form, job and target."
+            ],
+            "confidence": "High"
+          }
+        ],
+        "web_research": {
+          "used": false,
+          "queries": [],
+          "key_takeaways": [],
+          "source_domains": []
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair"
+          ],
+          "tier_b_close_archetype_synonyms": [
+            "pet fur removal mitt for upholstery"
+          ],
+          "tier_c_brand_model_terms": [],
+          "tier_d_broad_context_terms": [
+            "pet hair remover"
+          ],
+          "avoid_or_exclusion_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ],
+          "recommended_mcp_queries": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair",
+            "pet fur removal mitt for upholstery"
+          ]
+        },
+        "notes_for_downstream_agent": [
+          "No known features were supplied. Do not add a material, mechanism or reusable claim absent evidence.",
+          "Keep the target upholstery; no direct animal-grooming function is established.",
+          "Tier counts are below targets to avoid filler; Tier C is empty because no brand/model is supported.",
+          "Tier D is excluded because Tier A/B are nonempty."
+        ]
+      },
+      "notes": "Blank optional category is no hint but is echoed unchanged."
+    },
+    {
+      "name": "opaque_sku_needs_more_info",
+      "input": {
+        "product_name": "ZXQ-4821",
+        "country": "US"
+      },
+      "expected_output": {
+        "status": "needs_more_info",
+        "product_name_given": "ZXQ-4821",
+        "category_name_provided": null,
+        "known_features_provided": [],
+        "normalization": {
+          "brand_model_tokens": [],
+          "base_category_inferred": null,
+          "observed_from_input": [
+            "The input contains a code-like name with no category or features."
+          ],
+          "observed_from_web": [],
+          "assumptions": [],
+          "confidence0_to10": 1
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": null,
+          "archetype_explanation": [],
+          "form_factor": null,
+          "job_to_be_done": null,
+          "primary_target": null,
+          "qualifiers": [],
+          "must_include_tokens": [],
+          "near_miss_classes": [],
+          "avoid_terms": []
+        },
+        "product_interpretations": [],
+        "web_research": {
+          "used": false,
+          "queries": [],
+          "key_takeaways": [],
+          "source_domains": []
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [],
+          "tier_b_close_archetype_synonyms": [],
+          "tier_c_brand_model_terms": [],
+          "tier_d_broad_context_terms": [],
+          "avoid_or_exclusion_terms": [],
+          "recommended_mcp_queries": []
+        },
+        "notes_for_downstream_agent": [
+          "Please provide a category, three to five features, or the problem solved plus what the product looks like (form factor).",
+          "No archetype, brand, mechanism or market claim is supported; no research was attempted."
+        ]
+      },
+      "notes": "Insufficient content is a structured outcome, not an input error."
+    },
+    {
+      "name": "missing_form_broad_fallback",
+      "input": {
+        "product_name": "SurfaceMate",
+        "country": "AU",
+        "known_features": [
+          "Removes loose pet hair from upholstery"
+        ]
+      },
+      "expected_output": {
+        "status": "needs_more_info",
+        "product_name_given": "SurfaceMate",
+        "category_name_provided": null,
+        "known_features_provided": [
+          "Removes loose pet hair from upholstery"
+        ],
+        "normalization": {
+          "brand_model_tokens": [],
+          "base_category_inferred": null,
+          "observed_from_input": [
+            "A hair-removal job and upholstery target are stated, but no physical format is supplied."
+          ],
+          "observed_from_web": [],
+          "assumptions": [],
+          "confidence0_to10": 3
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": null,
+          "archetype_explanation": [],
+          "form_factor": null,
+          "job_to_be_done": "Remove loose pet hair from upholstery",
+          "primary_target": "Pet hair on upholstery",
+          "qualifiers": [],
+          "must_include_tokens": [
+            "pet hair removal",
+            "upholstery"
+          ],
+          "near_miss_classes": [],
+          "avoid_terms": []
+        },
+        "product_interpretations": [],
+        "web_research": {
+          "used": false,
+          "queries": [],
+          "key_takeaways": [],
+          "source_domains": []
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [],
+          "tier_b_close_archetype_synonyms": [],
+          "tier_c_brand_model_terms": [],
+          "tier_d_broad_context_terms": [
+            "pet hair remover for upholstery"
+          ],
+          "avoid_or_exclusion_terms": [],
+          "recommended_mcp_queries": [
+            "pet hair remover for upholstery"
+          ]
+        },
+        "notes_for_downstream_agent": [
+          "Please provide the physical form, such as whether it is a glove, roller or another format; these are clarification examples, not asserted interpretations.",
+          "Tier A/B are empty because the form factor is unknown. Tier D is included only as the approved broad fallback; it can retrieve wrong product classes.",
+          "No brand or additional function is inferred from SurfaceMate."
+        ]
+      },
+      "notes": "Broad D allowed only when both A and B are empty."
+    },
+    {
+      "name": "ambiguous_forms",
+      "input": {
+        "product_name": "Pet hair remover",
+        "country": "CA",
+        "category_name": "Pet hair cleanup"
+      },
+      "expected_output": {
+        "status": "ambiguous",
+        "product_name_given": "Pet hair remover",
+        "category_name_provided": "Pet hair cleanup",
+        "known_features_provided": [],
+        "normalization": {
+          "brand_model_tokens": [],
+          "base_category_inferred": "Hair removal accessory",
+          "observed_from_input": [
+            "The input describes removal of pet hair without a physical form."
+          ],
+          "observed_from_web": [],
+          "assumptions": [
+            "Low confidence: glove and roller are plausible alternative forms, not verified properties of this product."
+          ],
+          "confidence0_to10": 3
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": null,
+          "archetype_explanation": [
+            "The shared job is pet hair removal; the form factor remains unresolved."
+          ],
+          "form_factor": null,
+          "job_to_be_done": "Remove pet hair",
+          "primary_target": "Pet hair",
+          "qualifiers": [],
+          "must_include_tokens": [
+            "pet hair",
+            "removal"
+          ],
+          "near_miss_classes": [],
+          "avoid_terms": []
+        },
+        "product_interpretations": [
+          {
+            "interpreted_product_type": "Hair removal accessory",
+            "interpreted_archetype": "Pet hair removal glove",
+            "why_this_interpretation": [
+              "A glove is one plausible format for the stated job; input does not confirm it."
+            ],
+            "confidence": "Low"
+          },
+          {
+            "interpreted_product_type": "Hair removal accessory",
+            "interpreted_archetype": "Pet hair removal roller",
+            "why_this_interpretation": [
+              "A roller is another plausible format for the stated job; input does not confirm it."
+            ],
+            "confidence": "Low"
+          }
+        ],
+        "web_research": {
+          "used": false,
+          "queries": [],
+          "key_takeaways": [],
+          "source_domains": []
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [
+            "pet hair removal glove",
+            "pet hair removal roller"
+          ],
+          "tier_b_close_archetype_synonyms": [
+            "pet fur removal mitt"
+          ],
+          "tier_c_brand_model_terms": [],
+          "tier_d_broad_context_terms": [
+            "pet hair remover"
+          ],
+          "avoid_or_exclusion_terms": [],
+          "recommended_mcp_queries": [
+            "pet hair removal glove",
+            "pet hair removal roller",
+            "pet fur removal mitt"
+          ]
+        },
+        "notes_for_downstream_agent": [
+          "Please confirm the physical form before benchmarking competition. The alternatives are inferred, not verified product facts.",
+          "Interpretation 1: Tier A [pet hair removal glove]; Tier B [pet fur removal mitt].",
+          "Interpretation 2: Tier A [pet hair removal roller]; Tier B [].",
+          "Do not mix the forms into one archetype; common form_factor and archetype_phrase remain null.",
+          "Per-interpretation scope requires the stated job plus its own form; shared tokens alone do not resolve the form.",
+          "Tier counts remain small because evidence is limited; Tier D is excluded while A/B exist."
+        ]
+      },
+      "notes": "Two plausible interpretations remain separately scoped and mapped in notes."
+    },
+    {
+      "name": "contradictory_features",
+      "input": {
+        "product_name": "Pet hair remover",
+        "country": "CA",
+        "known_features": [
+          "Glove form factor",
+          "Roller form factor",
+          "Removes pet hair"
+        ]
+      },
+      "expected_output": {
+        "status": "ambiguous",
+        "product_name_given": "Pet hair remover",
+        "category_name_provided": null,
+        "known_features_provided": [
+          "Glove form factor",
+          "Roller form factor",
+          "Removes pet hair"
+        ],
+        "normalization": {
+          "brand_model_tokens": [],
+          "base_category_inferred": "Hair removal accessory",
+          "observed_from_input": [
+            "The features state both glove and roller formats plus a pet-hair removal job."
+          ],
+          "observed_from_web": [],
+          "assumptions": [
+            "Low confidence: the two formats are treated as alternatives until the contradictory feature list is clarified."
+          ],
+          "confidence0_to10": 3
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": null,
+          "archetype_explanation": [
+            "The shared job is pet hair removal; the form factor remains unresolved."
+          ],
+          "form_factor": null,
+          "job_to_be_done": "Remove pet hair",
+          "primary_target": "Pet hair",
+          "qualifiers": [],
+          "must_include_tokens": [
+            "pet hair",
+            "removal"
+          ],
+          "near_miss_classes": [],
+          "avoid_terms": []
+        },
+        "product_interpretations": [
+          {
+            "interpreted_product_type": "Hair removal accessory",
+            "interpreted_archetype": "Pet hair removal glove",
+            "why_this_interpretation": [
+              "Glove is explicitly stated but conflicts with a separate roller-form feature."
+            ],
+            "confidence": "Low"
+          },
+          {
+            "interpreted_product_type": "Hair removal accessory",
+            "interpreted_archetype": "Pet hair removal roller",
+            "why_this_interpretation": [
+              "Roller is explicitly stated but conflicts with a separate glove-form feature."
+            ],
+            "confidence": "Low"
+          }
+        ],
+        "web_research": {
+          "used": false,
+          "queries": [],
+          "key_takeaways": [],
+          "source_domains": []
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [
+            "pet hair removal glove",
+            "pet hair removal roller"
+          ],
+          "tier_b_close_archetype_synonyms": [
+            "pet fur removal mitt"
+          ],
+          "tier_c_brand_model_terms": [],
+          "tier_d_broad_context_terms": [
+            "pet hair remover"
+          ],
+          "avoid_or_exclusion_terms": [],
+          "recommended_mcp_queries": [
+            "pet hair removal glove",
+            "pet hair removal roller",
+            "pet fur removal mitt"
+          ]
+        },
+        "notes_for_downstream_agent": [
+          "Please clarify whether this is a glove or a roller, or provide evidence explaining how both form claims apply; do not resolve the conflict by invention.",
+          "Interpretation 1: Tier A [pet hair removal glove]; Tier B [pet fur removal mitt].",
+          "Interpretation 2: Tier A [pet hair removal roller]; Tier B [].",
+          "Do not mix the forms into one archetype; common form_factor and archetype_phrase remain null.",
+          "Per-interpretation scope requires the stated job plus its own form; shared tokens alone do not resolve the form.",
+          "Tier counts remain small because evidence is limited; Tier D is excluded while A/B exist."
+        ]
+      },
+      "notes": "Conflicting input features lower confidence and do not authorize a hybrid invention."
+    },
+    {
+      "name": "input_supported_brand_terms",
+      "input": {
+        "product_name": "ExampleBrand Model-G pet hair removal glove",
+        "country": "GB",
+        "category_name": "Upholstery cleaning",
+        "known_features": [
+          "Glove-shaped tool",
+          "Removes loose pet hair from upholstery",
+          "Reusable"
+        ]
+      },
+      "expected_output": {
+        "status": "ok",
+        "product_name_given": "ExampleBrand Model-G pet hair removal glove",
+        "category_name_provided": "Upholstery cleaning",
+        "known_features_provided": [
+          "Glove-shaped tool",
+          "Removes loose pet hair from upholstery",
+          "Reusable"
+        ],
+        "normalization": {
+          "brand_model_tokens": [
+            "ExampleBrand",
+            "Model-G"
+          ],
+          "base_category_inferred": "Upholstery cleaning accessory",
+          "observed_from_input": [
+            "The name and features identify a glove-shaped tool.",
+            "The supplied function is removal of loose pet hair from upholstery.",
+            "Reusable is explicitly supplied.",
+            "The supplied name contains the direct brand/model wording ExampleBrand Model-G."
+          ],
+          "observed_from_web": [],
+          "assumptions": [
+            "High confidence: upholstery cleaning accessory is a base-category container inferred from the stated use, not an extra function."
+          ],
+          "confidence0_to10": 9
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": "Pet hair removal glove for upholstery",
+          "archetype_explanation": [
+            "Keep the glove form and upholstery hair-removal job together.",
+            "Do not broaden this product into direct animal grooming."
+          ],
+          "form_factor": "Glove",
+          "job_to_be_done": "Remove loose pet hair from upholstery",
+          "primary_target": "Pet hair on upholstery",
+          "qualifiers": [
+            "Reusable"
+          ],
+          "must_include_tokens": [
+            "glove",
+            "pet hair removal",
+            "upholstery"
+          ],
+          "near_miss_classes": [
+            "Vacuum cleaners",
+            "Lint rollers",
+            "Animal grooming brushes"
+          ],
+          "avoid_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ]
+        },
+        "product_interpretations": [
+          {
+            "interpreted_product_type": "Upholstery cleaning accessory",
+            "interpreted_archetype": "Pet hair removal glove for upholstery",
+            "why_this_interpretation": [
+              "The supplied form and function explicitly support this archetype."
+            ],
+            "confidence": "High"
+          }
+        ],
+        "web_research": {
+          "used": false,
+          "queries": [],
+          "key_takeaways": [],
+          "source_domains": []
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair"
+          ],
+          "tier_b_close_archetype_synonyms": [
+            "pet fur removal mitt for upholstery"
+          ],
+          "tier_c_brand_model_terms": [
+            "ExampleBrand Model-G",
+            "Model-G pet hair removal glove"
+          ],
+          "tier_d_broad_context_terms": [
+            "pet hair remover"
+          ],
+          "avoid_or_exclusion_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ],
+          "recommended_mcp_queries": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair",
+            "pet fur removal mitt for upholstery",
+            "ExampleBrand Model-G",
+            "Model-G pet hair removal glove"
+          ]
+        },
+        "notes_for_downstream_agent": [
+          "The nonempty features list limits functionality; do not add grooming, massage or direct use on animals.",
+          "Tier A/B remain below targets to avoid filler. Tier C uses the direct supplied name/model wording only; no external brand claim is made.",
+          "Must-include concepts allow equivalent wording such as glove/mitt and hair/fur here; every recommended A/B query retains the same form, job and target scope.",
+          "Tier D is context only and is excluded from recommendations because scoped A/B terms exist.",
+          "Near-miss classes are scope exclusions, not evidence about market competition."
+        ]
+      },
+      "notes": "Supported direct brand/model terms follow A/B in recommendations; D remains excluded."
+    },
+    {
+      "name": "preserve_duplicate_input_features",
+      "input": {
+        "product_name": "Reusable pet hair removal glove",
+        "country": "GB",
+        "category_name": "Upholstery cleaning",
+        "known_features": [
+          "Glove-shaped tool",
+          "Removes loose pet hair from upholstery",
+          "Reusable",
+          "Glove-shaped tool"
+        ]
+      },
+      "expected_output": {
+        "status": "ok",
+        "product_name_given": "Reusable pet hair removal glove",
+        "category_name_provided": "Upholstery cleaning",
+        "known_features_provided": [
+          "Glove-shaped tool",
+          "Removes loose pet hair from upholstery",
+          "Reusable",
+          "Glove-shaped tool"
+        ],
+        "normalization": {
+          "brand_model_tokens": [],
+          "base_category_inferred": "Upholstery cleaning accessory",
+          "observed_from_input": [
+            "The name and features identify a glove-shaped tool.",
+            "The supplied function is removal of loose pet hair from upholstery.",
+            "Reusable is explicitly supplied."
+          ],
+          "observed_from_web": [],
+          "assumptions": [
+            "High confidence: upholstery cleaning accessory is a base-category container inferred from the stated use, not an extra function."
+          ],
+          "confidence0_to10": 9
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": "Pet hair removal glove for upholstery",
+          "archetype_explanation": [
+            "Keep the glove form and upholstery hair-removal job together.",
+            "Do not broaden this product into direct animal grooming."
+          ],
+          "form_factor": "Glove",
+          "job_to_be_done": "Remove loose pet hair from upholstery",
+          "primary_target": "Pet hair on upholstery",
+          "qualifiers": [
+            "Reusable"
+          ],
+          "must_include_tokens": [
+            "glove",
+            "pet hair removal",
+            "upholstery"
+          ],
+          "near_miss_classes": [
+            "Vacuum cleaners",
+            "Lint rollers",
+            "Animal grooming brushes"
+          ],
+          "avoid_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ]
+        },
+        "product_interpretations": [
+          {
+            "interpreted_product_type": "Upholstery cleaning accessory",
+            "interpreted_archetype": "Pet hair removal glove for upholstery",
+            "why_this_interpretation": [
+              "The supplied form and function explicitly support this archetype."
+            ],
+            "confidence": "High"
+          }
+        ],
+        "web_research": {
+          "used": false,
+          "queries": [],
+          "key_takeaways": [],
+          "source_domains": []
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair"
+          ],
+          "tier_b_close_archetype_synonyms": [
+            "pet fur removal mitt for upholstery"
+          ],
+          "tier_c_brand_model_terms": [],
+          "tier_d_broad_context_terms": [
+            "pet hair remover"
+          ],
+          "avoid_or_exclusion_terms": [
+            "vacuum",
+            "lint roller",
+            "grooming brush",
+            "deshedding"
+          ],
+          "recommended_mcp_queries": [
+            "pet hair removal glove for upholstery",
+            "upholstery cleaning glove for pet hair",
+            "pet fur removal mitt for upholstery"
+          ]
+        },
+        "notes_for_downstream_agent": [
+          "The nonempty features list limits functionality; do not add grooming, massage or direct use on animals.",
+          "Fewer than the target A/B counts are returned to avoid repetitive variants. No brand/model is supported, so Tier C is empty.",
+          "Must-include concepts allow equivalent wording such as glove/mitt and hair/fur here; every recommended A/B query retains the same form, job and target scope.",
+          "Tier D is context only and is excluded from recommendations because scoped A/B terms exist.",
+          "Near-miss classes are scope exclusions, not evidence about market competition."
+        ]
+      },
+      "notes": "Echo original feature order and duplicates; deduplicate derived keyword lists only."
+    },
+    {
+      "name": "mock_research_success",
+      "input": {
+        "product_name": "ExampleBrand TouchPad",
+        "country": "AU"
+      },
+      "expected_output": {
+        "status": "ok",
+        "product_name_given": "ExampleBrand TouchPad",
+        "category_name_provided": null,
+        "known_features_provided": [],
+        "normalization": {
+          "brand_model_tokens": [
+            "ExampleBrand",
+            "TouchPad"
+          ],
+          "base_category_inferred": "Upholstery cleaning accessory",
+          "observed_from_input": [
+            "The input supplies the product name ExampleBrand TouchPad and target country AU."
+          ],
+          "observed_from_web": [
+            "catalog.example: the opened mock product page describes a flat pad for removing loose pet hair from upholstery."
+          ],
+          "assumptions": [
+            "High confidence within this synthetic fixture: upholstery cleaning accessory is the inferred category container."
+          ],
+          "confidence0_to10": 8
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": "Pet hair removal pad for upholstery",
+          "archetype_explanation": [
+            "The consulted mock page explicitly supplies pad form, hair-removal job and upholstery target."
+          ],
+          "form_factor": "Flat pad",
+          "job_to_be_done": "Remove loose pet hair from upholstery",
+          "primary_target": "Pet hair on upholstery",
+          "qualifiers": [],
+          "must_include_tokens": [
+            "pad",
+            "pet hair removal",
+            "upholstery"
+          ],
+          "near_miss_classes": [
+            "Vacuum cleaners",
+            "Lint rollers"
+          ],
+          "avoid_terms": [
+            "vacuum",
+            "lint roller"
+          ]
+        },
+        "product_interpretations": [
+          {
+            "interpreted_product_type": "Upholstery cleaning accessory",
+            "interpreted_archetype": "Pet hair removal pad for upholstery",
+            "why_this_interpretation": [
+              "The opened mock product description explicitly identifies this form and job."
+            ],
+            "confidence": "High"
+          }
+        ],
+        "web_research": {
+          "used": true,
+          "queries": [
+            "ExampleBrand TouchPad product Australia"
+          ],
+          "key_takeaways": [
+            "Query 1; catalog.example: the page uses pad rather than glove and explicitly describes pet hair removal from upholstery."
+          ],
+          "source_domains": [
+            "catalog.example"
+          ]
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [
+            "pet hair removal pad for upholstery"
+          ],
+          "tier_b_close_archetype_synonyms": [
+            "pet fur lifting pad for upholstery"
+          ],
+          "tier_c_brand_model_terms": [
+            "ExampleBrand TouchPad"
+          ],
+          "tier_d_broad_context_terms": [
+            "pet hair remover"
+          ],
+          "avoid_or_exclusion_terms": [
+            "vacuum",
+            "lint roller"
+          ],
+          "recommended_mcp_queries": [
+            "pet hair removal pad for upholstery",
+            "pet fur lifting pad for upholstery",
+            "ExampleBrand TouchPad"
+          ]
+        },
+        "notes_for_downstream_agent": [
+          "The fixture uses an explicit mock source, not live research. In real execution every web observation must come from an actually consulted source.",
+          "Country was supplied in the query text; no unsupported region filter is claimed.",
+          "Tier counts remain below targets to avoid filler; broad D is excluded while A/B exist."
+        ]
+      },
+      "notes": "Synthetic source observation for contract testing only.",
+      "research_stub": {
+        "synthetic": true,
+        "queries_completed": [
+          "ExampleBrand TouchPad product Australia"
+        ],
+        "opened_pages": [
+          {
+            "domain": "catalog.example",
+            "text": "ExampleBrand TouchPad is a flat pad for removing loose pet hair from upholstery."
+          }
+        ]
+      }
+    },
+    {
+      "name": "mock_search_no_identity",
+      "input": {
+        "product_name": "ZXQ-4821",
+        "country": "US"
+      },
+      "expected_output": {
+        "status": "needs_more_info",
+        "product_name_given": "ZXQ-4821",
+        "category_name_provided": null,
+        "known_features_provided": [],
+        "normalization": {
+          "brand_model_tokens": [],
+          "base_category_inferred": null,
+          "observed_from_input": [
+            "The input contains a code-like name with no category or features."
+          ],
+          "observed_from_web": [],
+          "assumptions": [],
+          "confidence0_to10": 1
+        },
+        "competitive_set_definition": {
+          "archetype_phrase": null,
+          "archetype_explanation": [],
+          "form_factor": null,
+          "job_to_be_done": null,
+          "primary_target": null,
+          "qualifiers": [],
+          "must_include_tokens": [],
+          "near_miss_classes": [],
+          "avoid_terms": []
+        },
+        "product_interpretations": [],
+        "web_research": {
+          "used": true,
+          "queries": [
+            "ZXQ-4821 product United States"
+          ],
+          "key_takeaways": [
+            "Query 1 returned no usable identity evidence in this mock search."
+          ],
+          "source_domains": []
+        },
+        "keyword_plan": {
+          "tier_a_archetype_terms": [],
+          "tier_b_close_archetype_synonyms": [],
+          "tier_c_brand_model_terms": [],
+          "tier_d_broad_context_terms": [],
+          "avoid_or_exclusion_terms": [],
+          "recommended_mcp_queries": []
+        },
+        "notes_for_downstream_agent": [
+          "Please provide a category, three to five features, or the problem solved plus what the product looks like (form factor).",
+          "The mock search completed but did not resolve the archetype; do not treat a completed empty search as a tool outage."
+        ]
+      },
+      "notes": "Completed research can still produce needs_more_info.",
+      "research_stub": {
+        "synthetic": true,
+        "query_completed": true,
+        "usable_results": []
+      }
+    },
+    {
+      "name": "necessary_research_unavailable",
+      "input": {
+        "product_name": "ExampleBrand TouchPad",
+        "country": "AU"
+      },
+      "expected_output": {
+        "error": "Required country-scoped research could not be performed. Enable an available research tool or supply enough product details to avoid needing research."
+      },
+      "notes": "Operational error, not fabricated web observations.",
+      "runtime_stub": {
+        "research_necessary": true,
+        "research_tools_available": false
+      }
+    },
+    {
+      "name": "missing_product",
+      "input": {
+        "country": "US"
+      },
+      "expected_output": {
+        "error": "Invalid input: product_name is required."
+      },
+      "notes": "Invalid input returns error-only JSON.",
+      "invalid_input": true
+    },
+    {
+      "name": "missing_country",
+      "input": {
+        "product_name": "Cleaning glove"
+      },
+      "expected_output": {
+        "error": "Invalid input: country is required."
+      },
+      "notes": "Invalid input returns error-only JSON.",
+      "invalid_input": true
+    },
+    {
+      "name": "blank_product",
+      "input": {
+        "product_name": "  ",
+        "country": "US"
+      },
+      "expected_output": {
+        "error": "Invalid input: product_name must be nonblank."
+      },
+      "notes": "Invalid input returns error-only JSON.",
+      "invalid_input": true
+    },
+    {
+      "name": "country_numeric",
+      "input": {
+        "product_name": "Cleaning glove",
+        "country": "840"
+      },
+      "expected_output": {
+        "error": "Invalid input: country must be an assigned alpha-2 or alpha-3 letter code."
+      },
+      "notes": "Invalid input returns error-only JSON.",
+      "invalid_input": true
+    },
+    {
+      "name": "country_name",
+      "input": {
+        "product_name": "Cleaning glove",
+        "country": "United States"
+      },
+      "expected_output": {
+        "error": "Invalid input: country names are not accepted; supply an assigned alpha-2 or alpha-3 letter code."
+      },
+      "notes": "Invalid input returns error-only JSON.",
+      "invalid_input": true
+    },
+    {
+      "name": "null_features",
+      "input": {
+        "product_name": "Cleaning glove",
+        "country": "US",
+        "known_features": null
+      },
+      "expected_output": {
+        "error": "Invalid input: known_features must be an array, not null."
+      },
+      "notes": "Invalid input returns error-only JSON.",
+      "invalid_input": true
+    },
+    {
+      "name": "blank_feature",
+      "input": {
+        "product_name": "Cleaning glove",
+        "country": "US",
+        "known_features": [
+          " "
+        ]
+      },
+      "expected_output": {
+        "error": "Invalid input: known_features[0] must be a nonblank string."
+      },
+      "notes": "Invalid input returns error-only JSON.",
+      "invalid_input": true
+    },
+    {
+      "name": "unsupported_key",
+      "input": {
+        "product_name": "Cleaning glove",
+        "country": "US",
+        "keyword_count": 100
+      },
+      "expected_output": {
+        "error": "Invalid input: keyword_count is not an allowed input field."
+      },
+      "notes": "Invalid input returns error-only JSON.",
+      "invalid_input": true
+    },
+    {
+      "name": "array_input",
+      "input": [
+        {
+          "product_name": "Reusable pet hair removal glove",
+          "country": "GB",
+          "category_name": "Upholstery cleaning",
+          "known_features": [
+            "Glove-shaped tool",
+            "Removes loose pet hair from upholstery",
+            "Reusable"
+          ]
+        }
+      ],
+      "expected_output": {
+        "error": "Invalid input: Expected one product object, not an array."
+      },
+      "notes": "Invalid input returns error-only JSON.",
+      "invalid_input": true
+    }
+  ]
+}

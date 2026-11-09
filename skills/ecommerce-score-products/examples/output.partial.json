@@ -1,0 +1,32 @@
+{
+  "score_version": "Ecommerce-PaidSocial-v1",
+  "target_country": "GB",
+  "product_name": "Folding pet hair removal mitt",
+  "normalized_product_type": "hand-worn pet hair removal mitt for upholstery",
+  "final_score": 35,
+  "priority_band": "DO_NOT_TEST",
+  "subscores": {
+    "impulse_fit": 15,
+    "target_market_demand_evidence": 6,
+    "competition_advantage": 6,
+    "pricing_headroom": 4,
+    "creative_transfer": 4,
+    "ops_simplicity": 6,
+    "compliance_safety": 5
+  },
+  "caps_applied": [
+    "UNRESOLVED_COMPLIANCE_35: Synthetic official-source checks were incomplete; do not approve by assumption.",
+    "THIN_EVIDENCE_60: Synthetic research suffered material partial failures."
+  ],
+  "top_reasons": [
+    "Synthetic scenario: some local retail evidence was usable, but unresolved safety/claim questions determine the result."
+  ],
+  "key_risks": [
+    "Synthetic Q7/Q8 failures left compliance and recall coverage incomplete."
+  ],
+  "evidence_confidence": 25,
+  "sources_checked": [
+    "Synthetic GB retail fixture (not live research)"
+  ],
+  "error": "Partial research failure in the synthetic fixture: official-source checks failed after usable retail research."
+}

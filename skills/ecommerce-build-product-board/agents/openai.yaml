@@ -1,0 +1,6 @@
+interface:
+  display_name: "Ecommerce Build Product Board"
+  short_description: "Build a debranded product board from real multi-view photos"
+  default_prompt: "Use Ecommerce Build Product Board on the supplied product photos, paths or image URLs. Inspect actual sources, remove all logos and branding including on-product marks, preserve colors and functional details, and create one transparent PNG of supported views. Ask for material missing views rather than inventing them."
+policy:
+  allow_implicit_invocation: true

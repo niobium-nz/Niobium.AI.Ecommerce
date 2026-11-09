@@ -1,0 +1,50 @@
+{
+  "query": "pet hair removal glove",
+  "country": "AUS",
+  "raw_ads_discovered": {
+    "tool_call_made": true,
+    "raw_ads_count": 4,
+    "distinct_advertisers_count": 4,
+    "notable_raw_patterns": [
+      "Four distinct ad IDs and four distinct page IDs were returned on one page.",
+      "The provider reported searchResultsCount=120; that is not the four-record examined sample or a verified eligible total."
+    ],
+    "snippets": [
+      "demo-ad-1: Pet hair removal glove for sofas.",
+      "demo-ad-2: Reusable pet hair removal glove for upholstery."
+    ],
+    "limitations": [
+      "Run date 2026-11-04 in Pacific/Auckland; cutoff 2026-08-04. This example uses a frozen synthetic run date.",
+      "Input country AUS mapped to tool country AU.",
+      "Two searches attempted; one usable page retrieved. The second request failed; retrieval stopped without retry.",
+      "The request start_date is an impressions-date filter, not proof of minimum ad age; the returned per-ad start dates were separately checked.",
+      "Exact-phrase search and total_impressions ordering select a bounded, nonrepresentative sample; unvisited pages and recent ads are not assessed.",
+      "A current active flag and old start date do not establish uninterrupted delivery, demand or profitability."
+    ]
+  },
+  "exclusion_filtering": {
+    "exclusion_terms_provided": true,
+    "filtering_possible": true,
+    "excluded_ads_count": 1,
+    "in_scope_ads_count": 2,
+    "top_matched_exclusion_terms": [
+      "roller",
+      "lint roller"
+    ],
+    "scope_note": "Operator notes restricted the assessment to gloves/mitts. demo-ad-4 matched roller and lint roller and was counted once as excluded. Among the remaining ads, demo-ad-3 started after the cutoff and was withheld. Reconciliation: 4 raw = 1 term-excluded + 1 newer + 2 eligible."
+  },
+  "competition_signal": {
+    "rating0_to10": 3,
+    "evidence_signals": [
+      "demo-ad-1 and demo-ad-2 are active with returned starts on 2026-06-01 and 2026-07-01, both before the cutoff.",
+      "Two eligible ads from two distinct page IDs remain after exclusions and age checks."
+    ],
+    "inference": [
+      "Weak proxy only: the two older active offers are consistent with sustained advertiser interest, but do not establish consumer demand or profitable performance."
+    ],
+    "confidence0_to10": 3,
+    "justification": "Usable first-page evidence shows limited eligible competition, but the second-page failure leaves the planned sample incomplete. Confidence is low; no failed-page records were counted.",
+    "operational_definition": "Qualitative competition within this exact-query AU sample: currently active ads with actual start dates on/before 2026-08-04, passing supplied exclusions and scope. Scale: -1 unknown, 0 none observed in an assessable sample, 1-3 limited, 4-6 meaningful diverse presence, 7-10 substantial diverse presence. Advertiser diversity matters more than repeated ads from one page. This is not a calibrated market or demand measure."
+  },
+  "error": "The second search page failed after one usable page. The report covers only the first page; no retry was made."
+}

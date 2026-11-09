@@ -1,0 +1,17 @@
+interface:
+  display_name: Ecommerce Draft Prompts
+  short_description: Turn market strategy and a product board into still-image prompts
+  default_prompt: Use Ecommerce Draft Prompts on the supplied finalized market-strategy
+    JSON plus product_reference_board. Inspect the actual reference image, preserve
+    product fidelity and source IDs, and return only status and image_prompts or the
+    documented error/clarification response. Write prompts only; do not generate images
+    or execute campaigns.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  allow_implicit_invocation: true
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas

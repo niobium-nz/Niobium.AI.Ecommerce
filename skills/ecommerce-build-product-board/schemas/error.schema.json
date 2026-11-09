@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ecommerce Build Product Board error",
+  "description": "JSON failure only. Success is a single transparent PNG image, not a JSON object. Visual clarification uses plain text before production.",
+  "type": "object",
+  "properties": {
+    "error": {
+      "type": "string",
+      "pattern": "\\S"
+    }
+  },
+  "required": [
+    "error"
+  ],
+  "additionalProperties": false
+}

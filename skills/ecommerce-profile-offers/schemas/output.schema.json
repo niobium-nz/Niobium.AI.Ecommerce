@@ -1,0 +1,512 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ecommerce Profile Offers Output",
+  "description": "Full/partial profile or error-only object; page evidence is checked by workflow, not schema.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Profile"
+    },
+    {
+      "$ref": "#/$defs/Error"
+    }
+  ],
+  "$defs": {
+    "Profile": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^[Hh][Tt][Tt][Pp][Ss]?://[^\\s/#?@]+(?:[/?#][^\\s]*)?$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "final_url": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^[Hh][Tt][Tt][Pp][Ss]?://[^\\s/#?@]+(?:[/?#][^\\s]*)?$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retrieval_date_time_utc": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "product": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProductInfo"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "vendor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VendorInfo"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "error": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "url",
+        "final_url",
+        "retrieval_date_time_utc",
+        "product",
+        "vendor",
+        "blockers"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "error"
+            ]
+          },
+          "then": {
+            "properties": {
+              "blockers": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ProductInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "price": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "currency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "bundle_offers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "key_claims": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "ingredients_or_materials": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^[Hh][Tt][Tt][Pp][Ss]?://[^\\s/#?@]+(?:[/?#][^\\s]*)?$"
+          },
+          "uniqueItems": true
+        },
+        "videos": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^[Hh][Tt][Tt][Pp][Ss]?://[^\\s/#?@]+(?:[/?#][^\\s]*)?$"
+          },
+          "uniqueItems": true
+        },
+        "how_it_wins": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SellingPoint"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "price",
+        "currency",
+        "variants",
+        "bundle_offers",
+        "key_claims",
+        "ingredients_or_materials",
+        "images",
+        "videos",
+        "how_it_wins"
+      ],
+      "additionalProperties": false
+    },
+    "SellingPoint": {
+      "type": "object",
+      "properties": {
+        "positioning": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "differentiators": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "proof_points": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "target_customer": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "objection_handling": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "comparison_claims": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "calls_to_action": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "offers_and_guarantees": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "risk_reducers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "social_proof": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "urgency_scarcity": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "compliance_language": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "positioning",
+        "differentiators",
+        "proof_points",
+        "target_customer",
+        "objection_handling",
+        "comparison_claims",
+        "calls_to_action",
+        "offers_and_guarantees",
+        "risk_reducers",
+        "social_proof",
+        "urgency_scarcity",
+        "compliance_language"
+      ],
+      "additionalProperties": false
+    },
+    "VendorInfo": {
+      "type": "object",
+      "properties": {
+        "brand_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "domain": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "platform_detected": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "description": "Observed platform name or Unknown when no platform evidence exists."
+        },
+        "policy_urls": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PolicyInfo"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "trust_signals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/VendorTrustSignal"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "brand_name",
+        "domain",
+        "platform_detected",
+        "policy_urls",
+        "trust_signals"
+      ],
+      "additionalProperties": false
+    },
+    "VendorTrustSignal": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_url": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^[Hh][Tt][Tt][Pp][Ss]?://[^\\s/#?@]+(?:[/?#][^\\s]*)?$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "value",
+        "source_url"
+      ],
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        {
+          "properties": {
+            "value": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        }
+      ]
+    },
+    "PolicyInfo": {
+      "type": "object",
+      "properties": {
+        "shipping": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^[Hh][Tt][Tt][Pp][Ss]?://[^\\s/#?@]+(?:[/?#][^\\s]*)?$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "returns": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^[Hh][Tt][Tt][Pp][Ss]?://[^\\s/#?@]+(?:[/?#][^\\s]*)?$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "privacy": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^[Hh][Tt][Tt][Pp][Ss]?://[^\\s/#?@]+(?:[/?#][^\\s]*)?$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "shipping",
+        "returns",
+        "privacy"
+      ],
+      "additionalProperties": false
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

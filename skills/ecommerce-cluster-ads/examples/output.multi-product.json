@@ -1,0 +1,34 @@
+[
+  {
+    "cluster_id": "domain=example.com|item=clip-torch|type=product",
+    "cluster_label": "Clip Torch",
+    "landing_page_domain": "example.com",
+    "likely_product_name": "Clip Torch",
+    "category_guess": "torch",
+    "known_features": [
+      "Rechargeable"
+    ],
+    "cluster_confidence": "High",
+    "ad_archive_ids": [
+      "A-200"
+    ],
+    "is_product": true,
+    "is_service": false
+  },
+  {
+    "cluster_id": "domain=example.com|item=trail-bottle|type=product",
+    "cluster_label": "Trail Bottle",
+    "landing_page_domain": "example.com",
+    "likely_product_name": "Trail Bottle",
+    "category_guess": "bottle",
+    "known_features": [
+      "Stainless steel"
+    ],
+    "cluster_confidence": "High",
+    "ad_archive_ids": [
+      "A-200"
+    ],
+    "is_product": true,
+    "is_service": false
+  }
+]

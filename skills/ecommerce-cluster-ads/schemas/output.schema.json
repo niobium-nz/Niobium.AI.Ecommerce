@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ecommerce Cluster Ads response",
+  "description": "Success is an array of normalized clusters. Failure is an object containing only a nonblank error string; no partial products are returned.",
+  "oneOf": [
+    {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/cluster"
+      }
+    },
+    {
+      "$ref": "#/$defs/error"
+    }
+  ],
+  "$defs": {
+    "cluster": {
+      "type": "object",
+      "properties": {
+        "cluster_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "description": "Unique readable identifier built by the domain-and-ids rules, not a hash."
+        },
+        "cluster_label": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "landing_page_domain": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[^\\s/:?#@]+(?:\\.[^\\s/:?#@]+)+$",
+              "not": {
+                "enum": [
+                  "null",
+                  "NULL",
+                  "Null"
+                ]
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "likely_product_name": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S",
+              "not": {
+                "enum": [
+                  "null",
+                  "NULL",
+                  "Null"
+                ]
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "category_guess": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S",
+              "not": {
+                "enum": [
+                  "null",
+                  "NULL",
+                  "Null"
+                ]
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "known_features": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "cluster_confidence": {
+          "type": "string",
+          "enum": [
+            "High",
+            "Medium",
+            "Low"
+          ]
+        },
+        "ad_archive_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "is_product": {
+          "type": "boolean"
+        },
+        "is_service": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "cluster_id",
+        "cluster_label",
+        "landing_page_domain",
+        "likely_product_name",
+        "category_guess",
+        "known_features",
+        "cluster_confidence",
+        "ad_archive_ids",
+        "is_product",
+        "is_service"
+      ],
+      "oneOf": [
+        {
+          "properties": {
+            "is_product": {
+              "const": true
+            },
+            "is_service": {
+              "const": false
+            }
+          }
+        },
+        {
+          "properties": {
+            "is_product": {
+              "const": false
+            },
+            "is_service": {
+              "const": true
+            }
+          }
+        }
+      ]
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "error"
+      ]
+    }
+  }
+}

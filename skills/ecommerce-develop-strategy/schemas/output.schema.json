@@ -1,0 +1,888 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ecommerce Develop Strategy output",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/strategy"
+    },
+    {
+      "$ref": "#/$defs/error"
+    }
+  ],
+  "$defs": {
+    "product_details": {
+      "type": "object",
+      "properties": {
+        "working_product_definition": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "core_problem_solved": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "primary_use_cases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1
+        },
+        "materials_or_construction_summary": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "fulfillment_and_refund_assumptions": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "suggested_product_names": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 5,
+          "maxItems": 10,
+          "uniqueItems": true
+        },
+        "recommended_primary_product_name": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "recommended_primary_product_name_rationale": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "working_product_definition",
+        "core_problem_solved",
+        "primary_use_cases",
+        "materials_or_construction_summary",
+        "fulfillment_and_refund_assumptions",
+        "suggested_product_names",
+        "recommended_primary_product_name",
+        "recommended_primary_product_name_rationale"
+      ],
+      "additionalProperties": false
+    },
+    "pricing_economics_and_offers": {
+      "type": "object",
+      "properties": {
+        "given_inputs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "modeled_assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "landed_cost_model": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "recommended_single_unit_selling_price": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "optional_compare_at_or_anchor_price": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "direct_purchase_funnel_model": {
+          "$ref": "#/$defs/direct_purchase_funnel_model"
+        },
+        "diagnostic_metrics": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/diagnostic_metrics"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "offer_stack": {
+          "$ref": "#/$defs/offer_stack"
+        },
+        "bundle_rationale": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "recommended_primary_offer": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "recommended_primary_offer_rationale": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "given_inputs",
+        "modeled_assumptions",
+        "landed_cost_model",
+        "recommended_single_unit_selling_price",
+        "optional_compare_at_or_anchor_price",
+        "direct_purchase_funnel_model",
+        "diagnostic_metrics",
+        "offer_stack",
+        "bundle_rationale",
+        "recommended_primary_offer",
+        "recommended_primary_offer_rationale"
+      ],
+      "additionalProperties": false
+    },
+    "direct_purchase_funnel_model": {
+      "type": "object",
+      "properties": {
+        "assumed_cpc": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "assumed_lpv_rate": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "assumed_checkout_start_rate": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "assumed_purchase_rate": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "derived_click_to_purchase_rate": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "estimated_blended_cpa": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "break_even_blended_cpa": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "recommended_target_blended_cpa": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "funnel_logic_explanation": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "assumed_cpc",
+        "assumed_lpv_rate",
+        "assumed_checkout_start_rate",
+        "assumed_purchase_rate",
+        "derived_click_to_purchase_rate",
+        "estimated_blended_cpa",
+        "break_even_blended_cpa",
+        "recommended_target_blended_cpa",
+        "funnel_logic_explanation"
+      ],
+      "additionalProperties": false
+    },
+    "diagnostic_metrics": {
+      "type": "object",
+      "properties": {
+        "estimated_cost_per_lpv": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "estimated_cost_per_checkout_start": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "estimated_cost_per_lpv",
+        "estimated_cost_per_checkout_start"
+      ],
+      "additionalProperties": false
+    },
+    "offer_stack": {
+      "type": "object",
+      "properties": {
+        "single_unit_offer": {
+          "$ref": "#/$defs/offer"
+        },
+        "best_seller_bundle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/offer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "higher_aov_bundle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/offer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "single_unit_offer",
+        "best_seller_bundle",
+        "higher_aov_bundle"
+      ],
+      "additionalProperties": false
+    },
+    "offer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "price_point": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "name",
+        "price_point",
+        "description"
+      ],
+      "additionalProperties": false
+    },
+    "mobile_first_landing_page_plan": {
+      "type": "object",
+      "properties": {
+        "role_in_direct_purchase_funnel": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "mobile_first_section_order": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1
+        },
+        "creative_assets_needed_for_each_section": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/landing_page_section_asset_plan"
+          },
+          "minItems": 1
+        },
+        "proof_strategy_without_reviews_or_real_social_proof": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "shipping_and_guarantee_messaging_guidance": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "faq_and_objection_handling_priorities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "alignment_with_customer_segments_and_angle_trigger_matrix": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "mobile_ux_notes": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "role_in_direct_purchase_funnel",
+        "mobile_first_section_order",
+        "creative_assets_needed_for_each_section",
+        "proof_strategy_without_reviews_or_real_social_proof",
+        "shipping_and_guarantee_messaging_guidance",
+        "faq_and_objection_handling_priorities",
+        "alignment_with_customer_segments_and_angle_trigger_matrix",
+        "mobile_ux_notes"
+      ],
+      "additionalProperties": false
+    },
+    "landing_page_section_asset_plan": {
+      "type": "object",
+      "properties": {
+        "section_name": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "asset_needs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/landing_page_asset_needs"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "section_name",
+        "asset_needs"
+      ],
+      "additionalProperties": false
+    },
+    "landing_page_asset_needs": {
+      "type": "object",
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "pattern": "^lp-[a-z0-9]+(?:-[a-z0-9]+)*-[0-9]{2,}$",
+          "description": "Readable plan-local identifier, e.g. lp-hero-01. Not a generated file or UUID."
+        },
+        "asset_detailed_description": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "asset_id",
+        "asset_detailed_description"
+      ],
+      "additionalProperties": false
+    },
+    "customer_segment": {
+      "type": "object",
+      "properties": {
+        "segment_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "segment_name": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "shared_context_snapshot": {
+          "$ref": "#/$defs/shared_context_snapshot"
+        },
+        "segment_rating": {
+          "$ref": "#/$defs/segment_rating"
+        },
+        "segment_summary": {
+          "$ref": "#/$defs/segment_summary"
+        },
+        "angle_and_trigger_matrix": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/angle_trigger"
+          },
+          "minItems": 1
+        },
+        "segment_landing_page_adaptation": {
+          "$ref": "#/$defs/segment_landing_page_adaptation"
+        }
+      },
+      "required": [
+        "segment_number",
+        "segment_name",
+        "shared_context_snapshot",
+        "segment_rating",
+        "segment_summary",
+        "angle_and_trigger_matrix",
+        "segment_landing_page_adaptation"
+      ],
+      "additionalProperties": false
+    },
+    "shared_context_snapshot": {
+      "type": "object",
+      "properties": {
+        "recommended_product_name": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "core_offer_stack": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "key_price_points": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "shipping_reality": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "guarantee_or_refund_framing": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "landing_page_role_in_funnel": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "recommended_product_name",
+        "core_offer_stack",
+        "key_price_points",
+        "shipping_reality",
+        "guarantee_or_refund_framing",
+        "landing_page_role_in_funnel"
+      ],
+      "additionalProperties": false
+    },
+    "segment_rating": {
+      "type": "object",
+      "properties": {
+        "overall_priority_rating": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "profit_potential_rating": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "trigger_intensity_rating": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "creative_clarity_rating": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "funnel_fit_rating": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "overall_priority_rating",
+        "profit_potential_rating",
+        "trigger_intensity_rating",
+        "creative_clarity_rating",
+        "funnel_fit_rating",
+        "rationale"
+      ],
+      "additionalProperties": false
+    },
+    "segment_summary": {
+      "type": "object",
+      "properties": {
+        "who_this_segment_is": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "need_state": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "purchase_moment_or_trigger_condition": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "emotional_driver": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "main_objections": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "economic_attractiveness": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "who_this_segment_is",
+        "need_state",
+        "purchase_moment_or_trigger_condition",
+        "emotional_driver",
+        "main_objections",
+        "economic_attractiveness"
+      ],
+      "additionalProperties": false
+    },
+    "angle_trigger": {
+      "type": "object",
+      "properties": {
+        "angle_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "angle_name": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "trigger": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "suggested_product_names_for_this_angle": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1
+        },
+        "recommended_product_name_for_this_angle": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "recommended_product_name_for_this_angle_rationale": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "recommended_short_product_code": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "recommended_website_primary_color_for_this_angle": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "description": "Explicit proposed color (prefer hexadecimal), not a factual claim or generated design."
+        },
+        "recommended_website_secondary_color_for_this_angle": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "description": "Explicit proposed color (prefer hexadecimal), not a factual claim or generated design."
+        },
+        "recommended_website_accent_color_for_this_angle": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "description": "Explicit proposed color (prefer hexadecimal), not a factual claim or generated design."
+        },
+        "recommended_website_color_theme_for_this_angle_rationale": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "core_promise": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "message_territory": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "why_this_angle_should_convert_on_meta": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "objections_to_pre_handle": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "proof_or_demo_assets_required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "recommended_cta_or_roas_target": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "creative_handoffs": {
+          "$ref": "#/$defs/creative_handoffs"
+        }
+      },
+      "required": [
+        "angle_number",
+        "angle_name",
+        "trigger",
+        "suggested_product_names_for_this_angle",
+        "recommended_product_name_for_this_angle",
+        "recommended_product_name_for_this_angle_rationale",
+        "recommended_short_product_code",
+        "recommended_website_primary_color_for_this_angle",
+        "recommended_website_secondary_color_for_this_angle",
+        "recommended_website_accent_color_for_this_angle",
+        "recommended_website_color_theme_for_this_angle_rationale",
+        "core_promise",
+        "message_territory",
+        "why_this_angle_should_convert_on_meta",
+        "objections_to_pre_handle",
+        "proof_or_demo_assets_required",
+        "recommended_cta_or_roas_target",
+        "creative_handoffs"
+      ],
+      "additionalProperties": false
+    },
+    "creative_handoffs": {
+      "type": "object",
+      "properties": {
+        "static_image_directions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "short_form_video_or_ugc_directions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "first_frame_or_thumb_stop_direction": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "copy_hook_territories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "headline_territories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "visual_proof_moments": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "continuity_notes_for_landing_page": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "static_image_directions",
+        "short_form_video_or_ugc_directions",
+        "first_frame_or_thumb_stop_direction",
+        "copy_hook_territories",
+        "headline_territories",
+        "visual_proof_moments",
+        "continuity_notes_for_landing_page"
+      ],
+      "additionalProperties": false
+    },
+    "segment_landing_page_adaptation": {
+      "type": "object",
+      "properties": {
+        "hero_direction": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "benefit_order": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "faq_emphasis": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "section_emphasis": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "mobile_ux_notes": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "asset_needs_specific_to_this_segment": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        }
+      },
+      "required": [
+        "hero_direction",
+        "benefit_order",
+        "faq_emphasis",
+        "section_emphasis",
+        "mobile_ux_notes",
+        "asset_needs_specific_to_this_segment"
+      ],
+      "additionalProperties": false
+    },
+    "strategy": {
+      "type": "object",
+      "properties": {
+        "product_details": {
+          "$ref": "#/$defs/product_details"
+        },
+        "pricing_economics_and_offers": {
+          "$ref": "#/$defs/pricing_economics_and_offers"
+        },
+        "mobile_first_landing_page_plan": {
+          "$ref": "#/$defs/mobile_first_landing_page_plan"
+        },
+        "customer_segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/customer_segment"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "product_details",
+        "pricing_economics_and_offers",
+        "mobile_first_landing_page_plan",
+        "customer_segments"
+      ],
+      "additionalProperties": false,
+      "description": "Complete strategy. Use the source-prescribed 3 to 5 segments unless a stated product-specific reason justifies another count."
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

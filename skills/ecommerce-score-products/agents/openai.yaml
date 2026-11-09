@@ -1,0 +1,16 @@
+interface:
+  display_name: Ecommerce Score Products
+  short_description: Score paid-social product tests for a specified country
+  default_prompt: Use Ecommerce Score Products on the supplied JSON object. Research
+    target_country using ordinary web tools, apply the fixed integer scoring bands
+    and downside caps, and return only the agreed JSON score or error. Do not initiate
+    paid Ad Library calls.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  allow_implicit_invocation: true
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas

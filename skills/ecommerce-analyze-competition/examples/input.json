@@ -1,0 +1,23 @@
+{
+  "query": "pet hair removal glove",
+  "country": "AUS",
+  "category_name": "Pet hair removal accessories",
+  "notes": [
+    "Glove or mitt offers only; do not include rollers or vacuum products."
+  ],
+  "avoid_or_exclusion_terms": [
+    "vacuum",
+    "roller",
+    "lint roller"
+  ],
+  "product_interpretations": [
+    {
+      "interpreted_product_type": "wearable hair-removal glove",
+      "interpreted_archetype": "glove for removing pet hair",
+      "why_this_interpretation": [
+        "The supplied query specifies a glove."
+      ],
+      "confidence": "High"
+    }
+  ]
+}

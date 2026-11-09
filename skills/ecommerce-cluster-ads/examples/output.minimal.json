@@ -1,0 +1,16 @@
+[
+  {
+    "cluster_id": "ad=U-1|item=unknown|type=product",
+    "cluster_label": "Unidentified offering - ad U-1",
+    "landing_page_domain": null,
+    "likely_product_name": null,
+    "category_guess": null,
+    "known_features": [],
+    "cluster_confidence": "Low",
+    "ad_archive_ids": [
+      "U-1"
+    ],
+    "is_product": true,
+    "is_service": false
+  }
+]

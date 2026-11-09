@@ -1,0 +1,38 @@
+{
+  "target_country": "GBR",
+  "product": {
+    "cluster_id": "fixture-store--folding-pet-hair-mitt",
+    "cluster_label": "Folding pet hair removal mitt",
+    "landing_page_domain": null,
+    "likely_product_name": "Folding pet hair removal mitt",
+    "category_guess": "Pet hair removal accessory",
+    "known_features": [
+      "Hand-worn mitt for removing pet hair from upholstery",
+      "Foldable storage"
+    ],
+    "cluster_confidence": "High",
+    "ad_archive_ids": [
+      "fixture-ad-001"
+    ],
+    "is_product": true,
+    "is_service": false
+  },
+  "ads": [
+    {
+      "ad_archive_id": "fixture-ad-001",
+      "is_active": true,
+      "page_name": "Synthetic Example Seller",
+      "snapshot": {
+        "title": "Folding pet hair removal mitt",
+        "body": {
+          "text": "Remove loose pet hair from upholstery with a hand-worn mitt."
+        },
+        "link_url": null,
+        "images": [],
+        "videos": [],
+        "cards": []
+      }
+    }
+  ],
+  "competition_signals": []
+}

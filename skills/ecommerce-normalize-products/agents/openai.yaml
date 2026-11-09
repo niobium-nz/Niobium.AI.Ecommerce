@@ -1,0 +1,15 @@
+interface:
+  display_name: Ecommerce Normalize Products
+  short_description: Define one product's competitive set and scoped keyword plan
+  default_prompt: Use Ecommerce Normalize Products on the supplied JSON object. Respect
+    known features, use targeted country-scoped research only when needed, and return
+    only the agreed JSON response or error.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  allow_implicit_invocation: true
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas

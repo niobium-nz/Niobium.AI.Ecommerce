@@ -1,0 +1,23 @@
+{
+  "competitor_used_product_name": "ReferenceBrand cable clip set",
+  "cogs_per_unit": 6,
+  "target_market_country": "NZL",
+  "extra_unit_cogs_per_order": 2,
+  "sales_tax": "10% of the tax-exclusive selling price; included in the displayed price",
+  "payment_processing_fees": "2.9% of the total customer charge plus 0.30 per order",
+  "currency": "NZD",
+  "competitor_claims": [
+    "Positions a charging cable within reach on a desk."
+  ],
+  "ingredients_or_materials": [
+    "Silicone cable clips"
+  ],
+  "competitor_marketing_how_it_wins": {
+    "positioning": [
+      "Desk cable organisation"
+    ],
+    "target_customer": [
+      "People who charge devices at a desk"
+    ]
+  }
+}

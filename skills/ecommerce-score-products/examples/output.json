@@ -1,0 +1,33 @@
+{
+  "score_version": "Ecommerce-PaidSocial-v1",
+  "target_country": "GB",
+  "product_name": "Folding pet hair removal mitt",
+  "normalized_product_type": "hand-worn pet hair removal mitt for upholstery",
+  "final_score": 80,
+  "priority_band": "STRONG_CANDIDATE",
+  "subscores": {
+    "impulse_fit": 20,
+    "target_market_demand_evidence": 12,
+    "competition_advantage": 9,
+    "pricing_headroom": 8,
+    "creative_transfer": 8,
+    "ops_simplicity": 8,
+    "compliance_safety": 15
+  },
+  "caps_applied": [],
+  "top_reasons": [
+    "Synthetic scenario only: the supplied mitt has a simple visual problem-solution proposition.",
+    "Synthetic GB retail fixture supports buyer-interest proxies and differentiated price positioning; it does not establish sales.",
+    "Synthetic current official-source fixture leaves low apparent safety and claim risk, not legal certification."
+  ],
+  "key_risks": [
+    "No supplier cost or acquisition-cost evidence; retail headroom is only a proxy.",
+    "The supplied ad has no country evidence and is not treated as proof of GB demand."
+  ],
+  "evidence_confidence": 70,
+  "sources_checked": [
+    "Synthetic GB retail fixture (not live research)",
+    "Synthetic GB official-source fixture (not live research)",
+    "Supplied fixture-ad-001"
+  ]
+}

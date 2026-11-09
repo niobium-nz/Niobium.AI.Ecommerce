@@ -1,0 +1,16 @@
+interface:
+  display_name: Ecommerce Develop Strategy
+  short_description: Plan offers, acquisition economics and customer segments
+  default_prompt: Use Ecommerce Develop Strategy on the supplied JSON input. Preserve
+    the currency and explicit tax/fee basis, build auditable offer and purchase-funnel
+    economics, and return only the agreed JSON strategy or error. Do not create ads,
+    publish pages, spend money or call paid Ad Library tools.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  allow_implicit_invocation: true
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas

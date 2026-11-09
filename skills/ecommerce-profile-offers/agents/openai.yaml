@@ -1,0 +1,15 @@
+interface:
+  display_name: Ecommerce Profile Offers
+  short_description: Profile ecommerce offers using a real interactive browser
+  default_prompt: Use Ecommerce Profile Offers on the supplied landing_page_url
+    JSON. Require a real interactive browser, handle blocking overlays, enforce scoped
+    navigation, and return the profile or error JSON.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  allow_implicit_invocation: true
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas

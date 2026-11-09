@@ -1,0 +1,199 @@
+{
+  "product_details": {
+    "working_product_definition": "Fictional test strategy: one complete silicone desk cable keeper per SKU. The hypothetical merchant has verified that it holds the supplied charging cable in the shown desk setup. No other fit or performance is established.",
+    "core_problem_solved": "Give the verified cable endpoint a defined resting place on the desk when the device is unplugged.",
+    "primary_use_cases": [
+      "The one verified desk cable-placement setup."
+    ],
+    "materials_or_construction_summary": "Supplied fixture fact: silicone. Preserve the exact visible appearance of the provided board; no dimensions, hidden parts, adhesive or certification claims are supplied.",
+    "fulfillment_and_refund_assumptions": "Overseas delivery of 1 to 2 weeks is a planning assumption, not approved image copy. No refund, warranty, safety or delivery guarantee is approved.",
+    "suggested_product_names": [
+      "Cable Rest",
+      "Desk Cable Nest",
+      "Cord Place",
+      "Cable Perch",
+      "Desk Cord Spot"
+    ],
+    "recommended_primary_product_name": "Cable Rest",
+    "recommended_primary_product_name_rationale": "Fictional naming concept describing the use without a performance guarantee. Do not add this name as physical branding or invent a logo."
+  },
+  "pricing_economics_and_offers": {
+    "given_inputs": [
+      "Fictional fixture currency NZD; one unit base cost NZD 6.00; extra unit NZD 2.00.",
+      "Explicit illustrative modeling inputs: no sales tax and no processing fee. These are not rates for any actual business."
+    ],
+    "modeled_assumptions": [
+      "Single price NZD 20.00; two-unit offer NZD 30.00; assumed order mix 80% single / 20% two units. These are proposals, not live pricing or approved overlay copy.",
+      "CPC NZD 0.40, LPV rate 0.80, checkout-start rate 0.20, purchase-per-checkout-start rate 0.50. No real conversion observations are supplied."
+    ],
+    "landed_cost_model": "One unit NZD 6.00; two units NZD 8.00. With explicitly zero tax/fees, proposed contribution is NZD 14.00 / NZD 22.00. At the modeled 80/20 mix, AOV is NZD 22.00, blended cost NZD 6.40 and blended contribution NZD 15.60.",
+    "recommended_single_unit_selling_price": "NZD 20.00, proposed only.",
+    "optional_compare_at_or_anchor_price": null,
+    "direct_purchase_funnel_model": {
+      "assumed_cpc": "NZD 0.40, illustrative assumption.",
+      "assumed_lpv_rate": "0.80 of clicks, illustrative assumption.",
+      "assumed_checkout_start_rate": "0.20 of landing-page views, illustrative assumption.",
+      "assumed_purchase_rate": "0.50 of checkout starts, illustrative assumption.",
+      "derived_click_to_purchase_rate": "0.80 x 0.20 x 0.50 = 0.08.",
+      "estimated_blended_cpa": "NZD 0.40 / 0.08 = NZD 5.00.",
+      "break_even_blended_cpa": "NZD 15.60, from the disclosed offer mix.",
+      "recommended_target_blended_cpa": "NZD 10.60 after a modeled NZD 5.00 profit buffer.",
+      "funnel_logic_explanation": "All economics are fictional planning examples, not image claims or real commercial performance."
+    },
+    "diagnostic_metrics": null,
+    "offer_stack": {
+      "single_unit_offer": {
+        "name": "One Cable Rest",
+        "price_point": "NZD 20.00, proposed",
+        "description": "One complete identical SKU for the verified desk setup."
+      },
+      "best_seller_bundle": {
+        "name": "Two desk positions",
+        "price_point": "NZD 30.00, proposed",
+        "description": "Two identical complete units of the same SKU. This is an internal proposal, not evidence of sales popularity."
+      },
+      "higher_aov_bundle": null
+    },
+    "bundle_rationale": "Two identical units can serve two verified desk positions. No third bundle is proposed because additional need is not established.",
+    "recommended_primary_offer": "One complete unit, proposed pricing only.",
+    "recommended_primary_offer_rationale": "Keep the example focused on one understood use; do not render prices or guarantees in imagery."
+  },
+  "mobile_first_landing_page_plan": {
+    "role_in_direct_purchase_funnel": "Help the defined desk user understand the verified cable-placement use before considering a purchase; this is proposed creative strategy, not validated conversion proof.",
+    "mobile_first_section_order": [
+      "Hero",
+      "Verified use",
+      "Offer explanation"
+    ],
+    "creative_assets_needed_for_each_section": [
+      {
+        "section_name": "Hero",
+        "asset_needs": [
+          {
+            "asset_id": "lp-hero-01",
+            "asset_detailed_description": "Square still image for the supplied segment: the actual product in its verified desk setup, with the cable endpoint visible. A generic hand approaches naturally. Leave blank copy-safe space; do not render text. Preserve the board appearance exactly."
+          }
+        ]
+      },
+      {
+        "section_name": "Offer explanation",
+        "asset_needs": [
+          {
+            "asset_id": "lp-offer-01",
+            "asset_detailed_description": "Landscape still for the same desk user, showing exactly two identical complete units of this one SKU side by side on the verified desk surface. This is an illustrative two-unit offer concept, not a sales record. Reserve blank copy space; do not render prices, badges or text."
+          }
+        ]
+      }
+    ],
+    "proof_strategy_without_reviews_or_real_social_proof": "Use an honest illustration of the supplied verified use. A generated scene is not a recorded test, customer review or independently measured result.",
+    "shipping_and_guarantee_messaging_guidance": "No shipping, refund or guarantee copy is approved for images.",
+    "faq_and_objection_handling_priorities": [
+      "Show the actual complete item.",
+      "Do not imply compatibility beyond the one verified setup."
+    ],
+    "alignment_with_customer_segments_and_angle_trigger_matrix": "Use the one segment and its single angle consistently; three distinct still jobs are explicitly requested.",
+    "mobile_ux_notes": "Make the product legible at a small display size without assuming a portrait ratio solely because the page is mobile-first."
+  },
+  "customer_segments": [
+    {
+      "segment_number": 1,
+      "segment_name": "Desk users reconnecting the verified charging cable",
+      "shared_context_snapshot": {
+        "recommended_product_name": "Cable Rest",
+        "core_offer_stack": "Proposed one-unit and two-identical-unit options; do not imply bestseller status.",
+        "key_price_points": [
+          "Proposed NZD 20.00 / NZD 30.00; not approved image copy."
+        ],
+        "shipping_reality": "Overseas 1 to 2 week planning assumption; omit shipping promises from imagery.",
+        "guarantee_or_refund_framing": "No approved guarantee or refund claim.",
+        "landing_page_role_in_funnel": "Explain the verified desk setup with honest still scenes before purchase."
+      },
+      "segment_rating": {
+        "overall_priority_rating": 5,
+        "profit_potential_rating": 4,
+        "trigger_intensity_rating": 4,
+        "creative_clarity_rating": 5,
+        "funnel_fit_rating": 4,
+        "rationale": "One tightly scoped hypothetical segment is sufficient for this compact example. Ratings are creative-planning assumptions."
+      },
+      "segment_summary": {
+        "who_this_segment_is": "Desk users who reconnect the verified charging cable after unplugging a device.",
+        "need_state": "Want a visible, defined cable-resting position during this routine.",
+        "purchase_moment_or_trigger_condition": "Returning to the desk to reconnect a device.",
+        "emotional_driver": "A small feeling of order and convenience, not anxiety or shame.",
+        "main_objections": [
+          "Can I see the actual product clearly?",
+          "Does the scene show only the verified setup?"
+        ],
+        "economic_attractiveness": "Hypothetical fit with the proposed one-unit entry offer; no performance facts are established."
+      },
+      "angle_and_trigger_matrix": [
+        {
+          "angle_number": 1,
+          "angle_name": "Ready for the next connection",
+          "trigger": "Returning to the desk after a short break.",
+          "suggested_product_names_for_this_angle": [
+            "Cable Rest"
+          ],
+          "recommended_product_name_for_this_angle": "Cable Rest",
+          "recommended_product_name_for_this_angle_rationale": "Use the shared proposed name in metadata only; do not add invented physical branding.",
+          "recommended_short_product_code": "CR-DESK",
+          "recommended_website_primary_color_for_this_angle": "#17324D",
+          "recommended_website_secondary_color_for_this_angle": "#F4F1EB",
+          "recommended_website_accent_color_for_this_angle": "#C6602A",
+          "recommended_website_color_theme_for_this_angle_rationale": "Proposed scenery and page palette only; never recolor the product.",
+          "core_promise": "An understandable resting place for the cable in the one verified setup, with no speed or universal-fit claim.",
+          "message_territory": "Routine convenience through a clear practical still.",
+          "why_this_angle_should_convert_on_meta": "Hypothesis: seeing a familiar action reduces explanation burden. This is not measured conversion evidence.",
+          "objections_to_pre_handle": [
+            "The product must remain visible and match the board.",
+            "Do not suggest unverified fit or fixing methods."
+          ],
+          "proof_or_demo_assets_required": [
+            "Use the hypothetical merchant-verified cable setup as supplied. The final synthetic image is an illustration, not proof of a real test."
+          ],
+          "recommended_cta_or_roas_target": "CTA territory: See the setup. No financial targets belong in image copy.",
+          "creative_handoffs": {
+            "static_image_directions": [
+              "Portrait still for cold paid social: the generic desk user has paused before reconnecting the cable, with the same complete product and verified cable placement. Make the product the first focal point. This is a distinct human-context still from lp-hero-01; no exact numerical ratio is supplied. Optional later overlay: A place for your cable. Do not render text in the base image."
+            ],
+            "short_form_video_or_ugc_directions": [
+              "Video-only continuous real-use demonstration; do not create an additional still from this footage request."
+            ],
+            "first_frame_or_thumb_stop_direction": "For the already requested portrait still, foreground the endpoint and actual product before the surrounding desk context.",
+            "copy_hook_territories": [
+              "Everyday cable placement, without measured time savings or claims of universal fit."
+            ],
+            "headline_territories": [
+              "A place for your cable"
+            ],
+            "visual_proof_moments": [
+              "Show only the supplied verified setup; no fake ratings, tests or endorsements."
+            ],
+            "continuity_notes_for_landing_page": "Keep the exact same SKU and honest use context across hero, portrait and offer stills; do not render internal short codes."
+          }
+        }
+      ],
+      "segment_landing_page_adaptation": {
+        "hero_direction": "Use lp-hero-01 without adding a separate duplicate hero.",
+        "benefit_order": [
+          "Clear product view",
+          "Verified cable setup",
+          "Optional identical second unit"
+        ],
+        "faq_emphasis": [
+          "The supplied use is narrow; compatibility beyond it is unknown."
+        ],
+        "section_emphasis": [
+          "Hero",
+          "Offer explanation"
+        ],
+        "mobile_ux_notes": "Keep the product readable without changing explicit orientation.",
+        "asset_needs_specific_to_this_segment": [
+          "Reuse lp-hero-01 and lp-offer-01; the angle supplies one additional portrait still. No additional unsupported scenes are requested."
+        ]
+      }
+    }
+  ],
+  "product_reference_board": "/mnt/data/product-reference-board.png"
+}

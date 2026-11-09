@@ -1,0 +1,555 @@
+{
+  "synthetic": true,
+  "cases": [
+    {
+      "id": "real-browser",
+      "kind": "browser",
+      "given": {
+        "real_headed": true,
+        "control": true,
+        "screen": true
+      },
+      "expected": "allow"
+    },
+    {
+      "id": "headless-js-not-equivalent",
+      "kind": "browser",
+      "given": {
+        "real_headed": false,
+        "control": true,
+        "screen": true,
+        "javascript": true
+      },
+      "expected": "error"
+    },
+    {
+      "id": "static-html-not-equivalent",
+      "kind": "browser",
+      "given": {
+        "real_headed": false,
+        "control": false,
+        "screen": false
+      },
+      "expected": "error"
+    },
+    {
+      "id": "readonly-browser-not-control",
+      "kind": "browser",
+      "given": {
+        "real_headed": true,
+        "control": false,
+        "screen": true
+      },
+      "expected": "error"
+    },
+    {
+      "id": "browser-name-not-proof",
+      "kind": "browser",
+      "given": {
+        "name": "browser",
+        "control": true,
+        "screen": true
+      },
+      "expected": "error"
+    },
+    {
+      "id": "close-overlay",
+      "kind": "overlay",
+      "given": {
+        "blocking": true,
+        "action": "close",
+        "effective": true
+      },
+      "expected": "reinspect"
+    },
+    {
+      "id": "agree-overlay",
+      "kind": "overlay",
+      "given": {
+        "blocking": true,
+        "action": "ordinary_consent",
+        "effective": true
+      },
+      "expected": "reinspect"
+    },
+    {
+      "id": "no-overlay",
+      "kind": "overlay",
+      "given": {
+        "blocking": false
+      },
+      "expected": "extract"
+    },
+    {
+      "id": "failed-overlay",
+      "kind": "overlay",
+      "given": {
+        "blocking": true,
+        "action": "close",
+        "effective": false,
+        "same_action_repeated": true
+      },
+      "expected": "partial_error"
+    },
+    {
+      "id": "purchase-not-consent",
+      "kind": "overlay",
+      "given": {
+        "blocking": true,
+        "action": "subscribe",
+        "effective": true
+      },
+      "expected": "partial_error"
+    },
+    {
+      "id": "accordion-not-authorized",
+      "kind": "interaction",
+      "given": {
+        "action": "accordion"
+      },
+      "expected": "deny"
+    },
+    {
+      "id": "variant-not-authorized",
+      "kind": "interaction",
+      "given": {
+        "action": "variant"
+      },
+      "expected": "deny"
+    },
+    {
+      "id": "cta-not-clicked",
+      "kind": "interaction",
+      "given": {
+        "action": "add_to_cart"
+      },
+      "expected": "deny"
+    },
+    {
+      "id": "scroll-authorized",
+      "kind": "interaction",
+      "given": {
+        "action": "scroll"
+      },
+      "expected": "allow"
+    },
+    {
+      "id": "navigation-authorized",
+      "kind": "interaction",
+      "given": {
+        "action": "eligible_navigation"
+      },
+      "expected": "allow"
+    },
+    {
+      "id": "same-domain-entry",
+      "kind": "entry_redirect",
+      "given": {
+        "same_domain": true
+      },
+      "expected": "accept"
+    },
+    {
+      "id": "verified-entry-exception",
+      "kind": "entry_redirect",
+      "given": {
+        "same_domain": false,
+        "hops": 3,
+        "continuity": true,
+        "automatic_initial": true
+      },
+      "expected": "accept"
+    },
+    {
+      "id": "too-many-entry-hops",
+      "kind": "entry_redirect",
+      "given": {
+        "same_domain": false,
+        "hops": 4,
+        "continuity": true,
+        "automatic_initial": true
+      },
+      "expected": "partial_error"
+    },
+    {
+      "id": "unknown-entry-chain",
+      "kind": "entry_redirect",
+      "given": {
+        "same_domain": false,
+        "hops": null,
+        "continuity": true,
+        "automatic_initial": true
+      },
+      "expected": "partial_error"
+    },
+    {
+      "id": "no-original-continuity-evidence",
+      "kind": "entry_redirect",
+      "given": {
+        "same_domain": false,
+        "hops": 1,
+        "continuity": null,
+        "automatic_initial": true
+      },
+      "expected": "partial_error"
+    },
+    {
+      "id": "failed-continuity",
+      "kind": "entry_redirect",
+      "given": {
+        "same_domain": false,
+        "hops": 1,
+        "continuity": false,
+        "automatic_initial": true
+      },
+      "expected": "partial_error"
+    },
+    {
+      "id": "click-not-entry-exception",
+      "kind": "entry_redirect",
+      "given": {
+        "same_domain": false,
+        "hops": 1,
+        "continuity": true,
+        "automatic_initial": false
+      },
+      "expected": "partial_error"
+    },
+    {
+      "id": "unguarded-later-navigation",
+      "kind": "post_entry",
+      "given": {
+        "guard": false,
+        "same_domain_target": true
+      },
+      "expected": "stop_partial_error"
+    },
+    {
+      "id": "guarded-in-scope-navigation",
+      "kind": "post_entry",
+      "given": {
+        "guard": true,
+        "same_domain_target": true,
+        "off_scope_redirect": false
+      },
+      "expected": "allow"
+    },
+    {
+      "id": "guard-blocks-off-scope",
+      "kind": "post_entry",
+      "given": {
+        "guard": true,
+        "same_domain_target": true,
+        "off_scope_redirect": true
+      },
+      "expected": "block_partial_error"
+    },
+    {
+      "id": "external-link-denied",
+      "kind": "post_entry",
+      "given": {
+        "guard": true,
+        "same_domain_target": false
+      },
+      "expected": "skip"
+    },
+    {
+      "id": "name-filled",
+      "kind": "progress",
+      "given": {
+        "before": {
+          "product": {}
+        },
+        "after": {
+          "product": {
+            "name": "Mug"
+          }
+        }
+      },
+      "expected": true
+    },
+    {
+      "id": "image-not-progress",
+      "kind": "progress",
+      "given": {
+        "before": {
+          "product": {
+            "name": "Mug"
+          }
+        },
+        "after": {
+          "product": {
+            "name": "Mug",
+            "images": [
+              "x"
+            ]
+          }
+        }
+      },
+      "expected": false
+    },
+    {
+      "id": "list-first-value",
+      "kind": "progress",
+      "given": {
+        "before": {
+          "product": {
+            "how_it_wins": {
+              "positioning": []
+            }
+          }
+        },
+        "after": {
+          "product": {
+            "how_it_wins": {
+              "positioning": [
+                "Premium"
+              ]
+            }
+          }
+        }
+      },
+      "expected": true
+    },
+    {
+      "id": "extra-list-item-no-progress",
+      "kind": "progress",
+      "given": {
+        "before": {
+          "product": {
+            "how_it_wins": {
+              "positioning": [
+                "Premium"
+              ]
+            }
+          }
+        },
+        "after": {
+          "product": {
+            "how_it_wins": {
+              "positioning": [
+                "Premium",
+                "Durable"
+              ]
+            }
+          }
+        }
+      },
+      "expected": false
+    },
+    {
+      "id": "zero-price-known",
+      "kind": "progress",
+      "given": {
+        "before": {
+          "product": {
+            "price": null
+          }
+        },
+        "after": {
+          "product": {
+            "price": 0
+          }
+        }
+      },
+      "expected": true
+    },
+    {
+      "id": "tracking-and-fragment",
+      "kind": "canonical",
+      "given": {
+        "url": "HTTPS://SHOP.EXAMPLE.COM:443/p/mug/?utm_source=x&fbclid=123#buy"
+      },
+      "expected": "https://shop.example.com/p/mug"
+    },
+    {
+      "id": "keep-evidenced-variant",
+      "kind": "canonical",
+      "given": {
+        "url": "https://shop.example.com/p/mug?variant=Blue&utm_campaign=x",
+        "essential": [
+          "variant"
+        ]
+      },
+      "expected": "https://shop.example.com/p/mug?variant=Blue"
+    },
+    {
+      "id": "path-case-preserved",
+      "kind": "canonical",
+      "given": {
+        "url": "http://shop.example.com:80/Products/Mug/"
+      },
+      "expected": "http://shop.example.com/Products/Mug"
+    },
+    {
+      "id": "only-entry-retry",
+      "kind": "attempt",
+      "given": {
+        "entry": true,
+        "attempts": 1,
+        "failed": true
+      },
+      "expected": "retry"
+    },
+    {
+      "id": "no-second-policy-attempt",
+      "kind": "attempt",
+      "given": {
+        "entry": false,
+        "attempts": 1,
+        "failed": true
+      },
+      "expected": "stop"
+    },
+    {
+      "id": "entry-max-two",
+      "kind": "attempt",
+      "given": {
+        "entry": true,
+        "attempts": 2,
+        "failed": true
+      },
+      "expected": "stop"
+    },
+    {
+      "id": "no-successful-entry-reload",
+      "kind": "attempt",
+      "given": {
+        "entry": true,
+        "attempts": 1,
+        "failed": false
+      },
+      "expected": "stop"
+    },
+    {
+      "id": "duplicate-footer-not-cycle",
+      "kind": "cycle",
+      "given": {
+        "kind": "link_discovered",
+        "key": "a",
+        "last_three": [
+          "a",
+          "b",
+          "c"
+        ]
+      },
+      "expected": "skip_duplicate"
+    },
+    {
+      "id": "actual-loop",
+      "kind": "cycle",
+      "given": {
+        "kind": "navigation_arrived",
+        "key": "a",
+        "last_three": [
+          "a",
+          "b",
+          "c"
+        ]
+      },
+      "expected": "stop_cycle"
+    },
+    {
+      "id": "new-navigation-no-cycle",
+      "kind": "cycle",
+      "given": {
+        "kind": "navigation_arrived",
+        "key": "d",
+        "last_three": [
+          "a",
+          "b",
+          "c"
+        ]
+      },
+      "expected": "continue"
+    },
+    {
+      "id": "ten-slots",
+      "kind": "budget",
+      "given": {
+        "unique_attempts": 10,
+        "depth": 1,
+        "no_progress": 0
+      },
+      "expected": "stop"
+    },
+    {
+      "id": "depth-limit",
+      "kind": "budget",
+      "given": {
+        "unique_attempts": 9,
+        "depth": 3,
+        "no_progress": 0
+      },
+      "expected": "stop"
+    },
+    {
+      "id": "three-no-progress",
+      "kind": "budget",
+      "given": {
+        "unique_attempts": 4,
+        "depth": 1,
+        "no_progress": 3
+      },
+      "expected": "stop"
+    },
+    {
+      "id": "within-budgets",
+      "kind": "budget",
+      "given": {
+        "unique_attempts": 9,
+        "depth": 2,
+        "no_progress": 2
+      },
+      "expected": "continue"
+    },
+    {
+      "id": "unknown-price-currency",
+      "kind": "manual",
+      "given": {
+        "visible": "$24 without currency context"
+      },
+      "expected": "Price may be 24 only if it is the actual primary price; currency remains null and a blocker records ambiguity."
+    },
+    {
+      "id": "collection-ambiguity",
+      "kind": "manual",
+      "given": {
+        "page": "Unrelated mug, lamp and shoes with equal prominence"
+      },
+      "expected": "Keep vendor evidence, set product null, request a product-specific URL in error."
+    },
+    {
+      "id": "bundle-is-single-offer",
+      "kind": "manual",
+      "given": {
+        "page": "Explicit mug-and-brush kit with one named offer"
+      },
+      "expected": "Profile the stated kit without inventing separate primary products."
+    },
+    {
+      "id": "claims-not-verified",
+      "kind": "manual",
+      "given": {
+        "visible": "Clinically proven and patented"
+      },
+      "expected": "Extract as merchant claims, not independent legal, clinical or patent verification."
+    },
+    {
+      "id": "cleanup-fails",
+      "kind": "manual",
+      "given": {
+        "close_verified": false
+      },
+      "expected": "Preserve evidence, add cleanup blocker and error; do not claim the tab closed."
+    },
+    {
+      "id": "media-url-captured-not-fetched",
+      "kind": "manual",
+      "given": {
+        "image": "https://cdn.example.net/photo.jpg"
+      },
+      "expected": "Record actual page-exposed product image URL; do not navigate to the CDN."
+    }
+  ]
+}

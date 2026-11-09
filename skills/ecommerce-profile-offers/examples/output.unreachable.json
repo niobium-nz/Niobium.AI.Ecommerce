@@ -1,0 +1,11 @@
+{
+  "url": "https://shop.example.com/products/travel-mug?utm_source=sample",
+  "final_url": null,
+  "retrieval_date_time_utc": "2026-11-08T00:00:00Z",
+  "product": null,
+  "vendor": null,
+  "blockers": [
+    "Entry page unreachable after 2 attempts"
+  ],
+  "error": "The entry page could not be loaded in the real browser after the two allowed attempts."
+}

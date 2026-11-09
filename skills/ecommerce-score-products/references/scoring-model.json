@@ -1,0 +1,182 @@
+{
+  "score_version": "Ecommerce-PaidSocial-v1",
+  "purpose": "Paid-social test priority in the specified country, not generic attractiveness or a profitability forecast.",
+  "components": [
+    {
+      "field": "impulse_fit",
+      "allowed_values": [
+        0,
+        5,
+        10,
+        15,
+        20
+      ],
+      "maximum_points": 20,
+      "guidance": "Reward a product understood in under 3 seconds, a visual demonstration, an obvious pain and an impulse-friendly paid-social offer. Penalize education, installation, sizing, technical setup and heavy trust-building."
+    },
+    {
+      "field": "target_market_demand_evidence",
+      "allowed_values": [
+        0,
+        3,
+        6,
+        9,
+        12,
+        15
+      ],
+      "maximum_points": 15,
+      "guidance": "Use current target-country seller, review, search/shopping and plausibly transferable source-market ad evidence. Zero exact-query ads is not low-demand proof; seller availability alone is not verified purchasing."
+    },
+    {
+      "field": "competition_advantage",
+      "allowed_values": [
+        0,
+        3,
+        6,
+        9,
+        12,
+        15
+      ],
+      "maximum_points": 15,
+      "guidance": "Reward room for a differentiated offer amid demonstrated target-market demand. Penalize overcrowding, price clustering and near-identical sellers. If competition appears absent and demand is unproven, do not exceed 6."
+    },
+    {
+      "field": "pricing_headroom",
+      "allowed_values": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "maximum_points": 10,
+      "guidance": "Use target-market retail-price proxies for room above commodity pricing. Penalize low-price white-label competition. Do not invent supplier cost, margin, acquisition cost or profitability."
+    },
+    {
+      "field": "creative_transfer",
+      "allowed_values": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "maximum_points": 10,
+      "guidance": "Reward repeated creative testing evidence, clear hooks, problem-solution messaging and target-market-safe angles. Distinct repeated creatives are stronger evidence than duration alone. A media URL alone is not an observed demonstration."
+    },
+    {
+      "field": "ops_simplicity",
+      "allowed_values": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "maximum_points": 10,
+      "guidance": "Reward small, durable, non-fragile, easy-to-ship, low-support and low-return-risk products. Penalize sizing, setup, breakage, leakage, batteries, bulk and support burden; do not invent shipping rates or return statistics."
+    },
+    {
+      "field": "compliance_safety",
+      "allowed_values": [
+        0,
+        5,
+        10,
+        15,
+        20
+      ],
+      "maximum_points": 20,
+      "guidance": "Score conservatively using current applicable official sources. Reward low apparent legality, safety, claim and platform-policy risk, not an assertion of legal compliance. Penalize regulated categories, restrictions and unresolved hazards."
+    }
+  ],
+  "caps": [
+    {
+      "id": "PROHIBITED_OR_RESTRICTED_15",
+      "condition": "Appears prohibited, clearly restricted, counterfeit or likely illegal in the target country.",
+      "final_score_max": 15
+    },
+    {
+      "id": "UNRESOLVED_COMPLIANCE_35",
+      "condition": "Compliance risk cannot be reasonably screened from public sources or serious legal/platform-policy risk remains unresolved.",
+      "final_score_max": 35
+    },
+    {
+      "id": "THIN_EVIDENCE_60",
+      "condition": "Web evidence is thin or research tools fail materially, with enough completed research to return a score.",
+      "final_score_max": 60
+    },
+    {
+      "id": "COMMODITY_COMPETITION_6",
+      "condition": "Highly commoditized category with many near-identical low-price target-market sellers.",
+      "component": "competition_advantage",
+      "max": 6
+    },
+    {
+      "id": "COMMODITY_PRICING_4",
+      "condition": "Highly commoditized category with many near-identical low-price target-market sellers.",
+      "component": "pricing_headroom",
+      "max": 4
+    },
+    {
+      "id": "OPS_COMPLEXITY_4",
+      "condition": "Strong operational headache: fragile, bulky, leak-prone, fit-sensitive or install-heavy.",
+      "component": "ops_simplicity",
+      "max": 4
+    },
+    {
+      "id": "UNPROVEN_DEMAND_COMPETITION_6",
+      "condition": "Competition appears absent and demand is unproven.",
+      "component": "competition_advantage",
+      "max": 6
+    }
+  ],
+  "priority_bands": [
+    {
+      "minimum": 90,
+      "maximum": 100,
+      "value": "TEST_FIRST",
+      "meaning": "Test first"
+    },
+    {
+      "minimum": 75,
+      "maximum": 89,
+      "value": "STRONG_CANDIDATE",
+      "meaning": "Strong candidate"
+    },
+    {
+      "minimum": 60,
+      "maximum": 74,
+      "value": "VIABLE_NOT_FIRST",
+      "meaning": "Viable but not first"
+    },
+    {
+      "minimum": 40,
+      "maximum": 59,
+      "value": "WEAK",
+      "meaning": "Weak / only test if pipeline is thin"
+    },
+    {
+      "minimum": 0,
+      "maximum": 39,
+      "value": "DO_NOT_TEST",
+      "meaning": "Do not test now"
+    }
+  ],
+  "calculation_order": [
+    "Select supported integer bands; choose the lower band when between bands.",
+    "Apply component ceilings and publish the capped component values.",
+    "Sum all seven capped components without additional weighting.",
+    "Take the minimum of that sum and every applicable final-score cap.",
+    "Assign the priority band from the capped final score."
+  ],
+  "evidence_confidence": {
+    "type": "integer",
+    "minimum": 0,
+    "maximum": 100,
+    "meaning": "Evidence quality, not product quality; reduce for thin, conflicting, stale, indirect, cross-country or failed research. No quantitative confidence formula was provided."
+  },
+  "implementation_note": "Cap IDs are reporting conventions. Point bands, ceilings and priority cutoffs preserve the approved scoring policy. Do not infer new statistical calibration from them."
+}

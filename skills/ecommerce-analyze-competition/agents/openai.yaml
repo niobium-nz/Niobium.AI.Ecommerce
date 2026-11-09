@@ -1,0 +1,17 @@
+interface:
+  display_name: Ecommerce Analyze Competition
+  short_description: Assess older active competitors with a three-page search cap
+  default_prompt: Use Ecommerce Analyze Competition for the supplied JSON input. Search
+    one exact query in one country with the approved ScrapeCreators Facebook Ad Library
+    action, the runtime three-month start_date and fixed filters. Use at most three
+    pages, verify ad ages, apply exclusions, and return only the agreed JSON report
+    or error.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  allow_implicit_invocation: true
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas

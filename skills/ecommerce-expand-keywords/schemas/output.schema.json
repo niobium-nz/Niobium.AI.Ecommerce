@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ecommerce Expand Keywords Output",
+  "description": "Language-agnostic success/error contract. Success contains category_focus and optimized_keywords. An input or processing error adds a nonblank error string and leaves both result fields empty. Plain-text semantic clarification is a separate conversational state, not a JSON response.",
+  "oneOf": [
+    {
+      "title": "Success",
+      "type": "object",
+      "required": [
+        "category_focus",
+        "optimized_keywords"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "category_focus": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "optimized_keywords": {
+          "type": "array",
+          "minItems": 25,
+          "maxItems": 60,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        }
+      }
+    },
+    {
+      "title": "Error",
+      "type": "object",
+      "required": [
+        "category_focus",
+        "optimized_keywords",
+        "error"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "category_focus": {
+          "const": ""
+        },
+        "optimized_keywords": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "error": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    }
+  ]
+}

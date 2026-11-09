@@ -1,0 +1,85 @@
+{
+  "status": "ambiguous",
+  "product_name_given": "Pet hair remover",
+  "category_name_provided": "Pet hair cleanup",
+  "known_features_provided": [],
+  "normalization": {
+    "brand_model_tokens": [],
+    "base_category_inferred": "Hair removal accessory",
+    "observed_from_input": [
+      "The input describes removal of pet hair without a physical form."
+    ],
+    "observed_from_web": [],
+    "assumptions": [
+      "Low confidence: glove and roller are plausible alternative forms, not verified properties of this product."
+    ],
+    "confidence0_to10": 3
+  },
+  "competitive_set_definition": {
+    "archetype_phrase": null,
+    "archetype_explanation": [
+      "The shared job is pet hair removal; the form factor remains unresolved."
+    ],
+    "form_factor": null,
+    "job_to_be_done": "Remove pet hair",
+    "primary_target": "Pet hair",
+    "qualifiers": [],
+    "must_include_tokens": [
+      "pet hair",
+      "removal"
+    ],
+    "near_miss_classes": [],
+    "avoid_terms": []
+  },
+  "product_interpretations": [
+    {
+      "interpreted_product_type": "Hair removal accessory",
+      "interpreted_archetype": "Pet hair removal glove",
+      "why_this_interpretation": [
+        "A glove is one plausible format for the stated job; input does not confirm it."
+      ],
+      "confidence": "Low"
+    },
+    {
+      "interpreted_product_type": "Hair removal accessory",
+      "interpreted_archetype": "Pet hair removal roller",
+      "why_this_interpretation": [
+        "A roller is another plausible format for the stated job; input does not confirm it."
+      ],
+      "confidence": "Low"
+    }
+  ],
+  "web_research": {
+    "used": false,
+    "queries": [],
+    "key_takeaways": [],
+    "source_domains": []
+  },
+  "keyword_plan": {
+    "tier_a_archetype_terms": [
+      "pet hair removal glove",
+      "pet hair removal roller"
+    ],
+    "tier_b_close_archetype_synonyms": [
+      "pet fur removal mitt"
+    ],
+    "tier_c_brand_model_terms": [],
+    "tier_d_broad_context_terms": [
+      "pet hair remover"
+    ],
+    "avoid_or_exclusion_terms": [],
+    "recommended_mcp_queries": [
+      "pet hair removal glove",
+      "pet hair removal roller",
+      "pet fur removal mitt"
+    ]
+  },
+  "notes_for_downstream_agent": [
+    "Please confirm the physical form before benchmarking competition. The alternatives are inferred, not verified product facts.",
+    "Interpretation 1: Tier A [pet hair removal glove]; Tier B [pet fur removal mitt].",
+    "Interpretation 2: Tier A [pet hair removal roller]; Tier B [].",
+    "Do not mix the forms into one archetype; common form_factor and archetype_phrase remain null.",
+    "Per-interpretation scope requires the stated job plus its own form; shared tokens alone do not resolve the form.",
+    "Tier counts remain small because evidence is limited; Tier D is excluded while A/B exist."
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "synthetic": true,
+  "purpose": "Invented page observations supporting examples/output.json; not browser execution or live market evidence.",
+  "browser": {
+    "real_headed": true,
+    "computer_use_control": true,
+    "post_entry_redirect_guard": true
+  },
+  "pages": [
+    {
+      "url": "https://shop.example.com/products/travel-mug",
+      "depth": 0,
+      "entry_redirect_hops": 0,
+      "events": [
+        "Visible cookie overlay initially prevents product content from appearing.",
+        "Close does not unlock content; necessary ordinary Agree control is then used once.",
+        "The same page renders the offer; no reload, form or account action occurs."
+      ],
+      "visible_facts": {
+        "brand": "Example Goods",
+        "name": "Travel Mug",
+        "price": "USD 24",
+        "comparison_price": "USD 30",
+        "variant_labels": [
+          "Blue",
+          "Grey"
+        ],
+        "bundle": "Two mugs for USD 44",
+        "material": "Stainless steel body",
+        "benefits": [
+          "Keeps drinks warm during your commute",
+          "Locking lid reduces accidental spills"
+        ],
+        "positioning": "For commuters",
+        "unique_wording": "Our exclusive TwistSeal lid",
+        "comparison": "A locking lid, unlike a standard open-top cup",
+        "reviews": "4.6/5 from 128 verified-buyer reviews",
+        "cta": "Add to Cart",
+        "stock": "Only 7 left",
+        "disclaimer": "Stock figures may change",
+        "shipping_offer": "Free shipping over USD 50",
+        "email": "support@example.com",
+        "social": "https://social.example.net/example-goods",
+        "image": "https://cdn.example.com/travel-mug.jpg"
+      },
+      "policy_links": [
+        "https://shop.example.com/policies/returns",
+        "https://shop.example.com/policies/shipping",
+        "https://shop.example.com/policies/privacy"
+      ]
+    },
+    {
+      "url": "https://shop.example.com/policies/returns",
+      "depth": 1,
+      "visible_facts": {
+        "returns": "30-day return window. Customer pays return postage."
+      }
+    },
+    {
+      "url": "https://shop.example.com/policies/shipping",
+      "depth": 1,
+      "visible_facts": {
+        "shipping": "Free shipping for orders over USD 50."
+      }
+    },
+    {
+      "url": "https://shop.example.com/policies/privacy",
+      "depth": 1,
+      "visible_facts": {
+        "privacy": "Privacy policy page is displayed."
+      }
+    }
+  ],
+  "cleanup": "Task-created tab closed and closure verified in this fictional trace."
+}

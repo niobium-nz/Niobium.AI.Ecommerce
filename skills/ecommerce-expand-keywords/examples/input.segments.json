@@ -1,0 +1,26 @@
+{
+  "category_focus": "travel backpacks",
+  "country": "NZL",
+  "seed_keywords": [
+    "carry on backpack",
+    "travel rucksack"
+  ],
+  "optional_constraints": [
+    {
+      "target_audience": "students",
+      "price_tier": "budget",
+      "use_case": "weekend travel",
+      "gender": null,
+      "seasonality": null,
+      "platform": null
+    },
+    {
+      "target_audience": "business travellers",
+      "price_tier": "premium",
+      "use_case": "work trips",
+      "gender": null,
+      "seasonality": null,
+      "platform": null
+    }
+  ]
+}

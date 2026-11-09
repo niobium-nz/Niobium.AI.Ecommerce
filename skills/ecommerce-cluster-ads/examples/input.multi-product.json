@@ -1,0 +1,22 @@
+[
+  {
+    "ad_archive_id": "A-200",
+    "page_name": "Northstar Outdoors",
+    "snapshot": {
+      "link_url": "https://shop.example.com/summer",
+      "title": "Summer equipment",
+      "cards": [
+        {
+          "title": "Trail Bottle",
+          "body": "Stainless steel bottle.",
+          "link_url": "https://shop.example.com/products/trail-bottle"
+        },
+        {
+          "title": "Clip Torch",
+          "body": "Rechargeable torch.",
+          "link_url": "https://shop.example.com/products/clip-torch"
+        }
+      ]
+    }
+  }
+]
