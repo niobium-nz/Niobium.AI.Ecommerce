@@ -1,8 +1,8 @@
 # Descriptive platform-neutral manifest; not a native vendor import format.
 name: ecommerce-product-discoverer
-version: 1.0.0
+version: 2.0.0
 entrypoint: AGENT.md
-description: Discover traceable product-council candidates from long-lived active Meta ads.
+description: Discover traceable product signals for downstream competitive research.
 input_schema: schemas/input.schema.json
 configuration_schema: schemas/config.schema.json
 handoff_schema: schemas/handoff.schema.json
@@ -27,7 +27,8 @@ storage:
   filename: "{job_id}.json"
   mime_type: application/json
   overwrite: false
-approval_boundary: pending_product_council
+output_stage: signal
+handoff_target: competitive_research
 adapters:
   chatgpt: adapters/chatgpt-workspace-agent.md
   claude: adapters/claude-cowork.md

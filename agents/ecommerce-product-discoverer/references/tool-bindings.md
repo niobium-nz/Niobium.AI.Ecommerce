@@ -51,7 +51,7 @@ Docs/Sheets/Slides is not a raw JSON writer. Do not substitute a Google Doc.
 
 Before raw readback, inspect metadata and actual fetch schema. Use its raw-file
 option and authenticated full-file reference, not best-effort text. Retrieve
-only this job's output or the candidate being reconciled after an uncertain
+only this job's output or the matching file being reconciled after an uncertain
 write. Request size/md5Checksum for binary verification when exposed; compare
 against the exact upload bytes. Metadata alone cannot establish content equality.
 Do not synthesize unobserved webViewLink values.

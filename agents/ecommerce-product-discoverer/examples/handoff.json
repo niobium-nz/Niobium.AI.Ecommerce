@@ -1,6 +1,6 @@
 [
   {
-    "schema_version": "1.0.0",
+    "schema_version": "2.0.0",
     "job_id": "81c8fdf2-5630-4d97-8f5f-ce5582872655",
     "inputs": {"source_country": "USA", "target_country": "NZL", "keyword": "portable blender"},
     "product": {
@@ -41,7 +41,8 @@
       "run_status": "complete",
       "search_exhaustive": false
     },
-    "review_status": "pending_product_council",
+    "lifecycle_stage": "signal",
+    "research_status": "pending_competitive_research",
     "profitability_status": "unverified"
   }
 ]

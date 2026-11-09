@@ -26,6 +26,12 @@ host's current plugin format instead of assuming a shared vendor-neutral ZIP
 format. Use supported instruction/resource binding, or resolve capability gaps
 before running. Do not claim successful deployment merely from these notes.
 
+Preserve the version 2.0.0 signal handoff: lifecycle_stage is signal and
+research_status is pending_competitive_research. The next consumer is the
+competitive research agent, not product council. Research produces candidates;
+only council-approved candidates become listings for product onboarding.
+Do not add downstream invocation or automatic stage promotion to this agent.
+
 Sources:
 https://support.claude.com/en/articles/13837440-use-plugins-in-claude
 https://support.claude.com/en/articles/12512180-use-skills-in-claude

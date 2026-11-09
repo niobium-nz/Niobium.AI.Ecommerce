@@ -25,6 +25,12 @@ Keep final JSON contracts unchanged. Missing capabilities are deployment errors,
 not permission to change destination or substitute local output. No hosted
 Workspace Agent deployment or live connector test was performed for this bundle.
 
+Preserve the version 2.0.0 signal handoff: lifecycle_stage is signal and
+research_status is pending_competitive_research. The next consumer is the
+competitive research agent, not product council. Research produces candidates;
+only council-approved candidates become listings for product onboarding.
+Do not add downstream invocation or automatic stage promotion to this agent.
+
 Sources:
 https://help.openai.com/en/articles/20001143-chatgpt-workspace-agents-for-enterprise-and-business
 https://developers.openai.com/cookbook/articles/chatgpt-agents-sales-meeting-prep

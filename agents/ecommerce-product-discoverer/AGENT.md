@@ -2,12 +2,23 @@
 
 ## Role and execution boundary
 
-Discover potentially profitable physical-product candidates from competitors'
-long-lived, currently active Meta ads. This is a selection heuristic, not proof
-of sales, continuous delivery, spending, margin or profitability. Preserve
-supporting evidence for product council review. Do not approve products, source
-suppliers, create creatives, launch campaigns, research the target country or
-trigger onboarding. Council approval belongs to another agent.
+Discover physical-product signals from competitors' long-lived, currently active
+Meta ads. These are early observations of potential opportunity, not candidates
+or proof of sales, continuous delivery, spending, margin or profitability.
+Preserve supporting evidence for a downstream competitive research agent.
+
+The business lifecycle is:
+`signal -> competitive research -> candidate -> product council approval -> listing -> product onboarding`.
+This agent produces only signals. Competitive research produces candidates for
+product council review; only council-approved candidates become listings for
+product onboarding. Do not skip stages, label signals as candidates/listings,
+or send signals directly to product council or product onboarding.
+
+End this agent's work after persisting signals and returning the job result.
+Do not invoke downstream agents. Do not conduct competitive research, approve
+products, source suppliers, create creatives, launch campaigns, research the
+target country or trigger onboarding. Downstream processing is outside this
+agent's execution boundary.
 
 Use this file as the platform-neutral entrypoint. Read `references/contracts.md`
 and `references/tool-bindings.md`. The sole runtime skill is the complete bundled
@@ -176,24 +187,29 @@ service filtering; qualifying IDs absent from intact clusters produce
 integrity exclusions make a nonempty saved handoff partial.
 
 Exclude services with `service_cluster_excluded`. Keep valid products including
-Low-confidence/unidentified offerings for council review, noting
+Low-confidence/unidentified offerings as signals for competitive research, noting
 `low_confidence_product`. Do not filter by assumed profitability, novelty,
 demand, target-country competition or a new confidence threshold. If integrity
 loss leaves no intact product, fail without a file. A clean service-only or
 no-eligible-ad outcome may save [].
 
-## 5. Build the review handoff
+## 5. Build the signal handoff for competitive research
 
 Create the single array in `schemas/handoff.schema.json`, sorted by cluster_id.
 Each record includes unchanged original `inputs`, unchanged ten-field `product`,
 and exactly one unchanged original ad per product ID, in ad_archive_ids order.
 Never substitute projected ads. Repeat shared ads in each applicable record.
-Include job/provenance and fixed `review_status: "pending_product_council"`,
-`profitability_status: "unverified"`. Claims remain unverified source claims.
+Include job/provenance and fixed `schema_version: "2.0.0"`,
+`lifecycle_stage: "signal"`, `research_status: "pending_competitive_research"`,
+and `profitability_status: "unverified"`. Omit `review_status`: council review is
+not the next step. Do not create candidate or listing records. Claims remain
+unverified source claims. The unchanged nested `product` is a cluster descriptor,
+not evidence of promotion to a later business stage.
 
 Provenance run_status is partial for retrieval/integrity loss, otherwise complete.
 Normal date/activity/service exclusion and Low confidence alone are not partial.
-Both statuses describe bounded discovery, not exhaustive research or approval.
+Both statuses describe bounded discovery, not completed competitive research,
+exhaustive research or approval. Neither status promotes a signal to a candidate.
 Validate schema, original-input/ad equality, ID membership/order, eligibility,
 unique clusters and complete serialization. Never round large integers. Resource
 or representation limits fail rather than produce truncated JSON. [] is reserved
@@ -225,7 +241,8 @@ anything to resolve a conflict.
 ## 7. Return only the final JSON result
 
 Follow `schemas/result.schema.json`: always job_id, status, artifact, warnings,
-errors. Empty diagnostic lists are []. Artifact is non-null only after verified
+errors. Job status describes execution and persistence, never a business-stage
+promotion. Empty diagnostic lists are []. Artifact is non-null only after verified
 persistence. Use succeeded for verified nonempty complete output; partial for
 verified nonempty output with execution/integrity loss; empty for verified [];
 stopped for filename collision; failed for other failures. Failed/unknown writes

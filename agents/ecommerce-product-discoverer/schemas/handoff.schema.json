@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Discoverer saved JSON array",
+  "title": "Discoverer signal handoff for competitive research",
   "type": "array",
   "items": {
     "type": "object",
     "additionalProperties": false,
-    "required": ["schema_version", "job_id", "inputs", "product", "ads", "provenance", "review_status", "profitability_status"],
+    "required": ["schema_version", "job_id", "inputs", "product", "ads", "provenance", "lifecycle_stage", "research_status", "profitability_status"],
     "properties": {
-      "schema_version": {"const": "1.0.0"},
+      "schema_version": {"const": "2.0.0"},
       "job_id": {"$ref": "#/$defs/uuid"},
       "inputs": {"$ref": "input.schema.json"},
       "product": {
@@ -40,7 +40,8 @@
           "search_exhaustive": {"const": false}
         }
       },
-      "review_status": {"const": "pending_product_council"},
+      "lifecycle_stage": {"const": "signal"},
+      "research_status": {"const": "pending_competitive_research"},
       "profitability_status": {"const": "unverified"}
     }
   },
@@ -48,5 +49,5 @@
     "uuid": {"type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"},
     "nonblank": {"type": "string", "minLength": 1, "pattern": "\\S"}
   },
-  "description": "Also validate exact IDs/order, originals, eligibility, countries, unique clusters, same job/provenance, and pages <= attempts."
+  "description": "Signals only, awaiting competitive research; never council-ready candidates or approved listings. Also validate exact IDs/order, originals, eligibility, countries, unique clusters, same job/provenance, and pages <= attempts."
 }
