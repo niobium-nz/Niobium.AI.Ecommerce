@@ -1,0 +1,19 @@
+{
+  "success": true,
+  "searchResults": [
+    {
+      "ad_archive_id": "demo-ad-001",
+      "page_name": "Example Seller",
+      "is_active": true,
+      "start_date_string": "2026-08-09",
+      "snapshot": {
+        "link_url": "https://example.com/products/portable-blender",
+        "title": "Portable blender",
+        "body": {"text": "Portable blender with USB charging."}
+      },
+      "provider_extra": {"observed_count": 9007199254740993}
+    }
+  ],
+  "searchResultsCount": 1,
+  "cursor": null
+}

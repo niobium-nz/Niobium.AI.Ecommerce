@@ -1,0 +1,14 @@
+[
+  {
+    "cluster_id": "example.com--portable-blender--product",
+    "cluster_label": "Portable blender",
+    "landing_page_domain": "example.com",
+    "likely_product_name": "Portable blender",
+    "category_guess": "blender",
+    "known_features": ["USB charging"],
+    "cluster_confidence": "High",
+    "ad_archive_ids": ["demo-ad-001"],
+    "is_product": true,
+    "is_service": false
+  }
+]

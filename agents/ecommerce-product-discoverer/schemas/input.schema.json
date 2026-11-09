@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Discoverer input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["source_country", "target_country", "keyword"],
+  "properties": {
+    "source_country": {"type": "string", "pattern": "^[A-Za-z]{2,3}$"},
+    "target_country": {"type": "string", "pattern": "^[A-Za-z]{2,3}$"},
+    "keyword": {"type": "string", "minLength": 1, "pattern": "\\S"}
+  },
+  "description": "Also validate assigned country codes against the bundled lookup. Preserve original strings."
+}
