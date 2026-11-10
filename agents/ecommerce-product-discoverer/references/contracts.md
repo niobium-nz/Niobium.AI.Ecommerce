@@ -5,7 +5,7 @@
 Input is exactly three strings: source_country, target_country, keyword.
 Schema validation is supplemented by assigned-country membership in the bundled
 249-country snapshot. Preserve source strings; uppercase alpha-2 values are
-working parameters/provenance only. signal_folder_id and timezone are deployment
+working parameters/provenance only. discovery_folder_id and timezone are deployment
 configuration, never extra public inputs. The example's null folder ID is
 intentionally invalid until configured. Never infer a folder ID from its name.
 
@@ -24,13 +24,13 @@ invalid clusters; do not repair their ID lists. A top-level skill error is not [
 
 ## Business lifecycle and handoff boundary
 
-`signal -> competitive research -> candidate -> product council approval -> listing -> product onboarding`
+`discovery -> competitive research -> candidate -> product council approval -> listing -> product onboarding`
 
-Discovery outputs are signals only. The competitive research agent receives
-signals and produces candidates. Product council reviews those candidates; only
-approved candidates become listings for product onboarding. Saving a signal,
+Discovery outputs are discoveries only. The competitive research agent receives
+discoveries and produces candidates. Product council reviews those candidates; only
+approved candidates become listings for product onboarding. Saving a discovery,
 a successful job status, ad age or High cluster confidence cannot promote it.
-No signal is sent directly to council or onboarding. This agent neither executes
+No discovery is sent directly to council or onboarding. This agent neither executes
 competitive research nor invokes downstream agents; persistence is its handoff.
 The manifest's handoff_target identifies a role, not a configured callable agent.
 
@@ -45,13 +45,13 @@ lifecycle_stage, research_status and profitability_status. Original inputs,
 product and ads remain unchanged. Ads follow product.ad_archive_ids order;
 every ad must qualify. Metadata stays outside source objects.
 
-Version 2.0.0 requires lifecycle_stage = signal and research_status =
+Version 2.0.0 requires lifecycle_stage = discovery and research_status =
 pending_competitive_research; profitability_status remains unverified.
 Remove the former review_status field rather than marking council review as
 pending. The schema rejects candidate/listing stages, completed research,
 council-review fields and the former version 1.0.0 shape. This is a breaking
 handoff-contract change; update consumers before deployment. Do not rewrite
-existing stored artifacts or promote historical signals during this update.
+existing stored artifacts or promote historical discoveries during this update.
 
 Provenance includes run_started_at, timezone, cutoff_date, normalized countries,
 search_attempts, successful_pages, stop_reason, run_status and search_exhaustive.
@@ -60,7 +60,7 @@ NOT an exhaustive market census. search_exhaustive is always false. Later search
 failure, conflicting original IDs, invalid clusters and missing coverage cause
 partial output if intact products remain. Ordinary date/activity/service filters
 and Low-confidence notices alone do not cause partial status. Both complete and
-partial records remain signals awaiting competitive research.
+partial records remain discoveries awaiting competitive research.
 
 An empty array has no per-record context. The caller must retain final result
 and original job input together; do not create unrequested Drive sidecar files.
@@ -69,7 +69,7 @@ An uncertain product classification or ad claim remains uncertain, not approved.
 ## Result contract
 
 Every result has job_id, status, artifact, warnings, errors. These execution
-statuses do not describe or advance the signal/candidate/listing lifecycle.
+statuses do not describe or advance the discovery/candidate/listing lifecycle.
 Diagnostics contain code, message, details, using lower snake case codes. Put indexes, cluster IDs,
 source IDs, omitted paths and observed unverified file IDs in details, not full
 ad payloads or credentials. Empty diagnostics are []. Only UUID-generation

@@ -13,7 +13,7 @@ skills; verify availability and resource-binding behavior in the target workspac
 3. Bind ScrapeCreators keyword search and Drive exact search, metadata, raw JSON
    upload and full verification. Follow tool-bindings.md. Read-only Drive or
    native document creation alone is insufficient.
-4. Set the real existing signal folder ID and IANA timezone as deployment config,
+4. Set the real existing discovery folder ID and IANA timezone as deployment config,
    not public job inputs. Bind an authorized account with folder read/add access.
 5. Constrain uploads to that folder and retain approval gates. Exclude unrelated
    paid endpoints, ads-manager writes, sharing and deletion. Verify UUID, clock,
@@ -25,7 +25,7 @@ Keep final JSON contracts unchanged. Missing capabilities are deployment errors,
 not permission to change destination or substitute local output. No hosted
 Workspace Agent deployment or live connector test was performed for this bundle.
 
-Preserve the version 2.0.0 signal handoff: lifecycle_stage is signal and
+Preserve the version 2.0.0 discovery handoff: lifecycle_stage is discovery and
 research_status is pending_competitive_research. The next consumer is the
 competitive research agent, not product council. Research produces candidates;
 only council-approved candidates become listings for product onboarding.

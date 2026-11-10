@@ -13,7 +13,7 @@ current packaging and availability during deployment.
 3. Bind authorized ScrapeCreators keyword search and Drive exact child lookup,
    metadata, explicit-parent raw JSON upload and complete verification. Do not
    assume a default Drive connector supports writes or equivalent schemas.
-4. Supply signal_folder_id and timezone as trusted deployment settings. Verify
+4. Supply discovery_folder_id and timezone as trusted deployment settings. Verify
    clock, UUID, timezone, lossless JSON and actual file-reference capabilities.
    Use tool-bindings.md rather than copying ChatGPT-specific namespaces.
 5. Limit permissions and retain write approvals. Do not grant unrelated apps,
@@ -26,7 +26,7 @@ host's current plugin format instead of assuming a shared vendor-neutral ZIP
 format. Use supported instruction/resource binding, or resolve capability gaps
 before running. Do not claim successful deployment merely from these notes.
 
-Preserve the version 2.0.0 signal handoff: lifecycle_stage is signal and
+Preserve the version 2.0.0 discovery handoff: lifecycle_stage is discovery and
 research_status is pending_competitive_research. The next consumer is the
 competitive research agent, not product council. Research produces candidates;
 only council-approved candidates become listings for product onboarding.

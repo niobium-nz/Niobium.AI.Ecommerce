@@ -41,7 +41,7 @@
       "run_status": "complete",
       "search_exhaustive": false
     },
-    "lifecycle_stage": "signal",
+    "lifecycle_stage": "discovery",
     "research_status": "pending_competitive_research",
     "profitability_status": "unverified"
   }
