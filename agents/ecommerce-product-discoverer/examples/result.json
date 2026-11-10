@@ -3,7 +3,7 @@
   "status": "succeeded",
   "artifact": {
     "file_id": "synthetic-file-id",
-    "folder_id": "synthetic-signal-folder-id",
+    "folder_id": "synthetic-discovery-folder-id",
     "filename": "81c8fdf2-5630-4d97-8f5f-ce5582872655.json",
     "mime_type": "application/json",
     "record_count": 1,

@@ -83,12 +83,12 @@ class ContractTests(unittest.TestCase):
             validate_config(load(ROOT / "config.example.json"))
 
     def test_configuration_requires_real_folder_and_zone(self):
-        validate_config({"signal_folder_id": "synthetic_folder_id", "timezone": "Pacific/Auckland"})
+        validate_config({"discovery_folder_id": "synthetic_folder_id", "timezone": "Pacific/Auckland"})
         for folder in ("root", "https://drive.google.com/folder", "", None):
             with self.subTest(folder=folder), self.assertRaises((ValueError, ValidationError)):
-                validate_config({"signal_folder_id": folder, "timezone": "Pacific/Auckland"})
+                validate_config({"discovery_folder_id": folder, "timezone": "Pacific/Auckland"})
         with self.assertRaises(KeyError):
-            validate_config({"signal_folder_id": "synthetic_folder_id", "timezone": "Bad/Zone"})
+            validate_config({"discovery_folder_id": "synthetic_folder_id", "timezone": "Bad/Zone"})
 
     def test_calendar_month_boundaries(self):
         for current, expected in (("2026-11-09", "2026-08-09"), ("2026-05-31", "2026-02-28"), ("2024-05-31", "2024-02-29"), ("2026-01-31", "2025-10-31"), ("2026-12-31", "2026-09-30")):

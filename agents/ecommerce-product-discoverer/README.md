@@ -1,18 +1,18 @@
 # Ecommerce Product Discoverer
 
-A platform-neutral agent definition for discovering product signals from
+A platform-neutral agent definition for discovering product discoveries from
 competitors' long-lived, currently active Meta ads. The package preserves evidence
 for competitive research; it neither verifies profits nor produces candidates,
 approves products or triggers onboarding.
 
 ## Business lifecycle
 
-`signal -> competitive research -> candidate -> product council approval -> listing -> product onboarding`
+`discovery -> competitive research -> candidate -> product council approval -> listing -> product onboarding`
 
-This agent outputs signals only. A downstream competitive research agent turns
+This agent outputs discoveries only. A downstream competitive research agent turns
 research results into candidates for product council review. Only approved
-candidates become listings for product onboarding. Signals are not submitted
-directly to council. This package persists the signal handoff and returns the
+candidates become listings for product onboarding. Discoveries are not submitted
+directly to council. This package persists the discovery handoff and returns the
 job result; it does not invoke any downstream agent.
 
 ## Package
@@ -37,21 +37,26 @@ The country lookup is bundled data, not another skill dependency.
 {"source_country":"USA","target_country":"NZL","keyword":"portable blender"}
 ```
 
-Provision an existing Drive folder named exactly `signal`. Configure its actual
+Provision an existing Drive folder named exactly `discovery`. Configure its actual
 ID and the host timezone separately using `config.example.json`. The example
 uses the owner's Pacific/Auckland timezone; null folder ID deliberately fails
 validation until configured. Public invocation remains exactly three fields.
 
+Configure `discovery_folder_id` and have consumers expect
+`lifecycle_stage: "discovery"`. This is a naming-only update: the research,
+review and onboarding workflow is unchanged. No existing Drive folder or file
+is renamed, moved or migrated by this update.
+
 Each invocation generates a fresh UUID. Identical searches may be repeated.
 The agent spends at most three sequential search attempts, independently verifies
 actual active status and start dates, clusters the whole qualifying batch and
-saves a raw JSON array as `signal/{job_id}.json`. Entire invalid clusters and
-services are excluded; valid Low-confidence products remain as signals for
+saves a raw JSON array as `discovery/{job_id}.json`. Entire invalid clusters and
+services are excluded; valid Low-confidence products remain as discoveries for
 competitive research.
 
 ## Handoff contract version 2.0.0
 
-Saved records require `lifecycle_stage: "signal"` and
+Saved records require `lifecycle_stage: "discovery"` and
 `research_status: "pending_competitive_research"`; profitability stays unverified.
 These replace the former `review_status: "pending_product_council"` contract.
 The version changes because the next workflow step and required fields change.

@@ -60,7 +60,7 @@ Drive names are not unique and lookup-then-upload is not atomic. UUIDs reduce
 collision risk but do not create an atomic lock. Reconcile uncertain uploads
 read-only without retrying, reservation files or cleanup. No folder creation,
 sharing, delete, move or update_file capability is needed. Constrain writes to
-the configured signal folder wherever the host supports enforceable limits.
+the configured discovery folder wherever the host supports enforceable limits.
 
 API references:
 https://developers.google.com/workspace/drive/api/reference/rest/v3/files

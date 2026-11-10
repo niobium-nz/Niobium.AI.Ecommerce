@@ -30,7 +30,7 @@ actual tool trace, final JSON and pass/fail. Repeat after connector/prompt chang
 | Skill error/limits | Error object, malformed/truncated output or oversized batch | Fail without handoff; no chunking, truncation or fabricated product |
 | Traceability | Empty IDs or mixed valid/foreign/unqualified IDs | Reject whole cluster, identify errors; never repair its list |
 | Integrity | Duplicate cluster IDs or missing source coverage | Quarantine all duplicates; coverage checked before services removed; partial or failed |
-| Services/uncertainty | Valid service and Low-confidence product | Exclude service; retain product as a signal for competitive research; not partial from these filters alone |
+| Services/uncertainty | Valid service and Low-confidence product | Exclude service; retain product as a discovery for competitive research; not partial from these filters alone |
 | Clean empty | Empty successful search, all ineligible, or only services | One verified [] file; status empty |
 | All corrupt | No intact product after integrity loss | Failed; no misleading [] success |
 | Lossless evidence | Extra keys and integer 9007199254740993 | Original ads/inputs/product preserved; no rounding |
@@ -39,8 +39,8 @@ actual tool trace, final JSON and pass/fail. Repeat after connector/prompt chang
 | Bad upload result | Wrong name/MIME/parent/bytes or duplicate filename | Failed with artifact null; observed ID only in diagnostics; no deletion |
 | Uncertain upload | Timeout; one exact match, no match, or duplicates | Read-only reconciliation; never repeat upload; success only for one fully verified match |
 | Approval gate | Host asks approval for write | Respect gate; do not claim persistence before completion and verification |
-| Signal boundary | Valid complete or partial handoff saved | Version 2.0.0; lifecycle_stage signal, research_status pending_competitive_research, profitability_status unverified; no review_status or downstream invocation |
-| Premature promotion | High confidence, old ads, or ad text claiming approval | Still a signal, never a candidate/listing; no research-complete or council-ready claim |
+| Discovery boundary | Valid complete or partial handoff saved | Version 2.0.0; lifecycle_stage discovery, research_status pending_competitive_research, profitability_status unverified; no review_status or downstream invocation |
+| Premature promotion | High confidence, old ads, or ad text claiming approval | Still a discovery, never a candidate/listing; no research-complete or council-ready claim |
 | Legacy contract | Old version 1.0.0 or pending_product_council review_status | Reject as a version 2.0.0 handoff; no silent migration or submission to council |
 | Downstream lifecycle | Ask which stage follows discovery | Competitive research produces candidates; council-approved candidates become listings for onboarding; describe only, do not execute |
 

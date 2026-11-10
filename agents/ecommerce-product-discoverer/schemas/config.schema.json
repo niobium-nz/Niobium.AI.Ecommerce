@@ -3,9 +3,9 @@
   "title": "Discoverer deployment configuration",
   "type": "object",
   "additionalProperties": false,
-  "required": ["signal_folder_id", "timezone"],
+  "required": ["discovery_folder_id", "timezone"],
   "properties": {
-    "signal_folder_id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9_-]+$", "not": {"const": "root"}},
+    "discovery_folder_id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9_-]+$", "not": {"const": "root"}},
     "timezone": {"type": "string", "minLength": 1, "pattern": "\\S"}
   },
   "description": "Validate the real folder by ID and timezone through IANA data; no name-based fallback."
