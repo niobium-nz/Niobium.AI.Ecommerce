@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Discoverer final result",
+  "type": "object", "additionalProperties": false,
+  "required": ["job_id", "status", "artifact", "warnings", "errors"],
+  "properties": {
+    "job_id": {"anyOf": [{"$ref": "#/$defs/uuid"}, {"type": "null"}]},
+    "status": {"enum": ["succeeded", "partial", "empty", "stopped", "failed"]},
+    "artifact": {"anyOf": [{"$ref": "#/$defs/artifact"}, {"type": "null"}]},
+    "warnings": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}},
+    "errors": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}}
+  },
+  "$defs": {
+    "uuid": {"type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"},
+    "nonblank": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "artifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["file_id", "folder_id", "filename", "mime_type", "record_count", "verified"],
+      "properties": {
+        "file_id": {"$ref": "#/$defs/nonblank"},
+        "folder_id": {"$ref": "#/$defs/nonblank"},
+        "filename": {"type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\\.json$"},
+        "mime_type": {"const": "application/json"},
+        "record_count": {"type": "integer", "minimum": 0},
+        "verified": {"const": true}
+      }
+    },
+    "diagnostic": {
+      "type": "object", "additionalProperties": false,
+      "required": ["code", "message", "details"],
+      "properties": {
+        "code": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+        "message": {"$ref": "#/$defs/nonblank"},
+        "details": {"type": "object"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"enum": ["succeeded", "partial", "empty"]}}},
+      "then": {"properties": {"job_id": {"$ref": "#/$defs/uuid"}, "artifact": {"$ref": "#/$defs/artifact"}}}
+    },
+    {
+      "if": {"properties": {"status": {"enum": ["succeeded", "empty"]}}},
+      "then": {"properties": {"errors": {"maxItems": 0}}}
+    },
+    {
+      "if": {"properties": {"status": {"enum": ["failed", "stopped"]}}},
+      "then": {"properties": {"artifact": {"type": "null"}}}
+    },
+    {
+      "if": {"properties": {"status": {"const": "failed"}}},
+      "then": {"properties": {"errors": {"minItems": 1}}}
+    },
+    {
+      "if": {"properties": {"status": {"const": "stopped"}}},
+      "then": {"properties": {"job_id": {"$ref": "#/$defs/uuid"}, "warnings": {"minItems": 1}}}
+    },
+    {
+      "if": {"properties": {"status": {"const": "empty"}}},
+      "then": {"properties": {"artifact": {"properties": {"record_count": {"const": 0}}}}}
+    },
+    {
+      "if": {"properties": {"status": {"enum": ["succeeded", "partial"]}}},
+      "then": {"properties": {"artifact": {"properties": {"record_count": {"minimum": 1}}}}}
+    }
+  ]
+}

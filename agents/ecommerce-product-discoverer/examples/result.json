@@ -1,0 +1,17 @@
+{
+  "job_id": "81c8fdf2-5630-4d97-8f5f-ce5582872655",
+  "status": "succeeded",
+  "artifact": {
+    "file_id": "synthetic-file-id",
+    "folder_id": "synthetic-signal-folder-id",
+    "filename": "81c8fdf2-5630-4d97-8f5f-ce5582872655.json",
+    "mime_type": "application/json",
+    "record_count": 1,
+    "verified": true
+  },
+  "warnings": [
+    {"code": "search_sample_bounded", "message": "Synthetic bounded sample; not an exhaustive market search.", "details": {}},
+    {"code": "projection_fields_omitted", "message": "Provider-only field omitted from clustering copy, preserved in original ad.", "details": {"paths": ["/0/provider_extra"]}}
+  ],
+  "errors": []
+}

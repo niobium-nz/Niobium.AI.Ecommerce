@@ -1,0 +1,34 @@
+# Descriptive platform-neutral manifest; not a native vendor import format.
+name: ecommerce-product-discoverer
+version: 2.0.0
+entrypoint: AGENT.md
+description: Discover traceable product signals for downstream competitive research.
+input_schema: schemas/input.schema.json
+configuration_schema: schemas/config.schema.json
+handoff_schema: schemas/handoff.schema.json
+result_schema: schemas/result.schema.json
+skills:
+  - name: ecommerce-cluster-ads
+    path: skills/ecommerce-cluster-ads/SKILL.md
+capabilities:
+  - trusted_clock_and_uuid
+  - lossless_json_and_local_files
+  - scrapecreators_facebook_ad_library_keyword_search
+  - google_drive_folder_metadata_and_exact_child_search
+  - google_drive_raw_upload_and_complete_verification
+search_policy:
+  default_pages: 1
+  maximum_attempts: 3
+  retries: 0
+  calendar_months: 3
+storage:
+  folder_name: signal
+  folder_id_configuration_key: signal_folder_id
+  filename: "{job_id}.json"
+  mime_type: application/json
+  overwrite: false
+output_stage: signal
+handoff_target: competitive_research
+adapters:
+  chatgpt: adapters/chatgpt-workspace-agent.md
+  claude: adapters/claude-cowork.md
