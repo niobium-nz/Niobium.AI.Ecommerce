@@ -1,0 +1,39 @@
+{
+  "job": {
+    "job_id": "81c8fdf2-5630-4d97-8f5f-ce5582872655",
+    "source_country": "USA",
+    "target_country": "NZL",
+    "keyword": "portable blender"
+  },
+  "product": {
+    "cluster_id": "example.com--portable-blender--product",
+    "cluster_label": "Portable blender",
+    "landing_page_domain": "example.com",
+    "likely_product_name": "Portable blender",
+    "category_guess": "blender",
+    "known_features": [
+      "USB charging"
+    ],
+    "cluster_confidence": "High",
+    "ad_archive_ids": [
+      "demo-ad-001"
+    ],
+    "is_product": true,
+    "is_service": false
+  },
+  "ads": [
+    {
+      "ad_archive_id": "demo-ad-001",
+      "is_active": true,
+      "snapshot": {
+        "link_url": "https://example.com/products/portable-blender",
+        "body": {
+          "text": "Portable blender with USB charging."
+        }
+      },
+      "provider_extra": {
+        "exact_integer": 9007199254740993
+      }
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "loop_id": "21c8fdf2-5630-4d97-8f5f-ce5582872655",
+  "job_id": "81c8fdf2-5630-4d97-8f5f-ce5582872655",
+  "status": "stopped",
+  "source": {
+    "file_id": "synthetic-source-file",
+    "filename": "81c8fdf2-5630-4d97-8f5f-ce5582872655.json",
+    "version": "7",
+    "sha256": "6b47819259f819a9d2e51688ba50de2fadf01c34f9c89968234f5d1ce41cfbac"
+  },
+  "counts": {
+    "total": 1,
+    "dispatched": 1,
+    "succeeded": 0,
+    "partial": 0,
+    "failed": 0,
+    "duplicate": 0,
+    "halted": 1,
+    "not_run": 0
+  },
+  "items": [
+    {
+      "source_index": 0,
+      "product_cluster_id": "example.com--portable-blender--product",
+      "likely_product_name": "Portable blender",
+      "status": "halted",
+      "invocation_id": "invocation-0",
+      "child_result": {
+        "likely_product_name": "Portable blender",
+        "signal_id": "31c8fdf2-5630-4d97-8f5f-ce5582872655",
+        "output_filename": "31c8fdf2-5630-4d97-8f5f-ce5582872655.json",
+        "output_file_id": "synthetic-candidate-file",
+        "output_path": "discovery/81c8fdf2-5630-4d97-8f5f-ce5582872655/31c8fdf2-5630-4d97-8f5f-ce5582872655.json",
+        "status": "published_registry_pending",
+        "published": true,
+        "registry_updated": false,
+        "errors": [
+          {
+            "code": "registry_outcome_unknown",
+            "stage": "registry",
+            "product_cluster_id": "example.com--portable-blender--product",
+            "message": "Synthetic uncertain OneDrive update; reconcile the verified candidate before further work.",
+            "details": {}
+          }
+        ]
+      },
+      "errors": [
+        {
+          "code": "child_requires_reconciliation",
+          "message": "child requires reconciliation",
+          "source_index": 0,
+          "product_cluster_id": "example.com--portable-blender--product",
+          "details": {}
+        }
+      ]
+    }
+  ],
+  "recovery_required": true,
+  "errors": []
+}

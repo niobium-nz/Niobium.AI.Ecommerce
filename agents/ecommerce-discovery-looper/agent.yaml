@@ -1,0 +1,32 @@
+# Descriptive portable metadata, not a native vendor import manifest.
+name: ecommerce-discovery-looper
+version: 1.0.0
+entrypoint: AGENT.md
+description: Dispatch each product in one discovery file to competitive research.
+input_schema: schemas/contracts.schema.json#/$defs/input
+configuration_schema: schemas/contracts.schema.json#/$defs/config
+result_schema: schemas/contracts.schema.json#/$defs/result
+skills: []
+agent_dependencies:
+  - name: ecommerce-competitive-researcher
+    path: ../ecommerce-competitive-researcher/AGENT.md
+    binding_configuration_key: researcher_binding
+source:
+  folder_name: discovery
+  folder_id_configuration_key: discovery_folder_id
+  filename: "{job_id}.json"
+  schema: ../ecommerce-product-discoverer/schemas/handoff.schema.json
+execution:
+  product_concurrency: 1
+  automatic_retries: 0
+  order: source_array
+  coordinator_configuration_key: coordinator_binding
+  required_journal: durable
+  stop_on_unresolved_outcome: true
+storage:
+  google_drive_access: read_only
+  onedrive_access: none
+  candidate_publication_owner: ecommerce-competitive-researcher
+adapters:
+  chatgpt: adapters/chatgpt-workspace-agent.md
+  claude: adapters/claude-cowork.md
