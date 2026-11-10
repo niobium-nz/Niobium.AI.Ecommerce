@@ -1,0 +1,17 @@
+{
+  "baseline_commit": "51cdf133d614d42f189bc6698c17c3593e029dc2",
+  "moved_skills": {
+    "ecommerce-normalize-products": "753b1d5336ade2cb1c48228dd4f8bd5814d8d6af",
+    "ecommerce-analyze-competition": "97efec7d214a6663418c5bb1d824fa8a78e9f5c7",
+    "ecommerce-score-products": "6495f9f6474df4da2219e5ab53b2301ff0794404"
+  },
+  "contracts_used": {
+    "skills/ecommerce-normalize-products/schemas/input.schema.json": "de3f3797a3fa3658cc8bc01c6e19b860fef21bf7",
+    "skills/ecommerce-normalize-products/schemas/output.schema.json": "7795aeb7ada33689ad70c08e107e980741a0955d",
+    "skills/ecommerce-analyze-competition/schemas/input.schema.json": "f0d84659e9f8345787553b1c9d94c2167fa1c19f",
+    "skills/ecommerce-analyze-competition/schemas/output.schema.json": "2a87b4d9ebc1193df7ad5c0685f770393b5666fa",
+    "skills/ecommerce-score-products/schemas/input.schema.json": "63ac34872cc3c415630d7aa72c4f61ceceecd7b6",
+    "skills/ecommerce-score-products/schemas/output.schema.json": "f3ee3bbc35b8662eb55594364315b29290dfde05",
+    "skills/ecommerce-score-products/schemas/competition-scout-output.schema.json": "2a87b4d9ebc1193df7ad5c0685f770393b5666fa"
+  }
+}

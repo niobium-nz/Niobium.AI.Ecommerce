@@ -1,0 +1,37 @@
+# Descriptive platform-neutral manifest, not a native vendor import format.
+name: ecommerce-competitive-researcher
+version: 1.0.0
+entrypoint: AGENT.md
+description: Research one discovery into a scored target-market candidate.
+input_schema: schemas/contracts.schema.json#/$defs/input
+configuration_schema: schemas/contracts.schema.json#/$defs/config
+artifact_schema: schemas/contracts.schema.json#/$defs/artifact
+result_schema: schemas/contracts.schema.json#/$defs/result
+skills:
+  - name: ecommerce-normalize-products
+    path: skills/ecommerce-normalize-products/SKILL.md
+  - name: ecommerce-analyze-competition
+    path: skills/ecommerce-analyze-competition/SKILL.md
+  - name: ecommerce-score-products
+    path: skills/ecommerce-score-products/SKILL.md
+output_stage: candidate
+handoff_target: product_council
+invokes_downstream_agents: false
+storage:
+  folder_name: discovery
+  folder_id_configuration_key: discovery_folder_id
+  subfolder: "{job_id}"
+  filename: "{signal_id}.json"
+  mime_type: application/json
+  overwrite: false
+duplicate_history:
+  provider: onedrive
+  key: ad_archive_id
+  scope: global
+  update_after: verified_publication
+  require_serialized_product_jobs: true
+fanout:
+  unit: recommended_mcp_query
+  fallback: sequential
+  preserve_query_order: true
+  retry_failed_skill_calls: false
