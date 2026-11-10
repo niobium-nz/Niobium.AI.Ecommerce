@@ -1,0 +1,19 @@
+{
+  "reviewed_commit": "087553220393d45c9dadb480a5b770113d54246a",
+  "reviewed_on": "2026-11-11",
+  "agent_dependencies": [
+    {
+      "name": "ecommerce-competitive-researcher",
+      "path": "../ecommerce-competitive-researcher",
+      "tree_sha": "8feab93c2d9fd5781e149cc7ee8d66cd28d84815",
+      "ownership": "External complete agent; no skills moved or copied."
+    }
+  ],
+  "contract_blobs": {
+    "../ecommerce-product-discoverer/schemas/handoff.schema.json": "83c0210450273b06e1bca7882af16aa99bda0689",
+    "../ecommerce-product-discoverer/schemas/input.schema.json": "ac70737f335a74254911df8f860d7f2f39432017",
+    "../ecommerce-product-discoverer/skills/ecommerce-cluster-ads/schemas/output.schema.json": "0a7affb1d3d7d708369dfb89201cd403bd717a16",
+    "../ecommerce-competitive-researcher/schemas/contracts.schema.json": "299c81b49b24933cccee417a64a9478b023c7ecd"
+  },
+  "update_policy": "Revalidate mappings and tests deliberately before binding changed contract versions."
+}
