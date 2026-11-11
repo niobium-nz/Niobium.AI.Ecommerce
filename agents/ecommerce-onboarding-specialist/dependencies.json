@@ -1,0 +1,36 @@
+{
+  "repository": "niobium-nz/Niobium.AI.Ecommerce",
+  "source_commit": "0f4826b222e0e5c0c89dead9299ef35709bf74c8",
+  "skills": [
+    {
+      "name": "ecommerce-profile-offers",
+      "from": "skills/ecommerce-profile-offers",
+      "to": "agents/ecommerce-onboarding-specialist/skills/ecommerce-profile-offers",
+      "git_tree": "a46c86b10d0b1b761671bc757b6054870611f800",
+      "content_changed": false
+    },
+    {
+      "name": "ecommerce-develop-strategy",
+      "from": "skills/ecommerce-develop-strategy",
+      "to": "agents/ecommerce-onboarding-specialist/skills/ecommerce-develop-strategy",
+      "git_tree": "f924d8af0aab7fc3876769de66b6a534c3fd67d3",
+      "content_changed": false
+    },
+    {
+      "name": "ecommerce-draft-prompts",
+      "from": "skills/ecommerce-draft-prompts",
+      "to": "agents/ecommerce-onboarding-specialist/skills/ecommerce-draft-prompts",
+      "git_tree": "a922807d2a0571478a03e8c13563af513e2b9e4f",
+      "content_changed": false
+    }
+  ],
+  "validated_blob_shas": {
+    "ecommerce-profile-offers/schemas/input.schema.json": "3608dec5c9e33fee5b72878bcd40879c18ef20f5",
+    "ecommerce-profile-offers/schemas/output.schema.json": "64392e68bdd557f0d339face7ace55b665a77d98",
+    "ecommerce-develop-strategy/schemas/input.schema.json": "b5b7bc743d5709b7528a6f746d9ed543b3787cab",
+    "ecommerce-develop-strategy/schemas/output.schema.json": "3dd16fef091f3cd4c8173b6bbe3cc09b79c9312f",
+    "ecommerce-draft-prompts/schemas/input.schema.json": "aafb91be4ecc996829eb059e7e656a889770f5ea",
+    "ecommerce-draft-prompts/schemas/output.schema.json": "61181b68ce37aebd138049a0ad7c57b077d6bb72",
+    "ecommerce-develop-strategy/references/iso3166-1.json": "e30d148d75d75b82646f48fd1243aa84d5bfdb49"
+  }
+}

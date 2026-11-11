@@ -1,0 +1,2 @@
+jsonschema>=4.22,<5
+pycountry==24.6.1

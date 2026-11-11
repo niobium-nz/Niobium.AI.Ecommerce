@@ -1,0 +1,14 @@
+{
+  "landing_page_url": "https://shop.example.com/products/desk-organizer",
+  "job_id": "81c8fdf2-5630-4d97-8f5f-ce5582872655",
+  "signal_id": "6ef11f24-a2e0-4c12-af01-26fd8a98134d",
+  "target_country": "NZ",
+  "costs": {
+    "cogs_per_unit": 12.5,
+    "extra_unit_cogs_per_order": 8,
+    "sales_tax": "none",
+    "payment_processing_fees": "none",
+    "currency": "NZD"
+  },
+  "product_reference_board": "https://assets.example.com/desk-organizer-board.png"
+}

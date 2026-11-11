@@ -1,0 +1,11 @@
+{
+  "job_id": null,
+  "signal_id": null,
+  "candidate_id": "19219de3-9422-45b1-b8eb-4947ac1fe34a",
+  "target_country": "NZ",
+  "status": "succeeded",
+  "published": true,
+  "output_file_id": "synthetic-file",
+  "output_path": "candidates/unlinked/19219de3-9422-45b1-b8eb-4947ac1fe34a.json",
+  "errors": []
+}
