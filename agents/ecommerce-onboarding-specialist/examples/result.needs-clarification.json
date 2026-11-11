@@ -1,0 +1,19 @@
+{
+  "job_id": null,
+  "signal_id": null,
+  "candidate_id": null,
+  "target_country": "NZ",
+  "status": "needs_clarification",
+  "published": false,
+  "output_file_id": null,
+  "output_path": null,
+  "errors": [
+    {
+      "code": "image_clarification",
+      "stage": "image_strategy",
+      "severity": "error",
+      "message": "Synthetic board lacks a supported view",
+      "details": {}
+    }
+  ]
+}

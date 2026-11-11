@@ -1,0 +1,11 @@
+{
+  "job_id": "81c8fdf2-5630-4d97-8f5f-ce5582872655",
+  "signal_id": "6ef11f24-a2e0-4c12-af01-26fd8a98134d",
+  "candidate_id": "19219de3-9422-45b1-b8eb-4947ac1fe34a",
+  "target_country": "NZ",
+  "status": "succeeded",
+  "published": true,
+  "output_file_id": "synthetic-file",
+  "output_path": "candidates/6ef11f24-a2e0-4c12-af01-26fd8a98134d/19219de3-9422-45b1-b8eb-4947ac1fe34a.json",
+  "errors": []
+}
