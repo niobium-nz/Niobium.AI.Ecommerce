@@ -1,0 +1,58 @@
+{
+  "batch_size": 30,
+  "length_distribution": [
+    {
+      "category": "short",
+      "percentage": 20,
+      "min_words": 10,
+      "max_words": 25
+    },
+    {
+      "category": "medium",
+      "percentage": 40,
+      "min_words": 26,
+      "max_words": 60
+    },
+    {
+      "category": "long",
+      "percentage": 40,
+      "min_words": 61,
+      "max_words": 100
+    }
+  ],
+  "rating_distribution": [
+    {
+      "rating": 10,
+      "percentage_exact": "66 2/3%",
+      "fraction_of_batch": {
+        "numerator": 2,
+        "denominator": 3
+      }
+    },
+    {
+      "rating": 9,
+      "percentage_exact": "23 1/3%",
+      "fraction_of_batch": {
+        "numerator": 7,
+        "denominator": 30
+      }
+    },
+    {
+      "rating": 8,
+      "percentage_exact": "10%",
+      "fraction_of_batch": {
+        "numerator": 1,
+        "denominator": 10
+      }
+    }
+  ],
+  "word_count_rule": "Count nonempty whitespace-separated tokens in review_text only. Hyphenated words and contractions each count as one token. Do not pad with standalone punctuation or symbols.",
+  "minimum_review_characters": 30,
+  "disclosure": {
+    "field": "is_fictional",
+    "required_value": true,
+    "review_text_prefix": null,
+    "downstream_visible_label": "FICTIONAL SIMULATION - INTERNAL USE ONLY"
+  },
+  "scope": "Fixed policy, not user-editable runtime input. Percentages are authoritative; integer quotas are derived from batch_size. Never round the repeating rating percentages before multiplication."
+}

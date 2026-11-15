@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ecommerce Simulate Reviews output",
+  "description": "Either the entire fixed-size fictional simulation batch or an error-only object. No empty-array success and no partial result.",
+  "oneOf": [
+    {
+      "type": "array",
+      "minItems": 30,
+      "maxItems": 30,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/review_simulation"
+      },
+      "allOf": [
+        {
+          "description": "Derived from the exact 66 2/3% share for rating 10.",
+          "contains": {
+            "type": "object",
+            "required": [
+              "rating"
+            ],
+            "properties": {
+              "rating": {
+                "const": 10
+              }
+            }
+          },
+          "minContains": 20,
+          "maxContains": 20
+        },
+        {
+          "description": "Derived from the exact 23 1/3% share for rating 9.",
+          "contains": {
+            "type": "object",
+            "required": [
+              "rating"
+            ],
+            "properties": {
+              "rating": {
+                "const": 9
+              }
+            }
+          },
+          "minContains": 7,
+          "maxContains": 7
+        },
+        {
+          "description": "Derived from the exact 10% share for rating 8.",
+          "contains": {
+            "type": "object",
+            "required": [
+              "rating"
+            ],
+            "properties": {
+              "rating": {
+                "const": 8
+              }
+            }
+          },
+          "minContains": 3,
+          "maxContains": 3
+        },
+        {
+          "description": "Derived from the 20% short share.",
+          "contains": {
+            "type": "object",
+            "required": [
+              "review_text"
+            ],
+            "properties": {
+              "review_text": {
+                "type": "string",
+                "pattern": "^\\S+(?:\\s+\\S+){9,24}(?![\\s\\S])"
+              }
+            }
+          },
+          "minContains": 6,
+          "maxContains": 6
+        },
+        {
+          "description": "Derived from the 40% medium share.",
+          "contains": {
+            "type": "object",
+            "required": [
+              "review_text"
+            ],
+            "properties": {
+              "review_text": {
+                "type": "string",
+                "pattern": "^\\S+(?:\\s+\\S+){25,59}(?![\\s\\S])"
+              }
+            }
+          },
+          "minContains": 12,
+          "maxContains": 12
+        },
+        {
+          "description": "Derived from the 40% long share.",
+          "contains": {
+            "type": "object",
+            "required": [
+              "review_text"
+            ],
+            "properties": {
+              "review_text": {
+                "type": "string",
+                "pattern": "^\\S+(?:\\s+\\S+){60,99}(?![\\s\\S])"
+              }
+            }
+          },
+          "minContains": 12,
+          "maxContains": 12
+        }
+      ]
+    },
+    {
+      "$ref": "#/$defs/error"
+    }
+  ],
+  "$defs": {
+    "review_simulation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "is_fictional",
+        "review_text",
+        "rating",
+        "video_prompt"
+      ],
+      "properties": {
+        "is_fictional": {
+          "type": "boolean",
+          "const": true,
+          "description": "Every generated item is a fictional internal-use simulation; never a real or verified review."
+        },
+        "review_text": {
+          "type": "string",
+          "minLength": 30,
+          "pattern": "^\\S+(?:\\s+\\S+){9,99}(?![\\s\\S])",
+          "not": {
+            "pattern": "^\\[FICTIONAL SIMULATION"
+          },
+          "description": "Plain fictional buyer-perspective body without a disclosure prefix. Preserve is_fictional alongside it; the receiving UI must display the fiction notice separately."
+        },
+        "rating": {
+          "type": "integer",
+          "enum": [
+            8,
+            9,
+            10
+          ],
+          "description": "Scripted simulation rating, not measured customer satisfaction."
+        },
+        "video_prompt": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "description": "Detailed prompt only, paired to this text; require a visibly disclosed fictional simulation throughout any later video."
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "target_country": "NZL",
+  "product_details": {
+    "working_product_definition": "Synthetic fixture facts for internal testing only: BenchNest Cable Rest is a non-electrical desktop holder with a weighted base and four open-top silicone slots for individual cables 2 to 5 mm in diameter. It rests on a flat desk without adhesive or fastening. It holds compatible loose cable ends for access while those cables are not in use. It does not charge devices, shorten cables, provide strain relief, or guarantee that a pulled cable will stay in place.",
+    "core_problem_solved": "Gives loose compatible cable ends a designated place on a desk rather than leaving them loose at the desk edge.",
+    "primary_use_cases": [
+      "Keeping up to four compatible loose cable ends accessible on a flat work desk.",
+      "Separating compatible cable ends into individual open-top slots during ordinary desk organisation."
+    ],
+    "materials_or_construction_summary": "Weighted base with silicone slots. The exact color, shape, proportions and finish are unspecified here and must come from the actual downstream product reference.",
+    "fulfillment_and_refund_assumptions": "Unapproved planning assumptions only: overseas fulfillment and a possible refund offer. Do not use them as customer-facing promises or actual customer events.",
+    "suggested_product_names": [
+      "BenchNest Cable Rest",
+      "DeskLoop Cable Rest",
+      "CableLanding",
+      "EndPlace Cable Rest",
+      "DeskPerch Cable Rest"
+    ],
+    "recommended_primary_product_name": "BenchNest Cable Rest",
+    "recommended_primary_product_name_rationale": "Fictional working name for this synthetic fixture; not an asserted registered or commercially available brand."
+  },
+  "customer_segment": {
+    "segment_number": 1,
+    "segment_name": "Home desk users with several compatible loose cables",
+    "shared_context_snapshot": {
+      "recommended_product_name": "BenchNest Cable Rest",
+      "core_offer_stack": "Single holder proposal only. No purchase, bundle, testimonial or promotion is established.",
+      "key_price_points": [],
+      "shipping_reality": "Not verified; omit delivery claims.",
+      "guarantee_or_refund_framing": "Not approved; do not describe a guarantee or refund experience.",
+      "landing_page_role_in_funnel": "Internal concept evaluation; no public review placement."
+    },
+    "segment_rating": {
+      "overall_priority_rating": 4,
+      "profit_potential_rating": 3,
+      "trigger_intensity_rating": 4,
+      "creative_clarity_rating": 4,
+      "funnel_fit_rating": 3,
+      "rationale": "Synthetic planning ratings only; not evidence of sales, satisfaction or observed demand."
+    },
+    "segment_summary": {
+      "who_this_segment_is": "Adults using a flat home work desk with several loose cables that fit the stated size range.",
+      "need_state": "Want cable ends within reach without adding adhesive fixtures or another electronic device.",
+      "purchase_moment_or_trigger_condition": "Finishing a work task and wanting a place to leave an unplugged cable end.",
+      "emotional_driver": "Everyday convenience and a sense of order, without pretending the holder solves every cable problem.",
+      "main_objections": [
+        "Will my cables fit?",
+        "Does it require adhesive?",
+        "Will it hide all the extra cable length?"
+      ],
+      "economic_attractiveness": "Hypothesis for internal planning only; no customer or conversion data."
+    },
+    "angle_and_trigger_matrix": [
+      {
+        "angle_number": 1,
+        "angle_name": "Give loose ends a place",
+        "trigger": "A compatible cable is unplugged and its end needs somewhere to rest.",
+        "suggested_product_names_for_this_angle": [],
+        "recommended_product_name_for_this_angle": "BenchNest Cable Rest",
+        "recommended_product_name_for_this_angle_rationale": "Keep the same working product name.",
+        "recommended_short_product_code": "BN-01",
+        "recommended_website_primary_color_for_this_angle": "",
+        "recommended_website_secondary_color_for_this_angle": "",
+        "recommended_website_accent_color_for_this_angle": "",
+        "recommended_website_color_theme_for_this_angle_rationale": "No visual color evidence supplied.",
+        "core_promise": "Proposed wording only: give compatible loose cable ends a designated desk location.",
+        "message_territory": "Practical convenience and routine; not quantified time saving or performance.",
+        "why_this_angle_should_convert_on_meta": "Unproven creative hypothesis, not permission to claim performance.",
+        "objections_to_pre_handle": [
+          "The holder is not an electronic charger.",
+          "Four slots do not hide excess cable length."
+        ],
+        "proof_or_demo_assets_required": [
+          "An actual product-reference photo and a supported cable-placement demonstration are required downstream. No customer proof exists."
+        ],
+        "recommended_cta_or_roas_target": "Internal evaluation only; no public CTA or ROAS claim.",
+        "creative_handoffs": {
+          "static_image_directions": [],
+          "short_form_video_or_ugc_directions": [
+            "A clearly labeled fictional subject places a compatible cable end into one slot; not a genuine customer testimonial."
+          ],
+          "first_frame_or_thumb_stop_direction": "Show the practical loose-cable context without staging extreme mess.",
+          "copy_hook_territories": [
+            "A place for the cable end."
+          ],
+          "headline_territories": [],
+          "visual_proof_moments": [
+            "Supported placement only; planned demo, not already collected proof."
+          ],
+          "continuity_notes_for_landing_page": "Synthetic reviews must not be used as public social proof."
+        }
+      }
+    ],
+    "segment_landing_page_adaptation": {
+      "hero_direction": "Show actual product use separately from any fictional voice test.",
+      "benefit_order": [
+        "Designated location",
+        "Separate slots",
+        "No adhesive installation"
+      ],
+      "faq_emphasis": [
+        "Compatible cable diameter",
+        "No electronics",
+        "Does not shorten cable length"
+      ],
+      "section_emphasis": [
+        "Supported use and limitations"
+      ],
+      "mobile_ux_notes": "Any internal preview must display the fictional/internal-use notice next to each draft.",
+      "asset_needs_specific_to_this_segment": []
+    }
+  }
+}

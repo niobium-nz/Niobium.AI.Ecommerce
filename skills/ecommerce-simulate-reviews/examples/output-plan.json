@@ -1,0 +1,215 @@
+{
+  "purpose": "Build-time review aid for the fictional fixture, not part of the runtime output contract.",
+  "items": [
+    {
+      "item_index": 0,
+      "length_category": "short",
+      "word_count": 16,
+      "rating": 10,
+      "emphasis": "having a designated location for a loose end"
+    },
+    {
+      "item_index": 1,
+      "length_category": "medium",
+      "word_count": 31,
+      "rating": 10,
+      "emphasis": "turning a loose-end habit into a simple routine"
+    },
+    {
+      "item_index": 2,
+      "length_category": "long",
+      "word_count": 79,
+      "rating": 10,
+      "emphasis": "appreciating a modest practical improvement"
+    },
+    {
+      "item_index": 3,
+      "length_category": "medium",
+      "word_count": 38,
+      "rating": 9,
+      "emphasis": "valuing placement without sticky fittings"
+    },
+    {
+      "item_index": 4,
+      "length_category": "long",
+      "word_count": 79,
+      "rating": 9,
+      "emphasis": "preferring a holder with no electronic promise"
+    },
+    {
+      "item_index": 5,
+      "length_category": "short",
+      "word_count": 17,
+      "rating": 10,
+      "emphasis": "appreciating a setup without adhesive installation"
+    },
+    {
+      "item_index": 6,
+      "length_category": "medium",
+      "word_count": 39,
+      "rating": 10,
+      "emphasis": "understanding a narrow product purpose"
+    },
+    {
+      "item_index": 7,
+      "length_category": "long",
+      "word_count": 80,
+      "rating": 10,
+      "emphasis": "finding an everyday routine easy to understand"
+    },
+    {
+      "item_index": 8,
+      "length_category": "medium",
+      "word_count": 37,
+      "rating": 10,
+      "emphasis": "distinguishing one loose end from another"
+    },
+    {
+      "item_index": 9,
+      "length_category": "long",
+      "word_count": 82,
+      "rating": 10,
+      "emphasis": "caring about a useful routine more than showroom neatness"
+    },
+    {
+      "item_index": 10,
+      "length_category": "short",
+      "word_count": 13,
+      "rating": 9,
+      "emphasis": "wanting a simple place for the cable end"
+    },
+    {
+      "item_index": 11,
+      "length_category": "medium",
+      "word_count": 34,
+      "rating": 10,
+      "emphasis": "giving a familiar annoyance a designated home"
+    },
+    {
+      "item_index": 12,
+      "length_category": "long",
+      "word_count": 84,
+      "rating": 10,
+      "emphasis": "understanding fit and limitations before deciding"
+    },
+    {
+      "item_index": 13,
+      "length_category": "medium",
+      "word_count": 34,
+      "rating": 9,
+      "emphasis": "considering the stated fit limitation"
+    },
+    {
+      "item_index": 14,
+      "length_category": "long",
+      "word_count": 83,
+      "rating": 9,
+      "emphasis": "valuing one understandable location for loose ends"
+    },
+    {
+      "item_index": 15,
+      "length_category": "short",
+      "word_count": 17,
+      "rating": 10,
+      "emphasis": "understanding that the product is a holder, not a charger"
+    },
+    {
+      "item_index": 16,
+      "length_category": "medium",
+      "word_count": 33,
+      "rating": 10,
+      "emphasis": "liking the idea without expecting a complete tidiness fix"
+    },
+    {
+      "item_index": 17,
+      "length_category": "long",
+      "word_count": 83,
+      "rating": 10,
+      "emphasis": "wanting the loose end ready for the next task"
+    },
+    {
+      "item_index": 18,
+      "length_category": "medium",
+      "word_count": 34,
+      "rating": 8,
+      "emphasis": "having several compatible ends in one location"
+    },
+    {
+      "item_index": 19,
+      "length_category": "long",
+      "word_count": 84,
+      "rating": 8,
+      "emphasis": "accepting a small organisational purpose"
+    },
+    {
+      "item_index": 20,
+      "length_category": "short",
+      "word_count": 15,
+      "rating": 8,
+      "emphasis": "preferring a nonpermanent desk accessory"
+    },
+    {
+      "item_index": 21,
+      "length_category": "medium",
+      "word_count": 37,
+      "rating": 10,
+      "emphasis": "valuing a clearly defined job rather than perfection"
+    },
+    {
+      "item_index": 22,
+      "length_category": "long",
+      "word_count": 81,
+      "rating": 10,
+      "emphasis": "picturing how individual open slots fit a routine"
+    },
+    {
+      "item_index": 23,
+      "length_category": "medium",
+      "word_count": 37,
+      "rating": 9,
+      "emphasis": "a simple unplug-and-place routine"
+    },
+    {
+      "item_index": 24,
+      "length_category": "long",
+      "word_count": 85,
+      "rating": 9,
+      "emphasis": "choosing practical value over a transformation promise"
+    },
+    {
+      "item_index": 25,
+      "length_category": "short",
+      "word_count": 17,
+      "rating": 10,
+      "emphasis": "accepting the difference between holding ends and managing excess length"
+    },
+    {
+      "item_index": 26,
+      "length_category": "medium",
+      "word_count": 35,
+      "rating": 10,
+      "emphasis": "distinguishing cable storage from charging"
+    },
+    {
+      "item_index": 27,
+      "length_category": "long",
+      "word_count": 84,
+      "rating": 10,
+      "emphasis": "liking a small convenience without permanent mounting"
+    },
+    {
+      "item_index": 28,
+      "length_category": "medium",
+      "word_count": 37,
+      "rating": 10,
+      "emphasis": "understanding a holder is not strain relief"
+    },
+    {
+      "item_index": 29,
+      "length_category": "long",
+      "word_count": 84,
+      "rating": 10,
+      "emphasis": "building a repeatable habit rather than expecting instant tidiness"
+    }
+  ]
+}

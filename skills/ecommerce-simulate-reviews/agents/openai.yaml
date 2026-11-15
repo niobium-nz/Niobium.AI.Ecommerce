@@ -1,0 +1,6 @@
+interface:
+  display_name: "Ecommerce Simulate Reviews"
+  short_description: "Draft clearly fictional customer voices for internal tests"
+  default_prompt: "Use Ecommerce Simulate Reviews with the supplied target country, product details and one customer segment. Produce the full fictional internal-use batch with is_fictional true, plain review bodies, percentage-based length and scripted-rating mixes, and paired video prompts that retain visible fictional disclosure. Do not publish reviews or generate videos."
+policy:
+  allow_implicit_invocation: true
