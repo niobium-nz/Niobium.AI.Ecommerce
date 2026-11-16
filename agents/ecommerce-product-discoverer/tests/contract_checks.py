@@ -6,6 +6,7 @@ import copy
 import hashlib
 import json
 import math
+import os
 import re
 from collections import Counter
 from datetime import date, datetime, timezone
@@ -17,7 +18,16 @@ from jsonschema import Draft202012Validator, FormatChecker
 from referencing import Registry, Resource
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILL = ROOT / "skills/ecommerce-cluster-ads"
+SKILL_BINDING = json.loads((ROOT / "skill-bindings.json").read_text(encoding="utf-8"))["ecommerce-cluster-ads"]
+_skill_root = os.environ.get(SKILL_BINDING["resource_environment_variable"])
+if not _skill_root:
+    raise RuntimeError("Supply the host-selected skill's current execution resources through ECOMMERCE_CLUSTER_ADS_RESOURCES")
+SKILL = Path(_skill_root).resolve(strict=True)
+if SKILL.is_relative_to(ROOT) or ROOT.is_relative_to(SKILL):
+    raise RuntimeError("Selected skill resources must be separate from the agent directory")
+if (ROOT / "skills").exists() or (ROOT / "skills").is_symlink():
+    raise RuntimeError("Remove the nested skills directory; use only the host-selected skill")
+SCHEMA_PATHS = sorted(ROOT.rglob("*.schema.json")) + sorted(SKILL.rglob("*.schema.json"))
 
 
 def strict_loads(text: str) -> Any:
@@ -45,10 +55,14 @@ def load(path: Path) -> Any:
     return strict_loads(path.read_text(encoding="utf-8"))
 
 
-def validator(path: Path, fragment: str = "") -> Draft202012Validator:
-    resources = [(p.as_uri(), Resource.from_contents(load(p))) for p in ROOT.rglob("*.schema.json")]
+def validator(path: Path | str, fragment: str = "") -> Draft202012Validator:
+    resources = [(p.as_uri(), Resource.from_contents(load(p))) for p in SCHEMA_PATHS]
+    resources.extend((binding["uri"], Resource.from_contents(load(SKILL / binding["path"])))
+                     for binding in SKILL_BINDING["schemas"].values())
+    aliases = {binding["uri"] for binding in SKILL_BINDING["schemas"].values()}
+    uri = path if isinstance(path, str) and path in aliases else Path(path).resolve().as_uri()
     return Draft202012Validator(
-        {"$ref": path.resolve().as_uri() + fragment},
+        {"$ref": uri + fragment},
         registry=Registry().with_resources(resources), format_checker=FormatChecker(),
     )
 
@@ -234,11 +248,3 @@ def validate_result(result: Any) -> None:
 
 def git_hash(kind: str, data: bytes) -> str:
     return hashlib.sha1(kind.encode() + b" " + str(len(data)).encode() + b"\0" + data).hexdigest()
-
-
-def tree_hash(directory: Path) -> str:
-    parts = []
-    for child in sorted(directory.iterdir(), key=lambda p: p.name + ("/" if p.is_dir() else "")):
-        mode, digest = ("40000", tree_hash(child)) if child.is_dir() else ("100644", git_hash("blob", child.read_bytes()))
-        parts.append(mode.encode() + b" " + child.name.encode() + b"\0" + bytes.fromhex(digest))
-    return git_hash("tree", b"".join(parts))

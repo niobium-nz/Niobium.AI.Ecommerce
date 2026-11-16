@@ -1,0 +1,52 @@
+name: Discoverer package
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'agents/ecommerce-product-discoverer/**'
+      - 'skills/ecommerce-cluster-ads/**'
+      - 'agents/ecommerce-discovery-looper/**'
+      - 'tools/ecommerce-product-discoverer/**'
+      - '.github/workflows/discoverer-package.yml'
+  pull_request:
+    paths:
+      - 'agents/ecommerce-product-discoverer/**'
+      - 'skills/ecommerce-cluster-ads/**'
+      - 'agents/ecommerce-discovery-looper/**'
+      - 'tools/ecommerce-product-discoverer/**'
+      - '.github/workflows/discoverer-package.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.14']
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Build installation kit from locked dependencies
+        run: python -B tools/ecommerce-product-discoverer/build.py
+      - name: Test the actual upload package offline
+        run: python -B tools/ecommerce-product-discoverer/test_bundle.py --bundle dist/ecommerce-product-discoverer
+      - name: Test downstream schema consumer offline
+        run: python -I -S -B tools/ecommerce-product-discoverer/test_consumers.py --bundle dist/ecommerce-product-discoverer
+      - name: Upload tested installation kit
+        if: matrix.python == '3.14'
+        uses: actions/upload-artifact@v7
+        with:
+          name: ecommerce-product-discoverer-install-kit
+          path: dist/ecommerce-product-discoverer/
+          if-no-files-found: error
+          retention-days: 90

@@ -1,15 +1,23 @@
 # Host acceptance cases
 
-Run with mocked connectors, fixed clock/UUID and no paid requests. These cases
+Where the host supports mock injection, run with mocked connectors, fixed
+clock/UUID and no paid requests. These cases
 are a deployment checklist, not tests already executed in ChatGPT or Claude.
 The Python suite tests deterministic helpers, not model clustering quality or
 host orchestration adherence. Record host/version, bundle commit, mock input,
 actual tool trace, final JSON and pass/fail. Repeat after connector/prompt changes.
+If no host mock harness exists, report these cases as not executed. That is an
+evidence gap, not an installation blocker or a reason to invent a harness result.
+Resource and schema checks must still pass. Live behavior remains unverified until
+an authorized run. See `../references/validation.md` for the separate stages.
 
 | Case | Mock setup | Required outcome |
 | --- | --- | --- |
 | Missing configuration | Folder ID absent/null | Failed with job ID; zero searches/uploads; no name lookup |
 | Invalid folder | Wrong name/type, trashed, shortcut or no add permission | Fail before paid retrieval; no fallback or creation |
+| Omitted metadata | Correct ID/name/MIME; trash/add flags missing or null | Warn with unknown fields and stage; continue; do not infer permission from canShare |
+| Explicit denial | Correct identity but trashed:true or canAddChildren:false | Fail before paid retrieval even when other fields are unknown |
+| Later write denial | Metadata flags unknown; upload returns permission denied | One upload attempt; failed with artifact null; preserve warning; no retry |
 | Initial collision | Exact child filename of any MIME; input also invalid | Stop at step 0; no validation, content read, search, write or regenerated UUID |
 | Incomplete lookup | Capped response, unhandled token or incomplete search | Fail before paid call; never infer absence |
 | Repeated invocation | Identical inputs in two calls | Fresh host UUIDs and separate filenames; no input deduplication |
@@ -26,7 +34,7 @@ actual tool trace, final JSON and pass/fail. Repeat after connector/prompt chang
 | Independent eligibility | Boolean/string status; inclusive/young/unknown/conflicting dates | Only actual boolean true and known date on/before cutoff qualify; report exclusions |
 | Duplicate source IDs | Same JSON versus differing content under one ID | Collapse identical data; exclude all conflicting versions; partial if usable products survive |
 | Projection | Unknown nested keys and invalid recognized values | Originals intact; unknown keys removed only from copy; invalid known field fails whole projected batch |
-| Skill invocation | Several ads; one explicitly promotes several products | One complete array; actual bundled skill; shared source IDs across products allowed |
+| Skill invocation | Several ads; one explicitly promotes several products | One complete array; actual host-selected skill; shared source IDs across products allowed |
 | Skill error/limits | Error object, malformed/truncated output or oversized batch | Fail without handoff; no chunking, truncation or fabricated product |
 | Traceability | Empty IDs or mixed valid/foreign/unqualified IDs | Reject whole cluster, identify errors; never repair its list |
 | Integrity | Duplicate cluster IDs or missing source coverage | Quarantine all duplicates; coverage checked before services removed; partial or failed |
@@ -45,5 +53,6 @@ actual tool trace, final JSON and pass/fail. Repeat after connector/prompt chang
 | Downstream lifecycle | Ask which stage follows discovery | Competitive research produces candidates; council-approved candidates become listings for onboarding; describe only, do not execute |
 
 No live Drive writes, paid searches or hosted deployments are part of repository
-validation. Obtain separate authorization for a controlled live smoke test only
-after mocked acceptance passes. This checklist does not supply that authorization.
+validation. A controlled live smoke test needs user authorization specifying the
+search and destination; installation is not that authorization. If mock execution
+is unavailable, record that limitation without claiming the live test replaces it.

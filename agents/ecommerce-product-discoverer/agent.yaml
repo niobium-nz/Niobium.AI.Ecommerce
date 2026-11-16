@@ -1,6 +1,7 @@
 # Descriptive platform-neutral manifest; not a native vendor import format.
 name: ecommerce-product-discoverer
-version: 2.0.0
+version: 2.1.0
+handoff_contract_version: 2.0.0
 entrypoint: AGENT.md
 description: Discover traceable product discoveries for downstream competitive research.
 input_schema: schemas/input.schema.json
@@ -9,7 +10,9 @@ handoff_schema: schemas/handoff.schema.json
 result_schema: schemas/result.schema.json
 skills:
   - name: ecommerce-cluster-ads
-    path: skills/ecommerce-cluster-ads/SKILL.md
+    binding: host_configured_skill
+    resources: skill-bindings.json
+    version_selection: host_managed
 capabilities:
   - trusted_clock_and_uuid
   - lossless_json_and_local_files

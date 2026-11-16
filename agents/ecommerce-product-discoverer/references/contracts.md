@@ -13,11 +13,11 @@ intentionally invalid until configured. Never infer a folder ID from its name.
 
 Keep complete original searchResults records, including unknown fields. Activity
 and date gates use their actual supplied values. Build a separate recursive
-projection using the bundled skill input schema. Report unknown omitted paths;
+projection using the host-selected skill input schema. Report unknown omitted paths;
 never coerce or discard invalid recognized fields to make a record pass.
 Validate the entire projected batch before one clustering invocation.
 
-The bundled skill owns the unchanged ten-field product contract. One ad can
+The host-selected skill owns the unchanged ten-field product contract. One ad can
 support several distinct products. Check exact nonempty IDs, source membership,
 schema, duplicate clusters, coverage and type after invocation. Quarantine whole
 invalid clusters; do not repair their ID lists. A top-level skill error is not [].
@@ -95,7 +95,7 @@ requires exact MIME, parent, complete bytes and a unique exact-name match.
 
 Preflight: uuid_unavailable, configuration_invalid, folder_invalid,
 job_file_exists, collision_check_failed, input_invalid, same_source_and_target,
-clock_unavailable, capability_unavailable.
+clock_unavailable, capability_unavailable, drive_metadata_unavailable.
 Retrieval: search_failed, search_response_invalid, search_sample_bounded,
 conflicting_ad_records, ad_not_active, ad_status_unverified, ad_too_recent,
 ad_date_unverified.
@@ -105,3 +105,18 @@ duplicate_cluster_id, cluster_coverage_missing, service_cluster_excluded,
 low_confidence_product, no_valid_products.
 Persistence: handoff_invalid, upload_failed, upload_outcome_unknown,
 artifact_verification_failed. Unexpected failures: internal_error.
+
+## Skill resource binding
+
+The external skill owns its product schema. Register the logical schema URIs in
+`skill-bindings.json` against the current host-selected skill resources before
+validating this agent's schemas. URI resolution is local; no network retrieval or
+copy into agent files is needed. Handoff wire version remains 2.0.0: the URI change
+only affects schema loading. Consumers must register the same output-schema URI.
+See `skill-binding.md` for the adapter contract.
+
+`drive_metadata_unavailable` records unknown optional folder/file fields; it does
+not mean those facts were verified. It does not by itself make the discovery
+handoff partial. Actual persistence failures still produce a failed result with
+artifact null. Exact destination, collision checks and complete content verification
+are mandatory even when optional trash/add-permission fields are unavailable.

@@ -49,9 +49,13 @@ def load(path: Path) -> Any:
 @lru_cache(maxsize=1)
 def registry() -> Registry:
     paths = [SOURCE_SCHEMA, SOURCE_SCHEMA.with_name('input.schema.json'),
-             AGENTS / 'ecommerce-product-discoverer/skills/ecommerce-cluster-ads/schemas/output.schema.json',
+             AGENTS.parent / 'skills/ecommerce-cluster-ads/schemas/output.schema.json',
              CHILD_SCHEMA, ROOT / 'schemas/contracts.schema.json']
-    return Registry().with_resources([(p.as_uri(), Resource.from_contents(load(p))) for p in paths])
+    resources = [(p.as_uri(), Resource.from_contents(load(p))) for p in paths]
+    binding = load(AGENTS / 'ecommerce-product-discoverer/skill-bindings.json')
+    output_uri = binding['ecommerce-cluster-ads']['schemas']['output']['uri']
+    resources.append((output_uri, Resource.from_contents(load(paths[2]))))
+    return Registry().with_resources(resources)
 
 
 def validate(path: Path, value: Any, fragment: str = '') -> None:

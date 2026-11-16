@@ -10,8 +10,8 @@ from datetime import date
 from jsonschema import Draft202012Validator, ValidationError
 
 from contract_checks import (
-    ROOT, SKILL, cutoff, deduplicate_ads, eligible, filter_clusters, git_hash,
-    load, normalize_inputs, project_ads, strict_loads, tree_hash,
+    ROOT, SKILL, SKILL_BINDING, SCHEMA_PATHS, cutoff, deduplicate_ads, eligible, filter_clusters, git_hash,
+    load, normalize_inputs, project_ads, strict_loads,
     validate_config, validate_handoff, validate_result, validator,
 )
 
@@ -26,8 +26,8 @@ class ContractTests(unittest.TestCase):
         self.day = date(2026, 8, 9)
 
     def test_all_schema_definitions(self):
-        for path in ROOT.rglob("*.schema.json"):
-            with self.subTest(path=str(path.relative_to(ROOT))):
+        for path in SCHEMA_PATHS:
+            with self.subTest(path=str(path)):
                 Draft202012Validator.check_schema(load(path))
 
     def test_all_agent_examples(self):
@@ -272,14 +272,17 @@ class ContractTests(unittest.TestCase):
                   "errors": [{"code": "search_failed", "message": "Earlier page failed", "details": {}}]}
         validate_result(result)
 
-    def test_moved_skill_exact_git_tree(self):
-        self.assertEqual(tree_hash(SKILL), "bb1edb84055f7b2a83c5de3590301900b4963d21")
+    def test_selected_skill_schema_identifiers_resolve(self):
+        for kind in ("input", "output"):
+            with self.subTest(schema=kind):
+                validator(SKILL_BINDING["schemas"][kind]["uri"]).validate(
+                    load(SKILL / f"examples/{kind}.minimal.json"))
 
     def test_country_lookup_exact_git_blob(self):
         self.assertEqual(git_hash("blob", (ROOT / "references/iso3166-1.json").read_bytes()), "e30d148d75d75b82646f48fd1243aa84d5bfdb49")
 
     def test_local_markdown_links_resolve(self):
-        for path in ROOT.rglob("*.md"):
+        for path in list(ROOT.rglob("*.md")) + list(SKILL.rglob("*.md")):
             for target in re.findall(r"\]\(([^)]+)\)", path.read_text()):
                 if "://" not in target and not target.startswith("#"):
                     with self.subTest(file=str(path), target=target):

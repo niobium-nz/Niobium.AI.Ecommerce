@@ -26,7 +26,7 @@ Example bindings exposed during authoring; verify their full semantics per host:
 
 | Capability | Example action | Requirements |
 | --- | --- | --- |
-| Metadata | get_file_metadata | ID-based name, MIME, parent, trashed state, permissions, checksum |
+| Metadata | get_file_metadata | ID-based name, MIME, parent; request trash/add permission/checksum when exposed |
 | Exact child lookup | search | Exact parent/name, all MIME types, no viewed-only restriction, complete pagination |
 | Raw upload | upload_file | File bytes, explicit parent, exact filename, application/json |
 | Complete readback | fetch raw-file mode | Full bytes, not a bounded text excerpt |
@@ -36,6 +36,24 @@ Example Drive-v3 filter:
 ```text
 '<configured_folder_id>' in parents and name = '<job_id>.json' and trashed = false
 ```
+
+The fields requested from Drive and the fields returned by a connector are not
+necessarily identical. Some wrappers omit `trashed` and `capabilities.canAddChildren`.
+Request them once where supported. Missing/null/non-boolean values are unknown:
+warn with `drive_metadata_unavailable` and continue if identity and mandatory
+actions are available. Explicit trash or add-permission denial still stops the
+run. Do not equate `canShare`, `canEdit` or account ownership with add permission.
+Apply this policy both at preflight and immediately before upload. A missing
+file trash flag after upload also warns; exact ID/name/MIME/parent, complete bytes
+and unique exact-name lookup remain mandatory for a verified save. Permission can
+change after preflight, so even a positive flag is not a guarantee of a write.
+An actual write denial fails the job, with no retry or success artifact.
+
+Keep the server-side non-trashed search filter when supported. A broader complete
+lookup that includes trashed children is safe but conservative: any exact-name
+match still blocks a new write. Never drop a match because its trash flag is absent.
+The exception for optional metadata does not permit incomplete collision searches,
+missing parent/identity, unreadable content or unverified uploads.
 
 Escape query literals using connector rules; do not interpolate ad-controlled
 values. The inspected search wrapper exposes special_filter_query_str. Use an
@@ -70,6 +88,13 @@ https://developers.google.com/workspace/drive/api/guides/manage-uploads
 ## Utilities and resource access
 
 Require a real clock, IANA timezone conversion, UUIDv4 generation, lossless JSON,
-local bytes/equivalent raw upload, and all bundled skill resources. Python is
-not required at runtime. tests/contract_checks.py is an optional offline reference,
-not a production connector client or replacement for the clustering skill.
+local bytes/equivalent raw upload, and all host-selected skill resources. A real
+Draft 2020-12 validator with date/date-time format checks and local reference
+resolution is required for JSON Schema checks; JSON parsing is insufficient.
+Python is one supported implementation, not a platform requirement. Installation
+kits include an offline Python validator with its dependencies for the documented
+Linux targets. Another host may supply an equivalent validator and run the same
+valid/invalid fixtures. Do not attempt online dependency installation in the host.
+`tests/contract_checks.py` is an offline reference, not a production connector
+client or replacement for the clustering skill. See `skill-binding.md` for
+resource resolution and `validation.md` for evidence levels and setup checks.

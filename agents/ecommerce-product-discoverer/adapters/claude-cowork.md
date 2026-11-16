@@ -1,37 +1,36 @@
-# Claude Cowork setup
+# Claude Cowork and other task hosts
 
-Keep AGENT.md and the bundled skill as canonical behavior. This source bundle is
-not a prebuilt Claude plugin, and agent.yaml is not a Claude manifest. Official
-guidance checked on 2026-11-09 describes plugins/skills and connectors; verify
-current packaging and availability during deployment.
+`AGENT.md` defines portable behavior. `agent.yaml` is descriptive, not a Claude
+plugin manifest, and the installation kit is not a universal native import file.
+No Cowork deployment or live integration test is claimed by this repository.
 
-1. Provide the complete agent directory as trusted task/project context, or use
-   the supported plugin packaging workflow. Set instructions to AGENT.md without
-   changing its contracts or dropping required resources.
-2. Install the complete ecommerce-cluster-ads skill through the supported skill
-   mechanism. Preserve all relative schemas, suffix lookup, license and examples.
-3. Bind authorized ScrapeCreators keyword search and Drive exact child lookup,
-   metadata, explicit-parent raw JSON upload and complete verification. Do not
-   assume a default Drive connector supports writes or equivalent schemas.
-4. Supply discovery_folder_id and timezone as trusted deployment settings. Verify
-   clock, UUID, timezone, lossless JSON and actual file-reference capabilities.
-   Use tool-bindings.md rather than copying ChatGPT-specific namespaces.
-5. Limit permissions and retain write approvals. Do not grant unrelated apps,
-   use a browser fallback or put API keys in the bundle.
-6. Run the offline fixtures and mocked host acceptance cases, then obtain separate
-   authorization for any paid search/live-write test.
+1. Bind the complete `ecommerce-product-discoverer` folder as task/project resources
+   and use `AGENT.md` as instructions through the host's supported mechanism.
+2. Select the single `ecommerce-cluster-ads` skill through that agent/task's skill
+   configuration. The repository source and kit keep it separate from agent files.
+   Do not create a second nested copy. Resolve its current resources through that
+   selection; never persist the host's mount paths or substitute a global namesake.
+3. Register `skill-bindings.json` schema URIs against that selected package. A host
+   with resource APIs may use an in-memory registry. The optional file-based helper
+   accepts a resource directory valid only for the current execution.
+4. Supply the existing `discovery_folder_id` and IANA timezone as deployment
+   settings. Bind the approved search and Drive actions by actual semantics, not
+   ChatGPT namespaces. Read-only Drive or native document creation is insufficient.
+5. Run the resource/schema checks in `references/validation.md`. The provided
+   offline wheels support the documented Linux Python targets; other hosts need an
+   equivalent Draft 2020-12 validator, local references and date/time format checks.
+   Do not attempt a blocked network installation or call JSON parsing validation.
+6. Apply the same optional Drive metadata policy and mandatory persistence checks.
+   Respect the host's approvals and do not run paid/write tests merely for setup.
+7. Where mocked host execution is available, run `tests/host-acceptance.md`; otherwise
+   report it untested. Keep installation evidence separate from live-run evidence.
 
-No Cowork deployment or live integration test was performed. Check the target
-host's current plugin format instead of assuming a shared vendor-neutral ZIP
-format. Use supported instruction/resource binding, or resolve capability gaps
-before running. Do not claim successful deployment merely from these notes.
+For updates, replace agent resources and validation support as a coherent set,
+keep the active deployment settings, and change the selected skill only deliberately.
+Rerun compatibility checks after a skill update. Wire contracts and business stages
+remain unchanged; source examples are not a production execution trace.
 
-Preserve the version 2.0.0 discovery handoff: lifecycle_stage is discovery and
-research_status is pending_competitive_research. The next consumer is the
-competitive research agent, not product council. Research produces candidates;
-only council-approved candidates become listings for product onboarding.
-Do not add downstream invocation or automatic stage promotion to this agent.
-
-Sources:
-https://support.claude.com/en/articles/13837440-use-plugins-in-claude
-https://support.claude.com/en/articles/12512180-use-skills-in-claude
+Check the target host's current
+[skill](https://support.claude.com/en/articles/12512180-use-skills-in-claude) and
+[plugin](https://support.claude.com/en/articles/13837440-use-plugins-in-claude)
+capabilities rather than assuming a shared vendor import format.

@@ -21,9 +21,13 @@ target country or trigger onboarding. Downstream processing is outside this
 agent's execution boundary.
 
 Use this file as the platform-neutral entrypoint. Read `references/contracts.md`
-and `references/tool-bindings.md`. The sole runtime skill is the complete bundled
-`skills/ecommerce-cluster-ads/SKILL.md`; read its referenced schemas and rules at
-invocation. Do not depend on another installed version or repository-root skills.
+and `references/tool-bindings.md`. The sole runtime skill is `ecommerce-cluster-ads`,
+selected through this agent or task's host configuration. Read its `SKILL.md` and
+referenced resources at invocation. Use `skill-bindings.json` and
+`references/skill-binding.md` to resolve its schemas from that same selected package.
+Do not duplicate the skill in agent files, select a global same-name substitute,
+pin it to a Git hash or persist an execution-time mount path. The host owns skill
+selection; compatibility is checked against the resources actually selected.
 `tests/` contains offline checks, not a production runner or network client.
 
 Accept exactly `source_country`, `target_country`, and `keyword` as JSON strings.
@@ -41,8 +45,14 @@ in prose. If generation is unavailable, return failed with `job_id: null` and
 `uuid_unavailable`; make no external calls. Otherwise keep this ID for the run.
 Repeating identical inputs is allowed and receives a fresh UUID each invocation.
 
-Require the configured folder ID. Read its metadata and require exact name
-`discovery`, folder MIME type, non-trashed state and permission to add children.
+Require the configured folder ID. Read its metadata and require matching ID,
+exact name `discovery` and folder MIME type. Request `trashed` and
+`capabilities.canAddChildren` when supported. Explicit `trashed: true`,
+`canAddChildren: false`, access denial or unreadable identity stops the run.
+If these two optional fields are omitted, null or not booleans, record
+`drive_metadata_unavailable` with the unknown fields and check stage, then
+continue. Unknown is not proof of permission or non-trashed state. Do not infer
+add permission from sharing/edit flags or repeat requests that cannot expose it.
 Do not search for a replacement by name, create folders, use root/My Drive or
 follow shortcuts. Missing/mismatched/inaccessible configuration is an error.
 Search its direct children for the exact job filename across ALL MIME types.
@@ -73,7 +83,7 @@ Unavailable clock/timezone conversion is an error before paid retrieval.
 Inspect actual connected action schemas and permissions before spending. Require
 the approved ScrapeCreators keyword search, complete Drive exact-name lookup,
 raw JSON upload to an explicit parent, metadata and complete content/checksum
-verification, trusted UUID/time utilities and all bundled skill resources.
+verification, trusted UUID/time utilities and all selected skill resources.
 Missing capabilities produce `capability_unavailable`; never drop parameters,
 substitute tools, invent file references or request secrets. Respect host approval
 gates. Building this package is not authorization to run a discovery job.
@@ -151,10 +161,10 @@ or disagreement makes the date unverified even when another is readable.
 No extra lookup is permitted. Say "currently active with a start date on/before
 cutoff", never "ran continuously for three months".
 
-## 3. Project and invoke the bundled clustering skill
+## 3. Project and invoke the selected clustering skill
 
 Keep immutable originals. Build separate copies with ONLY exact allowed fields
-from the bundled input schema, recursively through snapshot/body/images/videos/
+from the selected skill's input schema, recursively through snapshot/body/images/videos/
 cards. Report unknown omitted-key paths as `projection_fields_omitted`; retain
 those fields in original ads. Do not rename/coerce values, change ID strings,
 inject defaults, repair nulls or remove invalid array members. A recognized field
@@ -163,7 +173,7 @@ Validate the complete projection before invocation.
 
 Pass ONE complete top-level projected array to ecommerce-cluster-ads, without an
 input envelope, countries or keyword. Empty input maps to [] without a model
-call. Follow the actual bundled skill's extraction/grouping/ID rules; do not
+call. Follow the actual selected skill's extraction/grouping/ID rules; do not
 approximate them. If context/output limits cannot accommodate the entire batch,
 return `resource_limit` without truncating or arbitrarily chunking it.
 The skill returns an array of ten-field clusters or {"error":"..."}. A top-level
@@ -179,7 +189,7 @@ warn `cluster_traceability_failed` with index/cluster ID and offending IDs or
 empty-list reason. Never remove bad IDs to repair a cluster. The same ID may
 legitimately support several different product clusters.
 
-Validate remaining clusters against the bundled cluster output schema. Exclude
+Validate remaining clusters against the selected skill's cluster output schema. Exclude
 structurally invalid clusters with `cluster_schema_invalid`; exclude ALL clusters
 sharing a duplicate cluster_id with `duplicate_cluster_id`. Check coverage BEFORE
 service filtering; qualifying IDs absent from intact clusters produce
@@ -224,8 +234,12 @@ all earlier diagnostics.
 
 Upload exactly once with filename `{job_id}.json`, parent discovery_folder_id, MIME
 application/json. Do not overwrite/share/rename/move/delete other files. Read
-metadata for the returned ID: verify exact name, MIME, parent and non-trashed
-state. Verify complete bytes via a provider checksum matched to the actual
+metadata for the returned ID: verify ID, exact name, MIME and parent. Explicit
+`trashed: true` fails verification; an unavailable trash flag produces
+`drive_metadata_unavailable`, without blocking verification of the other facts.
+Reapply the folder policy above before upload; unknown add permission may still
+result in a real write denial. Report that as `upload_failed`, with artifact null,
+and do not retry. Verify complete bytes via a provider checksum matched to the actual
 serialized upload bytes, or complete raw-byte readback and comparison. A text
 snippet or upload-success response alone is insufficient. Recheck unique-name
 lookup after uploading; duplicates prevent verified success.

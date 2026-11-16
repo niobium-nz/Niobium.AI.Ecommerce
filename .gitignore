@@ -1,2 +1,9 @@
-﻿# Visual Studio cache/options directory
+# Visual Studio cache/options directory
 .vs/
+
+# Generated installation kits, local settings and Python caches
+/dist/
+/.cache/
+__pycache__/
+*.py[cod]
+*.local.json

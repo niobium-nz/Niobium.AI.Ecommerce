@@ -1,98 +1,90 @@
 # Ecommerce Product Discoverer
 
-A platform-neutral agent definition for discovering product discoveries from
-competitors' long-lived, currently active Meta ads. The package preserves evidence
-for competitive research; it neither verifies profits nor produces candidates,
-approves products or triggers onboarding.
+A platform-neutral agent that discovers physical products from long-lived,
+currently active Meta ads and preserves the evidence for competitive research.
+It does not verify profit, approve products or invoke downstream agents.
 
-## Business lifecycle
+## Install
 
-`discovery -> competitive research -> candidate -> product council approval -> listing -> product onboarding`
+Use the tested installation kit from a successful **Discoverer package** run in
+[GitHub Actions](https://github.com/niobium-nz/Niobium.AI.Ecommerce/actions/workflows/discoverer-package.yml),
+or build it from the repository root:
 
-This agent outputs discoveries only. A downstream competitive research agent turns
-research results into candidates for product council review. Only approved
-candidates become listings for product onboarding. Discoveries are not submitted
-directly to council. This package persists the discovery handoff and returns the
-job result; it does not invoke any downstream agent.
+```sh
+python3 tools/ecommerce-product-discoverer/build.py
+python3 tools/ecommerce-product-discoverer/test_bundle.py --bundle dist/ecommerce-product-discoverer
+```
 
-## Package
+The build downloads checksum-locked validation dependencies. The resulting kit
+works offline on its supported Python targets; no package installation is needed
+inside the agent host. Generated files go under `dist/`, outside source control.
+Open the kit's `START-HERE.md`, then use the adapter for your host:
 
-`AGENT.md` is the authoritative entrypoint. `agent.yaml` is descriptive metadata,
-not a vendor import schema. `schemas/` contains input/configuration/handoff/result
-contracts; `references/` contains tool bindings and country data; `examples/`
-contains synthetic fixtures; `tests/` contains offline checks and host acceptance
-cases. `adapters/` provides separate ChatGPT Workspace Agent and Claude Cowork
-setup notes.
+- [ChatGPT Workspace Agent](adapters/chatgpt-workspace-agent.md)
+- [Claude Cowork or another task host](adapters/claude-cowork.md)
 
-The sole runtime skill is bundled at `skills/ecommerce-cluster-ads/`. Its entire
-unchanged tree was moved from the repository-root `skills/ecommerce-cluster-ads/`,
-including schemas, examples, suffix data, UI metadata and licenses. Other root
-skills are not dependencies and remain untouched. Approved search/date policies
-are implemented in this agent, not delegated to the competition-analysis skill.
-The country lookup is bundled data, not another skill dependency.
+`AGENT.md` is the authoritative behavior. `agent.yaml` is descriptive metadata,
+not a native vendor import format. A ZIP attached as a file is not necessarily
+installed as persistent agent resources. Use the host's folder upload or explicit
+resource mapping and verify the result in its actual execution/Preview surface.
 
-## Invocation and configuration
+The skill has one canonical source at repository-root
+`skills/ecommerce-cluster-ads`. The kit contains one skill ZIP, separate from agent
+files. Select it once through the host's skill mechanism. There is no nested skill
+copy, hardcoded host mount path, or extra skill-version pin. The host configuration
+selects the package; [logical schema bindings](references/skill-binding.md) resolve
+against that selected package during each execution.
+
+## Use
+
+Configure the existing Drive folder ID and an IANA timezone in the deployment
+configuration. The default example deliberately has a null folder ID and cannot
+be used as active configuration. Then invoke with exactly three strings:
 
 ```json
 {"source_country":"USA","target_country":"NZL","keyword":"portable blender"}
 ```
 
-Provision an existing Drive folder named exactly `discovery`. Configure its actual
-ID and the host timezone separately using `config.example.json`. The example
-uses the owner's Pacific/Auckland timezone; null folder ID deliberately fails
-validation until configured. Public invocation remains exactly three fields.
+Each invocation receives a fresh UUID, makes at most three sequential search
+attempts, independently checks activity and ad age, clusters the whole qualifying
+batch and saves a raw JSON array as `discovery/{job_id}.json`. It returns the
+structured result only after checking the saved file. Identical inputs may be
+repeated. See [tool bindings](references/tool-bindings.md) for required actions.
 
-Configure `discovery_folder_id` and have consumers expect
-`lifecycle_stage: "discovery"`. This is a naming-only update: the research,
-review and onboarding workflow is unchanged. No existing Drive folder or file
-is renamed, moved or migrated by this update.
+Drive connectors sometimes omit trash/add-permission metadata. Unknown fields
+produce a warning; explicit denial still stops the run. Destination identity,
+complete collision lookup and full upload verification remain required. A real
+write can still fail after paid retrieval when advance permission is unknown;
+that failure must be visible and must never be reported as a saved artifact.
 
-Each invocation generates a fresh UUID. Identical searches may be repeated.
-The agent spends at most three sequential search attempts, independently verifies
-actual active status and start dates, clusters the whole qualifying batch and
-saves a raw JSON array as `discovery/{job_id}.json`. Entire invalid clusters and
-services are excluded; valid Low-confidence products remain as discoveries for
-competitive research.
+## Validate and update
 
-## Handoff contract version 2.0.0
+Follow [validation stages](references/validation.md). Schema checks and source
+unit tests do not prove hosted orchestration or live connector behavior. A missing
+host mock harness is recorded as untested, not an installation failure. Setup
+never starts paid searches or Drive writes by itself.
 
-Saved records require `lifecycle_stage: "discovery"` and
-`research_status: "pending_competitive_research"`; profitability stays unverified.
-These replace the former `review_status: "pending_product_council"` contract.
-The version changes because the next workflow step and required fields change.
-Consumers must not treat a successful discovery job as a council-ready candidate.
-The original inputs, nested product cluster and matching ads remain unchanged.
-No existing Drive artifact is rewritten or migrated by this change.
+Build one fresh kit when updating. Replace the complete agent folder, validation
+support folder and instructions together. Keep exactly one active deployment
+configuration with your existing settings. Update the skill attachment only when
+intentionally changing it, then run compatibility checks against the selected
+attachment. Do not merge old and new folders or leave an older ZIP as a competing
+instruction source. Source updates do not automatically update hosted agents.
+See the host adapter for migration from the earlier numbered ZIP bundle.
 
-## Portability
+## Versions and boundaries
 
-This is portable source, not a promise of one-click import into both vendors.
-Bind instructions, files, the bundled skill and connectors using the relevant
-adapter. Required semantics cannot change with tool names. No credentials,
-account IDs, real folder ID, schedule or published agent are included. Read-only
-Drive access is insufficient. The Python checks are optional development tooling,
-not a runtime-language requirement or a production runner.
+Package version is **2.1.0**; the saved handoff remains **2.0.0**. Input/configuration,
+search policy, original evidence, cluster shape and lifecycle values are unchanged:
 
-## Offline validation
+`discovery -> competitive research -> candidate -> product council approval -> listing -> product onboarding`
 
-From this directory with Python 3.11+ and jsonschema installed:
+The agent stops after saving discoveries. The schema's external cluster reference
+now uses a logical URI instead of a nested file path. Schema consumers must bind
+that URI; no saved JSON migration is needed. [Contracts](references/contracts.md)
+describe failures and data ownership.
 
-```sh
-PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tests -v
-```
-
-Tests cover schemas, fixtures, calendar boundaries, country normalization,
-lossless originals, strict projection, eligibility, traceability, lifecycle
-boundaries and exact skill preservation. They do NOT test live connectors, hosted
-permissions, model clustering quality or transactional Drive writes. Run tests/host-acceptance.md
-in each target host before production, with mocked tools and no paid requests.
-
-## Provenance
-
-Reviewed against repository commit
-`40f6b50e9d212a8dc78d05275f4a1c6309c1d7e6` on 2026-11-09.
-Moved skill Git tree: `bb1edb84055f7b2a83c5de3590301900b4963d21`.
-Country lookup Git blob: `e30d148d75d75b82646f48fd1243aa84d5bfdb49`.
-This lookup is the repository's dated pycountry snapshot, not a live ISO registry.
-Update it deliberately if assigned codes change. Integration-source checks are
-not evidence of live execution or deployment.
+The country table remains the dated 249-country snapshot with Git blob
+`e30d148d75d75b82646f48fd1243aa84d5bfdb49`; it is not a live ISO registry.
+[Setup lessons and acceptance criteria](https://github.com/niobium-nz/Niobium.AI.Ecommerce/blob/main/docs/discoverer-setup-lessons.md)
+record why packaging and validation changed.

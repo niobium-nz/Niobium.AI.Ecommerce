@@ -1,0 +1,18 @@
+{
+  "ecommerce-cluster-ads": {
+    "binding": "host_configured_skill",
+    "entrypoint": "SKILL.md",
+    "selection": "current_agent_or_task_binding",
+    "resource_environment_variable": "ECOMMERCE_CLUSTER_ADS_RESOURCES",
+    "schemas": {
+      "input": {
+        "uri": "urn:niobium:ecommerce-cluster-ads:schema:input",
+        "path": "schemas/input.schema.json"
+      },
+      "output": {
+        "uri": "urn:niobium:ecommerce-cluster-ads:schema:output",
+        "path": "schemas/output.schema.json"
+      }
+    }
+  }
+}

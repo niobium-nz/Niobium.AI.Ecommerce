@@ -12,7 +12,7 @@
       "inputs": {"$ref": "input.schema.json"},
       "product": {
         "allOf": [
-          {"$ref": "../skills/ecommerce-cluster-ads/schemas/output.schema.json#/$defs/cluster"},
+          {"$ref": "urn:niobium:ecommerce-cluster-ads:schema:output#/$defs/cluster"},
           {"properties": {"is_product": {"const": true}, "is_service": {"const": false}}}
         ]
       },

@@ -7,8 +7,8 @@ from pathlib import Path
 import re
 import unittest
 
-from jsonschema import Draft202012Validator, FormatChecker, ValidationError
-from referencing import Registry, Resource
+from jsonschema import Draft202012Validator, ValidationError
+from contract_checks import validator
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -18,15 +18,7 @@ class DiscoveryLifecycleTests(unittest.TestCase):
     def setUpClass(cls):
         schema_path = ROOT / "schemas/handoff.schema.json"
         cls.schema = json.loads(schema_path.read_text(encoding="utf-8"))
-        resources = [
-            (path.as_uri(), Resource.from_contents(json.loads(path.read_text(encoding="utf-8"))))
-            for path in ROOT.rglob("*.schema.json")
-        ]
-        cls.check = Draft202012Validator(
-            {"$ref": schema_path.as_uri()},
-            registry=Registry().with_resources(resources),
-            format_checker=FormatChecker(),
-        )
+        cls.check = validator(schema_path)
         cls.example = json.loads((ROOT / "examples/handoff.json").read_text(encoding="utf-8"))
 
     def setUp(self):
@@ -122,7 +114,7 @@ class DiscoveryLifecycleTests(unittest.TestCase):
     def test_manifest_matches_handoff_contract(self):
         # These are deliberately simple top-level manifest scalars, not a YAML parser.
         manifest = (ROOT / "agent.yaml").read_text(encoding="utf-8")
-        for key, value in (("version", "2.0.0"), ("output_stage", "discovery"),
+        for key, value in (("version", "2.1.0"), ("handoff_contract_version", "2.0.0"), ("output_stage", "discovery"),
                            ("handoff_target", "competitive_research")):
             with self.subTest(key=key):
                 self.assertRegex(manifest, re.compile(rf"^{key}: {re.escape(value)}$", re.MULTILINE))
@@ -136,9 +128,8 @@ class DiscoveryLifecycleTests(unittest.TestCase):
         for name in ("adapters/chatgpt-workspace-agent.md", "adapters/claude-cowork.md"):
             text = (ROOT / name).read_text(encoding="utf-8")
             with self.subTest(name=name):
-                self.assertIn("pending_competitive_research", text)
-                self.assertIn("not product council", text)
-                self.assertIn("Do not add downstream invocation", text)
+                # Adapters bind the authoritative behavior rather than duplicating it.
+                self.assertIn("AGENT.md", text)
 
     def test_previous_stage_name_is_rejected(self):
         self.records[0]["lifecycle_stage"] = "signal"
@@ -167,7 +158,7 @@ class DiscoveryLifecycleTests(unittest.TestCase):
         self.assertRegex(manifest, re.compile(r"^  folder_id_configuration_key: discovery_folder_id$", re.MULTILINE))
         self.assertIn('filename: "{job_id}.json"', manifest)
         instructions = (ROOT / "AGENT.md").read_text(encoding="utf-8")
-        self.assertIn("`discovery`, folder MIME type", instructions)
+        self.assertIn("exact name `discovery` and folder MIME type", instructions)
         self.assertIn("parent discovery_folder_id", instructions)
         self.assertIn("discovery/{job_id}.json", (ROOT / "README.md").read_text(encoding="utf-8"))
 
