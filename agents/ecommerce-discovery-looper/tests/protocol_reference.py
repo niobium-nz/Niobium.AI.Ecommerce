@@ -13,13 +13,14 @@ from pathlib import Path
 from typing import Any
 
 from jsonschema import Draft202012Validator, FormatChecker
-from referencing import Registry, Resource
+from resource_bindings import SchemaBindings
+from metadata_policy import optional_metadata
 
 ROOT = Path(__file__).resolve().parents[1]
-AGENTS = ROOT.parent
+BINDINGS = SchemaBindings(ROOT)
 UUID = r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"
-CHILD_SCHEMA = AGENTS / 'ecommerce-competitive-researcher/schemas/contracts.schema.json'
-SOURCE_SCHEMA = AGENTS / 'ecommerce-product-discoverer/schemas/handoff.schema.json'
+CHILD_SCHEMA = BINDINGS.path('urn:niobium:ecommerce-competitive-researcher:schema:contracts')
+SOURCE_SCHEMA = BINDINGS.path('urn:niobium:ecommerce-product-discoverer:schema:handoff')
 STATUS_KEYS = ('succeeded', 'partial', 'failed', 'duplicate', 'halted', 'not_run')
 
 
@@ -46,21 +47,8 @@ def load(path: Path) -> Any:
     return strict_loads(path.read_bytes())
 
 
-@lru_cache(maxsize=1)
-def registry() -> Registry:
-    paths = [SOURCE_SCHEMA, SOURCE_SCHEMA.with_name('input.schema.json'),
-             AGENTS.parent / 'skills/ecommerce-cluster-ads/schemas/output.schema.json',
-             CHILD_SCHEMA, ROOT / 'schemas/contracts.schema.json']
-    resources = [(p.as_uri(), Resource.from_contents(load(p))) for p in paths]
-    binding = load(AGENTS / 'ecommerce-product-discoverer/skill-bindings.json')
-    output_uri = binding['ecommerce-cluster-ads']['schemas']['output']['uri']
-    resources.append((output_uri, Resource.from_contents(load(paths[2]))))
-    return Registry().with_resources(resources)
-
-
 def validate(path: Path, value: Any, fragment: str = '') -> None:
-    Draft202012Validator({'$ref': path.as_uri() + fragment}, registry=registry(),
-                         format_checker=FormatChecker()).validate(value)
+    BINDINGS.validator(path, fragment).validate(value)
 
 
 def exact_equal(left: Any, right: Any) -> bool:
@@ -85,15 +73,17 @@ def validate_request(request: Any, config: Any) -> None:
 def select_source(folder: dict, children: list, complete: bool, folder_id: str, job_id: str) -> str:
     if (folder.get('id') != folder_id or folder.get('name') != 'discovery'
             or folder.get('mimeType') != 'application/vnd.google-apps.folder'
-            or folder.get('trashed') is not False or folder_id == 'root'):
+            or folder_id == 'root'):
         raise ValueError('Invalid discovery folder')
+    optional_metadata(folder)
     if complete is not True:
         raise ValueError('Incomplete lookup')
     matches = [r for r in children if r.get('name') == job_id + '.json'
-               and folder_id in r.get('parents', []) and r.get('trashed') is False]
+               and folder_id in r.get('parents', [])]
     if len(matches) != 1:
         raise ValueError('Missing or ambiguous exact-name source')
     row = matches[0]
+    optional_metadata(row)
     if row.get('mimeType') != 'application/json' or not row.get('id'):
         raise ValueError('Not a raw discovery JSON file')
     return row['id']
@@ -101,14 +91,16 @@ def select_source(folder: dict, children: list, complete: bool, folder_id: str, 
 
 def freeze_source(before: dict, raw: bytes, after: dict, file_id: str,
                   folder_id: str, job_id: str) -> tuple[Any, dict]:
-    fields = ('id', 'name', 'parents', 'mimeType', 'trashed', 'version', 'size', 'md5Checksum')
+    fields = ('id', 'name', 'parents', 'mimeType', 'version', 'size', 'md5Checksum')
     if any(not exact_equal(before.get(k), after.get(k)) for k in fields):
         raise ValueError('Source changed during read')
     if (before.get('id') != file_id or before.get('name') != job_id + '.json'
-            or before.get('mimeType') != 'application/json' or before.get('trashed') is not False
+            or before.get('mimeType') != 'application/json'
             or folder_id not in before.get('parents', [])
             or not isinstance(before.get('version'), str) or not before['version'].strip()):
         raise ValueError('Source identity or version mismatch')
+    optional_metadata(before)
+    optional_metadata(after)
     size = before.get('size')
     if not isinstance(size, str) or not re.fullmatch(r'0|[1-9][0-9]*', size) or int(size) != len(raw):
         raise ValueError('Incomplete source bytes')

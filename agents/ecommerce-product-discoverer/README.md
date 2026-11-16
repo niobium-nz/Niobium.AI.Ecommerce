@@ -6,13 +6,13 @@ It does not verify profit, approve products or invoke downstream agents.
 
 ## Install
 
-Use the tested installation kit from a successful **Discoverer package** run in
-[GitHub Actions](https://github.com/niobium-nz/Niobium.AI.Ecommerce/actions/workflows/discoverer-package.yml),
+Use the portable discoverer kit from a successful **Agent packages** run in
+[GitHub Actions](https://github.com/niobium-nz/Niobium.AI.Ecommerce/actions/workflows/agent-packages.yml),
 or build it from the repository root:
 
 ```sh
-python3 tools/ecommerce-product-discoverer/build.py
-python3 tools/ecommerce-product-discoverer/test_bundle.py --bundle dist/ecommerce-product-discoverer
+python3 -B tools/agent-packaging/build.py --agent ecommerce-product-discoverer
+python3 -B tools/agent-packaging/test_packages.py --bundle dist/portable-agents/ecommerce-product-discoverer
 ```
 
 The build downloads checksum-locked validation dependencies. The resulting kit
@@ -22,6 +22,11 @@ Open the kit's `START-HERE.md`, then use the adapter for your host:
 
 - [ChatGPT Workspace Agent](adapters/chatgpt-workspace-agent.md)
 - [Claude Cowork or another task host](adapters/claude-cowork.md)
+
+The [earlier discoverer exporter](https://github.com/niobium-nz/Niobium.AI.Ecommerce/blob/main/tools/ecommerce-product-discoverer/README.md)
+remains supported for existing installations. Its checker arguments and manifest
+format differ; keep each kit's support files together. New deployments can use the
+default-neutral kit above. See [deployment](references/deployment.md).
 
 `AGENT.md` is the authoritative behavior. `agent.yaml` is descriptive metadata,
 not a native vendor import format. A ZIP attached as a file is not necessarily

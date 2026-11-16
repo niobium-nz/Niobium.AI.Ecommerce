@@ -38,12 +38,13 @@ native vendor manifest. references/ defines the transport, correlation and failu
 rules; schemas/ defines public contracts; tests/ contains network-free reference
 checks and mocks, not a production connector or LLM runner.
 
-Keep this folder alongside ecommerce-product-discoverer and
-ecommerce-competitive-researcher in the repository's agents
-folder. See dependencies.json for exact canonical contracts. When exporting,
-bind those same resources and the complete researcher package explicitly; the
-looper folder alone cannot execute research. No skill copy or relocation is
-needed: the researcher remains the owner of its three existing skills.
+The looper has NO directly invoked skills and its kit contains no skill ZIPs.
+The build supplies a generated closure of its canonical input/child schemas in
+`contract-resources`, resolved by `contract-bindings.json`. These resources do not
+install the child agent. Provision the complete researcher separately with its
+three independently selected skills and real registry/coordinator bindings. See
+[portable deployment](references/deployment.md); a sibling repository checkout is
+no longer required merely to validate a deployed looper's schemas.
 
 ## Deployment
 
@@ -61,14 +62,24 @@ ChatGPT and Claude Cowork notes describe the binding requirements.
 
 ## Validation
 
-Run from this folder in a full repository checkout with Python 3.11+ and
-jsonschema available:
+Use the shared build/check commands below. Offline tests exercise mapping,
+immutable source handling, one-product dispatch and recovery with mocks. They do
+not run a real child agent or establish a global lock. If host mock injection is
+unavailable, record that gap without blocking resource installation; the actual
+invocation, serialization, journal and recovery guarantees remain prerequisites
+for live child dispatch.
+
+## Build the installation kit
+
+From the repository root:
 
 ```sh
-PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tests -v
+python3 -B tools/agent-packaging/build.py --agent ecommerce-discovery-looper
+python3 -B tools/agent-packaging/test_packages.py --bundle dist/portable-agents/ecommerce-discovery-looper
 ```
 
-No Python runtime is required by the agent instructions. Tests exercise contract
-mapping, immutable source handling, one-product dispatch, safe continuation and
-recovery stops with mocks. They do not run real skills, connectors, hosted agents,
-locks or paid searches. Complete tests/host-acceptance.md before live deployment.
+Open the kit's START-HERE.md. The default kit and instructions are platform-neutral;
+use the relevant host adapter only for that deployment. The optional Python checker
+has documented runtime targets, and equivalent validators are supported elsewhere.
+For another build use a fresh --output directory so edited settings are preserved.
+Package version 1.1.0 changes installation/resource binding, not saved wire formats.

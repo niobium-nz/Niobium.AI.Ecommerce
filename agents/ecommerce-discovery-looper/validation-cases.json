@@ -1,0 +1,37 @@
+{
+  "scope": "Offline fixtures only; never use the synthetic configuration for a live job.",
+  "config_schema": "schemas/contracts.schema.json#/$defs/config",
+  "fixture_config": {
+    "discovery_folder_id": "fixture_folder",
+    "researcher_binding": "fixture_researcher",
+    "coordinator_binding": "fixture_coordinator"
+  },
+  "fixtures": [
+    {
+      "schema": "schemas/contracts.schema.json#/$defs/input",
+      "instance": "examples/input.json",
+      "pointer": ""
+    },
+    {
+      "schema": "urn:niobium:ecommerce-product-discoverer:schema:handoff",
+      "instance": "examples/discovery.json",
+      "pointer": ""
+    },
+    {
+      "schema": "urn:niobium:ecommerce-competitive-researcher:schema:contracts#/$defs/input",
+      "instance": "examples/child-input.json",
+      "pointer": ""
+    },
+    {
+      "schema": "schemas/contracts.schema.json#/$defs/result",
+      "instance": "examples/result.completed.json",
+      "pointer": ""
+    },
+    {
+      "schema": "schemas/contracts.schema.json#/$defs/result",
+      "instance": "examples/result.stopped.json",
+      "pointer": ""
+    }
+  ],
+  "invalid_input_fixture": 0
+}

@@ -12,8 +12,13 @@ Accept exactly `{job, product, ads}`, not a Drive URL or the upstream array.
 The caller/looper maps one upstream entry as described in
 [contracts](references/contracts.md). Load that reference and
 [storage protocol](references/storage.md) before starting. Use the three complete
-bundled skills below for their substantive logic; do not reimplement their
+host-selected skills below for their substantive logic; do not reimplement their
 normalization, search policy, research or scoring rubrics in this agent.
+
+Bind each skill independently using `skill-bindings.json` and
+[deployment](references/deployment.md). Resolve the selected skill's resources
+through current host bindings; register its logical schemas locally. No fixed
+host path, nested skill copy, combined skill ZIP or extra version pin is required.
 
 ## 1. Validate and check duplicates before research
 
@@ -35,7 +40,7 @@ Follow storage.md; do not mark IDs processed before verified publication.
 
 ## 2. Normalize with the existing skill
 
-Invoke `skills/ecommerce-normalize-products/SKILL.md` exactly once with:
+Invoke `ecommerce-normalize-products` exactly once with:
 `product_name = product.likely_product_name`,
 `category_name = product.category_guess`, `known_features = product.known_features`,
 `country = job.source_country`.
@@ -49,7 +54,7 @@ unapproved status gate. Normalization is working data, not an extra saved field.
 ## 3. Fan out competition research
 
 For EVERY recommended_mcp_queries element, invoke
-`skills/ecommerce-analyze-competition/SKILL.md` once with the unchanged query,
+`ecommerce-analyze-competition` once with the unchanged query,
 `country = job.target_country`, `category_name = input.product.category_guess`,
 `notes = normalization_result.notes_for_downstream_agent`,
 `avoid_or_exclusion_terms = normalization_result.keyword_plan.avoid_or_exclusion_terms`,
@@ -70,7 +75,7 @@ If no valid reports remain, STOP with errors: no scoring, publication or ID appe
 
 Prepare a separate schema-compatible copy of input ads as contracts.md specifies;
 never replace original ads in the saved output. Invoke
-`skills/ecommerce-score-products/SKILL.md` exactly once with
+`ecommerce-score-products` exactly once with
 `target_country = job.target_country`, `product = input.product`,
 `ads = prepared_ads`, `competition_signals = valid_reports`.
 Let the skill perform its required current target-market web research and apply

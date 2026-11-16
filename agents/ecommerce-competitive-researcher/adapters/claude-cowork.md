@@ -1,35 +1,38 @@
-# Claude Cowork setup
+# Claude Cowork and other task-host adapter
 
-This is portable source, not a native import manifest or a completed deployment.
-Configure ecommerce-competitive-researcher with AGENT.md as the instructions and
-all referenced schemas/resources available at their relative paths. Use the host's
-current supported instruction/file/skill mechanism; do not claim a shared ZIP is
-one-click importable across vendors.
+Use the host's supported instruction/project/plugin/resource workflow to bind
+AGENT.md and all agent resources. agent.yaml is descriptive, not a native plugin
+manifest. Preserve relative references or register explicit equivalent mappings;
+no ChatGPT attachment UI, fixed filesystem layout or Python runtime is required.
 
-Install/bind all THREE complete bundled skills, not SKILL.md alone and not older
-installed variants. Preserve their schema/reference/example/metadata directories.
-Bind the competition skill's approved ScrapeCreators search capability, ordinary
-web research for normalization/scoring, trusted clock/UUID/JSON, writable Google
-Drive and writable OneDrive full-file access. Validate actual tool schemas and
-permissions. A read-only connector is insufficient; resolve missing write or
-serialization capabilities before running rather than substituting providers.
+Select each declared skill independently. The kit supplies one ZIP per skill;
+use each ZIP separately when the host accepts skill ZIPs, or bind each complete
+canonical directory through the host's plugin/resource API. Do not combine the
+skills into one installable archive or add a second copy inside the agent.
+Read skill-bindings.json and register schemas from the actual selected packages.
+An explicit global skill binding is valid if that is how this host selects skills;
+do not discover an arbitrary same-name copy. No additional version pin is required.
 
-Fill the real resource IDs, registry_format and timezone in deployment settings.
-Keep public job input at exactly job/product/ads. The discovery root must exist;
-job folders are created only for publication. Restrict Drive writes to that root
-and OneDrive writes to the configured registry. Preserve approval gates and avoid
-credentials in prompts or repository files.
+Bind the selected competition skill's approved ad search, normalization/scoring
+research, trusted clock/UUID/JSON, raw Google Drive publication and OneDrive full
+read/append verification. Require the real shared-registry guard and durable recovery
+holds across all writers. Allow query workers only where supported and authorized;
+otherwise execute sequentially. Workers do not receive storage-write authority.
 
-Configure a single serialized product-job queue/shared guard for this registry
-and durable recovery holds for interrupted commits. This applies across hosts.
-Allow bounded query workers only when the host supports them with the same skill
-resources and tool scope; otherwise execute queries sequentially. Workers receive
-no Drive/OneDrive write authority. Do not invent a universal subagent API.
+Configure trusted deployment settings, inspect actual authorized tool semantics
+and retain existing host approvals. Never copy another host's tool namespaces or
+infer write access from search support. Follow references/deployment.md for evidence
+levels, optional offline validation and updates. An equivalent Draft 2020-12 validator
+with local references and format checks is valid; the supplied Linux Python checker
+is only one implementation. No online dependency install is required in the host.
 
-Run offline tests and mocked host acceptance before any authorized live test.
-A published_registry_pending result requires reconciliation, not automatic rerun.
-Candidate publication is not council approval or permission to invoke onboarding.
-No hosting, publishing, scheduling, paid searches or cloud writes were performed
-while authoring this package.
+Where mock injection is unsupported, mark host acceptance untested while completing
+resource/schema setup. Operational prerequisites remain required before live work.
+Do not start paid research, substantive browsing, cloud writes, publication or a
+schedule merely to install. Missing optional Drive flags warn; actual failures stop.
+Update agent/support/contracts coherently and selected skills independently; preserve
+one active config. No hosted execution or provider verification is claimed here.
 
-Official setup reference, checked 2026-11-11: https://support.claude.com/en/articles/13837440-use-plugins-in-claude
+Check current [skills](https://support.claude.com/en/articles/12512180-use-skills-in-claude)
+and [plugin](https://support.claude.com/en/articles/13837440-use-plugins-in-claude)
+support in the target host; this source is not a universal native import format.

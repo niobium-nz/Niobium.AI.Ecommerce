@@ -21,6 +21,13 @@ subject to the host's existing approvals.
 
 ## Offline helper
 
+Two compatible kit formats are available. The shared, platform-neutral kit uses
+`--skill ecommerce-cluster-ads=<selected-skill-resources>` and accepts a fragment
+directly in `--schema <schema-URI>#/$defs/cluster`. Its instructions are in
+[deployment.md](deployment.md). The commands below use the earlier discoverer
+exporter's `--skill-resources` and separate `--fragment` arguments. Use the command
+format matching your kit; never mix their support folders or manifests.
+
 The generated kit supplies `offline-validation-support/validate.py`, verified
 wheels, their lock, licenses and the agent-file manifest. Use standard CPython
 3.11-3.14, Linux glibc >= 2.17, x86_64 or aarch64. Free-threaded builds, musl,

@@ -4,7 +4,8 @@
 
 Resolve logical capabilities from the actual authorized host tool schemas. These
 instructions are not callable tool names. Require candidates_folder_id to resolve
-to one existing, non-trashed folder named exactly candidates with read/add access.
+to one existing folder named exactly candidates with matching ID/type; apply the
+optional metadata policy below when trash/add flags are unavailable.
 Do not find a replacement by name, use root, follow shortcuts, or create the root.
 Verify complete exact-name child lookup across all MIME types/pages, folder create,
 raw JSON upload with explicit parent and full content verification before browsing.
@@ -21,7 +22,7 @@ an image. No paid ad tools, OneDrive registry or researcher/looper binding is ne
 Only after both strategies validate, allocate one lowercase UUIDv4 candidate_id.
 Use a supplied signal_id as the exact subfolder name; otherwise use unlinked.
 List direct children of the configured root by exact name across all types/pages.
-One valid non-trashed folder may be reused. No matches permits creation of exactly
+One valid folder with no explicit trash indication may be reused. No matches permits creation of exactly
 that child. Multiple matches, a same-named nonfolder/shortcut or incomplete search
 stops. Never use a guessed sibling, signal_id (1), or overwrite an upstream artifact.
 
@@ -40,7 +41,7 @@ requires; JSON/base64 text must not masquerade as a file URI. Upload exactly onc
 ## Verify or report uncertainty
 
 Read returned file metadata and require exact name, parent, application/json,
-non-trashed state and unique exact-name result. Compare complete readback bytes or
+trash state when exposed and unique exact-name result. Compare complete readback bytes or
 an exposed provider checksum to the actual serialized upload bytes. A snippet or
 successful upload response alone does not verify content. Metadata and bytes must
 refer to the same file/version. Recheck the board's durable source identity before
@@ -70,3 +71,21 @@ These describe APIs, not a guarantee that a particular connector exposes them:
 https://developers.google.com/workspace/drive/api/guides/folder
 https://developers.google.com/workspace/drive/api/guides/search-files
 https://developers.google.com/workspace/drive/api/guides/manage-uploads
+
+## Optional provider metadata
+
+Request trash state and, for a write destination, add-child capability when the
+binding exposes them. Explicit trashed=true, canAddChildren=false, access denial,
+or unreadable/mismatched identity stops the operation. Missing/null/non-boolean
+trash/add flags are unknown: record drive_metadata_unavailable in host execution
+notes and continue if mandatory capabilities and identity are available. Do not
+infer add permission from sharing/edit flags, repeat unsupported requests or write
+a probe file during setup. Unknown permission can still cause a real write denial.
+
+Reapply the policy before a write and when verifying returned resources. Exact
+ID/name/type/parent, complete all-type collision lookup, unique results and full
+content verification remain mandatory. A real denial or unverified save is a
+failure; never retry an ambiguous write. Missing optional flags do not authorize
+skipping stable-version reads, serialization, child settlement or recovery holds.
+Keep warnings in the host run notes when the unchanged result contract has no
+warning field; do not disguise them as research errors or alter business payloads.

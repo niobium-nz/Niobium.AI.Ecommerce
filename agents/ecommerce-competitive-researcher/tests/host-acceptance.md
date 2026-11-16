@@ -46,3 +46,12 @@ No paid searches or live cloud writes are authorized by this checklist.
 For shared-registry recovery, test a host crash between the two providers as well
 as an ordinary error response. Recovery holds must survive process exit. Do not
 claim an atomic transaction from a successful happy-path test.
+
+## Evidence limits
+
+Where a host cannot inject mocks, mark these cases not executed instead of
+inventing a pass or blocking resource installation solely for that reason.
+Actual required operational guarantees remain mandatory before live execution.
+Run only a separately authorized live job/test; preserve existing host approvals.
+Unknown optional Drive trash/add flags warn in the host's run notes; explicit
+denial, wrong identity, incomplete lookup or content verification still fails.

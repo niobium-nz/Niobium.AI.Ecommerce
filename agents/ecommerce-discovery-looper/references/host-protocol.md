@@ -18,7 +18,7 @@ paid-ad search, browsing or Google Drive write permission.
 
 ## Read one stable upstream artifact
 
-Verify configured folder metadata: exact name discovery, folder MIME, not trashed,
+Verify configured folder metadata: exact ID/name discovery and folder MIME; reject explicit trash state,
 not a shortcut, accessible by the configured ID. No root or name-based fallback.
 List exact filename {job_id}.json among direct children, across MIME types and all
 pages, with viewed-only restrictions disabled. Require exactly one match. Neither
@@ -92,3 +92,15 @@ them or that a deployment has passed the host acceptance checklist.
 - https://developers.google.com/workspace/drive/api/reference/rest/v3/files
 - https://developers.google.com/workspace/drive/api/guides/search-files
 - https://developers.google.com/workspace/drive/api/guides/manage-downloads
+
+## Unavailable optional metadata
+
+The looper is read-only and does not require add-child permission. Missing/null/
+non-boolean trash flags on the folder or source file are unknown, not denial or
+proof of non-trashed state. Record drive_metadata_unavailable in host run notes;
+explicit trashed=true or access denial still fails. A change in whether the optional
+flag is exposed alone does not prove the source bytes changed. Exact identity,
+parent/type, complete unique-name lookup, stable version and full byte-length/
+checksum verification remain mandatory. An immutable-revision binding may provide
+equivalent stability guarantees. Do not weaken those requirements to accommodate
+a host, infer missing version/size or use a prefix as a complete source.

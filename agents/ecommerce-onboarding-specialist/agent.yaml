@@ -1,6 +1,6 @@
 # Platform-neutral descriptive metadata, not a vendor-native import schema.
 name: ecommerce-onboarding-specialist
-version: 1.0.0
+version: 1.1.0
 entrypoint: AGENT.md
 description: Prepare marketing and image-prompt strategies for an approved product.
 input_schema: schemas/contracts.schema.json#/$defs/input
@@ -8,9 +8,13 @@ config_schema: schemas/contracts.schema.json#/$defs/config
 artifact_schema: schemas/contracts.schema.json#/$defs/artifact
 result_schema: schemas/contracts.schema.json#/$defs/result
 skills:
-  - skills/ecommerce-profile-offers/SKILL.md
-  - skills/ecommerce-develop-strategy/SKILL.md
-  - skills/ecommerce-draft-prompts/SKILL.md
+  - name: ecommerce-develop-strategy
+    binding: host_configured_skill
+  - name: ecommerce-draft-prompts
+    binding: host_configured_skill
+  - name: ecommerce-profile-offers
+    binding: host_configured_skill
+skill_resources: skill-bindings.json
 approval_precondition: approved_product_from_authorized_caller
 handoff_target: website_implementation
 capabilities:

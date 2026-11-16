@@ -169,7 +169,7 @@ class BundleTests(unittest.TestCase):
         spec = importlib.util.spec_from_file_location("discoverer_build", HERE / "build.py")
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        lock = json.loads((HERE / "validation-support/dependency-lock.json").read_text())
+        lock = json.loads((REPO / "tools/agent-packaging/validation-support/dependency-lock.json").read_text())
         cache = self.case / "bad cache"
         cache.mkdir()
         (cache / lock["wheels"][0]["filename"]).write_bytes(b"corrupt")

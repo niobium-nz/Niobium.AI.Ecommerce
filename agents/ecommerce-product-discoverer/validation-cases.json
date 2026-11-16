@@ -1,0 +1,31 @@
+{
+  "scope": "Offline fixtures only; never use the synthetic configuration for a live job.",
+  "config_schema": "schemas/config.schema.json",
+  "fixture_config": {
+    "discovery_folder_id": "fixture_folder",
+    "timezone": "Pacific/Auckland"
+  },
+  "fixtures": [
+    {
+      "schema": "schemas/input.schema.json",
+      "instance": "examples/input.json",
+      "pointer": ""
+    },
+    {
+      "schema": "schemas/handoff.schema.json",
+      "instance": "examples/handoff.json",
+      "pointer": ""
+    },
+    {
+      "schema": "schemas/result.schema.json",
+      "instance": "examples/result.json",
+      "pointer": ""
+    },
+    {
+      "schema": "urn:niobium:ecommerce-cluster-ads:schema:output",
+      "instance": "examples/clusters.json",
+      "pointer": ""
+    }
+  ],
+  "invalid_input_fixture": 0
+}

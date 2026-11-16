@@ -1,35 +1,53 @@
-# ChatGPT Workspace Agent setup
+# ChatGPT Workspace Agent adapter
 
-This is portable source, not a native import manifest or a completed deployment.
-Configure ecommerce-competitive-researcher with AGENT.md as the instructions and
-all referenced schemas/resources available at their relative paths. Use the host's
-current supported instruction/file/skill mechanism; do not claim a shared ZIP is
-one-click importable across vendors.
+These steps apply only to ChatGPT. The core agent and default kit do not require
+this UI, an attachment mechanism, Linux or Python. Check the actual workspace's
+available controls before concluding an action is unsupported.
 
-Install/bind all THREE complete bundled skills, not SKILL.md alone and not older
-installed variants. Preserve their schema/reference/example/metadata directories.
-Bind the competition skill's approved ScrapeCreators search capability, ordinary
-web research for normalization/scoring, trusted clock/UUID/JSON, writable Google
-Drive and writable OneDrive full-file access. Validate actual tool schemas and
-permissions. A read-only connector is insufficient; resolve missing write or
-serialization capabilities before running rather than substituting providers.
+1. Extract the kit locally. Open Agents, then Create on the Agents page and Start blank.
+2. Use INSTRUCTIONS.md as the core instructions and bind the selected resources below.
+3. With Add files -> Upload folder, select the outer `agent-files/ecommerce-competitive-researcher` folder
+   itself, preserving relative resources. Upload `offline-validation-support` if using
+   its optional checker, and `contract-resources` if present. Reading/extracting a ZIP
+   in a temporary run does not itself install persistent Agent Files.
+4. Fill `deployment-config.json` with actual settings and upload exactly one active
+   config. Null placeholders are intentionally invalid. Never embed credentials.
 
-Fill the real resource IDs, registry_format and timezone in deployment settings.
-Keep public job input at exactly job/product/ads. The discovery root must exist;
-job folders are created only for publication. Restrict Drive writes to that root
-and OneDrive writes to the configured registry. Preserve approval gates and avoid
-credentials in prompts or repository files.
+Attach each of these ZIPs independently through **Add skill**, once each:
 
-Configure a single serialized product-job queue/shared guard for this registry
-and durable recovery holds for interrupted commits. This applies across hosts.
-Allow bounded query workers only when the host supports them with the same skill
-resources and tool scope; otherwise execute queries sequentially. Workers receive
-no Drive/OneDrive write authority. Do not invent a universal subagent API.
+- `skills/ecommerce-analyze-competition.zip`
+- `skills/ecommerce-normalize-products.zip`
+- `skills/ecommerce-score-products.zip`
 
-Run offline tests and mocked host acceptance before any authorized live test.
-A published_registry_pending result requires reconciliation, not automatic rerun.
-Candidate publication is not council approval or permission to invoke onboarding.
-No hosting, publishing, scheduling, paid searches or cloud writes were performed
-while authoring this package.
+Do not attach a combined skills archive or copy the extracted skills into Agent
+Files. These are attachments to this agent, not global Plugins/Skills entries.
 
-Official setup reference, checked 2026-11-11: https://help.openai.com/en/articles/20001143-chatgpt-workspace-agents-for-enterprise-and-business
+Resolve each attached skill's current resources from this agent's execution context.
+Do not persist a temporary mount path, invent a host version or substitute a global
+same-name skill. The host selects the attachment; the checker validates compatibility.
+
+Bind the selected competition skill's approved ad search, normalization/scoring
+research, trusted clock/UUID/JSON, raw Google Drive publication and OneDrive full
+read/append verification. Require the real shared-registry guard and durable recovery
+holds across all writers. Allow query workers only where supported and authorized;
+otherwise execute sequentially. Workers do not receive storage-write authority.
+
+Run the setup checks in references/deployment.md in Preview, which may have a
+different authenticated context from the builder. Use the current package's helper
+arguments with one --skill binding per skill, not a hardcoded path. Do not install
+libraries online, spend on research or write probe files during setup. If no host
+mock harness exists, report it untested; actual required capabilities still apply.
+Missing optional Drive trash/add metadata warns; explicit denial or unverified
+persistence still fails. Preserve host approvals. Save privately unless broader
+sharing/scheduling is requested.
+
+For updates, preserve settings, replace the complete agent/support/contract folders
+and Instructions together, retire obsolete source ZIPs, and keep one active config.
+Update skill attachments individually when intended, then rerun compatibility checks.
+Do not merge stale nested skills or claim that a local build changed the hosted agent.
+If automated agent management is unavailable, state that specific missing operation
+and use these native file/skill controls; do not invent a wrapper-skill workaround.
+
+[Official workspace agent guidance](https://help.openai.com/en/articles/20001143-chatgpt-workspace-agents-for-enterprise-and-business)
+describes configurable files, skills, apps and Preview. It is not evidence that this
+particular deployment has the agent invocation, browser or coordination guarantees.

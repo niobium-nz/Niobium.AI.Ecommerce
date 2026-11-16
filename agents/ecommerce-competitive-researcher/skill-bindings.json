@@ -1,0 +1,55 @@
+{
+  "ecommerce-analyze-competition": {
+    "binding": "host_configured_skill",
+    "selection": "current_agent_or_task_binding",
+    "entrypoint": "SKILL.md",
+    "schemas": {
+      "input": {
+        "uri": "urn:niobium:ecommerce-analyze-competition:schema:input",
+        "path": "schemas/input.schema.json"
+      },
+      "output": {
+        "uri": "urn:niobium:ecommerce-analyze-competition:schema:output",
+        "path": "schemas/output.schema.json"
+      },
+      "search-request": {
+        "uri": "urn:niobium:ecommerce-analyze-competition:schema:search-request",
+        "path": "schemas/search-request.schema.json"
+      }
+    }
+  },
+  "ecommerce-normalize-products": {
+    "binding": "host_configured_skill",
+    "selection": "current_agent_or_task_binding",
+    "entrypoint": "SKILL.md",
+    "schemas": {
+      "input": {
+        "uri": "urn:niobium:ecommerce-normalize-products:schema:input",
+        "path": "schemas/input.schema.json"
+      },
+      "output": {
+        "uri": "urn:niobium:ecommerce-normalize-products:schema:output",
+        "path": "schemas/output.schema.json"
+      }
+    }
+  },
+  "ecommerce-score-products": {
+    "binding": "host_configured_skill",
+    "selection": "current_agent_or_task_binding",
+    "entrypoint": "SKILL.md",
+    "schemas": {
+      "competition-scout-output": {
+        "uri": "urn:niobium:ecommerce-score-products:schema:competition-scout-output",
+        "path": "schemas/competition-scout-output.schema.json"
+      },
+      "input": {
+        "uri": "urn:niobium:ecommerce-score-products:schema:input",
+        "path": "schemas/input.schema.json"
+      },
+      "output": {
+        "uri": "urn:niobium:ecommerce-score-products:schema:output",
+        "path": "schemas/output.schema.json"
+      }
+    }
+  }
+}

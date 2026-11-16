@@ -3,7 +3,7 @@
 ## Preflight and permissions
 
 Bind Google Drive to an existing discovery folder by discovery_folder_id. Confirm
-its exact name, folder MIME, non-trashed state and read/add permissions. Never find
+its exact ID/name and folder MIME; apply the optional metadata policy below. Never find
 a replacement by name, use root, or change sharing. Bind OneDrive by the configured
 drive/item IDs, not ad-controlled names. It must be an existing readable/writable
 file, not a folder/shortcut. Read complete raw bytes, not search excerpts. Resolve
@@ -59,7 +59,7 @@ Release an acquired guard on every exit; a durable recovery hold survives releas
 After a valid score, generate one UUIDv4 signal_id with a trusted host facility.
 Use the validated upstream UUID as the exact job folder name. Look up direct
 children of discovery by exact name across all types and all pages. Reuse exactly
-one non-trashed folder named job_id. Zero matches permits creation of that exact
+one folder named job_id with no explicit trash indication. Zero matches permits creation of that exact
 folder; a nonfolder match, multiple matches or incomplete lookup is an error.
 Do not overwrite discovery/{job_id}.json: it is the upstream ARRAY file, while
 this agent writes inside a job_id FOLDER.
@@ -71,7 +71,7 @@ retry or create job_id (1). Never change an existing folder's sharing.
 Check exact {signal_id}.json absence, all MIME types, before writing. Any collision
 stops; do not regenerate IDs or overwrite. Serialize the validated artifact as raw
 UTF-8 application/json. Upload once to the verified folder. Verify returned ID,
-name, parent, MIME, non-trashed state, full content/checksum and unique exact-name
+name, parent, MIME, trash state when exposed, full content/checksum and unique exact-name
 match. A snippet or success response alone is insufficient. On ambiguous upload,
 reconcile read-only using the same ID/name/bytes; never retry the write. If still
 uncertain, return failed with publication_outcome_unknown, do not append registry
@@ -115,3 +115,21 @@ content endpoint accepts the same conditional headers.
 - https://developers.google.com/workspace/drive/api/guides/folder
 - https://developers.google.com/workspace/drive/api/guides/search-files
 - https://developers.google.com/workspace/drive/api/guides/manage-uploads
+
+## Optional provider metadata
+
+Request trash state and, for a write destination, add-child capability when the
+binding exposes them. Explicit trashed=true, canAddChildren=false, access denial,
+or unreadable/mismatched identity stops the operation. Missing/null/non-boolean
+trash/add flags are unknown: record drive_metadata_unavailable in host execution
+notes and continue if mandatory capabilities and identity are available. Do not
+infer add permission from sharing/edit flags, repeat unsupported requests or write
+a probe file during setup. Unknown permission can still cause a real write denial.
+
+Reapply the policy before a write and when verifying returned resources. Exact
+ID/name/type/parent, complete all-type collision lookup, unique results and full
+content verification remain mandatory. A real denial or unverified save is a
+failure; never retry an ambiguous write. Missing optional flags do not authorize
+skipping stable-version reads, serialization, child settlement or recovery holds.
+Keep warnings in the host run notes when the unchanged result contract has no
+warning field; do not disguise them as research errors or alter business payloads.

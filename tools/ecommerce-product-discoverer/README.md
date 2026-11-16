@@ -46,3 +46,10 @@ a deliberate separate attachment replacement followed by compatibility checks.
 If the host cannot execute the mock acceptance checklist, record it untested and
 continue setup when the resource/schema prerequisites pass. A real discovery run
 still needs the user's request and complete result verification.
+
+The dependency lock and low-level validation libraries now live under
+`tools/agent-packaging/validation-support` and are shared with all agent kits.
+For platform-neutral exports, prefer the
+[shared builder](../agent-packaging/README.md). This earlier exporter retains its
+ChatGPT-specific generated instructions for compatibility; it is not the generic
+core or a requirement for other platforms.

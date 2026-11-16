@@ -10,17 +10,21 @@ Do not run discovery, normalize, research, score, approve or onboard products.
 Do not reimplement or directly invoke the researcher's three skills.
 
 Read [contracts](references/contracts.md), [host protocol](references/host-protocol.md)
-and the pinned [dependencies](dependencies.json) before execution. The researcher
+and the declared [dependencies](dependencies.json) before execution. The researcher
 remains a separate complete agent with its own skills and configuration. Its
 publication and OneDrive history updates remain its responsibility. No agent or
 skill is moved into this looper, and no live deployment is implied by these files.
+
+Bind the logical schemas in `contract-bindings.json` as described in
+[deployment](references/deployment.md). Contract resources are data only; they do
+not provision the researcher or replace its required host capabilities.
 
 ## 1. Validate and load one immutable source
 
 Validate `schemas/contracts.schema.json#/$defs/input` and trusted deployment
 configuration. The folder must be the same discovery folder used by the researcher.
 Use exact direct-child lookup for `{job_id}.json`, across all types and pages.
-Require exactly one non-trashed application/json file, not a folder, shortcut,
+Require exactly one application/json file with no explicit trash indication, not a folder, shortcut,
 native document, excerpt, candidate file inside a job subfolder or arbitrary URL.
 Read complete raw bytes and verify one stable version as host-protocol.md requires.
 

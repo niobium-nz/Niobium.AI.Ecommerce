@@ -1,27 +1,49 @@
-# ChatGPT Workspace Agent binding
+# ChatGPT Workspace Agent adapter
 
-Create a workspace-agent definition named ecommerce-discovery-looper with AGENT.md
-as instructions and the referenced contracts/resources. Keep all canonical paths
-resolvable or provide explicit resource mappings. agent.yaml is descriptive source,
-not a native import schema. Do not deploy or publish while authoring this PR.
+These steps apply only to ChatGPT. The core agent and default kit do not require
+this UI, an attachment mechanism, Linux or Python. Check the actual workspace's
+available controls before concluding an action is unsupported.
 
-Bind read-only Google Drive actions and trusted researcher/coordinator handles.
-Provision the existing researcher separately with its complete package and skills.
-Do not replace its workflow with a prompt paraphrase or attach the full discovery
-array to every child request. The looper does not need the researcher's write tools.
+1. Extract the kit locally. Open Agents, then Create on the Agents page and Start blank.
+2. Use INSTRUCTIONS.md as the core instructions and bind the selected resources below.
+3. With Add files -> Upload folder, select the outer `agent-files/ecommerce-discovery-looper` folder
+   itself, preserving relative resources. Upload `offline-validation-support` if using
+   its optional checker, and `contract-resources` if present. Reading/extracting a ZIP
+   in a temporary run does not itself install persistent Agent Files.
+4. Fill `deployment-config.json` with actual settings and upload exactly one active
+   config. Null placeholders are intentionally invalid. Never embed credentials.
 
-Official guidance describes workspace-agent instructions, files, apps and custom
-MCP configuration. That alone does not prove a particular workspace offers an
-agent-to-agent invocation with terminal result retrieval, durable journaling and
-global locking. Verify those capabilities in the actual host or an authorized
-coordinator integration. A channel trigger receipt without the final result is
-insufficient. Do not invent an API, use a browser workaround or expose access tokens.
+This kit contains no skill ZIP. Bind the generated `contract-resources` folder
+as files and provision the researcher separately. Its three skills belong to that
+researcher, not to the looper.
 
-Map the coordinator to the researcher's actual registry guard/recovery domain;
-exercise mocked failure/timeout and crash cases before enabling paid child runs.
-Approval gates still apply to the child's actions. Missing capabilities must fail
-preflight rather than falling back to concurrent products or manual skill calls.
-No live workspace deployment or end-to-end integration has been tested here.
+Resolve the looper's current agent and contract resources in its execution context.
+Do not persist temporary mount paths. The researcher manages its own skill selection;
+this looper's checker validates the supplied contract schemas.
 
-Source checked 2026-11-11:
-https://help.openai.com/en/articles/20001143-chatgpt-workspace-agents-for-enterprise-and-business
+Provision the full researcher separately, with its own selected skills and
+configuration. Bind one-product invocation with correlated terminal/quiescent results,
+read-only Drive, and the actual globally shared coordinator, durable dispatch journal
+and recovery holds. A trigger receipt or subagent feature alone proves none of those
+guarantees. Missing operational capabilities block dispatch; a contract resource file
+does not replace a child agent. The looper needs no skill ZIP, paid search or write tools.
+
+Run the setup checks in references/deployment.md in Preview, which may have a
+different authenticated context from the builder. Use the current package's helper
+with --contracts and no --skill arguments, resolving current resource paths. Do not install
+libraries online, spend on research or write probe files during setup. If no host
+mock harness exists, report it untested; actual required capabilities still apply.
+Missing optional Drive trash/add metadata warns; explicit denial or unverified
+persistence still fails. Preserve host approvals. Save privately unless broader
+sharing/scheduling is requested.
+
+For updates, preserve settings, replace the complete agent/support/contract folders
+and Instructions together, retire obsolete source ZIPs, and keep one active config.
+Update the researcher's skills on that agent when intended, then recheck the child binding.
+Do not merge stale nested skills or claim that a local build changed the hosted agent.
+If automated agent management is unavailable, state that specific missing operation
+and use these native file/skill controls; do not invent a wrapper-skill workaround.
+
+[Official workspace agent guidance](https://help.openai.com/en/articles/20001143-chatgpt-workspace-agents-for-enterprise-and-business)
+describes configurable files, skills, apps and Preview. It is not evidence that this
+particular deployment has the agent invocation, browser or coordination guarantees.

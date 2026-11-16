@@ -1,0 +1,31 @@
+{
+  "scope": "Offline fixtures only; never use the synthetic configuration for a live job.",
+  "config_schema": "schemas/contracts.schema.json#/$defs/config",
+  "fixture_config": {
+    "candidates_folder_id": "fixture_candidates",
+    "board_handoff_binding": null
+  },
+  "fixtures": [
+    {
+      "schema": "schemas/contracts.schema.json#/$defs/input",
+      "instance": "examples/input.json",
+      "pointer": ""
+    },
+    {
+      "schema": "schemas/contracts.schema.json#/$defs/result",
+      "instance": "examples/result.needs-clarification.json",
+      "pointer": ""
+    },
+    {
+      "schema": "schemas/contracts.schema.json#/$defs/result",
+      "instance": "examples/result.succeeded.json",
+      "pointer": ""
+    },
+    {
+      "schema": "schemas/contracts.schema.json#/$defs/result",
+      "instance": "examples/result.unlinked.json",
+      "pointer": ""
+    }
+  ],
+  "invalid_input_fixture": 0
+}

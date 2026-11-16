@@ -5,7 +5,7 @@ import json
 import unittest
 from jsonschema import Draft202012Validator, ValidationError
 
-from reference_model import (ROOT, load, validator, check, skill_check, strict_loads,
+from reference_model import (ROOT, BINDINGS, load, validator, check, skill_check, strict_loads,
     validate_input, validate_config, parse_registry, append_registry, normalization_input,
     validate_normalization, competition_inputs, filter_reports, scoring_input,
     validate_score, artifact, run_mock)
@@ -23,15 +23,15 @@ class ResearcherTests(unittest.TestCase):
         return run_mock(self.input, self.normal, [(0, self.report)], self.score, **kwargs)
 
     def test_schema_definitions(self):
-        for p in ROOT.rglob("*.schema.json"):
+        for p in BINDINGS.schema_paths:
             with self.subTest(path=str(p)):
                 Draft202012Validator.check_schema(load(p))
 
-    def test_dependency_schema_hashes(self):
-        for path, expected in load(ROOT / "dependencies.json")["contracts_used"].items():
-            data = (ROOT / path).read_bytes()
-            with self.subTest(path=path):
-                self.assertEqual(hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest(), expected)
+    def test_selected_skill_schema_bindings(self):
+        self.assertEqual(set(BINDINGS.skills), set(load(ROOT / "dependencies.json")["skills"]))
+        BINDINGS.check_definitions()
+        for name in BINDINGS.skills:
+            self.assertTrue(BINDINGS.skill(name, "SKILL.md").is_file())
 
     def test_fixtures(self):
         validate_input(self.input)
@@ -337,8 +337,8 @@ class ResearcherTests(unittest.TestCase):
 
     def test_manifest_lists_all_three_skills(self):
         text = (ROOT / "agent.yaml").read_text()
-        for name in load(ROOT / "dependencies.json")["moved_skills"]:
-            self.assertIn("skills/" + name + "/SKILL.md", text)
+        for name in load(ROOT / "dependencies.json")["skills"]:
+            self.assertIn("name: " + name, text)
         self.assertIn("output_stage: candidate", text)
         self.assertIn("invokes_downstream_agents: false", text)
 

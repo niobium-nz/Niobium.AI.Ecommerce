@@ -18,7 +18,7 @@ silently repurposed as target-market evidence. No looper is built here.
 
 Validate strict JSON, including duplicate keys and non-JSON numbers. Job ID is the
 upstream lowercase UUIDv4. Countries are assigned alpha-2/alpha-3 codes from the
-bundled normalizer schema/lookup; do not infer location or rewrite saved strings.
+selected normalizer schema/lookup; do not infer location or rewrite saved strings.
 The keyword is nonblank. Product retains its ten upstream fields, must be physical
 (is_product true/is_service false), have a nonblank cluster_id/likely_product_name
 and nonempty distinct ad_archive_ids. Ads is nonempty; each ID and snapshot.link_url
@@ -30,7 +30,7 @@ input, plus affected IDs/paths. Never fabricate a missing correlation value.
 
 ## Skill ownership and mappings
 
-Read each bundled SKILL.md and all its required references when invoking it. Its
+Read each selected skill's SKILL.md and all its required references when invoking it. Its
 schema and substantive rules remain authoritative. The orchestrator performs the
 additional agreed gates, error exclusion, mapping and persistence only.
 

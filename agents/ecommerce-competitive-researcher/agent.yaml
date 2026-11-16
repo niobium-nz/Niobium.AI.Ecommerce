@@ -1,6 +1,6 @@
 # Descriptive platform-neutral manifest, not a native vendor import format.
 name: ecommerce-competitive-researcher
-version: 1.0.0
+version: 1.1.0
 entrypoint: AGENT.md
 description: Research one discovery into a scored target-market candidate.
 input_schema: schemas/contracts.schema.json#/$defs/input
@@ -8,12 +8,13 @@ configuration_schema: schemas/contracts.schema.json#/$defs/config
 artifact_schema: schemas/contracts.schema.json#/$defs/artifact
 result_schema: schemas/contracts.schema.json#/$defs/result
 skills:
-  - name: ecommerce-normalize-products
-    path: skills/ecommerce-normalize-products/SKILL.md
   - name: ecommerce-analyze-competition
-    path: skills/ecommerce-analyze-competition/SKILL.md
+    binding: host_configured_skill
+  - name: ecommerce-normalize-products
+    binding: host_configured_skill
   - name: ecommerce-score-products
-    path: skills/ecommerce-score-products/SKILL.md
+    binding: host_configured_skill
+skill_resources: skill-bindings.json
 output_stage: candidate
 handoff_target: product_council
 invokes_downstream_agents: false

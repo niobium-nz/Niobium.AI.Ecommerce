@@ -9,9 +9,10 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from jsonschema import Draft202012Validator, FormatChecker
-from referencing import Registry, Resource
+from resource_bindings import SchemaBindings
 
 ROOT = Path(__file__).resolve().parents[1]
+BINDINGS = SchemaBindings(ROOT)
 
 
 def strict_loads(text: str) -> Any:
@@ -37,10 +38,7 @@ def load(path: Path) -> Any:
 
 
 def validator(path: str = "schemas/contracts.schema.json", fragment: str = ""):
-    resources = [(p.as_uri(), Resource.from_contents(load(p))) for p in ROOT.rglob("*.schema.json")]
-    return Draft202012Validator({"$ref": (ROOT / path).as_uri() + fragment},
-                               registry=Registry().with_resources(resources),
-                               format_checker=FormatChecker())
+    return BINDINGS.validator(path, fragment)
 
 
 def check(value, definition):
@@ -48,11 +46,11 @@ def check(value, definition):
 
 
 def skill_check(value, skill, direction):
-    validator(f"skills/{skill}/schemas/{direction}.schema.json").validate(value)
+    validator(f"urn:niobium:{skill}:schema:{direction}").validate(value)
 
 
 def country(value):
-    rows = load(ROOT / "skills/ecommerce-normalize-products/references/iso3166-1.json")["countries"]
+    rows = load(BINDINGS.skill("ecommerce-normalize-products", "references/iso3166-1.json"))["countries"]
     codes = {row[key]: row["alpha_2"] for row in rows for key in ("alpha_2", "alpha_3")}
     return codes[value.upper()]
 
@@ -169,7 +167,7 @@ def filter_reports(tasks, responses, value):
 
 
 def project_ads(ads):
-    schema = load(ROOT / "skills/ecommerce-score-products/schemas/input.schema.json")
+    schema = load(BINDINGS.skill("ecommerce-score-products", "schemas/input.schema.json"))
     omitted = []
     def resolve(node):
         if "$ref" in node:

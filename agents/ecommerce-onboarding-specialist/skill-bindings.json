@@ -1,0 +1,47 @@
+{
+  "ecommerce-develop-strategy": {
+    "binding": "host_configured_skill",
+    "selection": "current_agent_or_task_binding",
+    "entrypoint": "SKILL.md",
+    "schemas": {
+      "input": {
+        "uri": "urn:niobium:ecommerce-develop-strategy:schema:input",
+        "path": "schemas/input.schema.json"
+      },
+      "output": {
+        "uri": "urn:niobium:ecommerce-develop-strategy:schema:output",
+        "path": "schemas/output.schema.json"
+      }
+    }
+  },
+  "ecommerce-draft-prompts": {
+    "binding": "host_configured_skill",
+    "selection": "current_agent_or_task_binding",
+    "entrypoint": "SKILL.md",
+    "schemas": {
+      "input": {
+        "uri": "urn:niobium:ecommerce-draft-prompts:schema:input",
+        "path": "schemas/input.schema.json"
+      },
+      "output": {
+        "uri": "urn:niobium:ecommerce-draft-prompts:schema:output",
+        "path": "schemas/output.schema.json"
+      }
+    }
+  },
+  "ecommerce-profile-offers": {
+    "binding": "host_configured_skill",
+    "selection": "current_agent_or_task_binding",
+    "entrypoint": "SKILL.md",
+    "schemas": {
+      "input": {
+        "uri": "urn:niobium:ecommerce-profile-offers:schema:input",
+        "path": "schemas/input.schema.json"
+      },
+      "output": {
+        "uri": "urn:niobium:ecommerce-profile-offers:schema:output",
+        "path": "schemas/output.schema.json"
+      }
+    }
+  }
+}

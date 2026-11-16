@@ -8,6 +8,11 @@ on:
       - 'skills/ecommerce-cluster-ads/**'
       - 'agents/ecommerce-discovery-looper/**'
       - 'tools/ecommerce-product-discoverer/**'
+      - 'tools/agent-packaging/**'
+      - 'agents/ecommerce-competitive-researcher/**'
+      - 'skills/ecommerce-normalize-products/**'
+      - 'skills/ecommerce-analyze-competition/**'
+      - 'skills/ecommerce-score-products/**'
       - '.github/workflows/discoverer-package.yml'
   pull_request:
     paths:
@@ -15,6 +20,11 @@ on:
       - 'skills/ecommerce-cluster-ads/**'
       - 'agents/ecommerce-discovery-looper/**'
       - 'tools/ecommerce-product-discoverer/**'
+      - 'tools/agent-packaging/**'
+      - 'agents/ecommerce-competitive-researcher/**'
+      - 'skills/ecommerce-normalize-products/**'
+      - 'skills/ecommerce-analyze-competition/**'
+      - 'skills/ecommerce-score-products/**'
       - '.github/workflows/discoverer-package.yml'
   workflow_dispatch:
 

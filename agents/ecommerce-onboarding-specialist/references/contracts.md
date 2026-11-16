@@ -75,7 +75,7 @@ inserting the board into the saved marketing_strategy or altering nested fields.
 
 ## Validation gates and limitations
 
-Validate each whole skill response against its actual bundled schema, then apply
+Validate each whole skill response against its actual selected schema, then apply
 its semantic checklist. Profile.url must exactly echo the original URL. A missing
 product or blank name cannot be repaired from the URL or the board. Partial profile
 errors may proceed only when the supported identity is adequate and limitations

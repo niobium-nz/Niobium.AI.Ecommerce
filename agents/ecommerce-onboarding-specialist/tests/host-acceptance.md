@@ -36,6 +36,15 @@ cannot verify approval routing, visible browsers, pixel fidelity or real storage
 | Uncertain writes | Reconcile read-only under the same ID/bytes. Do not blindly repeat creation/upload, delete artifacts or rerun skills. Report unknown outcome and operator recovery need. |
 | Handoff boundary | Saved full strategies and durable board reference are plans, not generated assets or a ready website. No website/council/onboarding-child execution or advertising launch. |
 
-A separate, expressly authorized live smoke test is required after mock acceptance.
+Any live smoke test must be separately authorized; setup never starts it automatically.
 This checklist and source authoring do not authorize any live product research,
 Drive changes, hosted publication, purchase or advertising expenditure.
+
+## Evidence limits
+
+Where a host cannot inject mocks, mark these cases not executed instead of
+inventing a pass or blocking resource installation solely for that reason.
+Actual required operational guarantees remain mandatory before live execution.
+Run only a separately authorized live job/test; preserve existing host approvals.
+Unknown optional Drive trash/add flags warn in the host's run notes; explicit
+denial, wrong identity, incomplete lookup or content verification still fails.

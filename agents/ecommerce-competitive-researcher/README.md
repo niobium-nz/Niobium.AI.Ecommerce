@@ -14,11 +14,12 @@ looper reads the upstream discovery array and selects one entry. This agent does
 not read/process the entire upstream file. See `examples/fixtures.json` and
 `references/contracts.md` for the exact mapping and JSON pointers.
 
-The complete ecommerce-normalize-products, ecommerce-analyze-competition and
-ecommerce-score-products trees are MOVED from root skills/ into this agent's
-skills/ directory without content changes. No dependency on root skill paths or
-an installed version with a matching name remains. The discoverer and the five
-unrelated root skills are unchanged. `dependencies.json` pins the moved trees.
+Each of the three skills has one canonical source in repository-root `skills/`:
+ecommerce-normalize-products, ecommerce-analyze-competition and ecommerce-score-products.
+They are selected independently through host configuration, with logical schemas
+in `skill-bindings.json`. Deployment emits THREE separate skill ZIPs, never a
+combined installable skill ZIP or a duplicate nested tree. The skill contents and
+saved candidate contract are unchanged. See [portable deployment](references/deployment.md).
 
 The approved contract corrections are confidence0_to10, top-level competition
 error, and the scorer's required target_country. Confidence 6 passes; all failed
@@ -59,17 +60,26 @@ See `adapters/chatgpt-workspace-agent.md` and `adapters/claude-cowork.md`. Bind 
 capabilities, permissions and approval gates in the target host; there is no
 claim of a shared one-click import ZIP or a completed hosted deployment.
 
-With Python 3.11+ and jsonschema installed, run from this directory:
-
-```sh
-PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tests -v
-```
-
-These network-free tests check contracts, mappings, gates and mocked ordering/failure
-paths. They are not LLM-quality or live connector tests. The optional reference
-model in tests/ is development-only, not a production runner or runtime language
-requirement. Run `tests/host-acceptance.md` in each deployment with mocked tools
-before an explicitly authorized live test. No paid searches are needed for tests.
+Build and test the actual install artifact using the shared tooling below. The
+source tests cover mappings, gates, duplicate handling and mocked ordering/recovery,
+not LLM quality or real provider behavior. Host mock acceptance is recommended
+where supported; lack of injection is an evidence gap, while actual unavailable
+registry serialization/recovery remains a live-execution blocker.
 
 Sources for host/storage setup are linked in `references/storage.md` and the
 adapters. Baseline: 51cdf133d614d42f189bc6698c17c3593e029dc2, checked 2026-11-11.
+
+## Build the installation kit
+
+From the repository root:
+
+```sh
+python3 -B tools/agent-packaging/build.py --agent ecommerce-competitive-researcher
+python3 -B tools/agent-packaging/test_packages.py --bundle dist/portable-agents/ecommerce-competitive-researcher
+```
+
+Open the kit's START-HERE.md. The default kit and instructions are platform-neutral;
+use the relevant host adapter only for that deployment. The optional Python checker
+has documented runtime targets, and equivalent validators are supported elsewhere.
+For another build use a fresh --output directory so edited settings are preserved.
+Package version 1.1.0 changes installation/resource binding, not saved wire formats.

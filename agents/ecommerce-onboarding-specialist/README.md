@@ -34,11 +34,12 @@ website handoff. A successful result does not certify economics or authorize lau
 ## Ownership and portability
 
 AGENT.md is the entrypoint. agent.yaml is descriptive metadata, NOT a vendor import
-manifest. The three unchanged complete skill directories are moved from root skills/
-into this agent's skills/: ecommerce-profile-offers, ecommerce-develop-strategy,
-ecommerce-draft-prompts. Nothing is reimplemented in a new skill. The board-building
-skill and all other agents remain unchanged. dependencies.json pins source trees
-and schemas to the reviewed repository commit.
+manifest. The unchanged complete skills live once under repository-root `skills/`:
+ecommerce-profile-offers, ecommerce-develop-strategy and ecommerce-draft-prompts.
+Each is selected independently through the host and shipped as its own deployment
+ZIP. `skill-bindings.json` uses logical schemas instead of nested skill paths.
+The input, saved handoff and business rules are unchanged. Read
+[portable deployment](references/deployment.md) for setup and updates.
 
 Configure candidates_folder_id and, only for local board inputs, an authorized
 board_handoff_binding. Null folder ID is intentionally non-runnable. The browser
@@ -53,21 +54,32 @@ The requested candidate_id/storage naming does not change the business lifecycle
 
 ## Validation
 
-With Python 3.11+, jsonschema and pycountry installed, from this directory:
-
-```sh
-PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tests -v
-```
-
-Tests exercise JSON contracts, exact skill mappings, error gates and mocked
-publication, not real browsing, pixel fidelity, pricing judgment or connector
-atomicity. Run tests/host-acceptance.md in each target host before a separately
-authorized live test. Runtime does not require Python or those testing libraries.
-No costs, product claims or sample URLs in tests/examples are real evidence.
+The generated kit provides optional offline validation libraries, including
+country/currency and URL-format checks. It needs no online install in the host.
+Tests cover contracts, mappings, error gates and mocked publication; they do not
+establish real browsing, pixel fidelity, pricing judgment or provider atomicity.
+Host mock cases are reported untested where injection is unavailable. Required
+browser/image/storage capabilities still need real bindings before live work.
+No sample cost, product claim or URL in fixtures is real evidence.
 
 ## Pending work
 
-See ../ROADMAP.md. Product council remains pending. A manufacturer-sourcing agent
+See the [agent roadmap](https://github.com/niobium-nz/Niobium.AI.Ecommerce/blob/main/agents/ROADMAP.md). Product council remains pending. A manufacturer-sourcing agent
 is also pending; obtaining real, SKU-specific product photographs from suppliers
 will enable the reference-board workflow upstream of this onboarding agent.
 The website implementation agent remains a separate downstream integration.
+
+## Build the installation kit
+
+From the repository root:
+
+```sh
+python3 -B tools/agent-packaging/build.py --agent ecommerce-onboarding-specialist
+python3 -B tools/agent-packaging/test_packages.py --bundle dist/portable-agents/ecommerce-onboarding-specialist
+```
+
+Open the kit's START-HERE.md. The default kit and instructions are platform-neutral;
+use the relevant host adapter only for that deployment. The optional Python checker
+has documented runtime targets, and equivalent validators are supported elsewhere.
+For another build use a fresh --output directory so edited settings are preserved.
+Package version 1.1.0 changes installation/resource binding, not saved wire formats.

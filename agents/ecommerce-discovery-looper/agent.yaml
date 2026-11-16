@@ -1,6 +1,6 @@
 # Descriptive portable metadata, not a native vendor import manifest.
 name: ecommerce-discovery-looper
-version: 1.0.0
+version: 1.1.0
 entrypoint: AGENT.md
 description: Dispatch each product in one discovery file to competitive research.
 input_schema: schemas/contracts.schema.json#/$defs/input
@@ -9,13 +9,12 @@ result_schema: schemas/contracts.schema.json#/$defs/result
 skills: []
 agent_dependencies:
   - name: ecommerce-competitive-researcher
-    path: ../ecommerce-competitive-researcher/AGENT.md
     binding_configuration_key: researcher_binding
 source:
   folder_name: discovery
   folder_id_configuration_key: discovery_folder_id
   filename: "{job_id}.json"
-  schema: ../ecommerce-product-discoverer/schemas/handoff.schema.json
+  schema: urn:niobium:ecommerce-product-discoverer:schema:handoff
 execution:
   product_concurrency: 1
   automatic_retries: 0
@@ -30,3 +29,4 @@ storage:
 adapters:
   chatgpt: adapters/chatgpt-workspace-agent.md
   claude: adapters/claude-cowork.md
+contract_resources: contract-bindings.json

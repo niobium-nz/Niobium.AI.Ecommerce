@@ -19,56 +19,10 @@ SUPPORT = Path(__file__).resolve().parent / "validation-support"
 FIXED_DATE = (2020, 1, 1, 0, 0, 0)
 
 
-def files(root):
-    for path in sorted(root.rglob("*")):
-        if "__pycache__" in path.parts or path.suffix == ".pyc":
-            continue
-        if path.is_symlink():
-            raise ValueError(f"Source symlinks are not distributable: {path}")
-        if path.is_file():
-            yield path
-
-
-def digest(raw):
-    return hashlib.sha256(raw).hexdigest()
-
-
-def write_json(path, value):
-    path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-
-
-def zip_bytes(entries):
-    output = io.BytesIO()
-    with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_STORED) as archive:
-        for name, raw in sorted(entries):
-            info = zipfile.ZipInfo(name, FIXED_DATE)
-            info.create_system = 3
-            info.external_attr = 0o100644 << 16
-            archive.writestr(info, raw)
-    return output.getvalue()
-
-
-def wheel_bytes(item, cache, offline):
-    path = cache / item["filename"]
-    if path.exists():
-        raw = path.read_bytes()
-    elif offline:
-        raise FileNotFoundError("Missing cached wheel: " + item["filename"])
-    else:
-        # Source URLs and hashes are reviewed in the committed lock, not selected
-        # afresh from a mutable latest-version response at each build.
-        if not item["source"].startswith("https://files.pythonhosted.org/"):
-            raise ValueError("Unexpected dependency source")
-        with urllib.request.urlopen(item["source"], timeout=60) as response:
-            raw = response.read()
-    if digest(raw) != item["sha256"] or len(raw) != item["bytes"]:
-        raise ValueError("Wheel checksum/length mismatch: " + item["filename"])
-    with zipfile.ZipFile(io.BytesIO(raw)) as wheel:
-        if wheel.testzip():
-            raise ValueError("Invalid wheel: " + item["filename"])
-    if not path.exists():
-        path.write_bytes(raw)
-    return raw
+import sys
+sys.path.insert(0, str(REPO / "tools/agent-packaging"))
+from build_common import files, digest, write_json, zip_bytes, wheel_bytes
+COMMON_SUPPORT = REPO / "tools/agent-packaging/validation-support"
 
 
 BINDING_INSTRUCTIONS = '''Use the ecommerce-product-discoverer folder uploaded as Agent Files as the
@@ -180,11 +134,13 @@ def build(output, cache, offline=False):
                     "agent": {"name": AGENT.name, "files": source_files},
                     "skill_selection": "current_agent_or_task_binding", "skill_version_pin": None}
         write_json(target_support / "deployment-manifest.json", manifest)
-        lock = json.loads((SUPPORT / "dependency-lock.json").read_text())
+        lock = json.loads((COMMON_SUPPORT / "dependency-lock.json").read_text())
         archive = zip_bytes([(item["filename"], wheel_bytes(item, cache, offline)) for item in lock["wheels"]])
         (target_support / lock["archive"]).write_bytes(archive)
         lock["archive_sha256"] = digest(archive)
         write_json(target_support / "dependency-lock.json", lock)
+        for name in ("runtime.py", "resource_bindings.py", "metadata_policy.py"):
+            shutil.copyfile(COMMON_SUPPORT / name, target_support / name)
         for name in ("validate.py", "README.md"):
             shutil.copyfile(SUPPORT / name, target_support / name)
         shutil.copyfile(AGENT / "config.example.json", resources / "deployment-config.json")

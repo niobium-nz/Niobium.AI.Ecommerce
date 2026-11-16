@@ -83,3 +83,11 @@ all API fields. [jsonschema validation documentation](https://python-jsonschema.
 distinguishes schema validation and format checking. The fallback policy and kit
 layout here are project decisions informed by the observed setup, not claims that
 these vendors guarantee a particular private mount path or import format.
+
+## Applying the lessons to other agents
+
+The [repository portability policy](agent-portability.md) extends these lessons to
+the researcher, onboarding specialist and looper. It keeps host-specific controls
+in adapters, supplies individual skill ZIPs, and shares offline validation tooling.
+It preserves required browsing/locking/recovery semantics rather than weakening
+them to fit a particular host. Generic kits are now available for the discoverer too.

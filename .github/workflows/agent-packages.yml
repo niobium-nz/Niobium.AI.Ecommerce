@@ -1,0 +1,72 @@
+name: Agent packages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'agents/**'
+      - 'skills/**'
+      - 'tools/agent-packaging/**'
+      - '.github/workflows/agent-packages.yml'
+  pull_request:
+    paths:
+      - 'agents/**'
+      - 'skills/**'
+      - 'tools/agent-packaging/**'
+      - '.github/workflows/agent-packages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.14']
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Build neutral kits with individual skill packages
+        run: python -B tools/agent-packaging/build.py --agent all
+      - name: Validate actual artifacts and all source suites offline
+        run: python -B tools/agent-packaging/test_packages.py --bundle dist/portable-agents --report dist/validation-report.json
+      - name: Upload discoverer kit
+        if: matrix.python == '3.14'
+        uses: actions/upload-artifact@v7
+        with:
+          name: portable-ecommerce-product-discoverer
+          path: dist/portable-agents/ecommerce-product-discoverer/
+          if-no-files-found: error
+          retention-days: 90
+      - name: Upload researcher kit
+        if: matrix.python == '3.14'
+        uses: actions/upload-artifact@v7
+        with:
+          name: portable-ecommerce-competitive-researcher
+          path: dist/portable-agents/ecommerce-competitive-researcher/
+          if-no-files-found: error
+          retention-days: 90
+      - name: Upload onboarding kit
+        if: matrix.python == '3.14'
+        uses: actions/upload-artifact@v7
+        with:
+          name: portable-ecommerce-onboarding-specialist
+          path: dist/portable-agents/ecommerce-onboarding-specialist/
+          if-no-files-found: error
+          retention-days: 90
+      - name: Upload looper kit
+        if: matrix.python == '3.14'
+        uses: actions/upload-artifact@v7
+        with:
+          name: portable-ecommerce-discovery-looper
+          path: dist/portable-agents/ecommerce-discovery-looper/
+          if-no-files-found: error
+          retention-days: 90

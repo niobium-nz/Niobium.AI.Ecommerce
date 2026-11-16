@@ -37,3 +37,12 @@ No live Drive or OneDrive operations, paid searches, hosted child invocations or
 real distributed-lock/crash tests are performed by this repository's offline suite.
 Do not enable production without a working coordinator and verified terminal-result
 binding. Merely importing instructions cannot provide those guarantees.
+
+## Evidence limits
+
+Where a host cannot inject mocks, mark these cases not executed instead of
+inventing a pass or blocking resource installation solely for that reason.
+Actual required operational guarantees remain mandatory before live execution.
+Run only a separately authorized live job/test; preserve existing host approvals.
+Unknown optional Drive trash/add flags warn in the host's run notes; explicit
+denial, wrong identity, incomplete lookup or content verification still fails.

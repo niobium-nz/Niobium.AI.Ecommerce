@@ -16,15 +16,16 @@ from urllib.parse import urlsplit, unquote
 
 import pycountry
 from jsonschema import Draft202012Validator, FormatChecker
-from referencing import Registry, Resource
+from resource_bindings import SchemaBindings
+from metadata_policy import optional_metadata
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / 'schemas/contracts.schema.json'
-SKILLS = ROOT / 'skills'
+BINDINGS = SchemaBindings(ROOT)
 UUID = re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$')
-PROFILE = SKILLS / 'ecommerce-profile-offers/schemas'
-MARKET = SKILLS / 'ecommerce-develop-strategy/schemas'
-IMAGE = SKILLS / 'ecommerce-draft-prompts/schemas'
+PROFILE = BINDINGS.skill('ecommerce-profile-offers', 'schemas')
+MARKET = BINDINGS.skill('ecommerce-develop-strategy', 'schemas')
+IMAGE = BINDINGS.skill('ecommerce-draft-prompts', 'schemas')
 
 
 class GateError(ValueError):
@@ -57,9 +58,7 @@ def read(path: Path) -> Any:
 
 
 def validator(path: Path = SCHEMA, fragment: str = '') -> Draft202012Validator:
-    resources = [(p.as_uri(), Resource.from_contents(read(p))) for p in ROOT.rglob('*.schema.json')]
-    return Draft202012Validator({'$ref': path.as_uri() + fragment},
-        registry=Registry().with_resources(resources), format_checker=FormatChecker())
+    return BINDINGS.validator(path, fragment)
 
 
 def validate(value: Any, definition: str) -> None:
@@ -200,9 +199,13 @@ def verified_receipt(receipt: dict, path: str, raw: bytes) -> str:
     # The host is responsible for resolving/creating and verifying the real folder.
     if not isinstance(receipt, dict) or not all((receipt.get('id'), receipt.get('parent_verified') is True,
         receipt.get('name') == path.rsplit('/', 1)[1], receipt.get('mime_type') == 'application/json',
-        receipt.get('trashed') is False, receipt.get('unique_name_count') == 1,
+        receipt.get('unique_name_count') == 1,
         receipt.get('raw_bytes') == raw)):
         raise GateError('verification_failed', 'Full publication verification failed')
+    try:
+        optional_metadata(receipt)
+    except ValueError as exc:
+        raise GateError('verification_failed', str(exc)) from exc
     return receipt['id']
 
 

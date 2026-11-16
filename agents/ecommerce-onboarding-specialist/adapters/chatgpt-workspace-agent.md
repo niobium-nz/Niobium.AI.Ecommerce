@@ -1,28 +1,54 @@
-# ChatGPT Workspace Agent setup
+# ChatGPT Workspace Agent adapter
 
-This directory is portable source, not a native import manifest or hosted deployment.
-Official Workspace Agent guidance allows instructions, files, apps/custom MCPs and
-skills. Verify actual account features and permissions in the target workspace.
+These steps apply only to ChatGPT. The core agent and default kit do not require
+this UI, an attachment mechanism, Linux or Python. Check the actual workspace's
+available controls before concluding an action is unsupported.
 
-Create ecommerce-onboarding-specialist with AGENT.md as instructions. Attach this
-package's schemas/references and install each of its three complete bundled skills,
-including their relative resources. Do not select older same-named copies by name
-alone. Configure the real candidates_folder_id and optional board_handoff_binding.
+1. Extract the kit locally. Open Agents, then Create on the Agents page and Start blank.
+2. Use INSTRUCTIONS.md as the core instructions and bind the selected resources below.
+3. With Add files -> Upload folder, select the outer `agent-files/ecommerce-onboarding-specialist` folder
+   itself, preserving relative resources. Upload `offline-validation-support` if using
+   its optional checker, and `contract-resources` if present. Reading/extracting a ZIP
+   in a temporary run does not itself install persistent Agent Files.
+4. Fill `deployment-config.json` with actual settings and upload exactly one active
+   config. Null placeholders are intentionally invalid. Never embed credentials.
 
-Bind an authorized real headed browser with visible inspection/cleanup and the
-profiler's required navigation safeguards, an actual image reader, trusted UUID/
-lossless JSON facilities and Google Drive exact lookup/folder create/raw upload/
-full readback. Do not assume the generic web-search tool is that browser or that
-an app can write merely because it can search. Capability failure must stop the run.
+Attach each of these ZIPs independently through **Add skill**, once each:
 
-Require the caller's external approval gate. Constrain writes to the candidates
-root and the prescribed subfolders. Keep write approvals; exclude payments,
-website deployment, paid ads, board/image generation, delete and sharing actions.
-Use stable board URLs or a tested local-to-durable resolver, never expiring tokens.
+- `skills/ecommerce-develop-strategy.zip`
+- `skills/ecommerce-draft-prompts.zip`
+- `skills/ecommerce-profile-offers.zip`
 
-Run offline tests and the mocked host-acceptance checklist, then obtain separate
-authorization for live testing/publication. Do not schedule or publish the hosted
-agent as part of source authoring. No hosted run has been validated here.
+Do not attach a combined skills archive or copy the extracted skills into Agent
+Files. These are attachments to this agent, not global Plugins/Skills entries.
 
-Source checked 2026-11-12:
-https://help.openai.com/en/articles/20001143-chatgpt-workspace-agents-for-enterprise-and-business
+Resolve each attached skill's current resources from this agent's execution context.
+Do not persist a temporary mount path, invent a host version or substitute a global
+same-name skill. The host selects the attachment; the checker validates compatibility.
+
+Bind a real headed interactive browser with visible inspection and task cleanup,
+board pixel reading, trusted UUID/lossless JSON and Google Drive exact lookup,
+folder creation, raw upload and complete verification. A scraper is not a substitute
+for the profiler's required browser. Preserve caller product approval and an actual
+same-content durable board reference; the agent does not create a board or publish
+a website. Missing required browser/board/write capabilities still block live work.
+
+Run the setup checks in references/deployment.md in Preview, which may have a
+different authenticated context from the builder. Use the current package's helper
+arguments with one --skill binding per skill, not a hardcoded path. Do not install
+libraries online, spend on research or write probe files during setup. If no host
+mock harness exists, report it untested; actual required capabilities still apply.
+Missing optional Drive trash/add metadata warns; explicit denial or unverified
+persistence still fails. Preserve host approvals. Save privately unless broader
+sharing/scheduling is requested.
+
+For updates, preserve settings, replace the complete agent/support/contract folders
+and Instructions together, retire obsolete source ZIPs, and keep one active config.
+Update skill attachments individually when intended, then rerun compatibility checks.
+Do not merge stale nested skills or claim that a local build changed the hosted agent.
+If automated agent management is unavailable, state that specific missing operation
+and use these native file/skill controls; do not invent a wrapper-skill workaround.
+
+[Official workspace agent guidance](https://help.openai.com/en/articles/20001143-chatgpt-workspace-agents-for-enterprise-and-business)
+describes configurable files, skills, apps and Preview. It is not evidence that this
+particular deployment has the agent invocation, browser or coordination guarantees.

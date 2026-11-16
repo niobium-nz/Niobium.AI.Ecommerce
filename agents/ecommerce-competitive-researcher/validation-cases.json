@@ -1,0 +1,46 @@
+{
+  "scope": "Offline fixtures only; never use the synthetic configuration for a live job.",
+  "config_schema": "schemas/contracts.schema.json#/$defs/config",
+  "fixture_config": {
+    "discovery_folder_id": "fixture_folder",
+    "onedrive_drive_id": "fixture_drive",
+    "onedrive_item_id": "fixture_item",
+    "registry_format": "json_string_array",
+    "timezone": "Pacific/Auckland",
+    "max_parallel_queries": 3,
+    "registry_concurrency": "host_serialized"
+  },
+  "fixtures": [
+    {
+      "schema": "schemas/contracts.schema.json#/$defs/input",
+      "instance": "examples/fixtures.json",
+      "pointer": "/input"
+    },
+    {
+      "schema": "schemas/contracts.schema.json#/$defs/artifact",
+      "instance": "examples/fixtures.json",
+      "pointer": "/artifact"
+    },
+    {
+      "schema": "schemas/contracts.schema.json#/$defs/result",
+      "instance": "examples/fixtures.json",
+      "pointer": "/result"
+    },
+    {
+      "schema": "urn:niobium:ecommerce-normalize-products:schema:output",
+      "instance": "examples/fixtures.json",
+      "pointer": "/normalization"
+    },
+    {
+      "schema": "urn:niobium:ecommerce-analyze-competition:schema:output",
+      "instance": "examples/fixtures.json",
+      "pointer": "/competition_report"
+    },
+    {
+      "schema": "urn:niobium:ecommerce-score-products:schema:output",
+      "instance": "examples/fixtures.json",
+      "pointer": "/score"
+    }
+  ],
+  "invalid_input_fixture": 0
+}

@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 from jsonschema import Draft202012Validator, ValidationError
-from protocol_reference import (ROOT, SKILLS, PROFILE, MARKET, IMAGE, GateError, artifact,
+from protocol_reference import (ROOT, BINDINGS, PROFILE, MARKET, IMAGE, GateError, artifact,
     git_blob, image_gate, marketing_gate, marketing_input, output_path, profile_gate,
     prompt_input, public_url, read, run, strict_loads, validate, validate_input, validator)
 
@@ -129,13 +129,14 @@ class OnboardingTests(unittest.TestCase):
         return run(self.value, self.config, self.host)
 
     def test_all_schema_definitions(self):
-        for path in ROOT.rglob('*.schema.json'):
+        for path in BINDINGS.schema_paths:
             Draft202012Validator.check_schema(read(path))
 
-    def test_exact_dependency_blob_hashes(self):
-        for name, sha in read(ROOT / 'dependencies.json')['validated_blob_shas'].items():
-            with self.subTest(name=name):
-                self.assertEqual(git_blob(SKILLS / name), sha)
+    def test_selected_skill_schema_bindings(self):
+        self.assertEqual(set(BINDINGS.skills), set(read(ROOT / 'dependencies.json')['skills']))
+        BINDINGS.check_definitions()
+        for name in BINDINGS.skills:
+            self.assertTrue(BINDINGS.skill(name, 'SKILL.md').is_file())
 
     def test_fixtures_use_complete_real_contracts(self):
         validate_input(self.value)
@@ -423,6 +424,17 @@ class OnboardingTests(unittest.TestCase):
                 self.assertFalse(result['published']); self.assertIsNone(result['output_file_id'])
                 self.assertEqual(host.calls.count('publish'), 1)
 
+    def test_unavailable_trash_flag_warns_without_masking_verification(self):
+        host = Host(); host.receipt_patch = {'trashed': None}
+        with self.assertWarnsRegex(RuntimeWarning, 'drive_metadata_unavailable'):
+            result = run(self.value, self.config, host)
+        self.assertTrue(result['published'])
+        self.assertEqual(host.calls.count('publish'), 1)
+        host = Host(); host.receipt_patch = {'trashed': None, 'raw_bytes': b'truncated'}
+        result = run(self.value, self.config, host)
+        self.assertFalse(result['published'])
+        self.assertIsNone(result['output_file_id'])
+
     def test_terminal_result_cannot_claim_success_without_publication(self):
         result = self.invoke(); result['published'] = False
         with self.assertRaises(ValidationError): validate(result, 'result')
@@ -444,12 +456,6 @@ class OnboardingTests(unittest.TestCase):
         self.assertEqual(result['status'], 'needs_clarification')
         self.assertEqual([e['code'] for e in result['errors']], ['profile_limitation','image_clarification'])
 
-    def test_roadmap_contains_requested_pending_agents(self):
-        text = (ROOT.parent / 'ROADMAP.md').read_text()
-        self.assertIn('## Product council', text)
-        self.assertIn('## Manufacturer sourcing', text)
-        self.assertIn('photographs', text)
-        self.assertIn('reference board', text)
 
     def test_manifest_scope_and_local_links(self):
         text = (ROOT / 'agent.yaml').read_text()

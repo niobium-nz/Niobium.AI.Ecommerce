@@ -1,0 +1,4 @@
+{
+  "discovery_handoff": "urn:niobium:ecommerce-product-discoverer:schema:handoff",
+  "researcher_contracts": "urn:niobium:ecommerce-competitive-researcher:schema:contracts"
+}

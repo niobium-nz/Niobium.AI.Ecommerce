@@ -113,13 +113,12 @@ class LooperTests(unittest.TestCase):
         return run_reference(self.rows if rows is None else rows, SOURCE, {'job_id': JOB}, CONFIG,
                              self.host if host is None else host)
 
-    def test_pinned_canonical_schema_hashes(self):
-        pins = load(ROOT / 'dependencies.json')['contract_blobs']
-        for name, expected in pins.items():
-            data = (ROOT / name).read_bytes()
-            actual = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
-            with self.subTest(name=name):
-                self.assertEqual(actual, expected)
+    def test_explicit_contract_resources_resolve(self):
+        from protocol_reference import BINDINGS
+        self.assertEqual(BINDINGS.skills, {})
+        BINDINGS.check_definitions()
+        for uri in load(ROOT / 'contract-bindings.json').values():
+            self.assertTrue(BINDINGS.path(uri).is_file())
 
     def test_schema_definitions_and_examples(self):
         for path in [ROOT / 'schemas/contracts.schema.json', SOURCE_SCHEMA, CHILD_SCHEMA]:
@@ -467,6 +466,19 @@ class SourceReadTests(unittest.TestCase):
         rows, source = self.read()
         self.assertEqual(source['sha256'], hashlib.sha256(self.raw).hexdigest())
         self.assertEqual(len(rows), 1)
+
+    def test_unavailable_trash_flags_preserve_source_guarantees(self):
+        folder = dict(self.folder); folder.pop('trashed')
+        metadata = dict(self.meta); metadata.pop('trashed')
+        with self.assertWarnsRegex(RuntimeWarning, 'drive_metadata_unavailable'):
+            self.assertEqual(select_source(folder, [metadata], True, folder['id'], JOB), 'file-1')
+        with self.assertWarnsRegex(RuntimeWarning, 'drive_metadata_unavailable'):
+            rows, source = self.read(before=metadata, after=self.meta)
+        self.assertEqual(source['sha256'], hashlib.sha256(self.raw).hexdigest())
+        with self.assertWarns(RuntimeWarning), self.assertRaises(ValueError):
+            self.read(raw=self.raw[:-1], before=metadata, after=metadata)
+        with self.assertRaises(ValueError):
+            self.read(before=metadata, after=dict(metadata, version='changed'))
 
     def test_missing_duplicate_or_incomplete_listing_rejected(self):
         for matches, complete in (([], True), ([self.meta, self.meta], True), ([self.meta], False)):
