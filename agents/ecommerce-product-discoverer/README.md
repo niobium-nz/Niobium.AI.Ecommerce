@@ -80,9 +80,11 @@ See the host adapter for migration from the earlier numbered ZIP bundle.
 
 ## Versions and boundaries
 
-Package version is **2.1.3**; the saved handoff remains **2.0.0**. The ChatGPT
+Package version is **2.1.4**; the saved handoff remains **2.0.0**. The ChatGPT
 adapter captures complete search-response text locally before displaying a bounded
 summary, where the host exposes the required orchestration and file capabilities.
+It reads the complete eligible projection in bounded ranges before one clustering
+invocation; an individual read's display limit is not an aggregate context limit.
 Missing search completeness information warns instead of blocking a successful
 exact-name lookup. Known truncation, actual collisions and unverified bytes still fail.
 Input/configuration,

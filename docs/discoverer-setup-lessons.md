@@ -135,3 +135,12 @@ path, not successful capture from the external connector or live discovery.
 Preserve all search parameters, evidence, eligibility, clustering, and persistence
 rules. Never use trimming, a replacement query, or another paid request to hide
 display truncation. Install and validate the complete revised kit before retesting.
+
+The next run captured the response successfully, but prematurely treated a
+truncated read of its 76,159-byte, six-ad projection as an aggregate context limit.
+A local recovery read all 75,207 characters in six separate, gap-free ranges and
+then applied the selected skill once. Fourteen local clusters passed its schema
+and traceability/coverage checks without another search or Drive write. Version
+2.1.4 makes that complete-batch read sequence explicit. Per-tool display limits
+and aggregate model context are different constraints; neither diagnostic by
+itself establishes verified discovery persistence or semantic clustering quality.

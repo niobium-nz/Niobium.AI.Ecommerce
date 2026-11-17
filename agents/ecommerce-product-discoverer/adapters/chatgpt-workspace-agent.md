@@ -154,6 +154,52 @@ without a discovery file. Actual connector completeness and end-to-end discovery
 still require a bounded live test after installing this adapter and its matching
 generated Instructions. Keep those results separate from the local smoke test.
 
+### Read the whole projected batch without overflowing one display
+
+A subsequent live job captured the full search response and produced a valid
+six-ad projection of 76,159 UTF-8 bytes. Its first unbounded read was about 19,040
+tokens and the display omitted about 9,040 tokens. Stopping there was premature:
+this was a per-read output window, not evidence of insufficient aggregate context.
+A local-only recovery read all 75,207 characters in six successive ranges, then
+applied the attached skill once. Fourteen local clusters passed the output schema
+and traceability/coverage checks. No new search or Drive write was needed for that
+diagnostic. These checks do not independently prove semantic grouping or persistence.
+
+After validating the complete projection locally, measure its character length,
+UTF-8 byte length, hash, and ad count. Decode UTF-8 before slicing so a boundary
+cannot split a multibyte character. Read sequential half-open character ranges
+`[start, end)` in separate tool executions, with small headers recording their
+offsets and total length. Do not print all ranges inside one orchestration call:
+its combined display can be truncated again. The observed test used at most 15,000
+characters per read. This is a starting bound, not a universal token guarantee;
+adapt to the actual tool window and reserve room for wrappers and metadata.
+
+```python
+from pathlib import Path
+import sys
+
+text = Path(projection_path).read_text(encoding="utf-8")
+assert 0 <= start < end <= len(text)
+print(f"PROJECTED BATCH RANGE [{start}, {end}) OF {len(text)} CHARACTERS")
+sys.stdout.write(text[start:end])
+```
+
+`projection_path`, `start`, and `end` are trusted execution values. If an individual
+range is truncated, discard that incomplete display and reread the same local range
+in smaller pieces. This is not another paid search. Continue until the observed
+gap-free, non-overlapping ranges cover `[0, total_length)`, including the final
+array terminator. Verify local range reconstruction against the original text,
+hash, and decoded values. Keep all original fields in the source file and all
+recognized projected values unchanged.
+
+Only after the entire batch is available in the same model context, apply the
+selected skill once to that complete top-level array. The range headers are
+transport bookkeeping, not extra skill inputs. Do not cluster each range or ad
+separately, replace the full input with excerpts, or infer products from unseen
+fields. Respect real aggregate context/output limits, but do not manufacture a
+context ceiling or treat a default 10,000-token display as that ceiling. If the
+complete eligible batch truly cannot fit, the core's `resource_limit` rule remains.
+
 ### Live job fails only because optional Drive fields are absent
 
 A result reporting `folder_invalid` solely because `trashed` or

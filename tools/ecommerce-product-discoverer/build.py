@@ -39,6 +39,10 @@ summary. Do not print the full connector result into the model's output window.
 Use lossless local JSON parsing for the saved response; never parse and stringify
 provider payloads through JavaScript numbers. A truncated display is not a usable
 page. Recover an already captured response instead of repeating a paid request.
+An individual file-read display limit is not the model's aggregate context limit.
+Read the entire eligible projected batch in separate bounded, gap-free ranges as
+the adapter describes, then invoke the skill once for that one complete batch.
+Do not fail merely because one unbounded display of the local file was truncated.
 
 Use the one active deployment configuration uploaded with this agent. Its normal
 name is deployment-config.json; an existing 04-deployment-config.json may be kept
