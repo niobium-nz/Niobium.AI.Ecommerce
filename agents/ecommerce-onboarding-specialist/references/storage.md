@@ -7,7 +7,7 @@ instructions are not callable tool names. Require candidates_folder_id to resolv
 to one existing folder named exactly candidates with matching ID/type; apply the
 optional metadata policy below when trash/add flags are unavailable.
 Do not find a replacement by name, use root, follow shortcuts, or create the root.
-Verify complete exact-name child lookup across all MIME types/pages, folder create,
+Verify correctly scoped exact-name child lookup across all MIME types and exposed pages, folder create,
 raw JSON upload with explicit parent and full content verification before browsing.
 Read-only search or native Doc creation is insufficient. Keep host write approvals.
 
@@ -21,12 +21,12 @@ an image. No paid ad tools, OneDrive registry or researcher/looper binding is ne
 
 Only after both strategies validate, allocate one lowercase UUIDv4 candidate_id.
 Use a supplied signal_id as the exact subfolder name; otherwise use unlinked.
-List direct children of the configured root by exact name across all types/pages.
+List direct children of the configured root by exact name across all types and exposed pages.
 One valid folder with no explicit trash indication may be reused. No matches permits creation of exactly
-that child. Multiple matches, a same-named nonfolder/shortcut or incomplete search
+that child. Multiple matches, a same-named nonfolder/shortcut or known incomplete search
 stops. Never use a guessed sibling, signal_id (1), or overwrite an upstream artifact.
 
-Verify created/reused folder metadata, parent and unique name match. Serialize
+Verify created/reused folder metadata, parent and one observed name match. Serialize
 folder resolution/create per parent/name through a host guard when concurrent
 runs are possible; a Boolean flag or model promise is not a distributed lock.
 Without that capability, deployment must serialize these runs. On uncertain create,
@@ -41,14 +41,15 @@ requires; JSON/base64 text must not masquerade as a file URI. Upload exactly onc
 ## Verify or report uncertainty
 
 Read returned file metadata and require exact name, parent, application/json,
-trash state when exposed and unique exact-name result. Compare complete readback bytes or
+trash state when exposed and no observed competing exact-name result. Compare complete readback bytes or
 an exposed provider checksum to the actual serialized upload bytes. A snippet or
 successful upload response alone does not verify content. Metadata and bytes must
 refer to the same file/version. Recheck the board's durable source identity before
 writing; no extra board or profile sidecar file is created.
 
 On timeout/uncertain upload, reconcile read-only using the same filename, candidate_id
-and bytes. Success requires one unique exact matching artifact. Otherwise return
+and bytes. Success requires one identified, fully verified artifact and no observed
+competing match. Otherwise return
 publication_outcome_unknown/verification_failed, candidate_id and sanitized attempted
 path/observed ID in details; verified output fields stay null. Do not repeat the
 upload or rerun skills. Do not delete a possibly published artifact or alter sharing.
@@ -83,9 +84,24 @@ infer add permission from sharing/edit flags, repeat unsupported requests or wri
 a probe file during setup. Unknown permission can still cause a real write denial.
 
 Reapply the policy before a write and when verifying returned resources. Exact
-ID/name/type/parent, complete all-type collision lookup, unique results and full
+ID/name/type/parent, all-type collision lookup with no observed competing match and full
 content verification remain mandatory. A real denial or unverified save is a
 failure; never retry an ambiguous write. Missing optional flags do not authorize
 skipping stable-version reads, serialization, child settlement or recovery holds.
 Keep warnings in the host run notes when the unchanged result contract has no
 warning field; do not disguise them as research errors or alter business payloads.
+
+## Search completeness
+
+A successful exact parent/name search with no completeness metadata records
+`drive_lookup_completeness_unavailable` in host notes and continues using observed
+matches. It does not prove exhaustive absence or global uniqueness. Follow all
+returned tokens, even for empty pages; known truncation, malformed responses,
+errors or an unusable token remain failures. Do not narrow to a file type merely
+to obtain a pagination flag. A reused child folder needs one observed valid match;
+zero matches permit its normal create-only path. An observed competing match stops.
+For a new artifact, verify the actual returned ID, metadata and complete bytes.
+If it is missing from post-upload search, warn `drive_created_file_not_listed`
+without re-uploading. An uncertain create/upload without a returned ID still needs
+one observed fully verified match. Missing search evidence never excuses incomplete
+content, wrong parents, browser cleanup failures or missing caller approval.

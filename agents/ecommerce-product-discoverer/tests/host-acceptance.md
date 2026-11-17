@@ -20,7 +20,11 @@ an authorized run. See `../references/validation.md` for the separate stages.
 | Explicit denial | Correct identity but trashed:true or canAddChildren:false | Fail before paid retrieval even when other fields are unknown |
 | Later write denial | Metadata flags unknown; upload returns permission denied | One upload attempt; failed with artifact null; preserve warning; no retry |
 | Initial collision | Exact child filename of any MIME; input also invalid | Stop at step 0; no validation, content read, search, write or regenerated UUID |
-| Incomplete lookup | Capped response, unhandled token or incomplete search | Fail before paid call; never infer absence |
+| Known incomplete lookup | Explicitly capped response, unhandled token or incomplete-search indication | Fail before paid call; never infer absence |
+| Unreported completeness | Successful exact parent/name all-type search returns results:[] with no completeness fields | Warn drive_lookup_completeness_unavailable and continue; do not invent proof or a cursor |
+| Empty page with cursor | No results but a real next token is returned | Follow it; an unseen cursor is not optional metadata |
+| Search failure | Error, wrong scope, malformed/missing results | Fail; never convert it to an empty successful search |
+| New file absent from search | Upload returned an ID; exact metadata and full bytes verify, but post-upload search is empty | Warn drive_created_file_not_listed; verify that ID without claiming global uniqueness; never re-upload |
 | Repeated invocation | Identical inputs in two calls | Fresh host UUIDs and separate filenames; no input deduplication |
 | Invalid input | Names, unknown codes, blank keyword, extra fields or duplicate JSON keys | JSON failure before paid calls/uploads |
 | Frozen cutoff | Month end/leap year; midnight passes across pages | Same three-calendar-month cutoff throughout, not 90 days |

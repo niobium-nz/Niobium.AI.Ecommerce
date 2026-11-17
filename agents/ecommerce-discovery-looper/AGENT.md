@@ -23,7 +23,9 @@ not provision the researcher or replace its required host capabilities.
 
 Validate `schemas/contracts.schema.json#/$defs/input` and trusted deployment
 configuration. The folder must be the same discovery folder used by the researcher.
-Use exact direct-child lookup for `{job_id}.json`, across all types and pages.
+Use exact direct-child lookup for `{job_id}.json`, across all types and exposed pages.
+Unreported search completeness warns under host-protocol.md; actual lookup errors,
+known truncation, missing sources and observed competing matches still fail.
 Require exactly one application/json file with no explicit trash indication, not a folder, shortcut,
 native document, excerpt, candidate file inside a job subfolder or arbitrary URL.
 Read complete raw bytes and verify one stable version as host-protocol.md requires.

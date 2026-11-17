@@ -71,6 +71,15 @@ trashed/canAddChildren fields are unknown warnings, not installation blockers;
 explicit denial or wrong destination still fails. Report offline validation,
 read-only connection checks, host orchestration and live execution separately.
 If no host mock harness exists, mark that section not executed and continue setup.
+
+When authenticated Drive reads are available, generate a fresh trusted UUID and
+perform one read-only exact parent/name lookup for that UUID plus .json in the
+configured folder, across all file types with viewed-only restrictions disabled.
+Report the real response fields and observed matches. Follow any returned tokens.
+A successful results:[] response with no completeness fields is a warning and
+permits continuation under AGENT.md; it must not produce collision_check_failed.
+Actual errors, malformed results, known truncation or unusable tokens still fail.
+This is a read-only connector check, not a discovery job or an upload test.
 '''
 
 START_HERE = '''# Install ecommerce-product-discoverer
@@ -110,10 +119,11 @@ included in the default kit. Hosted agents do not update automatically from GitH
 
 UPDATE_EXISTING = '''UPDATE AN EXISTING ECOMMERCE-PRODUCT-DISCOVERER
 
-This update allows missing optional Drive metadata during real discovery jobs.
-It records drive_metadata_unavailable and continues when trashed and/or
-capabilities.canAddChildren are omitted or null. An actual denial or deleted
-folder still stops the job; saved-file identity and complete bytes are verified.
+This update allows missing optional Drive metadata and unreported search
+completeness during real discovery jobs. A successful exact-name search without
+completion fields warns drive_lookup_completeness_unavailable and continues.
+Actual search errors, known truncation, observed collisions and access denials
+still stop the job; saved-file identity and complete bytes remain verified.
 
 1. Extract this kit and edit the existing workspace agent.
 2. Replace its Instructions completely with instructions.chatgpt.md.
@@ -130,7 +140,10 @@ folder still stops the job; saved-file identity and complete bytes are verified.
 
 Missing optional fields must produce a warning, not folder_invalid or a request
 to prove those unavailable fields. Real access errors, wrong folder identity,
-incomplete filename checks and unverified file contents remain failures.
+known incomplete filename checks and unverified file contents remain failures.
+A successful lookup without a completeness flag is a warning, not a failed lookup.
+A new file verified directly by its returned ID and bytes may warn that search
+has not listed it yet; never overwrite another file or retry an uncertain upload.
 The Instructions and uploaded AGENT.md must agree; updating GitHub alone does
 not update this installed workspace agent. Keep untested live behavior separate
 from offline setup results.

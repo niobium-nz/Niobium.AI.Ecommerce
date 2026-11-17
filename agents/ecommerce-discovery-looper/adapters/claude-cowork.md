@@ -34,3 +34,10 @@ No hosted execution or provider verification is claimed here.
 Check current [skills](https://support.claude.com/en/articles/12512180-use-skills-in-claude)
 and [plugin](https://support.claude.com/en/articles/13837440-use-plugins-in-claude)
 support in the target host; this source is not a universal native import format.
+
+A successful all-type exact-name search may omit completeness metadata. Record
+`drive_lookup_completeness_unavailable` and continue under the core storage policy;
+do not require a fabricated completion flag. Follow exposed tokens and fail on
+actual errors, known truncation or observed conflicts. This applies to live jobs,
+not only setup. Updating only the Instructions while keeping old agent resources
+can restore the old blocker; replace a coherent kit.

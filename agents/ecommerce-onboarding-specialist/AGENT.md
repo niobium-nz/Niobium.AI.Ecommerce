@@ -23,6 +23,8 @@ Bind each skill independently using `skill-bindings.json` and
 [deployment](references/deployment.md). Resolve the selected skill's resources
 through current host bindings; register its logical schemas locally. No fixed
 host path, nested skill copy, combined skill ZIP or extra version pin is required.
+Unreported Drive search completeness warns under storage.md; actual lookup errors,
+known truncation and observed collisions still stop the corresponding operation.
 
 ## 1. Validate and preflight
 
@@ -97,8 +99,8 @@ session-only path or access token. Do not save a full profile, costs wrapper,
 extra lifecycle metadata or unrequested image files. Both strategy objects are
 unchanged skill outputs. Errors include all earlier recoverable issues.
 
-Verify exact name, parent, MIME, trash state when exposed, complete content and unique
-filename match before reporting publication. On an uncertain write, reconcile
+Verify exact name, parent, MIME, trash state when exposed, complete content and no
+observed competing filename match before reporting publication. On an uncertain write, reconcile
 read-only with the same candidate_id and bytes; never repeat generation/upload.
 If unverified, retain the candidate_id and observed identifiers in error details
 but return no verified output path/file ID. Do not delete output to hide failure.

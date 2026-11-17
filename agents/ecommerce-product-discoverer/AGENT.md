@@ -59,11 +59,17 @@ add permission from sharing/edit flags or repeat requests that cannot expose it.
 Do not search for a replacement by name, create folders, use root/My Drive or
 follow shortcuts. Missing/mismatched/inaccessible configuration is an error.
 Search its direct children for the exact job filename across ALL MIME types.
-Exhaust relevant pagination before concluding absence. An incomplete listing
-cannot establish absence. If any match exists, return stopped with warning
+Follow every continuation token the connector exposes, including after empty pages.
+If any match is returned, return stopped with warning
 `job_file_exists` immediately: no input validation, content reading, ad search,
-overwrite or UUID regeneration. If lookup cannot establish absence, fail with
-`collision_check_failed`. Do not proceed to paid calls.
+overwrite or UUID regeneration. A successful, correctly scoped lookup with no
+matches permits continuation. If the wrapper does not report completeness, record
+`drive_lookup_completeness_unavailable` with the stage and continue; do not invent
+a completeness flag or claim exhaustive absence. Missing information alone is
+not `collision_check_failed`. A search error, malformed response, wrong scope,
+explicit truncation/incomplete-search indication or unconsumed/unusable cursor
+still fails before paid calls. Do not replace an all-type search with a typed
+document/image/folder search. This policy applies again before and after upload.
 
 ## 1. Validate input and preflight capabilities
 
@@ -84,7 +90,7 @@ clamping day-of-month to the last valid destination-month day. Do not subtract
 Unavailable clock/timezone conversion is an error before paid retrieval.
 
 Inspect actual connected action schemas and permissions before spending. Require
-the approved ScrapeCreators keyword search, complete Drive exact-name lookup,
+the approved ScrapeCreators keyword search, correctly scoped Drive exact-name lookup,
 raw JSON upload to an explicit parent, metadata and complete content/checksum
 verification, trusted UUID/time utilities and all selected skill resources.
 Missing capabilities produce `capability_unavailable`; never drop parameters,
@@ -245,12 +251,20 @@ result in a real write denial. Report that as `upload_failed`, with artifact nul
 and do not retry. Verify complete bytes via a provider checksum matched to the actual
 serialized upload bytes, or complete raw-byte readback and comparison. A text
 snippet or upload-success response alone is insufficient. Recheck unique-name
-lookup after uploading; duplicates prevent verified success.
+lookup after uploading using the same completeness policy; any observed other
+file ID prevents verified success. An empty post-upload search does not negate
+direct verification of the returned file ID and complete bytes: record
+`drive_created_file_not_listed`. A verified artifact identifies that saved file;
+it does not certify global filename uniqueness. Never turn a search failure or
+known truncation into an empty result.
 
 Drive names are not unique; list-then-upload is not atomic. Do not promise
 transactional exactly-once behavior. On timeout/uncertain upload, NEVER upload
 again. Reconcile by exact-name lookup and full verification. Confirm success
-only for one matching file whose contents equal this job's bytes. Otherwise fail
+only after identifying one file whose metadata and complete contents equal this
+job's bytes, with no observed competing match. If no ID was returned, reconciliation
+must find exactly one observed match; never guess an ID from an empty search.
+Otherwise fail
 with `upload_outcome_unknown` or `artifact_verification_failed`, placing observed
 unverified file IDs in diagnostics, not artifact. Do not automatically delete
 anything to resolve a conflict.

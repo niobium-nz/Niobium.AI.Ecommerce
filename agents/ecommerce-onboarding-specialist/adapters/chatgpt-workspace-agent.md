@@ -52,3 +52,10 @@ and use these native file/skill controls; do not invent a wrapper-skill workarou
 [Official workspace agent guidance](https://help.openai.com/en/articles/20001143-chatgpt-workspace-agents-for-enterprise-and-business)
 describes configurable files, skills, apps and Preview. It is not evidence that this
 particular deployment has the agent invocation, browser or coordination guarantees.
+
+A successful all-type exact-name search may omit completeness metadata. Record
+`drive_lookup_completeness_unavailable` and continue under the core storage policy;
+do not require a fabricated completion flag. Follow exposed tokens and fail on
+actual errors, known truncation or observed conflicts. This applies to live jobs,
+not only setup. Updating only the Instructions while keeping old agent resources
+can restore the old blocker; replace a coherent kit.

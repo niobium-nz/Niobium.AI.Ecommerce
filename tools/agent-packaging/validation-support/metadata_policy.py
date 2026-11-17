@@ -19,3 +19,20 @@ def optional_metadata(metadata, require_add=False):
     if unknown:
         warnings.warn('drive_metadata_unavailable: ' + ', '.join(unknown), RuntimeWarning, stacklevel=2)
     return unknown
+
+
+def lookup_completeness(complete):
+    """Normalized evidence: True = established, None = unreported, False = incomplete.
+
+    Call only after a successful, correctly scoped exact-name search and after
+    following every returned continuation token. Errors, malformed results and
+    known truncation must never be normalized to None.
+    """
+    if complete is True:
+        return []
+    if complete is not None:
+        raise ValueError('Known incomplete lookup or invalid completeness evidence')
+    code = 'drive_lookup_completeness_unavailable'
+    warnings.warn(code + ': using observed exact-name matches; global uniqueness is unverified',
+                  RuntimeWarning, stacklevel=2)
+    return [code]

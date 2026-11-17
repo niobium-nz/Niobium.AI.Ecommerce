@@ -485,6 +485,13 @@ class SourceReadTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 select_source(self.folder, matches, complete, self.folder['id'], JOB)
 
+    def test_unreported_completeness_requires_one_observed_source(self):
+        with self.assertWarnsRegex(RuntimeWarning, 'drive_lookup_completeness_unavailable'):
+            self.assertEqual(select_source(self.folder, [self.meta], None, self.folder['id'], JOB), 'file-1')
+        for matches in ([], [self.meta, self.meta]):
+            with self.assertWarns(RuntimeWarning), self.assertRaises(ValueError):
+                select_source(self.folder, matches, None, self.folder['id'], JOB)
+
     def test_wrong_folder_name_type_trashed_rejected(self):
         for field, value in (('name', 'signal'), ('mimeType', 'application/json'), ('trashed', True)):
             with self.subTest(field=field), self.assertRaises(ValueError):

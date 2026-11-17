@@ -1,6 +1,6 @@
 # Descriptive portable metadata, not a native vendor import manifest.
 name: ecommerce-discovery-looper
-version: 1.1.0
+version: 1.1.1
 entrypoint: AGENT.md
 description: Dispatch each product in one discovery file to competitive research.
 input_schema: schemas/contracts.schema.json#/$defs/input

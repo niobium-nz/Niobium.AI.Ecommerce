@@ -10,6 +10,7 @@ import ipaddress
 import json
 import math
 import re
+import warnings
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit, unquote
@@ -17,7 +18,7 @@ from urllib.parse import urlsplit, unquote
 import pycountry
 from jsonschema import Draft202012Validator, FormatChecker
 from resource_bindings import SchemaBindings
-from metadata_policy import optional_metadata
+from metadata_policy import optional_metadata, lookup_completeness
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / 'schemas/contracts.schema.json'
@@ -199,13 +200,18 @@ def verified_receipt(receipt: dict, path: str, raw: bytes) -> str:
     # The host is responsible for resolving/creating and verifying the real folder.
     if not isinstance(receipt, dict) or not all((receipt.get('id'), receipt.get('parent_verified') is True,
         receipt.get('name') == path.rsplit('/', 1)[1], receipt.get('mime_type') == 'application/json',
-        receipt.get('unique_name_count') == 1,
+        type(receipt.get('unique_name_count')) is int, receipt.get('unique_name_count') in (0, 1),
+        receipt.get('exact_match_ids') in ([], [receipt.get('id')]),
+        receipt.get('unique_name_count') == len(receipt.get('exact_match_ids', [])),
         receipt.get('raw_bytes') == raw)):
         raise GateError('verification_failed', 'Full publication verification failed')
     try:
         optional_metadata(receipt)
+        lookup_completeness(receipt.get('lookup_complete'))
     except ValueError as exc:
         raise GateError('verification_failed', str(exc)) from exc
+    if receipt['unique_name_count'] == 0:
+        warnings.warn('drive_created_file_not_listed: returned file ID and full bytes verified', RuntimeWarning)
     return receipt['id']
 
 

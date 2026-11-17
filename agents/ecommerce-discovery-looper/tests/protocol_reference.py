@@ -14,7 +14,7 @@ from typing import Any
 
 from jsonschema import Draft202012Validator, FormatChecker
 from resource_bindings import SchemaBindings
-from metadata_policy import optional_metadata
+from metadata_policy import optional_metadata, lookup_completeness
 
 ROOT = Path(__file__).resolve().parents[1]
 BINDINGS = SchemaBindings(ROOT)
@@ -70,14 +70,13 @@ def validate_request(request: Any, config: Any) -> None:
         raise ValueError('Invalid folder ID')
 
 
-def select_source(folder: dict, children: list, complete: bool, folder_id: str, job_id: str) -> str:
+def select_source(folder: dict, children: list, complete: bool | None, folder_id: str, job_id: str) -> str:
     if (folder.get('id') != folder_id or folder.get('name') != 'discovery'
             or folder.get('mimeType') != 'application/vnd.google-apps.folder'
             or folder_id == 'root'):
         raise ValueError('Invalid discovery folder')
     optional_metadata(folder)
-    if complete is not True:
-        raise ValueError('Incomplete lookup')
+    lookup_completeness(complete)
     matches = [r for r in children if r.get('name') == job_id + '.json'
                and folder_id in r.get('parents', [])]
     if len(matches) != 1:

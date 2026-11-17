@@ -66,8 +66,10 @@ Installation alone does not authorize paid searches, browser jobs or probe write
 
 Missing/null optional trash/add-permission metadata is unknown and recorded in host
 run notes. Explicit denial or trash state fails. Required identity, parent/type,
-complete unique-name lookup, full byte verification and stable-version reads remain
-mandatory. Do not infer add permission from sharing/edit flags, or weaken locks,
+correctly scoped exact-name lookup, full byte verification and stable-version reads
+remain mandatory. Unreported search completeness warns; known truncation fails.
+See [lookup evidence](drive-lookup-policy.md) for the explicit best-effort policy.
+Do not infer add permission from sharing/edit flags, or weaken locks,
 registry preservation and recovery because a connector omits optional fields.
 Keep each existing result format; do not turn warnings into fabricated research
 failures or add unrequested business fields.

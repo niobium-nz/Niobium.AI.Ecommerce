@@ -28,7 +28,7 @@ cannot verify approval routing, visible browsers, pixel fidelity or real storage
 | Empty still plan | Valid ok plus [] remains successful after a usable board inspection; never confuse it with clarification. |
 | Candidate ID | Allocate exactly one trusted UUIDv4 only after both strategies pass. Do not substitute upstream IDs or regenerate on collision. |
 | Root folder | Configured ID must identify existing candidates folder. No root fallback, name lookup replacement, sharing changes or implicit root creation. |
-| Child folder | Reuse exactly one folder named signal_id/unlinked, create only when absent. All types/pages checked; duplicate/nonfolder/shortcut/incomplete lookup stops. |
+| Child folder | Reuse exactly one folder named signal_id/unlinked, create only when absent. All types/exposed pages checked; duplicate/nonfolder/shortcut/known incomplete lookup stops. |
 | Concurrent creation | Host serializes folder resolution/create by parent and name or serializes runs. A prompt/config flag does not constitute a lock. |
 | Collision | Existing candidate filename of any MIME stops without overwrite, new UUID or extra upload. |
 | Raw JSON | Upload complete UTF-8 application/json once with explicit verified parent, never a Doc/Sheet or Markdown string. |
@@ -47,4 +47,10 @@ inventing a pass or blocking resource installation solely for that reason.
 Actual required operational guarantees remain mandatory before live execution.
 Run only a separately authorized live job/test; preserve existing host approvals.
 Unknown optional Drive trash/add flags warn in the host's run notes; explicit
-denial, wrong identity, incomplete lookup or content verification still fails.
+denial, wrong identity, known incomplete lookup or content verification still fails.
+
+Lookup evidence cases: a successful exact-scope response with no completeness
+fields warns and uses observed matches; an actual error, known truncation or an
+unhandled token fails. Existing-source/folder reuse requires one observed match.
+A verified newly created file absent from search must not be uploaded again.
+Record the host trace separately from reference tests.

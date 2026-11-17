@@ -27,7 +27,7 @@ Example bindings exposed during authoring; verify their full semantics per host:
 | Capability | Example action | Requirements |
 | --- | --- | --- |
 | Metadata | get_file_metadata | ID-based name, MIME, parent; request trash/add permission/checksum when exposed |
-| Exact child lookup | search | Exact parent/name, all MIME types, no viewed-only restriction, complete pagination |
+| Exact child lookup | search | Exact parent/name, all MIME types, no viewed-only restriction; follow exposed pagination |
 | Raw upload | upload_file | File bytes, explicit parent, exact filename, application/json |
 | Complete readback | fetch raw-file mode | Full bytes, not a bounded text excerpt |
 
@@ -45,22 +45,48 @@ actions are available. Explicit trash or add-permission denial still stops the
 run. Do not equate `canShare`, `canEdit` or account ownership with add permission.
 Apply this policy both at preflight and immediately before upload. A missing
 file trash flag after upload also warns; exact ID/name/MIME/parent, complete bytes
-and unique exact-name lookup remain mandatory for a verified save. Permission can
+and no observed competing exact-name match remain mandatory for a verified save. Permission can
 change after preflight, so even a positive flag is not a guarantee of a write.
 An actual write denial fails the job, with no retry or success artifact.
 
 Keep the server-side non-trashed search filter when supported. A broader complete
 lookup that includes trashed children is safe but conservative: any exact-name
 match still blocks a new write. Never drop a match because its trash flag is absent.
-The exception for optional metadata does not permit incomplete collision searches,
+The exception for optional metadata does not permit known incomplete collision searches,
 missing parent/identity, unreadable content or unverified uploads.
 
 Escape query literals using connector rules; do not interpolate ad-controlled
 values. The inspected search wrapper exposes special_filter_query_str. Use an
 empty keyword query, best_effort_fetch false and require_viewed_by_user false.
 Do not impose a document/image/folder type filter; any same-named child blocks a
-write. Follow actual opaque page tokens. If the wrapper cannot establish complete
-all-types lookup, require a suitable authorized binding or fail preflight.
+write. Follow actual opaque page tokens. Missing completeness information is
+different from a known incomplete result; use the policy below.
+
+### Exact-name search evidence
+
+The connected all-type search was observed returning `{"results": []}` with no
+pagination/completeness fields. Its typed image/document/folder mode exposes
+pagination but does not cover all possible colliding file types. Do not switch to
+a typed mode, fabricate item_type="all", invent a cursor or demand a complete=true
+field. Use the real all-type search with the exact parent/name filter.
+
+- Successful, well-formed results, no matches, completeness unreported: record
+  `drive_lookup_completeness_unavailable` with the check stage and continue.
+- An observed pre-upload match: stop without writing, regardless of completeness.
+- Follow every actual continuation token, even on an empty page. A repeated,
+  rejected or unusable token, an explicit incomplete/truncated result, a transport
+  or authorization error, or malformed/missing results is a real failure.
+- A documented provider terminal page establishes completion without an invented
+  boolean flag. A wrapper omitting that evidence remains unreported, not true or false.
+
+This is a deliberate best-effort lookup policy, not a claim of exhaustive absence
+or global uniqueness. It is paired with a fresh UUID filename, create-only upload,
+no overwrites or blind retries, and direct verification of the returned file ID
+and complete bytes. Apply it at initial lookup, immediately before creation, after
+creation and during read-only reconciliation. If a verified newly created file is
+not yet returned by search, warn `drive_created_file_not_listed`; an observed other
+ID is still a conflict. When an uncertain upload returned no ID, require one observed
+matching file and verify it fully; an empty search never permits a second upload.
 
 The inspected upload_file accepts file_uri, parent_folder_id, file_name and
 mime_type. Create real local UTF-8 bytes and pass the actual file reference the

@@ -82,4 +82,5 @@ Open the kit's START-HERE.md. The default kit and instructions are platform-neut
 use the relevant host adapter only for that deployment. The optional Python checker
 has documented runtime targets, and equivalent validators are supported elsewhere.
 For another build use a fresh --output directory so edited settings are preserved.
-Package version 1.1.0 changes installation/resource binding, not saved wire formats.
+Package version 1.1.1 distinguishes unreported lookup completeness from known
+truncation. Existing wire formats and required identity/content checks are unchanged.

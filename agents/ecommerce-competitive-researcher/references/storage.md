@@ -58,21 +58,21 @@ Release an acquired guard on every exit; a durable recovery hold survives releas
 
 After a valid score, generate one UUIDv4 signal_id with a trusted host facility.
 Use the validated upstream UUID as the exact job folder name. Look up direct
-children of discovery by exact name across all types and all pages. Reuse exactly
+children of discovery by exact name across all types and every exposed page. Reuse exactly
 one folder named job_id with no explicit trash indication. Zero matches permits creation of that exact
-folder; a nonfolder match, multiple matches or incomplete lookup is an error.
+folder; a nonfolder match, multiple matches or known incomplete lookup is an error.
 Do not overwrite discovery/{job_id}.json: it is the upstream ARRAY file, while
 this agent writes inside a job_id FOLDER.
 
 Create a missing job folder only when ready to publish. Verify its metadata and
-unique exact-name match. Reconcile an uncertain create by listing; never blindly
+one observed exact-name match. Reconcile an uncertain create by listing; never blindly
 retry or create job_id (1). Never change an existing folder's sharing.
 
 Check exact {signal_id}.json absence, all MIME types, before writing. Any collision
 stops; do not regenerate IDs or overwrite. Serialize the validated artifact as raw
 UTF-8 application/json. Upload once to the verified folder. Verify returned ID,
-name, parent, MIME, trash state when exposed, full content/checksum and unique exact-name
-match. A snippet or success response alone is insufficient. On ambiguous upload,
+name, parent, MIME, trash state when exposed, full content/checksum and no observed
+competing exact-name match. A snippet or success response alone is insufficient. On ambiguous upload,
 reconcile read-only using the same ID/name/bytes; never retry the write. If still
 uncertain, return failed with publication_outcome_unknown, do not append registry
 IDs, and require recovery before retry. Do not automatically delete files/folders.
@@ -127,9 +127,25 @@ infer add permission from sharing/edit flags, repeat unsupported requests or wri
 a probe file during setup. Unknown permission can still cause a real write denial.
 
 Reapply the policy before a write and when verifying returned resources. Exact
-ID/name/type/parent, complete all-type collision lookup, unique results and full
+ID/name/type/parent, all-type collision lookup with no observed competing match and full
 content verification remain mandatory. A real denial or unverified save is a
 failure; never retry an ambiguous write. Missing optional flags do not authorize
 skipping stable-version reads, serialization, child settlement or recovery holds.
 Keep warnings in the host run notes when the unchanged result contract has no
 warning field; do not disguise them as research errors or alter business payloads.
+
+## Search completeness
+
+Use successful, well-formed exact parent/name searches across all file types and
+follow every exposed continuation token. An explicit incomplete/truncated result,
+unhandled/repeated token, wrong scope or actual error fails; missing completeness
+metadata alone does not. Record `drive_lookup_completeness_unavailable` in host
+notes and use observed matches without claiming global uniqueness. A wrapper
+response containing only results is not required to provide a complete=true flag.
+Zero matches permit normal create-only behavior; a reused job folder needs exactly
+one observed valid match. Reject observed competing matches and fully verify IDs,
+parents and bytes. For a new artifact whose returned ID and full bytes verify,
+an empty post-upload search warns `drive_created_file_not_listed`; never re-upload.
+An uncertain create/upload without an ID requires one observed verified match.
+This exception concerns search enumeration only, never registry completeness,
+serialization, recovery holds, folder identity or complete file contents.

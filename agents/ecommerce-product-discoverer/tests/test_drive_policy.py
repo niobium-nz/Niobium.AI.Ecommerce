@@ -1,7 +1,7 @@
 """Unknown provider metadata must not hide real denials or failed persistence."""
 import copy
 import unittest
-from drive_checks import check_folder, check_saved_file
+from drive_checks import check_collision, check_folder, check_saved_file
 from contract_checks import ROOT, load, validate_result
 
 
@@ -36,6 +36,21 @@ class DrivePolicyTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             check_folder({}, "fixture_folder")
 
+    def test_observed_empty_connector_response_does_not_need_completion_flag(self):
+        # Actual all-type connector response shape, without private folder/job IDs.
+        reply = {"results": []}
+        with self.assertWarnsRegex(RuntimeWarning, 'drive_lookup_completeness_unavailable'):
+            action, warnings = check_collision(reply['results'], reply.get('complete'))
+        self.assertEqual(action, 'continue')
+        self.assertEqual(warnings, ['drive_lookup_completeness_unavailable'])
+        self.assertEqual(check_collision([], True), ('continue', []))
+
+    def test_observed_collisions_and_known_incomplete_lookups_still_stop(self):
+        for state in (True, None, False):
+            self.assertEqual(check_collision(['existing-file'], state), ('stopped', []))
+        for matches, state in (([], False), (None, None), ([None], None), ([], 'true')):
+            with self.assertRaises(ValueError): check_collision(matches, state)
+
     def verify(self, metadata=None, raw=b"[]", matches=None, complete=True):
         return check_saved_file(self.file if metadata is None else metadata,
                                 "fixture_file", "fixture_folder", "job.json", b"[]", raw,
@@ -47,12 +62,21 @@ class DrivePolicyTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.verify(metadata=dict(self.file, trashed=True))
 
-    def test_bytes_parent_and_unique_complete_lookup_remain_mandatory(self):
+    def test_bytes_parent_and_known_lookup_failures_remain_mandatory(self):
         for change in ({"raw": None}, {"raw": b"["}, {"raw": "[]"},
-                       {"matches": []}, {"matches": ["fixture_file", "other"]},
+                       {"matches": ["other"]}, {"matches": ["fixture_file", "other"]},
                        {"complete": False}, {"metadata": dict(self.file, parents=["other"])}):
             with self.subTest(change=change), self.assertRaises(ValueError):
                 self.verify(**change)
+
+    def test_verified_new_file_uses_id_and_bytes_when_search_evidence_is_limited(self):
+        with self.assertWarnsRegex(RuntimeWarning, 'drive_lookup_completeness_unavailable'):
+            self.assertEqual(self.verify(complete=None),
+                             ['trashed', 'drive_lookup_completeness_unavailable'])
+        with self.assertWarnsRegex(RuntimeWarning, 'drive_lookup_completeness_unavailable'):
+            self.assertEqual(self.verify(matches=[], complete=None),
+                             ['trashed', 'drive_lookup_completeness_unavailable', 'drive_created_file_not_listed'])
+        with self.assertRaises(ValueError): self.verify(matches=[], complete=None, raw=b'wrong')
 
     def test_denied_upload_cannot_report_artifact(self):
         result = load(ROOT / "examples/result.json")

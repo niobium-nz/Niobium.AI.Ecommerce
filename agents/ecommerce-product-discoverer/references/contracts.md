@@ -89,13 +89,15 @@ clusters fail without a file. Partial status may have no errors when integrity
 warnings alone caused it; later search failure must retain its error. A late
 collision preserves preceding errors/warnings. A failed write overrides earlier
 success/partial plans. Filename must equal job_id + .json; verified artifact
-requires exact MIME, parent, complete bytes and a unique exact-name match.
+requires exact MIME, parent, complete bytes and no observed competing exact-name
+match. It verifies that file by ID, not global filename uniqueness.
 
 ## Diagnostic vocabulary
 
 Preflight: uuid_unavailable, configuration_invalid, folder_invalid,
 job_file_exists, collision_check_failed, input_invalid, same_source_and_target,
-clock_unavailable, capability_unavailable, drive_metadata_unavailable.
+clock_unavailable, capability_unavailable, drive_metadata_unavailable,
+drive_lookup_completeness_unavailable, drive_created_file_not_listed.
 Retrieval: search_failed, search_response_invalid, search_sample_bounded,
 conflicting_ad_records, ad_not_active, ad_status_unverified, ad_too_recent,
 ad_date_unverified.
@@ -123,3 +125,13 @@ Reserve folder errors for wrong/unreadable identity, explicit trash state or
 explicit permission denial. Actual persistence failures still produce a failed result with
 artifact null. Exact destination, collision checks and complete content verification
 are mandatory even when optional trash/add-permission fields are unavailable.
+
+`drive_lookup_completeness_unavailable` is a warning when a successful exact-name
+search omits completeness evidence; it is not a failed search and does not alone
+make the handoff partial. Follow all returned tokens and reject known truncation,
+errors and malformed responses. Stop for any observed pre-upload match.
+`drive_created_file_not_listed` warns that a newly created file was verified directly
+by its returned ID and complete bytes but is absent from search. Neither warning
+claims exhaustive absence, global uniqueness or atomic creation. Unknown upload
+outcomes with no returned ID still require one observed fully verified match;
+otherwise fail without retrying. See tool-bindings.md for the scoped policy.

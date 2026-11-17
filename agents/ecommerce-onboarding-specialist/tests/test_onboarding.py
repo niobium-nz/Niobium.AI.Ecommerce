@@ -114,7 +114,8 @@ class Host:
     def publish(self, path, raw):
         self.record('publish'); self.saved = (path, raw)
         result = {'id': 'synthetic-file', 'name': path.rsplit('/', 1)[1], 'mime_type': 'application/json',
-                  'trashed': False, 'parent_verified': True, 'unique_name_count': 1, 'raw_bytes': raw}
+                  'trashed': False, 'parent_verified': True, 'unique_name_count': 1,
+                  'exact_match_ids': ['synthetic-file'], 'lookup_complete': True, 'raw_bytes': raw}
         result.update(self.receipt_patch)
         return result
 
@@ -438,6 +439,19 @@ class OnboardingTests(unittest.TestCase):
     def test_terminal_result_cannot_claim_success_without_publication(self):
         result = self.invoke(); result['published'] = False
         with self.assertRaises(ValidationError): validate(result, 'result')
+
+    def test_unreported_lookup_does_not_replace_file_verification(self):
+        for count in (0, 1):
+            host = Host(); host.receipt_patch = {'lookup_complete': None, 'unique_name_count': count,
+                                                'exact_match_ids': ['synthetic-file'] if count else []}
+            with self.assertWarnsRegex(RuntimeWarning, 'drive_lookup_completeness_unavailable'):
+                result = run(self.value, self.config, host)
+            self.assertTrue(result['published'])
+        for patch in ({'lookup_complete': False}, {'unique_name_count': None},
+                      {'exact_match_ids': ['other-file']},
+                      {'lookup_complete': None, 'raw_bytes': b'wrong'}):
+            host = Host(); host.receipt_patch = patch
+            self.assertFalse(run(self.value, self.config, host)['published'])
 
     def test_artifact_rejects_incomplete_strategy_and_extra_profile(self):
         self.invoke(); saved = json.loads(self.host.saved[1])

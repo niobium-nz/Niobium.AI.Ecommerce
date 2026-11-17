@@ -1,9 +1,20 @@
 """Pure Drive policy examples for offline tests; no connector or production runner.
 
 Adapters map their actual response fields to these Drive-v3 names. Missing optional
-flags remain unknown; mandatory identity, complete listings and bytes do not.
+flags remain unknown. Unreported lookup completeness differs from a known partial
+listing. Identity, correctly scoped searches and complete bytes remain mandatory.
 """
 from __future__ import annotations
+from metadata_policy import lookup_completeness
+
+
+def check_collision(exact_matches, listing_complete):
+    """An observed collision stops even when enumeration is incomplete."""
+    if not isinstance(exact_matches, list) or any(not isinstance(x, str) or not x for x in exact_matches):
+        raise ValueError('Malformed exact-name results')
+    if exact_matches:
+        return 'stopped', []
+    return 'continue', lookup_completeness(listing_complete)
 
 
 def trash_unknown(metadata):
@@ -38,6 +49,9 @@ def check_saved_file(metadata, file_id, folder_id, filename, expected_bytes,
     if (not isinstance(expected_bytes, bytes) or not isinstance(actual_bytes, bytes)
             or actual_bytes != expected_bytes):
         raise ValueError("Unverified complete bytes")
-    if listing_complete is not True or exact_matches != [file_id]:
-        raise ValueError("Unverified unique name")
+    if not isinstance(exact_matches, list) or exact_matches not in ([], [file_id]):
+        raise ValueError("Conflicting or malformed exact-name results")
+    unknown += lookup_completeness(listing_complete)
+    if not exact_matches:
+        unknown.append('drive_created_file_not_listed')
     return unknown

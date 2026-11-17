@@ -90,7 +90,7 @@ exporter includes `UPDATE-EXISTING.txt` for this flow. Do not append a conflicti
 override or hand-edit hashed source files while leaving their old manifest.
 Start a fresh conversation after saving. Missing fields should yield
 `drive_metadata_unavailable` and continue to the normal job; explicit denial,
-wrong destination, incomplete collision lookup or unverified persistence still fail.
+wrong destination, known incomplete collision lookup or unverified persistence still fail.
 Do not spend on repeated live runs merely to diagnose a stale instruction copy.
 
 ## When setup cannot be completed automatically
@@ -105,3 +105,10 @@ or capability, not repeated approvals for steps already authorized.
 Official [workspace agent guidance](https://help.openai.com/en/articles/20001143-chatgpt-workspace-agents-for-enterprise-and-business)
 describes the builder, Preview, files, skills and app connections. Product behavior
 and the availability of management APIs must be checked in the target workspace.
+
+A successful all-type exact-name search may omit completeness metadata. Record
+`drive_lookup_completeness_unavailable` and continue under the core storage policy;
+do not require a fabricated completion flag. Follow exposed tokens and fail on
+actual errors, known truncation or observed conflicts. This applies to live jobs,
+not only setup. Updating only the Instructions while keeping old agent resources
+can restore the old blocker; replace a coherent kit.

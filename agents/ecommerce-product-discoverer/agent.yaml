@@ -1,6 +1,6 @@
 # Descriptive platform-neutral manifest; not a native vendor import format.
 name: ecommerce-product-discoverer
-version: 2.1.1
+version: 2.1.2
 handoff_contract_version: 2.0.0
 entrypoint: AGENT.md
 description: Discover traceable product discoveries for downstream competitive research.

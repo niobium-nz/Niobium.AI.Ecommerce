@@ -45,4 +45,10 @@ inventing a pass or blocking resource installation solely for that reason.
 Actual required operational guarantees remain mandatory before live execution.
 Run only a separately authorized live job/test; preserve existing host approvals.
 Unknown optional Drive trash/add flags warn in the host's run notes; explicit
-denial, wrong identity, incomplete lookup or content verification still fails.
+denial, wrong identity, known incomplete lookup or content verification still fails.
+
+Lookup evidence cases: a successful exact-scope response with no completeness
+fields warns and uses observed matches; an actual error, known truncation or an
+unhandled token fails. Existing-source/folder reuse requires one observed match.
+A verified newly created file absent from search must not be uploaded again.
+Record the host trace separately from reference tests.

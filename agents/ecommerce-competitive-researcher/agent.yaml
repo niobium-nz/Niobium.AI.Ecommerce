@@ -1,6 +1,6 @@
 # Descriptive platform-neutral manifest, not a native vendor import format.
 name: ecommerce-competitive-researcher
-version: 1.1.0
+version: 1.1.1
 entrypoint: AGENT.md
 description: Research one discovery into a scored target-market candidate.
 input_schema: schemas/contracts.schema.json#/$defs/input

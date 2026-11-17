@@ -58,7 +58,8 @@ repeated. See [tool bindings](references/tool-bindings.md) for required actions.
 
 Drive connectors sometimes omit trash/add-permission metadata. Unknown fields
 produce a warning; explicit denial still stops the run. Destination identity,
-complete collision lookup and full upload verification remain required. A real
+correctly scoped collision lookup and full upload verification remain required.
+Unreported search completeness warns; it does not certify global filename uniqueness. A real
 write can still fail after paid retrieval when advance permission is unknown;
 that failure must be visible and must never be reported as a saved artifact.
 
@@ -79,9 +80,10 @@ See the host adapter for migration from the earlier numbered ZIP bundle.
 
 ## Versions and boundaries
 
-Package version is **2.1.1**; the saved handoff remains **2.0.0**. This patch makes
-the optional-metadata rule explicit for live jobs and documents updates from older
-installed instructions that still rejected missing fields. Input/configuration,
+Package version is **2.1.2**; the saved handoff remains **2.0.0**. Missing search
+completeness information now warns instead of blocking a successful exact-name
+lookup. Known truncation, actual collisions and unverified bytes still fail.
+Input/configuration,
 search policy, original evidence, cluster shape and lifecycle values are unchanged:
 
 `discovery -> competitive research -> candidate -> product council approval -> listing -> product onboarding`

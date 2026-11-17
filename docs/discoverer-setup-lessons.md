@@ -105,3 +105,15 @@ were updated. Do not describe a repository commit as a hosted-agent update.
 Provide a coherent replacement kit and a short existing-installation guide that
 preserves configuration and the selected skill. Distinguish a stale instruction
 copy from an actual provider failure before spending on more test searches.
+
+## Test actual lookup responses before requiring completeness proof
+
+The next live failure was collision_check_failed after an exact-name search
+returned no matches without a completeness flag. A read-only connector check
+reproduced results:[] with no pagination fields. The earlier tests supplied a
+synthetic complete=True and therefore did not prove the real binding could satisfy
+that requirement. [The lookup policy](drive-lookup-policy.md) now distinguishes
+unreported completeness from a known incomplete/failed lookup and documents the
+best-effort tradeoff. File-ID/content verification and observed collision handling
+remain required. The same distinction applies across all agents, while source
+stability, registry completeness and serialization keep their stronger guarantees.

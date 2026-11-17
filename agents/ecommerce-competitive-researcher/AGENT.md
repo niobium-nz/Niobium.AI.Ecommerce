@@ -19,6 +19,8 @@ Bind each skill independently using `skill-bindings.json` and
 [deployment](references/deployment.md). Resolve the selected skill's resources
 through current host bindings; register its logical schemas locally. No fixed
 host path, nested skill copy, combined skill ZIP or extra version pin is required.
+Unreported Drive search completeness warns under storage.md; actual lookup errors,
+known truncation and observed collisions still stop the corresponding operation.
 
 ## 1. Validate and check duplicates before research
 
