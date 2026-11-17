@@ -31,6 +31,15 @@ workspace agent through Add skill. It is separate from Agent Files and from any
 global Plugins/Skills installation. Resolve its resources through the current
 attachment context each run; never store a temporary host path or add a version pin.
 
+Before retrieving ads, read the complete-response capture section in
+adapters/chatgpt-workspace-agent.md. When nested tool orchestration and local file
+editing are available, capture the complete unparsed search-response text inside
+that execution, keep a session copy, and save it locally before emitting a bounded
+summary. Do not print the full connector result into the model's output window.
+Use lossless local JSON parsing for the saved response; never parse and stringify
+provider payloads through JavaScript numbers. A truncated display is not a usable
+page. Recover an already captured response instead of repeating a paid request.
+
 Use the one active deployment configuration uploaded with this agent. Its normal
 name is deployment-config.json; an existing 04-deployment-config.json may be kept
 instead. If both exist, ask which is active and remove the ambiguity before a job.
@@ -80,6 +89,14 @@ A successful results:[] response with no completeness fields is a warning and
 permits continuation under AGENT.md; it must not produce collision_check_failed.
 Actual errors, malformed results, known truncation or unusable tokens still fail.
 This is a read-only connector check, not a discovery job or an upload test.
+
+Check the response-capture capabilities described in the ChatGPT adapter. When
+available, run a local-only synthetic capture larger than 500 KB through session
+storage and the actual nested file-editing tool, emitting only a bounded summary.
+Use lossless local parsing to verify the whole file, a large integer token,
+Unicode, escaped strings, and a final record marker. Report size, checksum, exit
+code and exact coverage. Do not call the paid search to test capture, and do not
+equate a synthetic local transport pass with a live connector or clustering pass.
 '''
 
 START_HERE = '''# Install ecommerce-product-discoverer
@@ -124,6 +141,11 @@ completeness during real discovery jobs. A successful exact-name search without
 completion fields warns drive_lookup_completeness_unavailable and continues.
 Actual search errors, known truncation, observed collisions and access denials
 still stop the job; saved-file identity and complete bytes remain verified.
+
+It also adds the ChatGPT adapter's complete-response capture path. Read that
+adapter before a search: retain the nested raw result and save its unparsed text
+locally before emitting a bounded summary. Never repeat a paid request merely
+because its display was truncated or turn incomplete records into an empty result.
 
 1. Extract this kit and edit the existing workspace agent.
 2. Replace its Instructions completely with instructions.chatgpt.md.

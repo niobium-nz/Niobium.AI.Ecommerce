@@ -114,7 +114,7 @@ class DiscoveryLifecycleTests(unittest.TestCase):
     def test_manifest_matches_handoff_contract(self):
         # These are deliberately simple top-level manifest scalars, not a YAML parser.
         manifest = (ROOT / "agent.yaml").read_text(encoding="utf-8")
-        for key, value in (("version", "2.1.2"), ("handoff_contract_version", "2.0.0"), ("output_stage", "discovery"),
+        for key, value in (("version", "2.1.3"), ("handoff_contract_version", "2.0.0"), ("output_stage", "discovery"),
                            ("handoff_target", "competitive_research")):
             with self.subTest(key=key):
                 self.assertRegex(manifest, re.compile(rf"^{key}: {re.escape(value)}$", re.MULTILINE))
