@@ -76,6 +76,8 @@ If no host mock harness exists, mark that section not executed and continue setu
 START_HERE = '''# Install ecommerce-product-discoverer
 
 This kit is generated from one source revision. Extract it on your computer.
+For an already installed agent, use UPDATE-EXISTING.txt instead of the new-install
+steps below. Keep its existing configuration and skill attachment.
 For ChatGPT, follow these steps in order:
 
 1. Open Agents, then Create on the Agents page, then Start blank.
@@ -104,6 +106,34 @@ kit-manifest.json records what was built, including skill ZIP integrity for down
 checking. It is not a runtime skill-version pin. Agent hashes protect against stale
 or mixed agent files. No account ID, credentials or configured Drive destination is
 included in the default kit. Hosted agents do not update automatically from GitHub.
+'''
+
+UPDATE_EXISTING = '''UPDATE AN EXISTING ECOMMERCE-PRODUCT-DISCOVERER
+
+This update allows missing optional Drive metadata during real discovery jobs.
+It records drive_metadata_unavailable and continues when trashed and/or
+capabilities.canAddChildren are omitted or null. An actual denial or deleted
+folder still stops the job; saved-file identity and complete bytes are verified.
+
+1. Extract this kit and edit the existing workspace agent.
+2. Replace its Instructions completely with instructions.chatgpt.md.
+3. In Files, replace these two complete folders using Upload folder:
+   - agent-files/ecommerce-product-discoverer
+   - agent-files/offline-validation-support
+   Select each outer folder itself. Do not merge old files or retain duplicates.
+4. KEEP the existing active 04-deployment-config.json (or deployment-config.json)
+   and the existing ecommerce-cluster-ads skill attachment. Do not upload this
+   kit's unconfigured deployment-config.json or attach its skill ZIP a second time.
+5. Save the agent. Start a fresh Preview conversation and use SETUP-CHECK.txt.
+   Setup performs no paid searches or Drive writes. Then run the intended real
+   discovery input in a fresh conversation; it receives a new job ID.
+
+Missing optional fields must produce a warning, not folder_invalid or a request
+to prove those unavailable fields. Real access errors, wrong folder identity,
+incomplete filename checks and unverified file contents remain failures.
+The Instructions and uploaded AGENT.md must agree; updating GitHub alone does
+not update this installed workspace agent. Keep untested live behavior separate
+from offline setup results.
 '''
 
 
@@ -150,6 +180,7 @@ def build(output, cache, offline=False):
         (stage / "instructions.chatgpt.md").write_text(BINDING_INSTRUCTIONS + (AGENT / "AGENT.md").read_text(), encoding="utf-8")
         (stage / "SETUP-CHECK.txt").write_text(SETUP_CHECK, encoding="utf-8")
         (stage / "START-HERE.md").write_text(START_HERE, encoding="utf-8")
+        (stage / "UPDATE-EXISTING.txt").write_text(UPDATE_EXISTING, encoding="utf-8")
         inventory = [{"path": path.relative_to(stage).as_posix(), "sha256": digest(path.read_bytes())} for path in files(stage)]
         write_json(stage / "kit-manifest.json", {"package_version": version, "agent_source_digest": source_digest,
                    "files": inventory, "note": "Distribution integrity only; selected runtime skill is not version-pinned."})

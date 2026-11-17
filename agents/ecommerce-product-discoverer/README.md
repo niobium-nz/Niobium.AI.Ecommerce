@@ -79,7 +79,9 @@ See the host adapter for migration from the earlier numbered ZIP bundle.
 
 ## Versions and boundaries
 
-Package version is **2.1.0**; the saved handoff remains **2.0.0**. Input/configuration,
+Package version is **2.1.1**; the saved handoff remains **2.0.0**. This patch makes
+the optional-metadata rule explicit for live jobs and documents updates from older
+installed instructions that still rejected missing fields. Input/configuration,
 search policy, original evidence, cluster shape and lifecycle values are unchanged:
 
 `discovery -> competitive research -> candidate -> product council approval -> listing -> product onboarding`

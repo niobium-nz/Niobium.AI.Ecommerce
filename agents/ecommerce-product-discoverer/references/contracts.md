@@ -117,6 +117,9 @@ See `skill-binding.md` for the adapter contract.
 
 `drive_metadata_unavailable` records unknown optional folder/file fields; it does
 not mean those facts were verified. It does not by itself make the discovery
-handoff partial. Actual persistence failures still produce a failed result with
+handoff partial or failed. Missing `trashed` and `capabilities.canAddChildren`
+alone are not `folder_invalid` or `capability_unavailable`, in setup or a live job.
+Reserve folder errors for wrong/unreadable identity, explicit trash state or
+explicit permission denial. Actual persistence failures still produce a failed result with
 artifact null. Exact destination, collision checks and complete content verification
 are mandatory even when optional trash/add-permission fields are unavailable.

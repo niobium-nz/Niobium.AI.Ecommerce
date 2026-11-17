@@ -16,6 +16,7 @@ an authorized run. See `../references/validation.md` for the separate stages.
 | Missing configuration | Folder ID absent/null | Failed with job ID; zero searches/uploads; no name lookup |
 | Invalid folder | Wrong name/type, trashed, shortcut or no add permission | Fail before paid retrieval; no fallback or creation |
 | Omitted metadata | Correct ID/name/MIME; trash/add flags missing or null | Warn with unknown fields and stage; continue; do not infer permission from canShare |
+| Older installed folder rule | Live run returns folder_invalid solely for unverified trashed/canAddChildren | Fail acceptance of that deployment; compare saved Instructions and AGENT.md with the current kit, update coherently, then verify warning-and-continue without paid probes |
 | Explicit denial | Correct identity but trashed:true or canAddChildren:false | Fail before paid retrieval even when other fields are unknown |
 | Later write denial | Metadata flags unknown; upload returns permission denied | One upload attempt; failed with artifact null; preserve warning; no retry |
 | Initial collision | Exact child filename of any MIME; input also invalid | Stop at step 0; no validation, content read, search, write or regenerated UUID |

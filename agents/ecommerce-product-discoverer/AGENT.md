@@ -51,7 +51,10 @@ exact name `discovery` and folder MIME type. Request `trashed` and
 `canAddChildren: false`, access denial or unreadable identity stops the run.
 If these two optional fields are omitted, null or not booleans, record
 `drive_metadata_unavailable` with the unknown fields and check stage, then
-continue. Unknown is not proof of permission or non-trashed state. Do not infer
+continue with collision lookup and the business workflow. Missing optional fields
+alone must never produce `folder_invalid` or `capability_unavailable`, trigger a
+permission-confirmation loop, or require a probe write. This rule applies to live
+discovery jobs as well as setup. Unknown is not proof of permission or non-trashed state. Do not infer
 add permission from sharing/edit flags or repeat requests that cannot expose it.
 Do not search for a replacement by name, create folders, use root/My Drive or
 follow shortcuts. Missing/mismatched/inaccessible configuration is an error.

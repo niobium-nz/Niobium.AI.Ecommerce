@@ -91,3 +91,17 @@ the researcher, onboarding specialist and looper. It keeps host-specific control
 in adapters, supplies individual skill ZIPs, and shares offline validation tooling.
 It preserves required browsing/locking/recovery semantics rather than weakening
 them to fit a particular host. Generic kits are now available for the discoverer too.
+
+## Follow-through after source changes
+
+A subsequent live test failed with `folder_invalid` solely because optional
+`trashed` and `capabilities.canAddChildren` fields were absent. The repository
+already allowed this. The earlier installation bundle retained the stricter
+wording, consistent with that result; inspect the saved host instructions before
+concluding whether an old copy or noncompliant execution caused the failure.
+Before guiding a live test after a
+source change, establish whether the saved Instructions and uploaded resources
+were updated. Do not describe a repository commit as a hosted-agent update.
+Provide a coherent replacement kit and a short existing-installation guide that
+preserves configuration and the selected skill. Distinguish a stale instruction
+copy from an actual provider failure before spending on more test searches.
