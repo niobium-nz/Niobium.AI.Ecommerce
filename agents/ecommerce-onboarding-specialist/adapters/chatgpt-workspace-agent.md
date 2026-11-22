@@ -28,11 +28,20 @@ same-name skill. The host selects the attachment; the checker validates compatib
 
 In the private Workspace Agent, use **Browse apps** to attach Firecrawl. If the native app is unavailable, use **Custom MCP** and Firecrawl's [hosted server](https://docs.firecrawl.dev/mcp-server). Verify the localized scrape action in Preview.
 Bind board pixel reading, trusted UUID generation and Google Drive lookup, raw
-upload and verification. The configured Google Drive is shared storage across the
-workflow. An authenticated board read through this connection is sufficient for
-downstream handoff access, including when file metadata lists only the owner.
-Inspect the board pixels and preserve its durable Drive URL. Keep provider
-credentials in the host connection.
+upload and verification. Inspect the board pixels and preserve its durable
+Drive URL. Keep provider credentials in the host connection.
+
+For a workflow that binds all participating agents to the same Google Drive
+connection or shared storage binding, declare that deployment invariant in
+the workspace Instructions. If a downstream agent uses another connection,
+verify its access before saving a handoff with a private Drive board.
+
+Set the model and reasoning effort in the agent settings to support the full
+workflow in one invocation. For this Workspace deployment, use GPT-6.2 Astra
+with Max reasoning and validate the actual runtime in Preview before updating
+the live version. A one-run acceptance check uses one input, allows normal
+host write approvals during the run, and independently reads back the
+complete artifact. Sending a continuation message does not pass that check.
 
 Run the setup checks in references/deployment.md in Preview, which may have a
 different authenticated context from the builder. Use the current package's helper
