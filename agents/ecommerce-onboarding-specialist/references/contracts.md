@@ -48,16 +48,12 @@ not inspected evidence. It must be a clear multi-view reference for one complete
 product/SKU compatible with the profiled item. The board is appearance evidence,
 not proof of composition, performance, certificates or saleable branding.
 
-Resolve the exact Drive board and verify that it is the file inspected. A
-deployment can establish handoff access by configuring the same shared Google
-Drive binding and effective board-read grants for every participating agent.
-Effective grants include Drive permissions and each agent's action constraints.
-For such a shared binding, a successful authenticated read establishes handoff
-access, including for owner-only files. Preserve the durable Drive URL.
-If the effective downstream grant differs or is unknown, use the downstream
-connection or a trusted host check to verify access to the exact file before
-publishing. Current-agent access alone does not prove a downstream grant.
-A failed read, missing file or content mismatch blocks. Do not change sharing.
+The workflow's connected Google Drive is shared storage for its participating
+agents. For a Drive URL, resolve the exact file through that connection and verify
+that it contains the board that will be inspected. Preserve its durable file URL.
+A successful authenticated read establishes handoff access under this workflow
+configuration. Accept owner-only sharing metadata. A failed Drive read, missing
+file or content mismatch still blocks. Do not change sharing permissions.
 
 For other HTTP(S) locators, preserve the caller's durable URL after checking that
 it resolves to the actual board and is usable by the downstream host. Do not
