@@ -31,13 +31,18 @@ Bind board pixel reading, trusted UUID generation and Google Drive lookup, raw
 upload and verification. Inspect the board pixels and preserve its durable
 Drive URL. Keep provider credentials in the host connection.
 
-Select a model and reasoning effort actually available in the workspace's
-agent settings. Use GPT-6.2 Astra with Max reasoning where both are exposed
-and supported. Otherwise select an available model and effort and verify the
-full workflow in Preview before updating the live version. A one-run acceptance
-check uses one input, allows normal host write approvals during the run, and
-independently reads back the complete artifact. Sending a continuation message
-does not pass that check.
+Use the deployment host's strongest currently available model that supports
+the workflow's tools and structured output, and select its highest available
+reasoning effort. Prefer a host-managed model selection when it preserves those
+capabilities and reasoning effort. If the host requires an explicit model,
+choose it in the deployment settings and reassess availability when updating
+the deployment. Model selection belongs to the host and can evolve without a
+repository change.
+
+Verify the full workflow in Preview before updating the live version. A one-run
+acceptance check uses one input, allows normal host write approvals during the
+run, and independently reads back the complete artifact. Sending a continuation
+message does not pass that check.
 
 Run the setup checks in references/deployment.md in Preview, which may have a
 different authenticated context from the builder. Use the current package's helper
