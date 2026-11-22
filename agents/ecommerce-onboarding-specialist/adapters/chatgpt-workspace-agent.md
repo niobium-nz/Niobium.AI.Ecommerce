@@ -31,12 +31,6 @@ Bind board pixel reading, trusted UUID generation and Google Drive lookup, raw
 upload and verification. Inspect the board pixels and preserve its durable
 Drive URL. Keep provider credentials in the host connection.
 
-When all participating agents have the same effective board-read grant through
-the shared Drive connection, declare that deployment invariant in the workspace
-Instructions. Include per-agent action constraints when checking the grant.
-If the effective downstream grant differs or is unknown, verify access to
-the exact file before saving a handoff with a private Drive board.
-
 Select a model and reasoning effort actually available in the workspace's
 agent settings. Use GPT-6.2 Astra with Max reasoning where both are exposed
 and supported. Otherwise select an available model and effort and verify the
