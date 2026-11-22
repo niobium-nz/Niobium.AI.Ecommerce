@@ -48,15 +48,24 @@ not inspected evidence. It must be a clear multi-view reference for one complete
 product/SKU compatible with the profiled item. The board is appearance evidence,
 not proof of composition, performance, certificates or saleable branding.
 
-For a public HTTP(S) locator, preserve the caller's durable URL only after checking
-it resolves to the actual board. Do not persist expiring bearer URLs, access tokens
-or credentials. For a local path, require board_handoff_binding: a trusted host
-resolver for an already-existing durable HTTP(S) location of the SAME bytes. Verify
-content identity (full bytes/checksum), authorization and downstream accessibility;
-map relative paths only within an explicitly authorized workspace. The binding is
-not a model-invented URL, not an upload permission, and not a new business input.
-No mapping means stop with board_handoff_unavailable and ask the caller for a durable
-board URL. Never create/copy/alter a board or change sharing as an implicit fallback.
+The workflow's connected Google Drive is shared storage for its participating
+agents. For a Drive URL, resolve the exact file through that connection and verify
+that it contains the board that will be inspected. Preserve its durable file URL.
+A successful authenticated read establishes handoff access under this workflow
+configuration. Accept owner-only sharing metadata, and skip public-link checks,
+permission enumeration and separate downstream access probes. A failed Drive read,
+missing file or content mismatch still blocks. Do not change sharing permissions.
+
+For other HTTP(S) locators, preserve the caller's durable URL after checking that
+it resolves to the actual board and is usable by the downstream host. Do not
+persist expiring bearer URLs, access tokens or credentials. For a local path,
+require board_handoff_binding: a trusted host resolver for an already-existing
+durable HTTP(S) location of the SAME bytes. Verify content identity (full
+bytes/checksum) and authorization. Verify downstream access for non-Drive targets
+and use the shared-storage rule above for Google Drive. Map relative paths only
+within an explicitly authorized workspace. No mapping means stop with
+board_handoff_unavailable and ask for a durable board URL. Never create, copy or
+alter a board as an implicit fallback.
 
 Pass the readable local/URL locator to the prompt skill; save the verified durable
 reference in the artifact's product_reference_board. Keep the board stable through
