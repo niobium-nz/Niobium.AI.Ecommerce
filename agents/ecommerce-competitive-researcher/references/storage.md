@@ -1,5 +1,21 @@
 # Storage, registry and recovery protocol
 
+## Provision one canonical registry
+
+The `duplicate_history` section of [agent.yaml](../agent.yaml) pins the path and
+format for a new deployment. Resolve the path relative to the designated OneDrive
+root. On first setup, an operator checks that exact path in the selected drive and
+creates an empty JSON array (`[]`) only if the registry does not yet exist.
+For an existing file, verify its identity and format and retain all entries.
+
+Record the verified drive and item IDs in the private `deployment-config.json`.
+Keep that binding for upgrades and reuse it for new installs that share the same
+history. A path under a different account or drive does not identify the same
+file. If a binding is missing during redeployment, recover it from the designated
+drive and verify the existing file rather than provisioning a fresh registry.
+Keep live IDs, sharing links, registry contents and credentials out of Git.
+An explicitly bound legacy registry can keep its existing format and item ID.
+
 ## Preflight and permissions
 
 Bind Google Drive to an existing discovery folder by discovery_folder_id. Confirm

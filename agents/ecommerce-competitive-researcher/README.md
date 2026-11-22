@@ -39,12 +39,14 @@ scoping. Any match rejects the entire product, including a later product sharing
 an ad or a later target market. After verified publication, append only the input
 ad IDs. No IDs are added for rejected, failed or unpublished work.
 
-Configure the real discovery folder ID and OneDrive drive/item IDs before use.
-The registry format is explicit deployment configuration: a JSON array of string
-IDs or UTF-8 newline-separated IDs. No supplied existing file format is assumed
-or auto-detected. The example selects json_string_array; use [] for an initially
-empty JSON registry. The null resource IDs deliberately prevent an unconfigured
-run. This source package does not create or modify live cloud resources.
+The agent definition pins the OneDrive registry at
+`Ecommerce/processed-ad-ids.json` in the designated drive. Provision it once as
+a JSON string array starting with `[]`. Keep its real drive and item IDs in
+private deployment configuration and reuse those same IDs across reinstalls and
+updates. A different drive's file at the same path is a different registry.
+Explicitly configured legacy registries may retain their existing JSON-array or
+UTF-8 newline format. The null resource IDs prevent an unconfigured run.
+See [registry provisioning and reuse](references/storage.md).
 
 Product jobs sharing a registry must be serialized by the host from duplicate
 check through publication and append; query subagents within one job may run in
@@ -82,5 +84,6 @@ Open the kit's START-HERE.md. The default kit and instructions are platform-neut
 use the relevant host adapter only for that deployment. The optional Python checker
 has documented runtime targets, and equivalent validators are supported elsewhere.
 For another build use a fresh --output directory so edited settings are preserved.
-Package version 1.1.1 distinguishes unreported lookup completeness from known
-truncation. Existing wire formats and required identity/content checks are unchanged.
+Package version 1.1.2 pins the new registry's path and format for consistent
+deployment. Existing wire formats and required identity and content checks are
+unchanged.

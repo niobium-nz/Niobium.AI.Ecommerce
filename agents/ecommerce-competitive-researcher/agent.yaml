@@ -1,6 +1,6 @@
 # Descriptive platform-neutral manifest, not a native vendor import format.
 name: ecommerce-competitive-researcher
-version: 1.1.1
+version: 1.1.2
 entrypoint: AGENT.md
 description: Research one discovery into a scored target-market candidate.
 input_schema: schemas/contracts.schema.json#/$defs/input
@@ -27,6 +27,9 @@ storage:
   overwrite: false
 duplicate_history:
   provider: onedrive
+  registry_path: "Ecommerce/processed-ad-ids.json"
+  new_registry_format: json_string_array
+  binding: private_deployment_drive_and_item_ids
   key: ad_archive_id
   scope: global
   update_after: verified_publication
