@@ -26,6 +26,22 @@ host path, nested skill copy, combined skill ZIP or extra version pin is require
 Unreported Drive search completeness warns under storage.md; actual lookup errors,
 known truncation and observed collisions still stop the corresponding operation.
 
+## Complete the workflow in one invocation
+
+Resolve the active config and skill bindings once. Keep the accepted profile,
+complete strategy, image prompts and final artifact as structured working data
+within this invocation. As each stage passes, immediately start the next stage.
+Do not use a progress response as a stage boundary or wait for the caller to
+continue. Once the accepted evidence is sufficient, prioritize the required
+schema and arithmetic checks and Drive readback over optional enrichment,
+example reading and explanatory messages. Preserve host write approvals and
+resume the current run after approval.
+
+When an existing unique signal folder is verified, use that folder. Require
+creation coordination only if the workflow will create a missing folder under
+storage.md. A genuinely missing capability still stops with its exact cause.
+Return the compact result after readback, or after a concrete terminal failure.
+
 ## 1. Validate and preflight
 
 Accept `schemas/contracts.schema.json#/$defs/input`: landing_page_url,
@@ -42,11 +58,11 @@ Currency is explicit; do not infer it from the country or competitor page.
 Tax/fee text must be financially unambiguous, not merely a nonblank string.
 
 Resolve a usable caller-supplied board and a durable handoff reference under
-contracts.md. The connected Google Drive is shared storage for this workflow.
-If its connector can read the referenced board, assume downstream workflow agents
-can access the same Drive file through their connection. Accept owner-only Drive
-metadata and keep the durable file URL. Inspect the actual image and verify
-content identity as usual. Never substitute page images, generate a board, or use unrelated
+contracts.md. For a deployment that binds downstream agents to the same
+shared Google Drive connection, an authenticated read through that binding
+establishes handoff access. Accept owner-only metadata in that deployment.
+Otherwise verify the downstream binding can read the exact file. Keep the
+durable URL and inspect the actual image in either case. Never substitute page images, generate a board, or use unrelated
 saved references. Verify a Firecrawl binding supporting source-country page retrieval with links,
 plus image reading, trusted UUID, selected skill resources and Drive capabilities.
 Validate the configured existing candidates folder by ID, not name discovery.
