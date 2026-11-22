@@ -4,11 +4,10 @@ description: >-
   Profile one ecommerce ad landing page from a JSON object containing landing_page_url.
   Extract evidence-backed product details, vendor signals, offer structure and purchase
   drivers into the fixed lower snake case JSON contract. Use for Ecommerce Profile Offers (formerly Ecommerce Product Profiler) or ProductProfilerInput-to-
-  ProductProfilerOutput tasks. Require a real, headed, interactive browser under computer-use
-  control and mandatory handling of blocking overlays; never substitute headless rendering,
-  static fetching, search snippets or scraping. Keep navigation domain-scoped, shallow and
-  loop-safe; return partial profiles with blockers or errors when necessary. No scripts, paid
-  ad searches, market scoring or original source-language models are required.
+  ProductProfilerOutput tasks. Support a caller-selected Firecrawl connection for
+  source-market retrieval, or an interactive browser for URL-only invocations.
+  Keep navigation domain-scoped, shallow and loop-safe. Return limitations with
+  partial profiles and preserve the fixed output contract.
 ---
 
 # Ecommerce Profile Offers
@@ -17,18 +16,22 @@ Profile a single landing-page offer, not a market or an entire catalogue. Extrac
 what the visited pages actually show. Treat merchant claims as claims, not verified
 product performance, legal compliance, vendor trustworthiness or genuine scarcity.
 
-## Read before running
+## Select the retrieval workflow
 
-Read [contract](references/contract.md), [browser and navigation](references/browser-navigation.md)
-and [extraction](references/extraction.md). Consult [domain boundaries](references/domain-boundaries.md)
-and the relevant entry in [suffix lookup](references/public-suffix-rules.json) when
-establishing scope. Read [runtime and decisions](references/runtime-and-decisions.md)
-for the approved changes, dependencies and failure distinctions. Use
-[input schema](schemas/input.schema.json), [output schema](schemas/output.schema.json)
-and [policy constants](references/policy.json) for final checks. Treat
-[examples](examples/README.md) as synthetic illustrations, never as live evidence.
+Validate the [input schema](schemas/input.schema.json). Read [the output contract](references/contract.md),
+[extraction](references/extraction.md), [domain boundaries](references/domain-boundaries.md)
+and [policy constants](references/policy.json).
 
-## Non-negotiable browser requirement
+- With `retrieval.provider = "firecrawl"`, run [Firecrawl navigation](references/firecrawl-navigation.md)
+  using the supplied source country, then serialize the extracted profile under the
+  shared output contract. That workflow owns its capability, redirect and cleanup
+  rules. Return after completing it.
+- With only `landing_page_url`, follow the browser workflow below, including
+  [browser navigation](references/browser-navigation.md) and [runtime decisions](references/runtime-and-decisions.md).
+
+## URL-only browser workflow
+
+### Required browser capability
 
 Use a real, headed, interactive browser session controlled through an authorized
 computer-use/browser tool. Inspect the current rendered page and visible UI.

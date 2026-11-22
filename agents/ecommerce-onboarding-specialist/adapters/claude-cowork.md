@@ -13,12 +13,9 @@ Read skill-bindings.json and register schemas from the actual selected packages.
 An explicit global skill binding is valid if that is how this host selects skills;
 do not discover an arbitrary same-name copy. No additional version pin is required.
 
-Bind a real headed interactive browser with visible inspection and task cleanup,
-board pixel reading, trusted UUID/lossless JSON and Google Drive exact lookup,
-folder creation, raw upload and complete verification. A scraper is not a substitute
-for the profiler's required browser. Preserve caller product approval and an actual
-same-content durable board reference; the agent does not create a board or publish
-a website. Missing required browser/board/write capabilities still block live work.
+Connect Firecrawl through the host's MCP connector, authorized plugin or equivalent Firecrawl API binding. Verify that its scrape action accepts the source location and returns content and links.
+Bind board pixel reading, trusted UUID generation and Google Drive lookup, raw
+upload and verification. Keep provider credentials in the host connection.
 
 Configure trusted deployment settings, inspect actual authorized tool semantics
 and retain existing host approvals. Never copy another host's tool namespaces or

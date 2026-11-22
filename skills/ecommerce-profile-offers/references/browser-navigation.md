@@ -1,5 +1,7 @@
 # Real browser and bounded navigation
 
+For the URL-only browser workflow. A Firecrawl selection uses [Firecrawl navigation](firecrawl-navigation.md).
+
 ## Contents
 
 - Browser capability gate

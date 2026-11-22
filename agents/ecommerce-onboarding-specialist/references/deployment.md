@@ -3,7 +3,7 @@
 `AGENT.md` owns this agent's behavior. `agent.yaml` describes it; neither is a
 vendor-native import manifest. Host-specific setup belongs in `adapters/`.
 The agent does not require ChatGPT, Python, Linux, an upload UI or a fixed local
-layout. Required business/storage/browser/coordination semantics still apply.
+layout. Required business/storage/retrieval/coordination semantics still apply.
 
 ## Resources and selection
 
@@ -54,8 +54,7 @@ the same resource bindings for a runtime JSON Schema check.
 Record package checks, schema/unit tests, host mock traces, authenticated read-only
 checks and live execution separately. If the host cannot inject mocks, record
 `host_orchestration_acceptance: not_executed`; that alone does not block installing
-the resources. Actual required capabilities, including browser/registry locks or
-child/coordinator guarantees where specified, must exist before live work. Do not
+the resources. Actual required capabilities, including localized Firecrawl retrieval and verified Drive publication, must exist before live work. Do not
 claim those guarantees from a config flag or passing source tests.
 
 Setup does not perform paid research, substantive browsing or cloud writes.

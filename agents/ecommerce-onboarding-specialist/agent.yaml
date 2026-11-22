@@ -1,6 +1,6 @@
 # Platform-neutral descriptive metadata, not a vendor-native import schema.
 name: ecommerce-onboarding-specialist
-version: 1.1.1
+version: 2.0.0
 entrypoint: AGENT.md
 description: Prepare marketing and image-prompt strategies for an approved product.
 input_schema: schemas/contracts.schema.json#/$defs/input
@@ -18,7 +18,7 @@ skill_resources: skill-bindings.json
 approval_precondition: approved_product_from_authorized_caller
 handoff_target: website_implementation
 capabilities:
-  - headed_interactive_browser_with_visible_inspection_and_cleanup
+  - firecrawl_source_country_page_retrieval_with_links
   - caller_board_pixel_reading
   - trusted_uuid_and_lossless_json
   - google_drive_exact_lookup_folder_create_raw_upload_and_verification

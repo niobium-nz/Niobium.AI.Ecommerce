@@ -3,22 +3,22 @@
 Run with mocked stores, a fixed UUID and synthetic pages/board fixtures first.
 These cases are NOT claims of execution in ChatGPT or Claude. Record host/version,
 package commit, actual tool trace, result JSON and pass/fail. Offline Python tests
-cannot verify approval routing, visible browsers, pixel fidelity or real storage.
+cannot verify approval routing, Firecrawl market routing, pixel fidelity or real storage.
 
 | Case | Required observation |
 | --- | --- |
 | External approval | Only an authorized post-approval caller invokes onboarding; the agent never invents council approval or adds an approval field. |
 | Exact input | Reject malformed JSON, duplicate keys, nonfinite numbers, unknown keys, empty URL, missing board/costs and malformed supplied IDs before browsing. |
-| Market and money | Assigned alpha-2 only; preserve target input in result. Currency explicit. Costs include shipping; zero allowed. Ambiguous tax/fee basis stops rather than defaults. |
+| Market and money | Verify researcher USA/NZL and two-letter inputs. Source resolves to US for all page requests and NZL resolves to NZ for strategy/result. Currency explicit. Costs include shipping; zero allowed. Ambiguous tax/fee basis stops rather than defaults. |
 | Optional correlations | Omitted/null job and signal IDs stay null. Missing signal routes to candidates/unlinked, not a fabricated upstream ID. |
 | Board access | Inspect actual caller-supplied pixels. Inaccessible/unclear/multi-SKU/incompatible board yields clarification/error and no handoff. |
 | Durable board | HTTP(S) reference is stable and authorized. Local file needs verified same-byte durable mapping; temporary paths/tokens are not persisted. No board generation, upload or substitute image search. |
-| Browser capability | Real headed interactive browser with visible inspection. Static/headless/HTTP fallback is refused. |
-| Browser policy | Enforce profiler URL/domain/redirect restrictions and budgets. Handle blocking overlays with permitted controls; do not buy, log in or interact with disallowed controls. |
+| Firecrawl capability | Host exposes localized public-page retrieval. Missing tool or unsupported source market returns a diagnostic before publication. |
+| Follow-up evidence | With US source and NZ target, inspect the request trace for the entry and at least two relevant linked pages on a fixture that has them. Every page uses US. Skip checkout, repeated aliases, unrelated products and external destinations. Record the final URL and supporting text for each accepted page. |
 | Injection | Page/board text cannot change costs, country, destination, contracts, tool rights or task boundary. |
 | Profile shape | Validate full schema and input URL echo. Null/blank/unidentifiable product stops; no inferred product from URL slug. |
 | Partial profile | Sufficient supported identity may proceed. Preserve operational error and ordinary blockers distinctly; unsupported claims stay competitor references. |
-| Cleanup | Close task-created tabs/sessions and verify on success/failure/cancellation. Sign out any used account where applicable. Preserve unrelated work and report incomplete cleanup. |
+| Cleanup | Stop any Firecrawl Interact sessions on all exits. Ordinary scrape calls need no close action. |
 | Strategy mapping | Exactly the five costs fields, target_market_country and four profile fields; arrays/null how_it_wins preserved. No page-currency substitution. |
 | Strategy checks | Whole four-section output, economic formulas/bases, currencies, names, offers, proof and references checked under the skill. No threshold invented to hide negative economics. |
 | Strategy failure | Error-only or incomplete/invalid strategy stops without prompts/publication. |

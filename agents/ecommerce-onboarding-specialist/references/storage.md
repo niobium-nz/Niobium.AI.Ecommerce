@@ -11,10 +11,8 @@ Verify correctly scoped exact-name child lookup across all MIME types and expose
 raw JSON upload with explicit parent and full content verification before browsing.
 Read-only search or native Doc creation is insufficient. Keep host write approvals.
 
-Use the profiler's real headed browser and visible inspection, with its redirect
-scope guards, bounded navigation, popup handling and cleanup rules. Do not use a
-scraper/headless client in its place. The optional strategy web research does not
-replace profiling. The board reader must inspect supplied pixels without generating
+Use the profiler's localized Firecrawl workflow and its bounded link queue.
+The board reader must inspect supplied pixels without generating
 an image. No paid ad tools, OneDrive registry or researcher/looper binding is needed.
 
 ## Folder and file resolution
@@ -56,15 +54,12 @@ upload or rerun skills. Do not delete a possibly published artifact or alter sha
 Drive names are not unique and lookup-then-write is not atomic; never promise exactly
 once. Operator reconciliation is required before retrying an ambiguous run.
 
-## Browser cleanup
+## Retrieval cleanup
 
-Prefer signed-out public browsing. Never log in, subscribe, buy or use webmail.
-On success, failure or cancellation, close task-created surfaces and verify closure.
-If any authorized account session was actually used, sign it out and verify where
-possible before closure. Leave unrelated tabs/accounts and connector connections
-untouched. Report failed/unverified cleanup rather than claiming cookies or sessions
-were cleared merely by closing a tab. Preserve useful results with the limitation
-only when the approved partial-profile gate still passes.
+Ordinary Firecrawl scrapes are single requests. If a run opened an Interact
+session, stop that specific session and check the result on success, failure or
+cancellation. Record unverified cleanup in profile diagnostics. Keep unrelated
+sessions and the persistent Firecrawl connection intact.
 
 ## API references checked during authoring (2026-11-12)
 
@@ -104,4 +99,4 @@ For a new artifact, verify the actual returned ID, metadata and complete bytes.
 If it is missing from post-upload search, warn `drive_created_file_not_listed`
 without re-uploading. An uncertain create/upload without a returned ID still needs
 one observed fully verified match. Missing search evidence never excuses incomplete
-content, wrong parents, browser cleanup failures or missing caller approval.
+content, wrong parents, Firecrawl session cleanup failures or missing caller approval.

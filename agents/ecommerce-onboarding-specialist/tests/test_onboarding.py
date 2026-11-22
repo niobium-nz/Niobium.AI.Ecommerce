@@ -160,10 +160,16 @@ class OnboardingTests(unittest.TestCase):
         for bad in ([], {}, dict(self.value, approved=True)):
             with self.assertRaises(ValidationError): validate_input(bad)
 
-    def test_country_only_assigned_alpha2(self):
-        for code in ('NZL', 'New Zealand', 'UK', 'ZZ', ' NZ', 'N1', 'NZ\n'):
-            with self.subTest(code=code), self.assertRaises((ValueError, ValidationError)):
-                validate_input(dict(self.value, target_country=code))
+    def test_rejects_invalid_or_missing_country_before_retrieval(self):
+        for field in ('source_country', 'target_country'):
+            for code in ('New Zealand', 'UK', 'ZZZ', ' NZ', 'N1', 'NZ\n', None):
+                with self.subTest(field=field, code=code), self.assertRaises((ValueError, ValidationError)):
+                    validate_input(dict(self.value, **{field: code}))
+            incomplete = dict(self.value)
+            del incomplete[field]
+            host = Host()
+            self.assertEqual(run(incomplete, self.config, host)['status'], 'failed')
+            self.assertEqual(host.calls, [])
 
     def test_country_case_preserved(self):
         self.value['target_country'] = 'nz'
@@ -231,7 +237,7 @@ class OnboardingTests(unittest.TestCase):
         self.assertEqual(self.host.inputs['strategy']['currency'], 'NZD')
         self.assertEqual(self.host.inputs['strategy']['cogs_per_unit'], 12.5)
 
-    def test_unconfigured_folder_fails_before_browser(self):
+    def test_unconfigured_folder_fails_before_retrieval(self):
         self.config = read(ROOT / 'config.example.json')
         self.assertEqual(self.invoke()['status'], 'failed')
         self.assertNotIn('profile', self.host.calls)
@@ -240,7 +246,7 @@ class OnboardingTests(unittest.TestCase):
         self.config['candidates_folder_id'] = 'root'
         self.assertEqual(self.invoke()['status'], 'failed')
 
-    def test_missing_browser_or_write_capability_fails_preflight(self):
+    def test_missing_firecrawl_or_write_capability_fails_preflight(self):
         self.host.fail_at = 'preflight'
         self.assertEqual(self.invoke()['status'], 'failed')
         self.assertEqual(self.host.calls, ['preflight'])
@@ -274,12 +280,29 @@ class OnboardingTests(unittest.TestCase):
         self.assertEqual(self.invoke()['status'], 'failed')
         self.assertNotIn('publish', self.host.calls)
 
-    def test_profile_input_is_url_only(self):
-        self.invoke()
-        self.assertEqual(self.host.inputs['profile'], {'landing_page_url': self.value['landing_page_url']})
+    def test_researcher_country_routes_are_independent(self):
+        for source, target, region, market in [('USA', 'NZL', 'US', 'NZ'), ('nZ', 'uSa', 'NZ', 'US')]:
+            with self.subTest(source=source, target=target):
+                self.value.update(source_country=source, target_country=target)
+                result = self.invoke()
+                self.assertEqual(result['target_country'], market)
+                self.assertEqual(self.host.inputs['strategy']['target_market_country'], market)
+                self.assertEqual(self.host.inputs['profile'], {
+                    'landing_page_url': self.value['landing_page_url'],
+                    'retrieval': {'provider': 'firecrawl', 'source_country': region},
+                })
+
+    def test_optional_profiler_retrieval_contract(self):
+        schema = validator(PROFILE / 'input.schema.json')
+        entry = {'landing_page_url': self.value['landing_page_url']}
+        schema.validate(entry)
+        for selection in ({}, {'provider': 'firecrawl'}, {'provider': 'firecrawl', 'source_country': 'ZZ'},
+                          {'provider': 'other', 'source_country': 'US'}):
+            with self.subTest(selection=selection), self.assertRaises(ValidationError):
+                schema.validate(dict(entry, retrieval=selection))
 
     def test_profile_error_only_stops_strategy(self):
-        self.host.p = {'error': 'Synthetic unavailable browser'}
+        self.host.p = {'error': 'Synthetic unavailable Firecrawl'}
         self.assertEqual(self.invoke()['status'], 'failed')
         self.assertNotIn('strategy', self.host.calls)
 
