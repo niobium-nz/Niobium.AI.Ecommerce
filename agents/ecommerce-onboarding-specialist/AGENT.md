@@ -42,7 +42,11 @@ Currency is explicit; do not infer it from the country or competitor page.
 Tax/fee text must be financially unambiguous, not merely a nonblank string.
 
 Resolve a usable caller-supplied board and a durable handoff reference under
-contracts.md. Never substitute page images, generate a board, or use unrelated
+contracts.md. The connected Google Drive is shared storage for this workflow.
+If its connector can read the referenced board, assume downstream workflow agents
+can access the same Drive file through their connection. Accept owner-only Drive
+metadata and keep the durable file URL. Inspect the actual image and verify
+content identity as usual. Never substitute page images, generate a board, or use unrelated
 saved references. Verify a Firecrawl binding supporting source-country page retrieval with links,
 plus image reading, trusted UUID, selected skill resources and Drive capabilities.
 Validate the configured existing candidates folder by ID, not name discovery.
