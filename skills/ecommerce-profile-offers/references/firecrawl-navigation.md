@@ -7,8 +7,9 @@ country fixed for the entire investigation.
 
 ## Read one public page at a time
 
-Use Firecrawl Scrape on the supplied landing URL. Send these options on the entry
-and every subsequent page, including any allowed retry. MCP adds its required
+Use Firecrawl Scrape on the supplied landing URL. Start with these options. Keep
+the location, formats, cache and access settings on every follow-up and allowed
+retry. MCP adds its required
 `objective` and conversation context as specified by the exposed tool.
 
 ```json
@@ -22,12 +23,17 @@ and every subsequent page, including any allowed retry. MCP adds its required
 }
 ```
 
-Use equivalent field names in a Firecrawl SDK. Requesting the full page retains
-footer policy links. Use the returned Markdown, including labeled links, together
+Use equivalent field names in a Firecrawl SDK. Request the full landing and
+product pages to retain footer policy links. On a linked returns, guarantee or
+shipping policy, set `onlyMainContent: true` on its first request. This keeps
+policy text and links while cutting repeated menus and footers. Keep both
+formats, including on these policy pages. Use Markdown labels together
 with the links array. A merchant link is a lead. Read its page before attributing
 a policy or claim to it. Keep large pages and link lists inside the investigation.
-If Firecrawl retains the result server-side, inspect the retained result using its
-supplied read action. Record a truncation or access limitation if it cannot be read.
+When the host exposes a structured result, read its effective URL and status
+before selecting the evidence snippets and relevant links. If Firecrawl retains
+the result server-side, use its supplied read action. Record the limitation if
+the host truncates the result and the missing metadata or evidence cannot be read.
 
 The source country requests a market view. Record the country, currency, stock
 and delivery conditions the merchant actually shows when relevant. An unsupported
