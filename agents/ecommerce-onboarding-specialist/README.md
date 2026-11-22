@@ -17,12 +17,13 @@ are explicit unambiguous strings. Zero is valid; missing data is not zero.
 job_id and signal_id may be omitted/null; otherwise use upstream lowercase UUIDv4s.
 
 The board must be caller-supplied and visibly show the same SKU from multiple views.
-A durable file URL on the connected Google Drive uses the workflow's shared-storage
-contract. Once the connector reads and verifies the board, downstream workflow agents
-are assumed to have access through that Drive connection, including for owner-only
-files. Other HTTP(S) URLs must be usable by the downstream host. Local files require
-an authorized mapping to a durable, same-content handoff URL. See
-references/contracts.md. No automatic board creation or upload.
+Use a durable file URL on the connected Google Drive. When the deployment gives all
+participating agents the same effective board-read grant, an authenticated read and
+content verification establish handoff access, including for owner-only files.
+Check downstream access to the exact file if grants differ or are unknown. Other
+HTTP(S) URLs must be usable by the downstream host. Local files require an authorized
+mapping to a durable, same-content handoff URL. See references/contracts.md.
+No automatic board creation or upload.
 
 Saved path: candidates/{signal_id}/{candidate_id}.json, or
 candidates/unlinked/{candidate_id}.json when no upstream signal exists. The existing
