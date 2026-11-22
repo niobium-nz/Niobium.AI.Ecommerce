@@ -14,10 +14,7 @@ from metadata_policy import lookup_completeness, optional_metadata
 from resource_bindings import SchemaBindings
 
 ROOT = Path(__file__).resolve().parent
-BINDINGS = SchemaBindings(ROOT)
 UUID = r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"
-CHILD_SCHEMA = BINDINGS.path('urn:niobium:ecommerce-competitive-researcher:schema:contracts')
-SOURCE_SCHEMA = BINDINGS.path('urn:niobium:ecommerce-product-discoverer:schema:handoff')
 STATUS_KEYS = ('succeeded', 'partial', 'failed', 'duplicate', 'halted', 'not_run')
 
 
@@ -42,6 +39,11 @@ def strict_loads(text: str | bytes) -> Any:
 
 def load(path: Path) -> Any:
     return strict_loads(path.read_bytes())
+
+
+BINDINGS = SchemaBindings(ROOT, load_json=load)
+CHILD_SCHEMA = BINDINGS.path('urn:niobium:ecommerce-competitive-researcher:schema:contracts')
+SOURCE_SCHEMA = BINDINGS.path('urn:niobium:ecommerce-product-discoverer:schema:handoff')
 
 
 def validate(path: Path, value: Any, fragment: str = '') -> None:

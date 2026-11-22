@@ -316,9 +316,11 @@ def run_window(journal, binding, loop_id, time_budget, poll_interval):
 
 def bind_contracts(support, resources):
     sys.path.insert(0, str(support.resolve(strict=True)))
-    from validate import contract_resources
+    from resource_bindings import read_contract_resources
+    mapping = read_contract_resources(resources.resolve(strict=True),
+                                      lambda path: json.loads(path.read_bytes()))
     os.environ['AGENT_SCHEMA_RESOURCES'] = json.dumps(
-        {key: str(path) for key, path in contract_resources(resources.resolve(strict=True)).items()})
+        {key: str(path) for key, path in mapping.items()})
 
 
 def main():

@@ -14,7 +14,7 @@ from zoneinfo import ZoneInfo
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from runtime import dependencies, environment, load, strict_json, target_for_host
-from resource_bindings import SchemaBindings
+from resource_bindings import SchemaBindings, read_contract_resources
 
 
 def verify_files(root, expected):
@@ -45,13 +45,7 @@ def selected_skills(items):
 
 
 def contract_resources(root):
-    if root is None: return {}
-    result = {}
-    for uri, relative in load(root / "schema-map.json").items():
-        path = (root / relative).resolve(strict=True)
-        if not path.is_relative_to(root): raise ValueError("Contract resource leaves its bound root")
-        result[uri] = path
-    return result
+    return read_contract_resources(root, load)
 
 
 def pointer(value, path):
