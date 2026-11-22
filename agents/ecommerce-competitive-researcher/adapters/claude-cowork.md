@@ -14,9 +14,9 @@ An explicit global skill binding is valid if that is how this host selects skill
 do not discover an arbitrary same-name copy. No additional version pin is required.
 
 Bind the selected competition skill's approved ad search, normalization/scoring
-research, trusted clock/UUID/JSON, raw Google Drive publication and OneDrive full
-read/append verification. Require the real shared-registry guard and durable recovery
-holds across all writers. Allow query workers only where supported and authorized;
+research, trusted clock/UUID/JSON, raw Google Drive publication, and full read,
+in-place update and readback of the Drive registry. Require the shared-registry
+guard and durable recovery holds across all writers. Allow query workers only where supported and authorized;
 otherwise execute sequentially. Workers do not receive storage-write authority.
 
 Configure trusted deployment settings, inspect actual authorized tool semantics

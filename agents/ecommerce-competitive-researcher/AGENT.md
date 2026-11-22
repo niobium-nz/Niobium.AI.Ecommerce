@@ -33,9 +33,9 @@ Any validation failure stops with cluster-correlated errors. Do not infer missin
 values, strip IDs, repair input or fetch URLs to make it pass.
 
 Preflight deployment configuration, all skill resources, research tools, trusted
-clock/UUID, Google Drive publication and OneDrive full-file read/append verification.
-Acquire the host's shared-registry serialization guard. Read the configured
-OneDrive file completely using its declared format. Reject the WHOLE product if
+clock/UUID, Google Drive publication and full-file registry read/append verification.
+Acquire the host's shared-registry serialization guard. Read the configured Google
+Drive registry completely using its declared format. Reject the WHOLE product if
 ANY input ad_archive_id exactly matches any stored ID, globally across jobs,
 products and markets. Fail closed on unavailable, incomplete or malformed data.
 Follow storage.md; do not mark IDs processed before verified publication.
@@ -101,7 +101,7 @@ Do not add normalized_product, a lifecycle field, or an alternative envelope.
 Validate `#/$defs/artifact` and cross-field equality before writing.
 
 Only AFTER verifying the published file, append ALL processed INPUT ad IDs to the
-configured OneDrive registry and verify their persistence without losing existing
+configured Google Drive registry and verify persistence without losing existing
 IDs. Never append target-market competitor IDs. A failed/uncertain registry update
 must return published_registry_pending with the verified artifact identifiers and
 recovery error; never report clean success or rerun research to repair the append.

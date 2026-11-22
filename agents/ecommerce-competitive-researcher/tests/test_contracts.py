@@ -44,14 +44,16 @@ class ResearcherTests(unittest.TestCase):
     def test_configuration_requires_real_ids(self):
         config = load(ROOT / "config.example.json")
         with self.assertRaises(ValidationError): validate_config(config)
-        for field in ("discovery_folder_id", "onedrive_drive_id", "onedrive_item_id"):
+        for field in ("discovery_folder_id", "registry_file_id"):
             config[field] = "mock-id"
         validate_config(config)
 
     def test_configuration_rejects_root_bad_zone_and_null_format(self):
         config = load(ROOT / "config.example.json")
-        for k in ("discovery_folder_id", "onedrive_drive_id", "onedrive_item_id"): config[k] = "mock-id"
-        for field, value in (("discovery_folder_id", "root"), ("registry_format", None),
+        for k in ("discovery_folder_id", "registry_file_id"): config[k] = "mock-id"
+        for field, value in (("discovery_folder_id", "root"), ("registry_file_id", "root"),
+                             ("registry_file_id", "https://drive.google.com/file/d/fixture"),
+                             ("registry_format", None),
                              ("max_parallel_queries", 0), ("registry_concurrency", "concurrent")):
             with self.subTest(field=field), self.assertRaises(ValidationError):
                 validate_config(dict(config, **{field: value}))

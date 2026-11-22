@@ -3,8 +3,7 @@
   "config_schema": "schemas/contracts.schema.json#/$defs/config",
   "fixture_config": {
     "discovery_folder_id": "fixture_folder",
-    "onedrive_drive_id": "fixture_drive",
-    "onedrive_item_id": "fixture_item",
+    "registry_file_id": "fixture_registry",
     "registry_format": "json_string_array",
     "timezone": "Pacific/Auckland",
     "max_parallel_queries": 3,

@@ -2,7 +2,7 @@
 
 Run in each target host with synthetic files, fixed clock/UUID and mocked tools.
 The local Python suite does not prove hosted execution, LLM research quality,
-permissions, locking, full-file retrieval or cross-cloud persistence. Record the
+permissions, locking, full-file retrieval or live persistence. Record the
 host/version, bundle commit, tool trace and final JSON for every case below.
 No paid searches or live cloud writes are authorized by this checklist.
 
@@ -12,7 +12,7 @@ No paid searches or live cloud writes are authorized by this checklist.
 | Missing product identity | Stop before research with cluster ID and offending path; no invented product. |
 | Missing ad links/IDs | Every input ad must pass; no partial dropping of bad ads or ID coercion. |
 | Traceability | Require distinct input IDs and exact product/ad membership; original fields remain untouched. |
-| Missing capabilities | Fail before research if full OneDrive read/write, Drive verification, skill resources or serialization cannot be established. |
+| Missing capabilities | Fail before research if the Drive registry's identity, full read, in-place update and verification, skill resources or serialization cannot be established. |
 | Registry format | Use declared JSON-string-array or newline format; reject unsupported/malformed content, never infer an empty history from a snippet. |
 | Global duplicate | Any exact stored ID rejects the whole input, even under another cluster/job/market; no substring matching. |
 | Shared registry concurrency | Two overlapping product calls cannot both pass the guarded check; the coordinator serializes across hosts. A config flag alone is not proof. |

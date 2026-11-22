@@ -34,27 +34,26 @@ requested correlation fields, originals, valid reports, full score and errors.
 The signal_id name is retained as requested; the business result is a candidate,
 not council approval or an onboarded listing.
 
-The OneDrive registry checks exact ad IDs globally, without product/job/market
+The Google Drive registry checks exact ad IDs globally, without product/job/market
 scoping. Any match rejects the entire product, including a later product sharing
 an ad or a later target market. After verified publication, append only the input
 ad IDs. No IDs are added for rejected, failed or unpublished work.
 
-The agent definition pins the OneDrive registry at
-`Ecommerce/processed-ad-ids.json` in the designated drive. Provision it once as
-a JSON string array starting with `[]`. Keep its real drive and item IDs in
-private deployment configuration and reuse those same IDs across reinstalls and
-updates. A different drive's file at the same path is a different registry.
-Explicitly configured legacy registries may retain their existing JSON-array or
-UTF-8 newline format. The null resource IDs prevent an unconfigured run.
+The agent definition pins `processed-ad-ids.json` directly under the configured
+Google Drive discovery folder. Provision it once as a UTF-8 JSON string array
+starting with `[]`. Keep its verified Drive file ID in private deployment
+configuration as `registry_file_id` and reuse that ID across installs and updates.
+An existing registry with confirmed contents may retain its explicitly configured
+format. The null resource IDs prevent an unconfigured run.
 See [registry provisioning and reuse](references/storage.md).
 
 Product jobs sharing a registry must be serialized by the host from duplicate
 check through publication and append; query subagents within one job may run in
 parallel. This prevents duplicate processing races that versioned file writes
 alone cannot prevent. Host validation must establish that guarantee, not merely
-read a configuration flag. Cross-cloud writes are not atomic. If a file is saved
-but the append is incomplete, the explicit published_registry_pending outcome
-keeps its identifiers and blocks automatic reruns until reconciliation.
+read a configuration flag. Drive writes to the two files are independent. If the
+candidate is saved and the append is incomplete, published_registry_pending keeps
+its identifiers and blocks automatic reruns until reconciliation.
 
 ## Deployment and tests
 
@@ -84,6 +83,7 @@ Open the kit's START-HERE.md. The default kit and instructions are platform-neut
 use the relevant host adapter only for that deployment. The optional Python checker
 has documented runtime targets, and equivalent validators are supported elsewhere.
 For another build use a fresh --output directory so edited settings are preserved.
-Package version 1.1.2 pins the new registry's path and format for consistent
-deployment. Existing wire formats and required identity and content checks are
-unchanged.
+Package version 2.0.0 replaces the OneDrive deployment keys with
+`registry_file_id`. Refresh the private configuration when upgrading. If an
+older deployment has a registry, migrate its verified history before switching
+writers. Product input, artifact and result schemas stay the same.
