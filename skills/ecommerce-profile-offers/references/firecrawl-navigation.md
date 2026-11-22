@@ -47,7 +47,8 @@ yields an error-only result. Send only the public URL and retrieval parameters.
 After the first accepted page, immediately extract its evidence into a complete
 profile object and check it against `schemas/output.schema.json`. Create all
 required keys in each present object. Use null for unknown scalars and [] for
-unknown lists. Keep this schema-valid profile as the current result before making
+unknown lists, with the literal `Unknown` for a present vendor whose platform
+cannot be established. Keep this schema-valid profile before making
 another request. A complete object can contain unknown facts. Record conflicting
 claims in `blockers` and leave the disputed facts out of the claims used by later
 stages. A conflict in a specification does not make an otherwise identified
