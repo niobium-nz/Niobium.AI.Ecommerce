@@ -17,7 +17,7 @@ discovery -> competitive research -> candidate -> product council approval -> li
 The looper looks up `discovery/{job_id}.json` by exact name under the configured
 folder ID. It passes only `{job, product, ads}` for one entry to the researcher.
 The source file stays unchanged. The researcher still owns candidate publication
-at `discovery/{job_id}/{signal_id}.json` and the subsequent OneDrive ID append.
+at `discovery/{job_id}/{signal_id}.json` and the subsequent Google Drive registry update.
 The looper does not rename signal_id, add candidate fields or run product council.
 
 Products run sequentially in source order. Per-query parallelism remains inside
@@ -35,8 +35,8 @@ partial scores and published-but-unregistered artifacts are not hidden.
 
 AGENT.md is the compact entrypoint. agent.yaml is descriptive metadata, not a
 native vendor manifest. references/ defines the transport, correlation and failure
-rules; schemas/ defines public contracts; tests/ contains network-free reference
-checks and mocks, not a production connector or LLM runner.
+rules; schemas/ defines public contracts. `run_looper.py` is an executable
+coordinator with a read-only Drive client and a SQLite checkpoint journal.
 
 The looper has NO directly invoked skills and its kit contains no skill ZIPs.
 The build supplies a generated closure of its canonical input/child schemas in
@@ -54,6 +54,12 @@ The bindings are trusted host handles, not API keys, URLs or public input fields
 The coordinator must supply actual globally shared serialization, durable dispatch
 records, terminal-result retrieval and recovery holds for the researcher's registry.
 Sequential calls within one chat alone cannot protect other concurrent writers.
+
+Use the [checkpoint runner](references/checkpoint-runner.md) to run in bounded
+windows, poll a previously submitted product and continue from the saved cursor.
+The runner requires a verified host binding for the researcher. Workspace Agents
+expose run status through their API. Returning the structured child result and
+enforcing the shared registry guard require the bound host adapter.
 
 The looper needs read-only Google Drive access. Storage writes belong only to the
 researcher. Host task/journal storage is separate and must be durable. Neither a
@@ -82,5 +88,5 @@ Open the kit's START-HERE.md. The default kit and instructions are platform-neut
 use the relevant host adapter only for that deployment. The optional Python checker
 has documented runtime targets, and equivalent validators are supported elsewhere.
 For another build use a fresh --output directory so edited settings are preserved.
-Package version 1.1.1 distinguishes unreported lookup completeness from known
-truncation. Existing wire formats and required identity/content checks are unchanged.
+Package version 1.2.0 adds resumable execution and uses the researcher's shared
+Google Drive registry binding.

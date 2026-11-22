@@ -74,7 +74,8 @@ All continuation requires a settled child and a host-confirmed clear recovery ho
 
 Any unrecognized combination stops; do not assume all failed responses are safe
 because published=false. There is no retry policy, per-item fallback agent, score
-cutoff or automatic resume. The researcher retains its own unchanged 3N maximum
+cutoff or automatic replay. Bounded execution can resume a known invocation or
+advance a durably settled checkpoint. The researcher retains its 3N maximum
 competition-search attempt budget; the looper introduces no additional paid calls.
 
 ## Batch result
