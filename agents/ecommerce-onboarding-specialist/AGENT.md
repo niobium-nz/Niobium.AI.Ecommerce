@@ -58,11 +58,12 @@ Currency is explicit; do not infer it from the country or competitor page.
 Tax/fee text must be financially unambiguous, not merely a nonblank string.
 
 Resolve a usable caller-supplied board and a durable handoff reference under
-contracts.md. For a deployment that binds downstream agents to the same
-shared Google Drive connection, an authenticated read through that binding
-establishes handoff access. Accept owner-only metadata in that deployment.
-Otherwise verify the downstream binding can read the exact file. Keep the
-durable URL and inspect the actual image in either case. Never substitute page images, generate a board, or use unrelated
+contracts.md. A successful read through the deployment's shared Google Drive
+binding establishes handoff access when all downstream agents have the same
+effective read grant for the exact board. This includes account permissions
+and agent-level action constraints. If effective access differs or is unknown,
+verify that the downstream binding can read the file. Keep the durable URL
+and inspect the actual image in either case. Never substitute page images, generate a board, or use unrelated
 saved references. Verify a Firecrawl binding supporting source-country page retrieval with links,
 plus image reading, trusted UUID, selected skill resources and Drive capabilities.
 Validate the configured existing candidates folder by ID, not name discovery.
