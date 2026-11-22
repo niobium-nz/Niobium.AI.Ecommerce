@@ -27,7 +27,7 @@ ID, reconciliation needs exactly one observed match and complete verification.
 
 Existing-source selection and folder reuse still need one observed valid match.
 Known competing matches fail. Looper source version/byte checks, researcher registry
-completeness and serialization, onboarding browser/board checks and actual access
+completeness and serialization, onboarding Firecrawl/board checks and actual access
 denials are unaffected. These are different business requirements from optional
 search-completeness metadata. The schemas and saved business payloads are unchanged.
 

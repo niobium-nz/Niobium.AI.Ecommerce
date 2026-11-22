@@ -29,18 +29,22 @@ known truncation and observed collisions still stop the corresponding operation.
 ## 1. Validate and preflight
 
 Accept `schemas/contracts.schema.json#/$defs/input`: landing_page_url,
-target_country, costs, product_reference_board, and optional job_id/signal_id.
+source_country, target_country, costs, product_reference_board, and optional job_id/signal_id.
 Reject malformed JSON, duplicate keys, nonfinite values, wrong types/extra keys,
-invalid public HTTP(S) landing URLs, unassigned/non-alpha-2 countries, incomplete
+invalid public HTTP(S) landing URLs, unassigned ISO alpha-2/alpha-3 countries, incomplete
 costs and invalid supplied IDs. Omitted/null IDs remain null; never invent them.
-Apply the profiler's URL exclusions before browsing. Preserve explicit zero costs.
+Resolve each country independently using the selected strategy skill's
+references/iso3166-1.json. Source is the ad market. Target is the sales market.
+Keep an existing two-letter target spelling for the handoff. Convert a three-letter
+target to uppercase alpha-2 for the strategy, artifact and result.
+Apply the profiler's URL exclusions before retrieval. Preserve explicit zero costs.
 Currency is explicit; do not infer it from the country or competitor page.
 Tax/fee text must be financially unambiguous, not merely a nonblank string.
 
 Resolve a usable caller-supplied board and a durable handoff reference under
 contracts.md. Never substitute page images, generate a board, or use unrelated
-saved references. Verify required real headed interactive browser/visible-screen
-control, image reading, trusted UUID, selected skill resources and Drive capabilities.
+saved references. Verify a Firecrawl binding supporting source-country page retrieval with links,
+plus image reading, trusted UUID, selected skill resources and Drive capabilities.
 Validate the configured existing candidates folder by ID, not name discovery.
 Respect host permissions/approval gates. Missing capability fails before profiling.
 The host/caller must authorize this as post-approval work; do not fabricate a
@@ -49,8 +53,13 @@ council integration, infer approval from a URL, or add a new approval input fiel
 ## 2. Profile the supplied offer
 
 Invoke `ecommerce-profile-offers` once with exactly
-`{"landing_page_url": input.landing_page_url}`. The skill owns its browser retry,
-navigation/overlay limits and cleanup. No static fetch/scraping fallback.
+the landing_page_url and retrieval object defined in references/contracts.md.
+This agent selects Firecrawl on every platform. Pass the uppercase alpha-2
+source_country to the profiler. Use Firecrawl for the entry and relevant linked
+pages, with the same location.country on every request. The selected profiler's
+references/firecrawl-navigation.md owns retrieval, link selection, limits and
+citation handling. Only public page URLs, source market and retrieval options
+belong in Firecrawl requests. Keep costs, board, IDs and strategies in the agent.
 Validate its full schema and exact input URL echo. Error-only or absent/unusable
 product identity stops. Require a nonblank product.name and sufficient supported
 identity for strategy, never an invented replacement for an opaque product.
@@ -60,12 +69,12 @@ Record its error plus all relevant blockers/limitations in structured errors;
 ordinary missing facts are warnings, not invented operational failures. Preserve
 unsupported claims as competitor references. Unknown lists stay []; nullable
 how_it_wins remains null. Do not transfer competitor guarantees or proof to us.
-Verify task-created browser cleanup on every exit; report unverified cleanup.
+If Firecrawl Interact was used, stop its sessions on every exit and report any cleanup failure.
 
 ## 3. Develop the marketing strategy
 
 Invoke `ecommerce-develop-strategy` once with the exact mappings
-in contracts.md: the five costs fields, input target_country, and profile.product
+in contracts.md: the five costs fields, the resolved target country, and profile.product
 name, key_claims, ingredients_or_materials and how_it_wins.
 Validate the entire response and the skill's economics/semantic checklist.
 Error-only, incomplete/invalid strategy, unresolved identity or essential

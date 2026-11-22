@@ -1,9 +1,9 @@
 interface:
   display_name: Ecommerce Profile Offers
-  short_description: Profile ecommerce offers using a real interactive browser
+  short_description: Profile ecommerce offers using the selected retrieval workflow
   default_prompt: Use Ecommerce Profile Offers on the supplied landing_page_url
-    JSON. Require a real interactive browser, handle blocking overlays, enforce scoped
-    navigation, and return the profile or error JSON.
+    JSON. Use the explicit Firecrawl selection when supplied, otherwise use the
+    browser workflow. Enforce bounded navigation and return the profile or error JSON.
   icon_small: assets/icon.svg
   icon_large: assets/icon.svg
 policy:

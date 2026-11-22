@@ -1,6 +1,6 @@
 """Network-free reference helpers and mockable orchestration, NOT a production runner.
 
-Semantic review, visible browsing, board inspection, folder management and real
+Semantic review, localized Firecrawl retrieval, board inspection, folder management and real
 persistence are host responsibilities. Tests cannot establish those capabilities.
 """
 from __future__ import annotations
@@ -90,12 +90,26 @@ def public_url(value: str) -> None:
         raise GateError('invalid_url', 'Invalid port') from exc
 
 
+def alpha2(value: Any) -> str:
+    if not isinstance(value, str) or not re.fullmatch(r'[A-Za-z]{2,3}', value):
+        raise GateError('input_invalid', 'Assigned ISO country code required')
+    key = 'alpha_2' if len(value) == 2 else 'alpha_3'
+    country = pycountry.countries.get(**{key: value.upper()})
+    if country is None:
+        raise GateError('input_invalid', 'Unassigned ISO country code')
+    return country.alpha_2
+
+
+def target_country(value: str) -> str:
+    normalized = alpha2(value)
+    return value if len(value) == 2 else normalized
+
+
 def validate_input(value: Any) -> None:
     validate(value, 'input')
     public_url(value['landing_page_url'])
-    # Exact assigned-country semantics are also enforced by the referenced schema.
-    if pycountry.countries.get(alpha_2=value['target_country'].upper()) is None:
-        raise GateError('input_invalid', 'Assigned alpha-2 country required')
+    alpha2(value['source_country'])
+    alpha2(value['target_country'])
     costs = value['costs']
     if pycountry.currencies.get(alpha_3=costs['currency'].upper()) is None:
         raise GateError('input_invalid', 'Recognized monetary currency required')
@@ -226,10 +240,13 @@ def run(value: Any, config: dict, host: Any) -> dict:
             if isinstance(v, str) and UUID.fullmatch(v):
                 result[key] = v
         v = value.get('target_country')
-        if isinstance(v, str) and len(v) == 2 and pycountry.countries.get(alpha_2=v.upper()):
-            result['target_country'] = v
+        try:
+            result['target_country'] = target_country(v)
+        except GateError:
+            pass  # An invalid market has no valid terminal correlation.
     try:
         validate_input(value)
+        value = dict(value, target_country=result['target_country'])
         stage = 'preflight'
         validate(config, 'config')
         # Includes actual URL policy, full cost semantics, permissions and caller approval gate.
@@ -239,7 +256,12 @@ def run(value: Any, config: dict, host: Any) -> dict:
         if not board.get('same_content_verified') or not board.get('durable_verified'):
             raise GateError('board_handoff_unavailable', 'Verified same-board durable reference required', clarification=True)
         stage = 'profile'
-        profile = host.profile({'landing_page_url': value['landing_page_url']})
+        request = {
+            'landing_page_url': value['landing_page_url'],
+            'retrieval': {'provider': 'firecrawl', 'source_country': alpha2(value['source_country'])},
+        }
+        validator(PROFILE / 'input.schema.json').validate(request)
+        profile = host.profile(request)
         errors.extend(profile_gate(profile, value['landing_page_url']))
         if not host.identity_supported(profile):
             raise GateError('product_unidentified', 'Supported identity is insufficient', clarification=True)

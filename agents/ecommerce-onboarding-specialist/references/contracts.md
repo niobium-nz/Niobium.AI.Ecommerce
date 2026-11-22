@@ -3,12 +3,17 @@
 ## Invocation and approval
 
 Accept one object, not a batch or the researcher's candidate object. Exactly:
-landing_page_url, target_country, costs, product_reference_board, optional job_id,
+landing_page_url, source_country, target_country, costs, product_reference_board, optional job_id,
 optional signal_id. Both omitted and explicit null correlations mean unlinked;
 empty strings and malformed UUIDs are errors, never requests for fresh upstream IDs.
-The agent only generates candidate_id. Retain original target_country for output;
-case-insensitive assigned alpha-2 codes are allowed, but alpha-3 codes are not.
-Normalize working country/currency values only as the strategy skill prescribes.
+The agent generates only candidate_id. Take both countries directly from the
+researcher handoff. Accept assigned alpha-2 and alpha-3 ASCII letter codes
+case-insensitively using the selected strategy skill's ISO table. Missing,
+unassigned or malformed codes fail input validation before any page request.
+Resolve the source to uppercase alpha-2 for Firecrawl. Preserve the spelling of
+a two-letter target for existing consumers. Convert a three-letter target to
+uppercase alpha-2 for the strategy, saved artifact and terminal result. For
+`USA` to `NZL`, Firecrawl receives `US` and marketing receives `NZ`.
 
 The host/caller invokes onboarding only after its own approval decision. No council
 is implemented, no new approval JSON field is invented, and neither URL possession
@@ -63,11 +68,11 @@ Its location must not leak into rendered copy or generated prompt strings.
 
 | Skill | Input |
 | --- | --- |
-| ecommerce-profile-offers | {landing_page_url: input.landing_page_url} |
-| ecommerce-develop-strategy | cogs_per_unit, extra_unit_cogs_per_order, sales_tax, payment_processing_fees, currency from input.costs; target_market_country from input.target_country; competitor_used_product_name from profile.product.name; competitor_claims from profile.product.key_claims; ingredients_or_materials from profile.product.ingredients_or_materials; competitor_marketing_how_it_wins from profile.product.how_it_wins |
+| ecommerce-profile-offers | `{"landing_page_url": <input URL>, "retrieval": {"provider": "firecrawl", "source_country": <source alpha-2>}}` |
+| ecommerce-develop-strategy | cogs_per_unit, extra_unit_cogs_per_order, sales_tax, payment_processing_fees, currency from input.costs; target_market_country from the resolved target country; competitor_used_product_name from profile.product.name; competitor_claims from profile.product.key_claims; ingredients_or_materials from profile.product.ingredients_or_materials; competitor_marketing_how_it_wins from profile.product.how_it_wins |
 | ecommerce-draft-prompts | Entire strategy success object, copied unchanged, plus root product_reference_board |
 
-Preserve arrays/nulls exactly. No country or browser controls go into profiler input.
+Preserve arrays/nulls exactly. Only the source market goes into the profiler. Target market and costs belong to strategy.
 The correct selling-point path is profile.product.how_it_wins. No extra dots,
 wind/wins aliases, market_strategy wrapper or dropped strategy section are allowed.
 Keep the full skill outputs as marketing_strategy and image_strategy, without

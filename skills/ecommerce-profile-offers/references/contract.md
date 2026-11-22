@@ -5,9 +5,13 @@ source-language model, serializer, executable validator or runtime library.
 
 ## Input
 
-Use exactly one object: `{"landing_page_url":"https://shop.example/product"}`.
-Reject extra keys and invalid types. Do not accept a bare URL as the JSON contract,
-or introduce a target-country, product selector, crawler budget or consent flag.
+Accept a URL-only object or an explicit retrieval selection:
+`{"landing_page_url":"https://shop.example/product","retrieval":{"provider":"firecrawl","source_country":"US"}}`.
+The selection belongs to the invoking agent. Use its normalized, assigned uppercase
+alpha-2 source country. The public skill input schema specifies the exact keys.
+Both modes produce the profile below. Firecrawl retrieval failures and scope checks
+follow [Firecrawl navigation](firecrawl-navigation.md). Browser-specific failure
+cases below apply to URL-only calls.
 Accept HTTP and HTTPS only, with a real hostname and no embedded credentials.
 Reject local/private addresses, local files and executable URL schemes. Do not
 make DNS or network probes through another tool to repair an invalid URL. Apply

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "skill_name": "ecommerce-profile-offers",
   "browser": {
     "real_headed_browser_required": true,
@@ -54,5 +54,16 @@
     "materials_or_ingredients",
     "other_eligible_schema_completion"
   ],
-  "original_source_files_bundled": false
+  "original_source_files_bundled": false,
+  "firecrawl": {
+    "location_source": "retrieval.source_country",
+    "formats": [
+      "markdown",
+      "links"
+    ],
+    "onlyMainContent": false,
+    "maxAge": 0,
+    "proxy": "basic",
+    "redirect_scope": "check_requested_and_effective_urls_before_using_content"
+  }
 }

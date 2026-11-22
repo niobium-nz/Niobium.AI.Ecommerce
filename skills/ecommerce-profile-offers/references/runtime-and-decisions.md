@@ -1,5 +1,7 @@
 # Runtime requirements and approved decisions
 
+The following decisions govern URL-only browser calls. Agent-selected Firecrawl runs follow [Firecrawl navigation](firecrawl-navigation.md).
+
 ## Dependencies
 
 Require the host to load the skill resources and control a real, headed browser

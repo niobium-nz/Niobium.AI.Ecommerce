@@ -26,12 +26,9 @@ Resolve each attached skill's current resources from this agent's execution cont
 Do not persist a temporary mount path, invent a host version or substitute a global
 same-name skill. The host selects the attachment; the checker validates compatibility.
 
-Bind a real headed interactive browser with visible inspection and task cleanup,
-board pixel reading, trusted UUID/lossless JSON and Google Drive exact lookup,
-folder creation, raw upload and complete verification. A scraper is not a substitute
-for the profiler's required browser. Preserve caller product approval and an actual
-same-content durable board reference; the agent does not create a board or publish
-a website. Missing required browser/board/write capabilities still block live work.
+In the private Workspace Agent, use **Browse apps** to attach Firecrawl. If the native app is unavailable, use **Custom MCP** and Firecrawl's [hosted server](https://docs.firecrawl.dev/mcp-server). Verify the localized scrape action in Preview.
+Bind board pixel reading, trusted UUID generation and Google Drive lookup, raw
+upload and verification. Keep provider credentials in the host connection.
 
 Run the setup checks in references/deployment.md in Preview, which may have a
 different authenticated context from the builder. Use the current package's helper
@@ -51,7 +48,7 @@ and use these native file/skill controls; do not invent a wrapper-skill workarou
 
 [Official workspace agent guidance](https://help.openai.com/en/articles/20001143-chatgpt-workspace-agents-for-enterprise-and-business)
 describes configurable files, skills, apps and Preview. It is not evidence that this
-particular deployment has the agent invocation, browser or coordination guarantees.
+particular deployment has the agent invocation, Firecrawl or coordination guarantees.
 
 A successful all-type exact-name search may omit completeness metadata. Record
 `drive_lookup_completeness_unavailable` and continue under the core storage policy;

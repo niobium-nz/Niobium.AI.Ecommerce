@@ -8,7 +8,9 @@ live website, approved advertising claims or generated images.
 ## Input and output
 
 See examples/input.json for an illustrative invocation. Require landing_page_url,
-target_country (assigned alpha-2), costs and product_reference_board. Costs contain
+source_country, target_country, costs and product_reference_board. Accept assigned
+ISO alpha-2 or alpha-3 codes from the researcher. Source selects the Firecrawl
+location on every page. Target selects the marketing and pricing market. Costs contain
 cogs_per_unit, extra_unit_cogs_per_order, sales_tax, payment_processing_fees and
 currency. Monetary amounts are explicit finite nonnegative numbers; tax/fees
 are explicit unambiguous strings. Zero is valid; missing data is not zero.
@@ -38,14 +40,14 @@ manifest. The unchanged complete skills live once under repository-root `skills/
 ecommerce-profile-offers, ecommerce-develop-strategy and ecommerce-draft-prompts.
 Each is selected independently through the host and shipped as its own deployment
 ZIP. `skill-bindings.json` uses logical schemas instead of nested skill paths.
-The input, saved handoff and business rules are unchanged. Read
+The saved handoff uses its existing two-letter target-country field. Read
 [portable deployment](references/deployment.md) for setup and updates.
 
 Configure candidates_folder_id and, only for local board inputs, an authorized
-board_handoff_binding. Null folder ID is intentionally non-runnable. The browser
-requirement is a real headed interactive session with visible inspection, NOT
-JavaScript-capable scraping. Missing browser, board-reading or raw-file-write
-capabilities are deployment blockers, not reasons to silently substitute tools.
+board_handoff_binding. Bind Firecrawl on each host for retrieval of public
+merchant pages and links. The agent supplies the source country, follows relevant
+same-merchant links and records any access limitations. Connect the authorized
+board reader and Google Drive writer separately.
 
 The adapters explain separate ChatGPT Workspace Agent and Claude Cowork setup.
 They do not claim universal one-click import, production deployment or live tests.
@@ -59,7 +61,7 @@ country/currency and URL-format checks. It needs no online install in the host.
 Tests cover contracts, mappings, error gates and mocked publication; they do not
 establish real browsing, pixel fidelity, pricing judgment or provider atomicity.
 Host mock cases are reported untested where injection is unavailable. Required
-browser/image/storage capabilities still need real bindings before live work.
+Firecrawl/image/storage capabilities still need real bindings before live work.
 No sample cost, product claim or URL in fixtures is real evidence.
 
 ## Pending work
