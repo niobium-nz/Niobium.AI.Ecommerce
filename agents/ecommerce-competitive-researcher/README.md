@@ -55,6 +55,12 @@ read a configuration flag. Drive writes to the two files are independent. If the
 candidate is saved and the append is incomplete, published_registry_pending keeps
 its identifiers and blocks automatic reruns until reconciliation.
 
+For a supervised test, set the optional top-level boolean
+`override_duplicate_check` to true. The researcher performs its normal research
+and saves the verified test candidate under `discovery/_test/{job_id}/`. It
+skips the shared registry and returns `test_published`. Omit the flag or pass
+false to run the regular registered workflow.
+
 ## Deployment and tests
 
 See `adapters/chatgpt-workspace-agent.md` and `adapters/claude-cowork.md`. Bind actual
@@ -87,3 +93,4 @@ Package version 2.0.0 replaces the OneDrive deployment keys with
 `registry_file_id`. Refresh the private configuration when upgrading. If an
 older deployment has a registry, migrate its verified history before switching
 writers. Product input, artifact and result schemas stay the same.
+Version 2.1.0 adds the optional test override and its publication status.

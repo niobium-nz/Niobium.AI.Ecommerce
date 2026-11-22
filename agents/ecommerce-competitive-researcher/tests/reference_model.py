@@ -226,12 +226,13 @@ def artifact(value, reports, score, errors, signal_id):
 
 
 def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=True,
-             registry_ok=True, late_registry=None):
+             registry_ok=True, late_registry=None, guard_available=True):
     """Deterministic expected-order model; not the real hosted agent or a skill implementation."""
     value = deepcopy(value)
     events, errors = [], []
     published_artifact = None
     sid = None
+    test_run = False
     product = value.get("product") if isinstance(value, dict) else None
     name = product.get("likely_product_name") if isinstance(product, dict) else None
     name = name if isinstance(name, str) and name.strip() else None
@@ -240,11 +241,16 @@ def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=T
     try:
         events.append("validate_input")
         validate_input(value)
-        stage = "duplicate_check"
-        events.extend(["acquire_guard", "read_registry"])
-        ids = [ad["ad_archive_id"] for ad in value["ads"]]
-        if set(ids) & set(parse_registry(registry, "json_string_array")):
-            raise ValueError("duplicate_found")
+        test_run = value.get("override_duplicate_check", False)
+        if not test_run:
+            stage = "preflight"
+            if not guard_available:
+                raise ValueError("capability_unavailable")
+            stage = "duplicate_check"
+            events.extend(["acquire_guard", "read_registry"])
+            ids = [ad["ad_archive_id"] for ad in value["ads"]]
+            if set(ids) & set(parse_registry(registry, "json_string_array")):
+                raise ValueError("duplicate_found")
         stage = "normalization"
         events.append("normalize")
         skill_check(normalization_input(value), "ecommerce-normalize-products", "input")
@@ -265,10 +271,11 @@ def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=T
         if "error" in score:
             errors.append(diagnostic("score_partial_failure", stage, value, score["error"]))
         stage = "publication"
-        events.append("recheck_registry")
-        current = registry if late_registry is None else late_registry
-        if set(ids) & set(parse_registry(current, "json_string_array")):
-            raise ValueError("duplicate_found")
+        if not test_run:
+            events.append("recheck_registry")
+            current = registry if late_registry is None else late_registry
+            if set(ids) & set(parse_registry(current, "json_string_array")):
+                raise ValueError("duplicate_found")
         sid = "15ae17b3-f461-4eba-8712-a10c7e691637"  # Fixed mock UUID, NEVER a runtime allocator.
         pending = artifact(value, reports, score, errors, sid)
         events.append("publish")
@@ -276,13 +283,16 @@ def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=T
             raise ValueError("publication_outcome_unknown")
         events.append("verify_publication")
         published_artifact = pending
-        stage = "registry"
-        events.extend(["reread_registry", "append_registry"])
-        if not registry_ok:
-            raise ValueError("registry_update_failed")
-        registry = append_registry(current, "json_string_array", ids)
-        events.append("verify_registry")
-        status = "partial" if errors else "succeeded"
+        if test_run:
+            status = "test_published"
+        else:
+            stage = "registry"
+            events.extend(["reread_registry", "append_registry"])
+            if not registry_ok:
+                raise ValueError("registry_update_failed")
+            registry = append_registry(current, "json_string_array", ids)
+            events.append("verify_registry")
+            status = "partial" if errors else "succeeded"
     except Exception as exc:
         message = str(exc) if isinstance(exc, ValueError) else "Contract validation failed"
         details = {"likely_product_name": name}
@@ -297,9 +307,10 @@ def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=T
             events.append("release_guard")
     published = published_artifact is not None
     filename = sid + ".json" if published else None
+    output_root = "discovery/_test" if test_run else "discovery"
     result = {"likely_product_name": name, "signal_id": sid, "output_filename": filename,
               "output_file_id": "mock-file-id" if published else None,
-              "output_path": f'discovery/{value["job"]["job_id"]}/{filename}' if published else None,
+              "output_path": f'{output_root}/{value["job"]["job_id"]}/{filename}' if published else None,
               "status": status, "published": published,
               "registry_updated": status in ("succeeded", "partial"), "errors": errors}
     check(result, "result")

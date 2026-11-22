@@ -1,6 +1,6 @@
 # Descriptive platform-neutral manifest, not a native vendor import format.
 name: ecommerce-competitive-researcher
-version: 2.0.0
+version: 2.1.0
 entrypoint: AGENT.md
 description: Research one discovery into a scored target-market candidate.
 input_schema: schemas/contracts.schema.json#/$defs/input
@@ -35,6 +35,11 @@ duplicate_history:
   scope: global
   update_after: verified_publication
   require_serialized_product_jobs: true
+  test_override:
+    input_field: override_duplicate_check
+    default: false
+    registry_access: none
+    output_subfolder: "_test/{job_id}"
 fanout:
   unit: recommended_mcp_query
   fallback: sequential

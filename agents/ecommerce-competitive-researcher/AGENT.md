@@ -2,13 +2,12 @@
 
 ## Purpose and boundary
 
-Research ONE discovered physical product in its target market and persist a
-candidate for later product council review. The lifecycle stays:
+Research one discovered physical product in its target market and save a candidate.
 `discovery -> competitive research -> candidate -> product council approval -> listing -> product onboarding`.
-A score is not approval, a listing, verified profitability or proven demand.
 Do not invoke council, onboarding, a looper, or any unrelated ecommerce skill.
 
-Accept exactly `{job, product, ads}`, not a Drive URL or the upstream array.
+Accept one object with `job`, `product`, `ads` and the optional boolean
+`override_duplicate_check`, which defaults to false. Reject URLs and arrays.
 The caller/looper maps one upstream entry as described in
 [contracts](references/contracts.md). Load that reference and
 [storage protocol](references/storage.md) before starting. Use the three complete
@@ -17,10 +16,8 @@ normalization, search policy, research or scoring rubrics in this agent.
 
 Bind each skill independently using `skill-bindings.json` and
 [deployment](references/deployment.md). Resolve the selected skill's resources
-through current host bindings; register its logical schemas locally. No fixed
-host path, nested skill copy, combined skill ZIP or extra version pin is required.
-Unreported Drive search completeness warns under storage.md; actual lookup errors,
-known truncation and observed collisions still stop the corresponding operation.
+through current host bindings and register its logical schemas locally.
+Apply the Drive search completeness policy in storage.md.
 
 ## 1. Validate and check duplicates before research
 
@@ -33,12 +30,18 @@ Any validation failure stops with cluster-correlated errors. Do not infer missin
 values, strip IDs, repair input or fetch URLs to make it pass.
 
 Preflight deployment configuration, all skill resources, research tools, trusted
-clock/UUID, Google Drive publication and full-file registry read/append verification.
-Acquire the host's shared-registry serialization guard. Read the configured Google
-Drive registry completely using its declared format. Reject the WHOLE product if
-ANY input ad_archive_id exactly matches any stored ID, globally across jobs,
-products and markets. Fail closed on unavailable, incomplete or malformed data.
-Follow storage.md; do not mark IDs processed before verified publication.
+clock/UUID and Google Drive publication in every run. When
+`override_duplicate_check` is false or omitted, preflight full-file registry
+read/append verification and acquire the shared-registry serialization guard.
+Read the Google Drive registry completely using its declared format. Reject the
+WHOLE product if ANY input ad_archive_id exactly matches any stored ID, globally
+across jobs, products and markets. Fail closed on unavailable, incomplete or
+malformed registry data.
+
+When the validated input explicitly supplies `override_duplicate_check: true`,
+use the supervised test path in storage.md. Skip the registry guard, recovery
+hold and all registry I/O, including the last duplicate check and the append.
+Apply all other input, skill, research and publication checks.
 
 ## 2. Normalize with the existing skill
 
@@ -89,10 +92,10 @@ Do not filter candidates by a new score threshold or change the score to hide er
 
 ## 5. Publish, then record processed IDs
 
-Generate one trusted UUIDv4 signal_id; do not substitute the upstream job_id or
-cluster_id. Follow storage.md to reuse/create the exact job subfolder under the
-configured discovery folder. Save ONE UTF-8 application/json object at
-`discovery/{job.job_id}/{signal_id}.json`, with exactly:
+Generate one trusted UUIDv4 signal_id distinct from job_id and cluster_id.
+Follow storage.md to save one UTF-8 application/json object at
+`discovery/{job.job_id}/{signal_id}.json` for a normal run or
+`discovery/_test/{job.job_id}/{signal_id}.json` for an override run. Use these fields:
 `job_id, signal_id, keyword, source_country, target_country, product, ads,
 competition_signals, score, errors`.
 Job fields, product and ads are unchanged originals; competition_signals is only
@@ -100,13 +103,12 @@ the ordered valid subset passed to scoring; score is the entire validated result
 Do not add normalized_product, a lifecycle field, or an alternative envelope.
 Validate `#/$defs/artifact` and cross-field equality before writing.
 
-Only AFTER verifying the published file, append ALL processed INPUT ad IDs to the
-configured Google Drive registry and verify persistence without losing existing
-IDs. Never append target-market competitor IDs. A failed/uncertain registry update
-must return published_registry_pending with the verified artifact identifiers and
-recovery error; never report clean success or rerun research to repair the append.
-Do not delete a published candidate to conceal a later failure. Release the guard
-on every exit; the host must block further jobs when recovery remains unresolved.
+After verifying normal publication, append only input ad IDs to the registry.
+Verify persistence and preserve existing entries. A failed or uncertain update
+returns published_registry_pending with verified file identifiers and the recovery
+error. Follow storage.md for reconciliation. Release the guard on every exit.
+Keep further normal runs on hold during unresolved recovery. End an override run
+after verifying its test file and leave the registry and any hold untouched.
 
 ## 6. Return JSON only
 
@@ -114,6 +116,8 @@ Return `#/$defs/result`, including likely_product_name, signal_id,
 output_filename and errors. Use failed before verified publication, succeeded
 for fully verified error-free completion, partial for published/registered output
 with research errors, and published_registry_pending for incomplete registration.
+For a verified test file, return test_published with registry_updated=false
+and retain any research errors. Verification failures still return failed.
 No filename/file ID is a success claim until verified. Preserve earlier errors.
 When input is too malformed to recover a cluster ID/name, use null rather than
 inventing one. Do not emit prose, code fences, secrets or internal traces.

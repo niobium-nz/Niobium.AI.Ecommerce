@@ -20,6 +20,10 @@ keep its verified format, including legacy UTF-8 newline-separated IDs.
 
 ## Preflight and permissions
 
+Apply the discovery folder and publication checks to every run. The registry
+checks, serialization and recovery hold apply to normal runs, including when
+`override_duplicate_check` is omitted or false.
+
 Bind Google Drive to an existing discovery folder by `discovery_folder_id`.
 Confirm its exact ID/name and folder MIME. Bind the registry by `registry_file_id`
 and verify its exact pinned name, discovery parent and raw-file MIME matching the
@@ -71,13 +75,26 @@ Candidate upload and registry update are separate Drive operations. On interrupt
 or uncertain commits, the host must hold subsequent jobs for operator reconciliation.
 Release an acquired guard on every exit; a durable recovery hold survives release.
 
+## Supervised test publication
+
+With an explicit boolean `override_duplicate_check: true`, skip all registry
+operations and the shared guard and recovery hold. Run the usual normalization,
+competition research, scoring and artifact validation. Route the resulting JSON
+to `discovery/_test/{job_id}/{signal_id}.json` and return `test_published` only
+after verifying it. Keep test files out of council intake and leave any production
+hold in place. If a test upload has an uncertain outcome, reconcile its exact
+path and content before retrying the test. The test creates no registry entry.
+
 ## Google Drive publication
 
 After a valid score, generate one UUIDv4 signal_id with a trusted host facility.
-Use the validated upstream UUID as the exact job folder name. Look up direct
-children of discovery by exact name across all types and every exposed page. Reuse exactly
-one folder named job_id with no explicit trash indication. Zero matches permits creation of that exact
-folder; a nonfolder match, multiple matches or known incomplete lookup is an error.
+Use the validated upstream UUID as the exact job folder name. Search direct
+children of discovery for normal runs. For test runs, resolve the exact `_test`
+folder under discovery first, then resolve the job folder under it. For each
+folder, check the exact child name across all file types and every exposed page.
+Reuse one verified folder with no explicit trash indication. Zero matches
+permits creation of the exact folder. A nonfolder match, multiple matches or
+known incomplete lookup is an error.
 Do not overwrite discovery/{job_id}.json: it is the upstream ARRAY file, while
 this agent writes inside a job_id FOLDER.
 
