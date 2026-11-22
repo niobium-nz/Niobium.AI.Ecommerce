@@ -28,6 +28,12 @@ and recovery holds. A trigger receipt or subagent feature alone proves none of t
 guarantees. Missing operational capabilities block dispatch; a contract resource file
 does not replace a child agent. The looper needs no skill ZIP, paid search or write tools.
 
+The Workspace Agents trigger API can queue an execution and report run status.
+Use the [checkpoint runner](../references/checkpoint-runner.md) with a trusted
+terminal-result and registry-coordination adapter. The API does not supply the
+structured result required by the looper.
+[OpenAI trigger and status documentation](https://developers.openai.com/workspace-agents/trigger-runs)
+
 Run the setup checks in references/deployment.md in Preview, which may have a
 different authenticated context from the builder. Use the current package's helper
 with --contracts and no --skill arguments, resolving current resource paths. Do not install

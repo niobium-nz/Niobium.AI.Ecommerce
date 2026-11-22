@@ -10,11 +10,10 @@ coordinator. Reject deployment if any required semantics are unavailable. Do not
 invent a native agent-call tool, HTTP endpoint, background job or credentials.
 
 The researcher deployment must use the same discovery_folder_id and its existing
-OneDrive registry configuration. Verify the actual registry scope and coordinator
+Google Drive registry configuration. Verify the actual registry scope and coordinator
 at deployment and before dispatch. A local sequential loop is not a global lock.
 The researcher must have its full AGENT.md, references, schemas, three skills,
-research tools and write permissions. The looper itself needs no OneDrive access,
-paid-ad search, browsing or Google Drive write permission.
+research tools and write permissions. The looper needs a read-only Drive connection.
 
 ## Read one stable upstream artifact
 
@@ -80,9 +79,14 @@ separate explicit coordinator/operator action on the pinned source and journal;
 there is no public automatic resume flag in this package.
 
 Keep loop summaries/journals in durable host task storage. Do not create new Drive
-sidecars or repurpose the OneDrive ad-history file as a coordinator log. The child
+sidecars or repurpose the Google Drive ad-history file as a coordinator log. The child
 alone publishes discovery/{job_id}/{signal_id}.json and updates processed IDs.
-Cross-provider writes are not atomic; no exactly-once claim is made by this package.
+Candidate publication and the registry update are independent Drive operations.
+
+The [checkpoint runner](checkpoint-runner.md) implements persisted source bytes,
+dispatch intents, invocation IDs, and result records. A bounded execution window
+can pause between products or while waiting for a known invocation. A submission
+without a confirmed outcome or invocation ID stays held for reconciliation.
 
 ## Integration references checked 2026-11-11
 

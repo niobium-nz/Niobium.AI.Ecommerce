@@ -12,7 +12,7 @@ Do not reimplement or directly invoke the researcher's three skills.
 Read [contracts](references/contracts.md), [host protocol](references/host-protocol.md)
 and the declared [dependencies](dependencies.json) before execution. The researcher
 remains a separate complete agent with its own skills and configuration. Its
-publication and OneDrive history updates remain its responsibility. No agent or
+publication and Google Drive registry updates remain its responsibility. No agent or
 skill is moved into this looper, and no live deployment is implied by these files.
 
 Bind the logical schemas in `contract-bindings.json` as described in
@@ -44,7 +44,7 @@ A valid empty array returns empty with zero researcher invocations.
 
 For a nonempty source, require a verified, authorized researcher invocation binding
 with its complete package, skills, tools and deployment configuration. Verify the
-same discovery folder and the researcher's actual shared OneDrive registry scope.
+same discovery folder and the researcher's actual shared Google Drive registry scope.
 Require the host's global serialization/recovery protocol and durable dispatch
 journal. A prose instruction or configuration value alone is not a lock.
 Fail before dispatch if any prerequisite is missing or a recovery hold exists.
@@ -68,6 +68,9 @@ provenance, upstream lifecycle fields, other products or a file URL to the child
 Provide a fresh isolated child context and wait for its final, settled result
 before proceeding. Product concurrency is ONE; researcher keyword subagents may
 still operate under their existing limits. Do not shorten or expand those limits.
+Use the checkpoint runner or equivalent host binding for bounded execution.
+Resume a known invocation by polling its saved handle, or resume at the next
+unprocessed source index after a safe pause between products.
 Persist a dispatch intent and correlation before the one invocation attempt;
 record the child's returned invocation ID and terminal result afterward.
 Do not retry, dispatch a fallback after a timeout, or mistake acceptance for completion.
@@ -86,7 +89,7 @@ invalid or mismatched responses, preflight/registry infrastructure errors, lost
 serialization, or failure to durably record completion. Record a recovery hold
 where outcomes may be uncertain. Never start the next item while a child might
 still be running. Mark all remaining entries not_run, not failed or successful.
-Do not append OneDrive IDs, publish a replacement artifact, delete files, clear a
+Do not append registry IDs, publish a replacement artifact, delete files, clear a
 hold or rerun research to repair another agent's failure.
 
 ## 5. Return the batch result
@@ -100,7 +103,7 @@ A completed loop means iteration finished, not that every product became a candi
 or that council approved any product. No council or onboarding invocation occurs.
 
 Keep the full summary and dispatch journal in host-controlled task storage; create
-no additional Google Drive or OneDrive files. If capacity cannot accommodate the
+no additional Google Drive files. If capacity cannot accommodate the
 source, child payloads, journal and complete result, fail before work or stop at a
 settled item boundary with the remaining entries not_run. Never hide truncation.
 Crash recovery or deliberate replay requires coordinator/operator reconciliation;
