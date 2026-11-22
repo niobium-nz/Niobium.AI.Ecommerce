@@ -42,6 +42,26 @@ country fixed and stop the affected request. Reserve an entry retry for a transi
 retrieval failure. A tool or country parameter unavailable before the first request
 yields an error-only result. Send only the public URL and retrieval parameters.
 
+## Assemble and validate the profile before following links
+
+After the first accepted page, immediately extract its evidence into a complete
+profile object and check it against `schemas/output.schema.json`. Create all
+required keys in each present object. Use null for unknown scalars and [] for
+unknown lists. Keep this schema-valid profile as the current result before making
+another request. A complete object can contain unknown facts. Record conflicting
+claims in `blockers` and leave the disputed facts out of the claims used by later
+stages. A conflict in a specification does not make an otherwise identified
+product unknown.
+
+Once the accepted evidence identifies the primary product and captures the
+material offer terms visible on the entry, finish the profile unless a specific
+material gap can be answered by an eligible link. For example, a product link
+can establish the offer behind an advertorial, and a policy link can clarify a
+material condition that the entry only names. When the entry already states the
+relevant terms, do not open another page just because it has a policy link or the
+profile has optional unknowns. The page limits are ceilings. Stop with adequate
+evidence and leave time for the invoking agent to validate and use the profile.
+
 ## Choose follow-up pages
 
 1. Validate the entry and each candidate against the URL exclusions before sending
@@ -62,11 +82,12 @@ yields an error-only result. Send only the public URL and retrieval parameters.
    account, cart, checkout, site search and pagination.
 3. Visit the highest-priority eligible link that could fill an evidence gap.
    Start with the primary offer/PDP, then guarantees/returns, shipping, proof
-   and materials. Break ties by canonical URL. Visit the relevant linked pages
-   when the landing page only names them. Extract the supporting text and source
-   URL, discover eligible links on that page, and repeat. Keep a short internal
-   ledger of attempted URL, effective URL, depth, source country, findings and
-   blockers. Never return a catalogue of links as the agent result.
+   and materials. Break ties by canonical URL. Before each follow-up, identify
+   the material gap it could resolve. Extract the supporting text and source URL,
+   update and validate the profile, then reassess whether another page is needed.
+   Keep the last validated result until its replacement passes the schema. Keep
+   a short internal ledger of attempted URL, effective URL, depth, source country,
+   findings and blockers.
 4. Apply the shared limits in policy.json: serial requests, ten unique attempted
    pages including the entry, two link hops, one attempt per follow-up and at most
    eleven deliberate loads including one transient entry retry. Check for empty
@@ -90,6 +111,9 @@ scrape creates no session for the agent to close.
 
 Apply extraction.md and the shared output schema. Preserve the original entry
 URL, observed final entry URL and known retrieval time. Keep unsupported facts
-unknown. With an operational failure after retrieval started, return any usable
-in-scope evidence, blockers and an error. Keep per-page evidence internal except
-where the profile contract calls for a source or diagnostic.
+unknown. Return the latest validated profile as soon as retrieval is done. If an
+operational failure or host limit interrupts enrichment, use the last validated
+profile and add the observed blocker and any applicable error, then validate the
+final object again. Report a specific schema path if a complete object cannot be
+validated. Keep per-page evidence internal except where the profile contract calls
+for a source or diagnostic.
