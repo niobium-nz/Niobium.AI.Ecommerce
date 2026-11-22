@@ -6,6 +6,39 @@ browser runtime is needed. Read resources and reason through the formulas; use a
 available calculator only as an optional aid. Schema self-checking is not equivalent
 to machine-enforced validation.
 
+## Complete the plan in dependency order
+
+As soon as the input passes, produce a complete strategy using the supplied
+evidence and labeled assumptions. Establish `product_details` and
+`pricing_economics_and_offers` first. Set the single offer, pricing, shipping
+and proposed refund framing once so the rest of the plan can use them
+consistently. Calculate contribution, funnel rates and a downside case before
+drafting creative directions. Optional research and reference examples must
+not delay that first complete plan.
+
+Next select the distinct customer segments and angles the evidence supports.
+Use fewer than three segments when the evidence supports fewer meaningful
+purchase reasons, and explain that choice in the existing rationale fields.
+Use one strong angle per segment when more angles would repeat its message.
+Define the necessary landing-page sections and asset IDs once, then complete
+the segments and their creative handoffs against that same plan. Keep fields
+concise and specific. The example's length and number of assets are not minimums.
+
+Assemble the four sections as structured working data. Validate each section
+or segment against its definition as it is assembled, then check the complete
+object and the cross-field consistency rules. Use scratch storage and a schema
+validator when available. Do not retype completed sections from prose or
+replace them with a summary. Once the complete strategy passes, return it
+promptly so the calling workflow can run its remaining stages.
+
+When completion fails, return the error-only contract with the phase and the
+specific missing input, calculation, schema path, or failed capability. If
+execution ended before a complete section existed, identify the unfinished
+section and any known interruption. Do not report a schema rejection unless
+validation actually found one.
+
+## Optional research
+
 Use ordinary search/browsing selectively when it materially improves category norms,
 local customer phrasing, seasonal triggers, price anchoring, usage occasions or
 policy-sensitive claims. Use current primary sources for facts that need verification.
