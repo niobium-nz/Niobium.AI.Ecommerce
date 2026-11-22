@@ -79,8 +79,17 @@ If Firecrawl Interact was used, stop its sessions on every exit and report any c
 
 Invoke `ecommerce-develop-strategy` once with the exact mappings
 in contracts.md: the five costs fields, the resolved target country, and profile.product
-name, key_claims, ingredients_or_materials and how_it_wins.
+name, key_claims, ingredients_or_materials and how_it_wins. If the host executes
+skills in the current context, perform the selected skill's workflow there;
+the attached skill need not be a separate callable agent. Follow its
+`references/research-and-runtime.md` completion order and keep its full
+structured result as working data for the next stage.
+
 Validate the entire response and the skill's economics/semantic checklist.
+On a failure, report the specific input, calculation, schema path, unfinished
+section or observed tool error in the marketing diagnostic. Preserve the
+diagnostic from the skill's error branch. Keep optional analysis within the
+time available for image strategy and Drive verification.
 Error-only, incomplete/invalid strategy, unresolved identity or essential
 calculation failure stops without publication. Do not synthesize a partial plan.
 Do not reject a complete honest strategy solely for poor modeled profitability.
