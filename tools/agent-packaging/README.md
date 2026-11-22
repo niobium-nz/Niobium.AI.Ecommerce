@@ -33,6 +33,22 @@ default retains the previous discoverer cache location, `.cache/discoverer-wheel
 settings. Fixed ZIP order/timestamps make equal inputs produce equal output bytes.
 Generated outputs and caches remain outside Git. Default configurations are unfilled.
 
+## Firecrawl for the onboarding specialist
+
+For a private ChatGPT Workspace Agent, open **Browse apps**. When the native
+Firecrawl app is unavailable, choose **Custom MCP**, then **Create app**. For
+keyless reads, enter `https://mcp.firecrawl.dev/v2/mcp` as the server URL and
+choose **No authentication**. Give the connection a recognizable name such as
+**Firecrawl Public Pages**. Connect it to the agent and check that Studio shows
+**Ready** and **Agent-owned account**. Enable **Firecrawl scrape** for this
+agent. File parsing and web search are optional provider actions and can stay off.
+
+In Preview, use a researcher result with different source and target countries.
+Verify that the scrape receives the source country on the landing page and on
+a relevant linked policy page. The target country belongs to the strategy.
+Keyless access has daily usage limits. A larger deployment can bind its
+authorized Firecrawl team account through the host. [Firecrawl connection options](https://docs.firecrawl.dev/mcp-server)
+
 ## Optional validation adapter
 
 The generated offline support includes jsonschema, referencing, format-checking
