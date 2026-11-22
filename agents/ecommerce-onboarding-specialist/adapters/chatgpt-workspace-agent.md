@@ -31,17 +31,19 @@ Bind board pixel reading, trusted UUID generation and Google Drive lookup, raw
 upload and verification. Inspect the board pixels and preserve its durable
 Drive URL. Keep provider credentials in the host connection.
 
-For a workflow that binds all participating agents to the same Google Drive
-connection or shared storage binding, declare that deployment invariant in
-the workspace Instructions. If a downstream agent uses another connection,
-verify its access before saving a handoff with a private Drive board.
+When all participating agents have the same effective board-read grant through
+the shared Drive connection, declare that deployment invariant in the workspace
+Instructions. Include per-agent action constraints when checking the grant.
+If the effective downstream grant differs or is unknown, verify access to
+the exact file before saving a handoff with a private Drive board.
 
-Set the model and reasoning effort in the agent settings to support the full
-workflow in one invocation. For this Workspace deployment, use GPT-6.2 Astra
-with Max reasoning and validate the actual runtime in Preview before updating
-the live version. A one-run acceptance check uses one input, allows normal
-host write approvals during the run, and independently reads back the
-complete artifact. Sending a continuation message does not pass that check.
+Select a model and reasoning effort actually available in the workspace's
+agent settings. Use GPT-6.2 Astra with Max reasoning where both are exposed
+and supported. Otherwise select an available model and effort and verify the
+full workflow in Preview before updating the live version. A one-run acceptance
+check uses one input, allows normal host write approvals during the run, and
+independently reads back the complete artifact. Sending a continuation message
+does not pass that check.
 
 Run the setup checks in references/deployment.md in Preview, which may have a
 different authenticated context from the builder. Use the current package's helper
