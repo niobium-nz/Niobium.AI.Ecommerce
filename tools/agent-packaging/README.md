@@ -16,7 +16,7 @@ remain available under the agent's adapters/ directory.
 | Agent | Independently deployable skill ZIPs | Other dependency |
 | --- | --- | --- |
 | Product discoverer | ecommerce-cluster-ads | Configured search and Drive actions |
-| Competitive researcher | ecommerce-normalize-products; ecommerce-analyze-competition; ecommerce-score-products | OneDrive registry, shared guard/recovery and Drive publication |
+| Competitive researcher | ecommerce-normalize-products; ecommerce-analyze-competition; ecommerce-score-products | Google Drive registry and publication, shared guard/recovery |
 | Onboarding specialist | ecommerce-profile-offers; ecommerce-develop-strategy; ecommerce-draft-prompts | Headed browser, board reading, Drive publication |
 | Discovery looper | None | Separate researcher, coordinator and generated contract schemas |
 

@@ -1,21 +1,42 @@
 # Storage, registry and recovery protocol
 
+## Provision one canonical registry
+
+The `duplicate_history` section of [agent.yaml](../agent.yaml) pins the file
+`processed-ad-ids.json` directly inside the configured Google Drive discovery
+folder. On initial setup, search direct children for that exact name across all
+file types and apply the search completeness rules below. If there are no matches,
+upload UTF-8 `[]` as `application/json` once. Verify the ID, exact name, parent,
+MIME type and full contents. Stop on an observed collision or known incomplete
+search. Reconcile uncertain writes without uploading another copy.
+
+Reuse a verified existing registry and retain all its entries. Record its Drive
+file ID as `registry_file_id` in the private `deployment-config.json`. Keep that
+ID across installs and updates that share this history. If a binding goes missing
+during redeployment, resolve the file under the configured discovery folder and
+verify it before restoring the binding. Keep live IDs, sharing links, registry
+contents and credentials out of Git. An explicitly bound existing registry can
+keep its verified format, including legacy UTF-8 newline-separated IDs.
+
 ## Preflight and permissions
 
-Bind Google Drive to an existing discovery folder by discovery_folder_id. Confirm
-its exact ID/name and folder MIME; apply the optional metadata policy below. Never find
-a replacement by name, use root, or change sharing. Bind OneDrive by the configured
-drive/item IDs, not ad-controlled names. It must be an existing readable/writable
-file, not a folder/shortcut. Read complete raw bytes, not search excerpts. Resolve
-all required capabilities before research. Missing capabilities/configuration fail
-closed; authoring this package does not authorize a live test or resource changes.
+Apply the discovery folder and publication checks to every run. The registry
+checks, serialization and recovery hold apply to normal runs, including when
+`override_duplicate_check` is omitted or false.
 
-OneDrive and Google Drive are distinct providers. Do not substitute one for the
-other, invent tools, or claim an authenticated search connector supports writes.
-Inspect actual action schemas. A host needs full-file content replacement or a
-safe append operation, full readback and a shared-registry serialization guarantee.
-Version-conditional writes are desirable additional protection, not an excuse for
-concurrent product jobs. Never silently drop a condition supported by the binding.
+Bind Google Drive to an existing discovery folder by `discovery_folder_id`.
+Confirm its exact ID/name and folder MIME. Bind the registry by `registry_file_id`
+and verify its exact pinned name, discovery parent and raw-file MIME matching the
+declared format (`application/json` for JSON or `text/plain` for legacy newline
+data). Apply the optional metadata policy below to both resources and stop on an
+observed exact-name registry collision. Do not replace the configured ID with a
+search result, use root, create a missing registry during a job or change sharing.
+
+Read the registry's complete raw bytes. Inspect actual action schemas for full
+readback and safe append or in-place raw-content replacement by file ID. Resolve
+those capabilities and the shared-registry serialization guarantee before research.
+Use any version condition supported by the selected write tool as additional
+protection. The condition alone does not serialize product jobs.
 
 ## Registry format and duplicate semantics
 
@@ -45,22 +66,35 @@ This may be a serialized execution queue or a shared lock respected by EVERY wri
 including other hosts. A config value alone is not a lock. No such mechanism means
 capability_unavailable before research. Never create ad hoc registry reservation
 records or mark IDs processed before publication. Keyword subagents within the one
-job may still run in parallel and may not touch either storage provider.
+job may still run in parallel and may not access storage.
 
 Re-read the registry before publication. If newly recorded matching IDs appear,
 stop duplicate_found without output. If unrelated contents changed, preserve them
 and use that current snapshot; investigate any loss of the serialization guarantee.
-Do not promise atomic or exactly-once cross-cloud processing. On interrupted or
-uncertain commits, the host must hold subsequent jobs for operator reconciliation.
+Candidate upload and registry update are separate Drive operations. On interrupted
+or uncertain commits, the host must hold subsequent jobs for operator reconciliation.
 Release an acquired guard on every exit; a durable recovery hold survives release.
+
+## Supervised test publication
+
+With an explicit boolean `override_duplicate_check: true`, skip all registry
+operations and the shared guard and recovery hold. Run the usual normalization,
+competition research, scoring and artifact validation. Route the resulting JSON
+to `discovery/_test/{job_id}/{signal_id}.json` and return `test_published` only
+after verifying it. Keep test files out of council intake and leave any production
+hold in place. If a test upload has an uncertain outcome, reconcile its exact
+path and content before retrying the test. The test creates no registry entry.
 
 ## Google Drive publication
 
 After a valid score, generate one UUIDv4 signal_id with a trusted host facility.
-Use the validated upstream UUID as the exact job folder name. Look up direct
-children of discovery by exact name across all types and every exposed page. Reuse exactly
-one folder named job_id with no explicit trash indication. Zero matches permits creation of that exact
-folder; a nonfolder match, multiple matches or known incomplete lookup is an error.
+Use the validated upstream UUID as the exact job folder name. Search direct
+children of discovery for normal runs. For test runs, resolve the exact `_test`
+folder under discovery first, then resolve the job folder under it. For each
+folder, check the exact child name across all file types and every exposed page.
+Reuse one verified folder with no explicit trash indication. Zero matches
+permits creation of the exact folder. A nonfolder match, multiple matches or
+known incomplete lookup is an error.
 Do not overwrite discovery/{job_id}.json: it is the upstream ARRAY file, while
 this agent writes inside a job_id FOLDER.
 
@@ -80,10 +114,10 @@ Drive names are not unique; list-then-create is not an atomic uniqueness guarant
 
 ## Append only after verified publication
 
-Re-read the latest complete OneDrive file under the serialization guard. Construct
+Re-read the latest complete Google Drive registry under the serialization guard. Construct
 its original content plus missing INPUT ad IDs in input order, adding each once.
 Do not add target-market IDs from competition reports. Use a supported safe append
-or full-content replacement by the SAME drive/item ID, preserving every existing
+or full-content replacement by the SAME Drive file ID, preserving every existing
 record; verify full readback contains the original sequence plus all expected IDs.
 For newline format preserve the original byte prefix as well. Never truncate,
 reinitialize, rename or delete the registry, even when it is missing or malformed.
@@ -101,17 +135,14 @@ the same guard. It must resolve the hold before another job can reuse those IDs.
 No new signal_id, artifact, research or paid call is needed. This package does not
 pretend a plain ID-history file is a distributed transaction log.
 
-## Binding references (checked 2026-11-11)
+## Binding references
 
 Logical capabilities above must map to actual authorized host tools. The following
-are API references, not claims that an installed connector exposes every action.
-Microsoft documents full-content replacement and version conditions for upload
-sessions; test the precise selected write operation instead of assuming every
-content endpoint accepts the same conditional headers.
+are API references. Check that the installed tool exposes the precise read and
+in-place content update operations.
 
-- https://learn.microsoft.com/graph/api/driveitem-get-content
-- https://learn.microsoft.com/graph/api/driveitem-put-content
-- https://learn.microsoft.com/graph/api/driveitem-createuploadsession
+- https://developers.google.com/workspace/drive/api/reference/rest/v3/files/get
+- https://developers.google.com/workspace/drive/api/reference/rest/v3/files/update
 - https://developers.google.com/workspace/drive/api/guides/folder
 - https://developers.google.com/workspace/drive/api/guides/search-files
 - https://developers.google.com/workspace/drive/api/guides/manage-uploads

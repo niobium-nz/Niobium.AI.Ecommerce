@@ -34,25 +34,32 @@ requested correlation fields, originals, valid reports, full score and errors.
 The signal_id name is retained as requested; the business result is a candidate,
 not council approval or an onboarded listing.
 
-The OneDrive registry checks exact ad IDs globally, without product/job/market
+The Google Drive registry checks exact ad IDs globally, without product/job/market
 scoping. Any match rejects the entire product, including a later product sharing
 an ad or a later target market. After verified publication, append only the input
 ad IDs. No IDs are added for rejected, failed or unpublished work.
 
-Configure the real discovery folder ID and OneDrive drive/item IDs before use.
-The registry format is explicit deployment configuration: a JSON array of string
-IDs or UTF-8 newline-separated IDs. No supplied existing file format is assumed
-or auto-detected. The example selects json_string_array; use [] for an initially
-empty JSON registry. The null resource IDs deliberately prevent an unconfigured
-run. This source package does not create or modify live cloud resources.
+The agent definition pins `processed-ad-ids.json` directly under the configured
+Google Drive discovery folder. Provision it once as a UTF-8 JSON string array
+starting with `[]`. Keep its verified Drive file ID in private deployment
+configuration as `registry_file_id` and reuse that ID across installs and updates.
+An existing registry with confirmed contents may retain its explicitly configured
+format. The null resource IDs prevent an unconfigured run.
+See [registry provisioning and reuse](references/storage.md).
 
 Product jobs sharing a registry must be serialized by the host from duplicate
 check through publication and append; query subagents within one job may run in
 parallel. This prevents duplicate processing races that versioned file writes
 alone cannot prevent. Host validation must establish that guarantee, not merely
-read a configuration flag. Cross-cloud writes are not atomic. If a file is saved
-but the append is incomplete, the explicit published_registry_pending outcome
-keeps its identifiers and blocks automatic reruns until reconciliation.
+read a configuration flag. Drive writes to the two files are independent. If the
+candidate is saved and the append is incomplete, published_registry_pending keeps
+its identifiers and blocks automatic reruns until reconciliation.
+
+For a supervised test, set the optional top-level boolean
+`override_duplicate_check` to true. The researcher performs its normal research
+and saves the verified test candidate under `discovery/_test/{job_id}/`. It
+skips the shared registry and returns `test_published`. Omit the flag or pass
+false to run the regular registered workflow.
 
 ## Deployment and tests
 
@@ -82,5 +89,8 @@ Open the kit's START-HERE.md. The default kit and instructions are platform-neut
 use the relevant host adapter only for that deployment. The optional Python checker
 has documented runtime targets, and equivalent validators are supported elsewhere.
 For another build use a fresh --output directory so edited settings are preserved.
-Package version 1.1.1 distinguishes unreported lookup completeness from known
-truncation. Existing wire formats and required identity/content checks are unchanged.
+Package version 2.0.0 replaces the OneDrive deployment keys with
+`registry_file_id`. Refresh the private configuration when upgrading. If an
+older deployment has a registry, migrate its verified history before switching
+writers. Product input, artifact and result schemas stay the same.
+Version 2.1.0 adds the optional test override and its publication status.

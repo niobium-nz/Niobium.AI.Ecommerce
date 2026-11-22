@@ -44,14 +44,16 @@ class ResearcherTests(unittest.TestCase):
     def test_configuration_requires_real_ids(self):
         config = load(ROOT / "config.example.json")
         with self.assertRaises(ValidationError): validate_config(config)
-        for field in ("discovery_folder_id", "onedrive_drive_id", "onedrive_item_id"):
+        for field in ("discovery_folder_id", "registry_file_id"):
             config[field] = "mock-id"
         validate_config(config)
 
     def test_configuration_rejects_root_bad_zone_and_null_format(self):
         config = load(ROOT / "config.example.json")
-        for k in ("discovery_folder_id", "onedrive_drive_id", "onedrive_item_id"): config[k] = "mock-id"
-        for field, value in (("discovery_folder_id", "root"), ("registry_format", None),
+        for k in ("discovery_folder_id", "registry_file_id"): config[k] = "mock-id"
+        for field, value in (("discovery_folder_id", "root"), ("registry_file_id", "root"),
+                             ("registry_file_id", "https://drive.google.com/file/d/fixture"),
+                             ("registry_format", None),
                              ("max_parallel_queries", 0), ("registry_concurrency", "concurrent")):
             with self.subTest(field=field), self.assertRaises(ValidationError):
                 validate_config(dict(config, **{field: value}))
@@ -245,6 +247,55 @@ class ResearcherTests(unittest.TestCase):
         self.assertEqual(result["status"], "failed"); self.assertIsNone(out)
         self.assertNotIn("normalize", events); self.assertNotIn("append_registry", events)
         self.assertEqual(result["errors"][0]["product_cluster_id"], self.input["product"]["cluster_id"])
+
+    def test_duplicate_override_requires_literal_boolean(self):
+        for invalid in ("true", 1, None):
+            value = {**self.input, "override_duplicate_check": invalid}
+            with self.subTest(value=invalid), self.assertRaises(ValidationError):
+                validate_input(value)
+
+    def test_duplicate_override_defaults_to_guarded_duplicate_check(self):
+        options = {"registry": '["demo-ad-001"]'}
+        self.assertEqual(self.run_case(**options)[0]["status"], "failed")
+        self.input["override_duplicate_check"] = False
+        result, _, _, events = self.run_case(**options)
+        self.assertEqual(result["status"], "failed")
+        self.assertIn("read_registry", events)
+        self.assertNotIn("normalize", events)
+        result, _, _, events = self.run_case(guard_available=False)
+        self.assertEqual(result["errors"][0]["stage"], "preflight")
+        self.assertNotIn("normalize", events)
+
+    def test_duplicate_override_saves_only_verified_test_artifact(self):
+        self.input["override_duplicate_check"] = True
+        registry = '["demo-ad-001"]'
+        result, out, history, events = self.run_case(
+            registry=registry, guard_available=False, registry_ok=False)
+        self.assertEqual(result["status"], "test_published")
+        self.assertFalse(result["registry_updated"])
+        self.assertEqual(result["output_path"],
+                         f'discovery/_test/{self.input["job"]["job_id"]}/{result["output_filename"]}')
+        self.assertEqual(out["ads"], self.input["ads"])
+        self.assertNotIn("override_duplicate_check", out)
+        self.assertEqual(history, registry)
+        self.assertEqual(events, ["validate_input", "normalize",
+                                  "competition:" + self.normal["keyword_plan"]["recommended_mcp_queries"][0],
+                                  "score", "publish", "verify_publication"])
+        for change in ({"registry_updated": True},
+                       {"output_path": result["output_path"].replace("/_test", "")},
+                       {"status": "succeeded", "registry_updated": True}):
+            with self.subTest(change=change), self.assertRaises(ValidationError):
+                check({**result, **change}, "result")
+
+    def test_duplicate_override_reports_uncertain_test_save_as_failed(self):
+        self.input["override_duplicate_check"] = True
+        result, out, history, events = self.run_case(guard_available=False, publish_ok=False)
+        self.assertEqual(result["status"], "failed")
+        self.assertIsNone(result["output_path"])
+        self.assertIsNone(out)
+        self.assertEqual(history, "[]")
+        self.assertNotIn("append_registry", events)
+        self.assertEqual(events.count("publish"), 1)
 
     def test_all_query_failures_stop_without_score_or_publication(self):
         self.report = {"error": "search unavailable"}

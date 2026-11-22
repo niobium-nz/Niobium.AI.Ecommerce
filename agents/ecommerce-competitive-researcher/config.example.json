@@ -1,7 +1,6 @@
 {
   "discovery_folder_id": null,
-  "onedrive_drive_id": null,
-  "onedrive_item_id": null,
+  "registry_file_id": null,
   "registry_format": "json_string_array",
   "timezone": "Pacific/Auckland",
   "max_parallel_queries": 3,
