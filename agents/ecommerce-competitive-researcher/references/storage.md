@@ -20,9 +20,12 @@ keep its verified format, including legacy UTF-8 newline-separated IDs.
 
 ## Preflight and permissions
 
-Apply the discovery folder and publication checks to every run. The registry
-checks, serialization and recovery hold apply to normal runs, including when
-`override_duplicate_check` is omitted or false.
+Apply the discovery folder, publication checks and recovery hold to every run.
+Confirm through the coordinator or the authorized operator that the production
+destination has no unresolved write or pending recovery before research.
+If held or unconfirmed, stop before research. Registry reads, writes and
+exclusive registry serialization apply when duplicate checking is enabled,
+including when `override_duplicate_check` is omitted or false.
 
 Bind Google Drive to an existing discovery folder by `discovery_folder_id`.
 Confirm its exact ID/name and folder MIME. Bind the registry by `registry_file_id`
@@ -78,11 +81,12 @@ Release an acquired guard on every exit; a durable recovery hold survives releas
 ## Publication with duplicate checking overridden
 
 With an explicit boolean `override_duplicate_check: true`, skip all registry
-operations and the shared guard and recovery hold. Run the usual normalization,
+operations and the shared registry guard. Confirm production recovery clearance.
+Run the usual normalization,
 competition research, scoring and artifact validation. Write the candidate to
 `discovery/{job_id}/{signal_id}.json`, the same destination used with duplicate
 checking enabled. Return `published_registry_skipped` only after verification.
-Leave the registry and any existing hold untouched. On an uncertain upload,
+Leave the registry untouched. On an uncertain upload, hold future writes and
 reconcile the exact path and content read-only before attempting another run.
 
 ## Google Drive publication
@@ -110,7 +114,7 @@ name, parent, MIME, trash state when exposed, full content/checksum and no obser
 competing exact-name match. A snippet or success response alone is insufficient. On ambiguous upload,
 reconcile read-only using the same ID/name/bytes; never retry the write. If still
 uncertain, return failed with publication_outcome_unknown, do not append registry
-IDs, and require recovery before retry. Do not automatically delete files/folders.
+IDs, and hold subsequent production runs until recovery. Do not automatically delete files/folders.
 Drive names are not unique; list-then-create is not an atomic uniqueness guarantee.
 
 ## Append only after verified publication
