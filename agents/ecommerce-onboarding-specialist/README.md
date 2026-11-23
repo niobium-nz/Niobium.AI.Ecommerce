@@ -17,9 +17,10 @@ are explicit unambiguous strings. Zero is valid; missing data is not zero.
 job_id and signal_id may be omitted/null; otherwise use upstream lowercase UUIDv4s.
 
 The board must be caller-supplied and visibly show the same SKU from multiple views.
-Prefer a durable HTTP(S) image URL usable by this and downstream hosts. Local files
-are accepted only through an authorized host mapping to a durable, same-content
-handoff URL; see references/contracts.md. No automatic board creation or upload.
+Use a durable file URL on the connected Google Drive, which serves as shared
+storage for the workflow. Other HTTP(S) URLs must be usable by the downstream
+host. Local files require an authorized mapping to a durable, same-content
+handoff URL. See references/contracts.md. No automatic board creation or upload.
 
 Saved path: candidates/{signal_id}/{candidate_id}.json, or
 candidates/unlinked/{candidate_id}.json when no upstream signal exists. The existing

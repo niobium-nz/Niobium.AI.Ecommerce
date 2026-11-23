@@ -1,6 +1,6 @@
 # Platform-neutral descriptive metadata, not a vendor-native import schema.
 name: ecommerce-onboarding-specialist
-version: 2.0.0
+version: 2.0.1
 entrypoint: AGENT.md
 description: Prepare marketing and image-prompt strategies for an approved product.
 input_schema: schemas/contracts.schema.json#/$defs/input

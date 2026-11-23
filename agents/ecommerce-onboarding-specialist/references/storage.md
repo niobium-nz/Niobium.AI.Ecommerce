@@ -7,8 +7,12 @@ instructions are not callable tool names. Require candidates_folder_id to resolv
 to one existing folder named exactly candidates with matching ID/type; apply the
 optional metadata policy below when trash/add flags are unavailable.
 Do not find a replacement by name, use root, follow shortcuts, or create the root.
-Verify correctly scoped exact-name child lookup across all MIME types and exposed pages, folder create,
+Verify correctly scoped exact-name child lookup across all MIME types and exposed pages,
 raw JSON upload with explicit parent and full content verification before browsing.
+Resolve the exact signal or unlinked folder by read-only lookup. A verified
+existing folder needs no folder creation capability or guard. If no folder
+exists, preflight folder create and the coordination described below before
+browsing. Defer any write until both strategies pass.
 Read-only search or native Doc creation is insufficient. Keep host write approvals.
 
 Use the profiler's localized Firecrawl workflow and its bounded link queue.
@@ -24,11 +28,14 @@ One valid folder with no explicit trash indication may be reused. No matches per
 that child. Multiple matches, a same-named nonfolder/shortcut or known incomplete search
 stops. Never use a guessed sibling, signal_id (1), or overwrite an upstream artifact.
 
-Verify created/reused folder metadata, parent and one observed name match. Serialize
-folder resolution/create per parent/name through a host guard when concurrent
-runs are possible; a Boolean flag or model promise is not a distributed lock.
-Without that capability, deployment must serialize these runs. On uncertain create,
-reconcile via read-only lookup; never blindly repeat it or delete a folder.
+Recheck the exact-name lookup and verify the folder ID, type, parent and one
+observed name match immediately before uploading. Reuse a verified existing
+folder by ID. Concurrent runs can append distinct create-only UUID filenames
+to an existing folder. A run that must create a folder must serialize the
+lookup/create for that parent and name through a host guard or a genuinely
+serialized deployment. A Boolean flag or model promise does not establish
+coordination. Reconcile uncertain creates through read-only lookup. Never
+blindly repeat a create or delete a folder.
 
 Check {candidate_id}.json absence across all MIME types immediately before writing.
 Any collision stops; do not regenerate ID or overwrite. Serialize the entire
