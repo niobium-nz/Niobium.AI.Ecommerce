@@ -63,7 +63,7 @@ def validate_input(value):
 
 
 def validate_config(value):
-    check(value, "config")
+    check(value, "claim_config_v1")
     ZoneInfo(value["timezone"])
 
 

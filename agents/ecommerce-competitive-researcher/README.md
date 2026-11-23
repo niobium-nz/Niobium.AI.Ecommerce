@@ -78,6 +78,7 @@ Open the kit's START-HERE.md. The default kit and instructions are platform-neut
 use the relevant host adapter only for that deployment. The optional Python checker
 has documented runtime targets, and equivalent validators are supported elsewhere.
 For another build use a fresh --output directory so edited settings are preserved.
-Version 2.3.0 uses per-ID records and an atomic claim index. Refresh the private
-deployment bindings after a verified migration. Existing input, artifact and
-result contracts are preserved.
+Version 2.3.0 uses per-ID records and an atomic claim index. Stage the separate
+`claim_config_v1` settings and follow the migration guide before switching active
+writers. The legacy configuration, input, artifact and result definitions remain
+available to existing readers.

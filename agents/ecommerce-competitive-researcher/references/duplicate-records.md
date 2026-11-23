@@ -112,17 +112,22 @@ mint a replacement candidate during reconciliation.
 
 ## Migrate a previous history
 
-Stop old writers before migration. Read the complete trusted legacy registry
-using its deployed format, JSON string array or UTF-8 newline IDs. Keep exact
-strings and existing decisions, and preserve the old file as a read-only backup.
-Reconcile unresolved old writes before cutover. For each historical ID, create
+Stage the new package and its separate `#/$defs/claim_config_v1` settings.
+The previous package's `#/$defs/config` definition and existing configuration
+file remain valid for legacy readers. Stop the old writers before migrating.
+Read the complete trusted legacy registry using its deployed format, JSON string
+array or UTF-8 newline IDs. Keep exact strings and existing decisions, and
+preserve the old file as a read-only backup. Reconcile unresolved old writes
+before cutover. For each historical ID, create
 or verify its individual record with `ad_archive_id` and
 `source: "legacy_registry"`. Do not fabricate candidate IDs for migrated records.
 Use `seed --ids <verified-legacy-file> --legacy-format <format>` to generate
 create-only processed ranges, in bounded batches if needed. On recovery, verify
 already migrated records and exact processed ranges, then submit only missing
 ranges. Verify every old ID against both the index and its record before making
-the new deployment active. An empty legacy registry has nothing to seed.
+the new package and configuration active together. An empty legacy registry has
+nothing to seed. Keep one writer generation active. Reconcile any new history
+before reactivating an older writer during rollback.
 
 - [Drive file names and identity](https://developers.google.com/workspace/drive/api/reference/rest/v3/files)
 - [Google Sheets named range requests](https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/request#addnamedrangerequest)

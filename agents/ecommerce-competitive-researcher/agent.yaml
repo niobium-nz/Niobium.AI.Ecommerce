@@ -4,7 +4,7 @@ version: 2.3.0
 entrypoint: AGENT.md
 description: Research one discovery into a scored target-market candidate.
 input_schema: schemas/contracts.schema.json#/$defs/input
-configuration_schema: schemas/contracts.schema.json#/$defs/config
+configuration_schema: schemas/contracts.schema.json#/$defs/claim_config_v1
 artifact_schema: schemas/contracts.schema.json#/$defs/artifact
 result_schema: schemas/contracts.schema.json#/$defs/result
 skills:

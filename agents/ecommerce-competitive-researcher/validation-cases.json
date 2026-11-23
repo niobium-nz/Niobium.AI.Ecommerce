@@ -1,6 +1,6 @@
 {
   "scope": "Offline fixtures only; never use the synthetic configuration for a live job.",
-  "config_schema": "schemas/contracts.schema.json#/$defs/config",
+  "config_schema": "schemas/contracts.schema.json#/$defs/claim_config_v1",
   "fixture_config": {
     "commerce_folder_id": "fixture_commerce",
     "discovery_folder_id": "fixture_folder",

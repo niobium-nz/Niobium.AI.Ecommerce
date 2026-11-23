@@ -47,6 +47,14 @@ class ResearcherTests(unittest.TestCase):
             validate_config(config)
         validate_config(load(ROOT / "validation-cases.json")["fixture_config"])
 
+    def test_legacy_configuration_contract_survives_claim_rollout(self):
+        legacy = dict(discovery_folder_id="fixture_folder", registry_file_id="fixture_registry",
+                      registry_format="json_string_array", timezone="Pacific/Auckland",
+                      max_parallel_queries=3, registry_concurrency="host_serialized")
+        check(legacy, "config")
+        with self.assertRaises(ValidationError):
+            validate_config(legacy)
+
     def test_configuration_rejects_root_bad_zone_and_invalid_sheet(self):
         config = load(ROOT / "validation-cases.json")["fixture_config"]
         for field, value in (("discovery_folder_id", "root"), ("processed_ad_folder_id", "root"),
