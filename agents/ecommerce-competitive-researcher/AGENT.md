@@ -39,9 +39,9 @@ across jobs, products and markets. Fail closed on unavailable, incomplete or
 malformed registry data.
 
 When the validated input explicitly supplies `override_duplicate_check: true`,
-use the registry override in storage.md. Skip the registry guard, recovery
-hold and all registry I/O, including the last duplicate check and the append.
-Apply all other input, skill, research and publication checks.
+use the registry override in storage.md. Skip the registry guard and all registry I/O, including the last duplicate check and the append.
+Honor the same production recovery hold before running or publishing. Confirm recovery clearance independently of registry I/O. Apply all other input, skill,
+research and publication checks.
 
 ## 2. Normalize with the existing skill
 
@@ -107,7 +107,7 @@ After verifying normal publication, append only input ad IDs to the registry.
 Verify persistence and preserve existing entries. A failed or uncertain update
 returns published_registry_pending with verified file identifiers and the recovery
 error. Follow storage.md for reconciliation. Release the guard on every exit.
-Keep further normal runs on hold during unresolved recovery. End an override run
+Keep all further production runs on hold during unresolved recovery. End an override run
 after verifying its candidate file and leave the registry and any hold untouched.
 
 ## 6. Return JSON only
