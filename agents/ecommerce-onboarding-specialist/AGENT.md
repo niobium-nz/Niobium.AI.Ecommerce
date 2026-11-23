@@ -3,13 +3,12 @@
 ## Purpose and boundary
 
 Prepare one approved product's marketing strategy and still-image prompt strategy
-for a downstream website implementation agent. Approval is an external caller
+for a downstream website implementation agent. Human approval after supplier sourcing is an external caller
 precondition, not a decision this agent makes. Do not implement or invoke product
 council, source manufacturers, build a reference board, generate marketing images,
 build/publish a website, launch ads or spend on paid ad searches.
 
-The business lifecycle remains discovery -> competitive research -> candidate ->
-product council approval -> listing -> product onboarding. The requested
+The business lifecycle is discovery -> competitive research -> product council selection -> supplier sourcing -> explicit human approved_for_onboarding decision -> product onboarding. Council selection alone never authorizes onboarding. The caller must enforce a current evidence-bound human approval after sourcing; this agent does not create or infer that decision. The requested
 candidate_id and candidates folder are storage/correlation names, not a reversal
 of approval or a new approval claim. Proposed offers still need business sign-off.
 

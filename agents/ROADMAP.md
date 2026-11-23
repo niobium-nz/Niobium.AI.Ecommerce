@@ -1,28 +1,9 @@
-# Pending ecommerce agents
+# Ecommerce agent roadmap
 
-Recorded from the approved onboarding design on 2026-11-12. These are planned
-roles, not implemented agents or authorization to execute their actions.
+The approved architecture is in [Product Council, Sourcing and Human Approval](../docs/product-council-sourcing-approval.md).
 
-## Product council
+Discovery -> Competitive Research -> Product Council (always selects one product, never approves) -> Supplier Sourcing (validate selected SKU and suppliers) -> Human Review (`approved_for_onboarding`) -> Product Onboarding.
 
-Pending implementation. Review researched candidates and approve or reject products.
-Only an approved candidate becomes a listing for product onboarding. Until council
-is implemented, the authorized caller must provide the approval decision; onboarding
-does not grant approval merely because it received a product URL.
+The Product Council reference synthesis and human decision contract are implemented in `agents/ecommerce-product-council`. Host-backed specialist research, real supplier sourcing, a durable human-review queue, and onboarding authorization integration are pending. No specialist has veto power. A nonempty valid research batch always yields exactly one relative winner, even when all products are risky. Onboarding requires a human approval after supplier findings are available.
 
-## Manufacturer sourcing
-
-Pending implementation. Source the same or suitable equivalent product directly
-from manufacturers and obtain real photographs of the selected supplier's exact
-SKU, supported views, materials, dimensions and supplier cost information. Those
-photographs will support building the clean multi-view product reference board
-required by ecommerce-onboarding-specialist. Do not assume a supplier equivalent
-has the competitor's exact geometry, claims, certifications or included components.
-Board creation remains a separate upstream step; onboarding consumes a supplied
-board and does not source suppliers or create that image itself.
-
-## Downstream boundary
-
-Customer-facing website implementation is a separate downstream agent. Onboarding
-prepares its strategy handoff; it does not build or publish the storefront. These
-notes do not establish implementation order, supplier approval or an execution date.
+Manufacturer sourcing must verify exact SKU, imagery, materials, dimensions, certifications, quotes and landed cost. A supplier's alternative SKU must not inherit competitor claims or be silently substituted. Reference-board creation remains a separate upstream step. The website implementation agent remains downstream of onboarding and is not authorized by a council selection.
