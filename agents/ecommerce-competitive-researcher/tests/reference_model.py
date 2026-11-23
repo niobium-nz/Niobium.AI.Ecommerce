@@ -226,7 +226,7 @@ def artifact(value, reports, score, errors, signal_id):
 
 
 def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=True,
-             registry_ok=True, late_registry=None, guard_available=True):
+             registry_ok=True, late_registry=None, guard_available=True, recovery_clear=True):
     """Deterministic expected-order model; not the real hosted agent or a skill implementation."""
     value = deepcopy(value)
     events, errors = [], []
@@ -242,8 +242,10 @@ def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=T
         events.append("validate_input")
         validate_input(value)
         skip_registry = value.get("override_duplicate_check", False)
+        stage = "preflight"
+        if recovery_clear is not True:
+            raise ValueError("publication_recovery_not_cleared")
         if not skip_registry:
-            stage = "preflight"
             if not guard_available:
                 raise ValueError("capability_unavailable")
             stage = "duplicate_check"
