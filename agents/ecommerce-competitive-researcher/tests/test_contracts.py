@@ -266,15 +266,15 @@ class ResearcherTests(unittest.TestCase):
         self.assertEqual(result["errors"][0]["stage"], "preflight")
         self.assertNotIn("normalize", events)
 
-    def test_duplicate_override_saves_only_verified_test_artifact(self):
+    def test_duplicate_override_uses_verified_production_path(self):
         self.input["override_duplicate_check"] = True
         registry = '["demo-ad-001"]'
         result, out, history, events = self.run_case(
             registry=registry, guard_available=False, registry_ok=False)
-        self.assertEqual(result["status"], "test_published")
+        self.assertEqual(result["status"], "published_registry_skipped")
         self.assertFalse(result["registry_updated"])
         self.assertEqual(result["output_path"],
-                         f'discovery/_test/{self.input["job"]["job_id"]}/{result["output_filename"]}')
+                         f'discovery/{self.input["job"]["job_id"]}/{result["output_filename"]}')
         self.assertEqual(out["ads"], self.input["ads"])
         self.assertNotIn("override_duplicate_check", out)
         self.assertEqual(history, registry)
@@ -282,12 +282,18 @@ class ResearcherTests(unittest.TestCase):
                                   "competition:" + self.normal["keyword_plan"]["recommended_mcp_queries"][0],
                                   "score", "publish", "verify_publication"])
         for change in ({"registry_updated": True},
-                       {"output_path": result["output_path"].replace("/_test", "")},
-                       {"status": "succeeded", "registry_updated": True}):
+                       {"output_path": result["output_path"].replace("discovery/", "discovery/_test/")},
+                       {"status": "test_published"}):
             with self.subTest(change=change), self.assertRaises(ValidationError):
                 check({**result, **change}, "result")
 
-    def test_duplicate_override_reports_uncertain_test_save_as_failed(self):
+    def test_legacy_test_receipt_can_still_be_read(self):
+        self.input["override_duplicate_check"] = True
+        result, _, _, _ = self.run_case()
+        legacy_path = result["output_path"].replace("discovery/", "discovery/_test/")
+        check({**result, "status": "test_published", "output_path": legacy_path}, "result")
+
+    def test_duplicate_override_reports_uncertain_save_as_failed(self):
         self.input["override_duplicate_check"] = True
         result, out, history, events = self.run_case(guard_available=False, publish_ok=False)
         self.assertEqual(result["status"], "failed")
