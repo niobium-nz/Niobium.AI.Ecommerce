@@ -287,6 +287,19 @@ class ResearcherTests(unittest.TestCase):
             with self.subTest(change=change), self.assertRaises(ValidationError):
                 check({**result, **change}, "result")
 
+    def test_production_recovery_hold_blocks_both_publication_modes(self):
+        for override in (False, True):
+            for recovery in (False, None):
+                with self.subTest(override=override, recovery=recovery):
+                    self.input["override_duplicate_check"] = override
+                    result, out, history, events = self.run_case(recovery_clear=recovery)
+                    self.assertEqual(result["status"], "failed")
+                    self.assertEqual(result["errors"][0]["stage"], "preflight")
+                    self.assertIsNone(out)
+                    self.assertEqual(history, "[]")
+                    self.assertNotIn("normalize", events)
+                    self.assertNotIn("publish", events)
+
     def test_legacy_test_receipt_can_still_be_read(self):
         self.input["override_duplicate_check"] = True
         result, _, _, _ = self.run_case()
