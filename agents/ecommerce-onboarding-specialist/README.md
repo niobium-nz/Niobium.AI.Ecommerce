@@ -23,8 +23,9 @@ host. Local files require an authorized mapping to a durable, same-content
 handoff URL. See references/contracts.md. No automatic board creation or upload.
 
 Saved path: candidates/{signal_id}/{candidate_id}.json, or
-candidates/unlinked/{candidate_id}.json when no upstream signal exists. The existing
-candidates root is configured by ID. Each record contains the requested correlations,
+candidates/unlinked/{candidate_id}.json when no upstream signal exists. Configure
+the existing `candidates` folder directly under the deployment's ecommerce
+folder by ID. Every invocation uses this destination. Each record contains the requested correlations,
 target country, full marketing_strategy, full image_strategy and errors, plus the
 durable product_reference_board reference needed by downstream image production.
 No product profile payload or raw cost wrapper is added to the saved envelope.
