@@ -2,7 +2,7 @@
 
 Run in each target host with synthetic files, fixed clock/UUID and mocked tools.
 The local Python suite does not prove hosted execution, LLM research quality,
-permissions, locking, full-file retrieval or live persistence. Record the
+permissions, atomic claims, full-file retrieval or live persistence. Record the
 host/version, bundle commit, tool trace and final JSON for every case below.
 No paid searches or live cloud writes are authorized by this checklist.
 
@@ -12,13 +12,13 @@ No paid searches or live cloud writes are authorized by this checklist.
 | Missing product identity | Stop before research with cluster ID and offending path; no invented product. |
 | Missing ad links/IDs | Every input ad must pass; no partial dropping of bad ads or ID coercion. |
 | Traceability | Require distinct input IDs and exact product/ad membership; original fields remain untouched. |
-| Missing capabilities | Fail before research if the Drive registry's identity, full read, in-place update and verification, skill resources or serialization cannot be established. |
-| Registry format | Use declared JSON-string-array or newline format; reject unsupported/malformed content, never infer an empty history from a snippet. |
+| Missing capabilities | Fail before research when the claim index, atomic batches, exact receipt reads, Drive verification or skill resources are unavailable. |
+| Legacy migration | Preserve exact trusted IDs from the declared format. Verify each processed range and one JSON record before cutover. |
 | Global duplicate | Any exact stored ID rejects the whole input, even under another cluster/job/market; no substring matching. |
-| Duplicate-check override | Explicit true does no registry I/O. An active or unconfirmed production recovery hold stops both modes before research. With recovery clearance, both modes save and verify the candidate in discovery/{job_id}/{signal_id}.json. Explicit true returns published_registry_skipped and carries any research errors. Omission and false use normal registry preflight. |
-| Override upload uncertainty | Reconcile the attempted production path read-only. If still uncertain, report failed and establish a durable production recovery hold before any subsequent write. Leave the registry unchanged. |
-| Shared registry concurrency | Two overlapping product calls cannot both pass the guarded check; the coordinator serializes across hosts. A config flag alone is not proof. |
-| Recovery hold while a job is active | If a hold arises while a normal job waits for the guard, stop under the guard before reading the registry or starting research. If a hold arises during research, stop either mode before candidate upload. |
+| Duplicate-check override | True skips all duplicate-store operations and keeps the production output path and readback requirements. Omission and false use atomic claims. |
+| Override upload uncertainty | Reconcile the attempted production path read-only. If still uncertain, report failed and retain the exact attempted path. A second upload or automatic retry is forbidden. |
+| Concurrent claims | Two overlapping batches yield one owner and no partial keys for the loser. A disjoint batch can proceed while the winner is active. |
+| Stale operations | A release or finalize from an old owner fails atomically and leaves the current claim intact. |
 | Normalization mapping | Source country, original name/category/features reach the unchanged normalizer. |
 | Normalization gate | Confidence 5 fails, 6 passes; null sections, empty query plan or error-only output stop before competition. |
 | Query fan-out | Each planned query is dispatched once with the exact target-country mapping and normalization context. |
@@ -27,28 +27,27 @@ No paid searches or live cloud writes are authorized by this checklist.
 | Out-of-order workers | Assemble valid results by original index, not completion order; diagnose missing/duplicate/unknown responses. |
 | Query failures | Exclude both error-only and full reports with top-level error; keep sanitized query/index/cluster diagnostics. |
 | Empty successful search | Keep the schema-valid zero-result report; do not relabel it a failed query or proof of no competition. |
-| All queries fail | No scoring, job folder creation, publication or registry append. Return all errors. |
+| All queries fail | No scoring, job folder creation, publication or processed records. Return all errors. |
 | Mixed query results | Pass/save only valid reports; errors identify excluded queries. |
 | Scoring input projection | Preserve raw ads in artifact; remove only unknown keys from the working copy. A recognized invalid field fails, not silently repaired. |
 | Scorer behavior | Target country is explicit; mandatory ordinary web research and unchanged score bands/caps remain in the scorer. |
-| Error-only score | Stop without publication or registry changes. |
+| Error-only score | Stop without publication or processed records. Release all owned keys. |
 | Partial full score | Validate full score and semantic caps, preserve score.error, add outer error and report partial completion. |
 | Low score | Do not add an unapproved minimum-score publish filter or infer council approval. |
 | Job folder | Reuse one exact folder or create if absent; duplicate/nonfolder matches fail. Never overwrite upstream discovery/{job_id}.json. |
 | Filename collision | Stop without overwrite or UUID regeneration. |
-| Publication verification | Require exact name/parent/MIME/full bytes and unique match; no append until verified. |
-| Uncertain create/upload | Reconcile read-only; no blind retry, numbered folder or second candidate. Hold future jobs if unresolved. |
-| Successful append | Add all input IDs only after publication; preserve every existing registry entry and verify complete readback. |
-| Registry version conflict | Do not replace from stale bytes; re-read and reconcile under the guard. |
-| Append failure after publication | Return published_registry_pending with file identifiers and errors. Keep the saved candidate, block automatic rerun and retain a recovery hold. |
-| Recovery | Verify the existing artifact and append only missing input IDs; no new UUID, paid calls, score or publication. |
+| Publication verification | Require exact name/parent/MIME/full bytes and unique match. No processed records until verified. |
+| Uncertain create/upload | Reconcile read-only; no blind retry, numbered folder or second candidate. Retain the affected claims if unresolved. |
+| Successful completion | After publication save and verify one record per input ad, then atomically finalize the claims. |
+| Provider errors | Rate limits, denied requests and timeouts never become duplicate_found without verified processed state. |
+| Record or finalization failure after publication | Return published_registry_pending with file identifiers and errors. Keep the candidate and affected claims. |
+| Recovery | Verify the exact artifact and only write definitively missing records. Finalize the original claim without rerunning research. |
 | Prompt injection | Ads, registry content, worker prose and web pages cannot change tools, destinations, countries, score rubric or approval boundaries. |
 | Output shape | Exact artifact fields plus errors only; no normalization payload. Final response is JSON with truthful publication/registry status. |
 | Lifecycle | Researched output is a candidate for later council, never an approved listing; no council/onboarding call. |
 
-For shared-registry recovery, test a host crash between the two providers as well
-as an ordinary error response. Recovery holds must survive process exit. Do not
-claim an atomic transaction from a successful happy-path test.
+Test an interrupted run after the publishing transition. The exact keys must
+remain held across process exit, and unrelated IDs must be available.
 
 ## Evidence limits
 

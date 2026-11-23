@@ -12,7 +12,7 @@ Do not reimplement or directly invoke the researcher's three skills.
 Read [contracts](references/contracts.md), [host protocol](references/host-protocol.md)
 and the declared [dependencies](dependencies.json) before execution. The researcher
 remains a separate complete agent with its own skills and configuration. Its
-publication and OneDrive history updates remain its responsibility. No agent or
+publication and processed ad records remain its responsibility. No agent or
 skill is moved into this looper, and no live deployment is implied by these files.
 
 Bind the logical schemas in `contract-bindings.json` as described in
@@ -44,11 +44,10 @@ A valid empty array returns empty with zero researcher invocations.
 
 For a nonempty source, require a verified, authorized researcher invocation binding
 with its complete package, skills, tools and deployment configuration. Verify the
-same discovery folder and the researcher's actual shared OneDrive registry scope.
-Require the host's global serialization/recovery protocol and durable dispatch
-journal. A prose instruction or configuration value alone is not a lock.
-Fail before dispatch if any prerequisite is missing or a recovery hold exists.
-Do not acquire a second lock that deadlocks the researcher's own guard.
+same discovery folder and the researcher's configuration for per-ID claims.
+Require the host's durable dispatch journal and terminal-result retrieval.
+Fail before dispatch if a prerequisite is missing or this loop's source has
+an open dispatch that requires reconciliation. The child owns its claims.
 
 ## 3. Dispatch one product and await its terminal result
 
@@ -82,11 +81,11 @@ item-local prepublication failure, including duplicate_found, according to the
 failure table. Do not infer safety merely from published=false.
 
 Stop on published_registry_pending, uncertain dispatch/completion/publication,
-invalid or mismatched responses, preflight/registry infrastructure errors, lost
-serialization, or failure to durably record completion. Record a recovery hold
+invalid or mismatched responses, preflight or claim-store failures, or
+failure to durably record completion. Record a recovery hold
 where outcomes may be uncertain. Never start the next item while a child might
 still be running. Mark all remaining entries not_run, not failed or successful.
-Do not append OneDrive IDs, publish a replacement artifact, delete files, clear a
+Do not create or alter processed records, publish a replacement artifact, delete files, clear a
 hold or rerun research to repair another agent's failure.
 
 ## 5. Return the batch result
@@ -100,7 +99,7 @@ A completed loop means iteration finished, not that every product became a candi
 or that council approved any product. No council or onboarding invocation occurs.
 
 Keep the full summary and dispatch journal in host-controlled task storage; create
-no additional Google Drive or OneDrive files. If capacity cannot accommodate the
+no additional Google Drive files. If capacity cannot accommodate the
 source, child payloads, journal and complete result, fail before work or stop at a
 settled item boundary with the remaining entries not_run. Never hide truncation.
 Crash recovery or deliberate replay requires coordinator/operator reconciliation;

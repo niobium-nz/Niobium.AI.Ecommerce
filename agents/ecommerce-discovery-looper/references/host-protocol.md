@@ -10,10 +10,10 @@ coordinator. Reject deployment if any required semantics are unavailable. Do not
 invent a native agent-call tool, HTTP endpoint, background job or credentials.
 
 The researcher deployment must use the same discovery_folder_id and its existing
-OneDrive registry configuration. Verify the actual registry scope and coordinator
-at deployment and before dispatch. A local sequential loop is not a global lock.
-The researcher must have its full AGENT.md, references, schemas, three skills,
-research tools and write permissions. The looper itself needs no OneDrive access,
+bound per-ID claim index. Verify that configuration and the dispatch journal at
+deployment and before dispatch. The researcher must have its full AGENT.md,
+references, schemas, three skills, research tools and write permissions. The
+looper itself needs no duplicate-store access,
 paid-ad search, browsing or Google Drive write permission.
 
 ## Read one stable upstream artifact
@@ -38,18 +38,16 @@ Freeze the validated source snapshot. Never re-read a changing file between item
 and merge new entries into an in-progress loop. Later source edits require a new
 explicit run after any outstanding recovery has been resolved.
 
-## Shared serialization and durable dispatch records
+## Durable dispatch records
 
-Use ONE verified coordinator domain for all product jobs that share the registry,
-including independent researcher invocations and other hosts. Its admission/guard
-handoff must cooperate with the researcher's existing serialization protocol, not
-hold a separate non-reentrant lock while the child tries to acquire the same lock.
-Global serialization covers duplicate check through publication and ID verification.
-A child may still fan out its keyword searches internally; product concurrency is 1.
+Use a verified journal for the looper's dispatch intents. Dispatch sequentially
+within this loop and wait for the exact child result. Direct researcher runs
+claim their ad IDs in the same index. The looper does not serialize unrelated
+products or acquire claims for a child.
 
 Before EACH dispatch, check pending recovery holds and capacity, then durably record
 loop ID, source ID/version/digest, source index, cluster ID, exact child payload or
-lossless recoverable reference, researcher deployment/version and registry scope.
+lossless recoverable reference, researcher deployment/version and claim scope.
 The dispatch intent must exist before sending. Record any returned invocation ID.
 An open intent with unknown completion is a recovery condition, not permission for
 another attempt. Bind retries off in the transport/coordinator as well as prompts.
@@ -58,7 +56,7 @@ Wait for the exact invocation to become terminal and quiescent; a visible answer
 without that guarantee is insufficient. Validate and durably record the result
 before advancing. A task timeout, lost receipt, cancellation or crash may leave a
 child running or a candidate published. Mark/retain a durable hold and stop further
-product jobs until the operator/coordinator establishes the outcome. Do not claim
+items in this loop until the operator/coordinator establishes the outcome. Do not claim
 cancellation succeeded without confirmation. Release owned execution resources
 without clearing unresolved intents/holds; never strand or clear another run's lock.
 
@@ -72,7 +70,7 @@ failure without inventing a published artifact.
 
 Record a valid published_registry_pending response with its original file identifiers
 and child errors. Registry recovery is owned by the existing researcher protocol:
-verify the prior artifact and append only missing input IDs under the shared guard.
+verify the prior artifact and any missing records, and finalize the original claim.
 The looper must not rerun normalization/research/scoring or republish that product.
 An uncertain researcher invocation is reconciled by its durable intent and actual
 host record, never by creating another signal ID. Resuming remaining items is a
@@ -80,7 +78,7 @@ separate explicit coordinator/operator action on the pinned source and journal;
 there is no public automatic resume flag in this package.
 
 Keep loop summaries/journals in durable host task storage. Do not create new Drive
-sidecars or repurpose the OneDrive ad-history file as a coordinator log. The child
+sidecars or use the processed-ad records as a coordinator log. The child
 alone publishes discovery/{job_id}/{signal_id}.json and updates processed IDs.
 Cross-provider writes are not atomic; no exactly-once claim is made by this package.
 
