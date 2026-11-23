@@ -39,7 +39,7 @@
             "code": "registry_outcome_unknown",
             "stage": "registry",
             "product_cluster_id": "example.com--portable-blender--product",
-            "message": "Synthetic uncertain OneDrive update; reconcile the verified candidate before further work.",
+            "message": "Synthetic uncertain processed-record write. Reconcile the verified candidate before advancing this loop.",
             "details": {}
           }
         ]

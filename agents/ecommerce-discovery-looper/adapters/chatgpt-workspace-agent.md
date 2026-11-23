@@ -23,7 +23,7 @@ this looper's checker validates the supplied contract schemas.
 
 Provision the full researcher separately, with its own selected skills and
 configuration. Bind one-product invocation with correlated terminal/quiescent results,
-read-only Drive, and the actual globally shared coordinator, durable dispatch journal
+read-only Drive, and the actual coordinator, durable dispatch journal
 and recovery holds. A trigger receipt or subagent feature alone proves none of those
 guarantees. Missing operational capabilities block dispatch; a contract resource file
 does not replace a child agent. The looper needs no skill ZIP, paid search or write tools.

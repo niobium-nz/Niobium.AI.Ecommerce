@@ -34,32 +34,21 @@ requested correlation fields, originals, valid reports, full score and errors.
 The signal_id name is retained as requested; the business result is a candidate,
 not council approval or an onboarded listing.
 
-The Google Drive registry checks exact ad IDs globally, without product/job/market
-scoping. Any match rejects the entire product, including a later product sharing
-an ad or a later target market. After verified publication, append only the input
-ad IDs. No IDs are added for rejected, failed or unpublished work.
+In normal mode the agent atomically claims all input ad IDs before research.
+An exact processed ID rejects the whole product, across all jobs and markets.
+Concurrent runs can proceed when their ad IDs are disjoint. An uncertain write
+retains only the affected claims for reconciliation.
 
-The agent definition pins `processed-ad-ids.json` directly under the configured
-Google Drive discovery folder. Provision it once as a UTF-8 JSON string array
-starting with `[]`. Keep its verified Drive file ID in private deployment
-configuration as `registry_file_id` and reuse that ID across installs and updates.
-An existing registry with confirmed contents may retain its explicitly configured
-format. The null resource IDs prevent an unconfigured run.
-See [registry provisioning and reuse](references/storage.md).
+The configured `ecommerce/processed-ad-ids` folder stores one JSON file per ad
+and a native Sheets claim index. The index enforces conditional creation and
+atomic multi-ID batches. Individual processed files are written only after the
+candidate is verified. The existing result field `registry_updated` reports
+verified per-ID records and finalized claims. See
+[duplicate records and migration](references/duplicate-records.md).
 
-Product jobs sharing a registry must be serialized by the host from duplicate
-check through publication and append; query subagents within one job may run in
-parallel. This prevents duplicate processing races that versioned file writes
-alone cannot prevent. Host validation must establish that guarantee, not merely
-read a configuration flag. Drive writes to the two files are independent. If the
-candidate is saved and the append is incomplete, published_registry_pending keeps
-its identifiers and blocks automatic reruns until reconciliation.
-
-For a supervised test, set the optional top-level boolean
-`override_duplicate_check` to true. The researcher performs its normal research
-and saves the verified test candidate under `discovery/_test/{job_id}/`. It
-skips the shared registry and returns `test_published`. Omit the flag or pass
-false to run the regular registered workflow.
+Explicit `override_duplicate_check: true` bypasses the duplicate store. It still
+writes the verified candidate to the same production path and returns
+`published_registry_skipped`. Omission and false use atomic claims.
 
 ## Deployment and tests
 
@@ -71,7 +60,7 @@ Build and test the actual install artifact using the shared tooling below. The
 source tests cover mappings, gates, duplicate handling and mocked ordering/recovery,
 not LLM quality or real provider behavior. Host mock acceptance is recommended
 where supported; lack of injection is an evidence gap, while actual unavailable
-registry serialization/recovery remains a live-execution blocker.
+claim/verification capability remains a live-execution prerequisite.
 
 Sources for host/storage setup are linked in `references/storage.md` and the
 adapters. Baseline: 51cdf133d614d42f189bc6698c17c3593e029dc2, checked 2026-11-11.
@@ -89,8 +78,7 @@ Open the kit's START-HERE.md. The default kit and instructions are platform-neut
 use the relevant host adapter only for that deployment. The optional Python checker
 has documented runtime targets, and equivalent validators are supported elsewhere.
 For another build use a fresh --output directory so edited settings are preserved.
-Package version 2.0.0 replaces the OneDrive deployment keys with
-`registry_file_id`. Refresh the private configuration when upgrading. If an
-older deployment has a registry, migrate its verified history before switching
-writers. Product input, artifact and result schemas stay the same.
-Version 2.1.0 adds the optional test override and its publication status.
+Version 2.3.0 uses per-ID records and an atomic claim index. Stage the separate
+`claim_config_v1` settings and follow the migration guide before switching active
+writers. The legacy configuration, input, artifact and result definitions remain
+available to existing readers.

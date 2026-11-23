@@ -63,41 +63,8 @@ def validate_input(value):
 
 
 def validate_config(value):
-    check(value, "config")
+    check(value, "claim_config_v1")
     ZoneInfo(value["timezone"])
-
-
-def parse_registry(text, format_name):
-    if format_name == "json_string_array":
-        ids = strict_loads(text)
-        if not isinstance(ids, list):
-            raise ValueError("Expected JSON string array")
-    elif format_name == "newline_ids":
-        ids = [line[:-1] if line.endswith("\r") else line for line in text.split("\n")]
-        ids = [line for line in ids if line.strip()]
-        if any("\r" in line for line in ids):
-            raise ValueError("Invalid newline registry record")
-    else:
-        raise ValueError("Unsupported registry format")
-    if any(not isinstance(value, str) or not value.strip() for value in ids):
-        raise ValueError("Registry IDs must be nonblank strings")
-    return ids
-
-
-def append_registry(text, format_name, ids):
-    existing = parse_registry(text, format_name)
-    if any(not isinstance(value, str) or not value.strip() for value in ids):
-        raise ValueError("Invalid appended ID")
-    missing = list(dict.fromkeys(value for value in ids if value not in set(existing)))
-    if not missing:
-        return text
-    if format_name == "json_string_array":
-        return json.dumps(existing + missing, ensure_ascii=False) + "\n"
-    if any("\r" in value or "\n" in value for value in missing):
-        raise ValueError("ID cannot be encoded as one line")
-    newline = "\r\n" if "\r\n" in text else "\n"
-    prefix = text + (newline if text and not text.endswith("\n") else "")
-    return prefix + newline.join(missing) + newline
 
 
 def normalization_input(value):
@@ -225,14 +192,17 @@ def artifact(value, reports, score, errors, signal_id):
     return result
 
 
-def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=True,
-             registry_ok=True, late_registry=None, guard_available=True):
+def run_mock(value, normalized, responses, score, history=None, *, publish_ok=True,
+             records_ok=True, finish_ok=True, claim_available=True, release_ok=True):
     """Deterministic expected-order model; not the real hosted agent or a skill implementation."""
     value = deepcopy(value)
     events, errors = [], []
+    claims = dict(history or {})
+    owned = ()
+    phase = None
     published_artifact = None
     sid = None
-    test_run = False
+    skip_registry = False
     product = value.get("product") if isinstance(value, dict) else None
     name = product.get("likely_product_name") if isinstance(product, dict) else None
     name = name if isinstance(name, str) and name.strip() else None
@@ -241,16 +211,22 @@ def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=T
     try:
         events.append("validate_input")
         validate_input(value)
-        test_run = value.get("override_duplicate_check", False)
-        if not test_run:
-            stage = "preflight"
-            if not guard_available:
+        skip_registry = value.get("override_duplicate_check", False)
+        stage = "preflight"
+        if not skip_registry:
+            if not claim_available:
                 raise ValueError("capability_unavailable")
             stage = "duplicate_check"
-            events.extend(["acquire_guard", "read_registry"])
+            events.append("claim_ids")
             ids = [ad["ad_archive_id"] for ad in value["ads"]]
-            if set(ids) & set(parse_registry(registry, "json_string_array")):
+            if any(claims.get(item) == "processed" for item in ids):
                 raise ValueError("duplicate_found")
+            if any(item in claims for item in ids):
+                raise ValueError("duplicate_claim_held")
+            owned = tuple(ids)
+            phase = "held"
+            claims.update(dict.fromkeys(owned, phase))
+            events.append("verify_claim")
         stage = "normalization"
         events.append("normalize")
         skill_check(normalization_input(value), "ecommerce-normalize-products", "input")
@@ -271,47 +247,56 @@ def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=T
         if "error" in score:
             errors.append(diagnostic("score_partial_failure", stage, value, score["error"]))
         stage = "publication"
-        if not test_run:
-            events.append("recheck_registry")
-            current = registry if late_registry is None else late_registry
-            if set(ids) & set(parse_registry(current, "json_string_array")):
-                raise ValueError("duplicate_found")
         sid = "15ae17b3-f461-4eba-8712-a10c7e691637"  # Fixed mock UUID, NEVER a runtime allocator.
         pending = artifact(value, reports, score, errors, sid)
+        if not skip_registry:
+            phase = "publishing"
+            claims.update(dict.fromkeys(owned, phase))
+            events.append("prepare_publication")
         events.append("publish")
         if not publish_ok:
             raise ValueError("publication_outcome_unknown")
         events.append("verify_publication")
         published_artifact = pending
-        if test_run:
-            status = "test_published"
+        if skip_registry:
+            status = "published_registry_skipped"
         else:
             stage = "registry"
-            events.extend(["reread_registry", "append_registry"])
-            if not registry_ok:
+            events.append("write_records")
+            if not records_ok:
                 raise ValueError("registry_update_failed")
-            registry = append_registry(current, "json_string_array", ids)
-            events.append("verify_registry")
+            events.append("verify_records")
+            if not finish_ok:
+                raise ValueError("registry_outcome_unknown")
+            claims.update(dict.fromkeys(owned, "processed"))
+            events.append("verify_finalization")
             status = "partial" if errors else "succeeded"
     except Exception as exc:
         message = str(exc) if isinstance(exc, ValueError) else "Contract validation failed"
+        codes = {"capability_unavailable", "duplicate_found", "duplicate_claim_held",
+                 "publication_outcome_unknown", "registry_update_failed", "registry_outcome_unknown"}
         details = {"likely_product_name": name}
         if stage == "normalization" and isinstance(normalized, dict):
             section = normalized.get("normalization")
             if isinstance(section, dict):
                 details["confidence0_to10"] = section.get("confidence0_to10")
-        errors.append(diagnostic("stage_failed", stage, value, message, **details))
+        errors.append(diagnostic(message if message in codes else "stage_failed", stage, value, message, **details))
         status = "published_registry_pending" if published_artifact is not None else "failed"
     finally:
-        if "acquire_guard" in events:
-            events.append("release_guard")
+        if phase == "held":
+            events.append("release_claim")
+            if release_ok:
+                for item in owned:
+                    del claims[item]
+            else:
+                errors.append(diagnostic("duplicate_claim_outcome_unknown", "registry", value,
+                                         "Prepublication claim release could not be verified"))
     published = published_artifact is not None
     filename = sid + ".json" if published else None
-    output_root = "discovery/_test" if test_run else "discovery"
     result = {"likely_product_name": name, "signal_id": sid, "output_filename": filename,
               "output_file_id": "mock-file-id" if published else None,
-              "output_path": f'{output_root}/{value["job"]["job_id"]}/{filename}' if published else None,
+              "output_path": f'discovery/{value["job"]["job_id"]}/{filename}' if published else None,
               "status": status, "published": published,
               "registry_updated": status in ("succeeded", "partial"), "errors": errors}
     check(result, "result")
-    return result, published_artifact, registry, events
+    return result, published_artifact, claims, events

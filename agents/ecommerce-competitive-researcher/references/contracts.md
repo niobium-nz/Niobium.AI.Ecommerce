@@ -15,7 +15,7 @@ ads                <- entry.ads (unchanged)
 
 The input requires job, product and ads. The only optional field is
 `override_duplicate_check`, a top-level boolean that defaults to false. Supply
-true explicitly for a supervised test. It is a caller control and never appears
+true explicitly to bypass the registry check and update. It never appears
 in the skill inputs or saved artifact. The looper's normal mapping omits it.
 
 Validate strict JSON, including duplicate keys and non-JSON numbers. Job ID is the
@@ -108,24 +108,26 @@ errors is always an array of {code, stage, product_cluster_id, message, details}
 Do not include secrets, raw connector traces or full unrelated source payloads.
 Use details for likely_product_name, confidence0_to10, query_index, query, ad IDs,
 paths and observed file IDs. Final result errors include all accumulated errors.
-The artifact's errors are the research/validation diagnostics known at publication;
-a later registry failure is returned in the terminal result, not hidden by rewriting
-the already published JSON. The caller must retain that result for recovery.
+The artifact's errors are the research/validation diagnostics known at publication.
+Return failures to save individual records or finalize claims in the terminal
+result. The caller must retain that result for recovery.
 
-| Result status | Verified artifact | Registry IDs verified | Meaning |
+| Result status | Verified artifact | Processed records verified | Meaning |
 | --- | --- | --- | --- |
 | failed | No | No | Validation, research, scoring or publication failed |
 | succeeded | Yes | Yes | No research errors |
 | partial | Yes | Yes | Usable candidate with recorded research errors |
 | published_registry_pending | Yes | No | Publication succeeded; registration needs reconciliation |
-| test_published | Yes, under discovery/_test | Skipped | Supervised test publication verified. Research errors remain in errors. |
+| published_registry_skipped | Yes | Skipped | Verified publication with the duplicate-check override. Research errors remain in errors. |
 
-signal_id is allocated only after a valid score. Keep it on subsequent failures.
+The claim ID is internal and precedes research. Allocate signal_id only after a
+valid score. Keep it on subsequent failures. The existing `registry_updated`
+field now reports whether the individual records and claim finalization verified.
 output_filename/output_file_id/output_path are non-null only for verified output.
 For verified publication, output_filename must equal signal_id + .json and
-output_path must equal discovery/{job.job_id}/{signal_id}.json for normal runs or
-discovery/_test/{job.job_id}/{signal_id}.json for test_published. Check those
-cross-field equalities. For uncertain publication, put
+output_path must equal discovery/{job.job_id}/{signal_id}.json for every new
+run. Check those cross-field equalities. Readers may still validate historical
+`test_published` results with their original paths. For uncertain publication, put
 attempted path/observed ID in error details instead.
 No automatic rerun after uncertain publication or registration. A completed job
 status never means product council approval. Output JSON only during execution.

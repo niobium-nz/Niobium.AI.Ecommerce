@@ -431,7 +431,7 @@ class LooperTests(unittest.TestCase):
         manifest = (ROOT / 'agent.yaml').read_text()
         self.assertLess(len(agent.splitlines()), 125)
         for text in ('product_concurrency: 1', 'automatic_retries: 0', 'google_drive_access: read_only',
-                     'onedrive_access: none', 'skills: []'):
+                     'duplicate_store_access: none', 'skills: []'):
             self.assertIn(text, manifest)
         self.assertIn('Do not reimplement or directly invoke', agent)
         self.assertIn('published_registry_pending', agent)

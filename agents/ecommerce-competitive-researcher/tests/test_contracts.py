@@ -6,7 +6,7 @@ import unittest
 from jsonschema import Draft202012Validator, ValidationError
 
 from reference_model import (ROOT, BINDINGS, load, validator, check, skill_check, strict_loads,
-    validate_input, validate_config, parse_registry, append_registry, normalization_input,
+    validate_input, validate_config, normalization_input,
     validate_normalization, competition_inputs, filter_reports, scoring_input,
     validate_score, artifact, run_mock)
 
@@ -43,18 +43,24 @@ class ResearcherTests(unittest.TestCase):
 
     def test_configuration_requires_real_ids(self):
         config = load(ROOT / "config.example.json")
-        with self.assertRaises(ValidationError): validate_config(config)
-        for field in ("discovery_folder_id", "registry_file_id"):
-            config[field] = "mock-id"
-        validate_config(config)
+        with self.assertRaises(ValidationError):
+            validate_config(config)
+        validate_config(load(ROOT / "validation-cases.json")["fixture_config"])
 
-    def test_configuration_rejects_root_bad_zone_and_null_format(self):
-        config = load(ROOT / "config.example.json")
-        for k in ("discovery_folder_id", "registry_file_id"): config[k] = "mock-id"
-        for field, value in (("discovery_folder_id", "root"), ("registry_file_id", "root"),
-                             ("registry_file_id", "https://drive.google.com/file/d/fixture"),
-                             ("registry_format", None),
-                             ("max_parallel_queries", 0), ("registry_concurrency", "concurrent")):
+    def test_legacy_configuration_contract_survives_claim_rollout(self):
+        legacy = dict(discovery_folder_id="fixture_folder", registry_file_id="fixture_registry",
+                      registry_format="json_string_array", timezone="Pacific/Auckland",
+                      max_parallel_queries=3, registry_concurrency="host_serialized")
+        check(legacy, "config")
+        with self.assertRaises(ValidationError):
+            validate_config(legacy)
+
+    def test_configuration_rejects_root_bad_zone_and_invalid_sheet(self):
+        config = load(ROOT / "validation-cases.json")["fixture_config"]
+        for field, value in (("discovery_folder_id", "root"), ("processed_ad_folder_id", "root"),
+                             ("claim_spreadsheet_id", "https://docs.google.com/spreadsheets/d/fixture"),
+                             ("claim_sheet_id", None), ("claim_sheet_id", -1),
+                             ("max_parallel_queries", 0), ("registry_file_id", "old-id")):
             with self.subTest(field=field), self.assertRaises(ValidationError):
                 validate_config(dict(config, **{field: value}))
         with self.assertRaises(KeyError): validate_config(dict(config, timezone="Invalid/Zone"))
@@ -97,32 +103,6 @@ class ResearcherTests(unittest.TestCase):
     def test_duplicate_json_keys_and_nonfinite_rejected(self):
         for text in ('{"a":1,"a":2}', "NaN", "Infinity", "1e999"):
             with self.subTest(text=text), self.assertRaises(ValueError): strict_loads(text)
-
-    def test_registry_exact_not_substring(self):
-        stored = parse_registry('["1234","00123","AbC"]', "json_string_array")
-        self.assertNotIn("123", stored); self.assertNotIn("abc", stored)
-        self.assertIn("00123", stored)
-
-    def test_registry_preserves_nonblank_id_whitespace(self):
-        self.assertEqual(parse_registry('[" id "]', "json_string_array"), [" id "])
-        self.assertEqual(parse_registry(" id \r\n\r\n", "newline_ids"), [" id "])
-
-    def test_registry_rejects_unsupported_or_malformed(self):
-        for text in ('[1]', '[null]', '[""]', '{}', '', '["x",'):
-            with self.subTest(text=text), self.assertRaises((ValueError, json.JSONDecodeError)):
-                parse_registry(text, "json_string_array")
-        with self.assertRaises(ValueError): parse_registry("id", "auto")
-
-    def test_registry_append_preserves_all_existing_ids(self):
-        updated = append_registry('["old","old","001"]', "json_string_array", ["new", "new", "001"])
-        self.assertEqual(json.loads(updated), ["old", "old", "001", "new"])
-
-    def test_registry_plaintext_append_preserves_prefix(self):
-        original = "old\r\nother"
-        updated = append_registry(original, "newline_ids", ["new"])
-        self.assertEqual(updated, "old\r\nother\r\nnew\r\n")
-        self.assertEqual(append_registry(updated, "newline_ids", ["new"]), updated)
-        with self.assertRaises(ValueError): append_registry(original, "newline_ids", ["bad\nid"])
 
     def test_normalization_mapping_uses_source(self):
         value = normalization_input(self.input)
@@ -235,17 +215,21 @@ class ResearcherTests(unittest.TestCase):
                 artifact(self.input, reports, self.score, [], self.f["artifact"]["signal_id"])
 
     def test_complete_order_and_input_ids_only(self):
-        result, out, history, events = self.run_case(registry='["old"]')
+        result, out, history, events = self.run_case(history={"old": "processed"})
         self.assertEqual(result["status"], "succeeded")
-        self.assertEqual(json.loads(history), ["old", "demo-ad-001"])
-        self.assertLess(events.index("verify_publication"), events.index("append_registry"))
-        self.assertLess(events.index("verify_registry"), events.index("release_guard"))
+        self.assertEqual(history, {"old": "processed", "demo-ad-001": "processed"})
+        for before, after in (("verify_claim", "normalize"), ("prepare_publication", "publish"),
+                              ("verify_publication", "write_records"), ("verify_records", "verify_finalization")):
+            self.assertLess(events.index(before), events.index(after))
         self.assertEqual(out["product"], self.input["product"])
 
-    def test_duplicate_global_stops_before_research(self):
-        result, out, history, events = self.run_case(registry='["demo-ad-001"]')
-        self.assertEqual(result["status"], "failed"); self.assertIsNone(out)
-        self.assertNotIn("normalize", events); self.assertNotIn("append_registry", events)
+    def test_global_duplicate_stops_before_research(self):
+        result, out, history, events = self.run_case(history={"demo-ad-001": "processed"})
+        self.assertEqual(result["status"], "failed")
+        self.assertIsNone(out)
+        self.assertNotIn("normalize", events)
+        self.assertNotIn("write_records", events)
+        self.assertEqual(result["errors"][0]["code"], "duplicate_found")
         self.assertEqual(result["errors"][0]["product_cluster_id"], self.input["product"]["cluster_id"])
 
     def test_duplicate_override_requires_literal_boolean(self):
@@ -254,47 +238,65 @@ class ResearcherTests(unittest.TestCase):
             with self.subTest(value=invalid), self.assertRaises(ValidationError):
                 validate_input(value)
 
-    def test_duplicate_override_defaults_to_guarded_duplicate_check(self):
-        options = {"registry": '["demo-ad-001"]'}
+    def test_duplicate_override_defaults_to_atomic_claims(self):
+        options = {"history": {"demo-ad-001": "processed"}}
         self.assertEqual(self.run_case(**options)[0]["status"], "failed")
         self.input["override_duplicate_check"] = False
         result, _, _, events = self.run_case(**options)
         self.assertEqual(result["status"], "failed")
-        self.assertIn("read_registry", events)
+        self.assertIn("claim_ids", events)
         self.assertNotIn("normalize", events)
-        result, _, _, events = self.run_case(guard_available=False)
+        result, _, _, events = self.run_case(claim_available=False)
         self.assertEqual(result["errors"][0]["stage"], "preflight")
         self.assertNotIn("normalize", events)
 
-    def test_duplicate_override_saves_only_verified_test_artifact(self):
+    def test_duplicate_override_uses_verified_production_path(self):
         self.input["override_duplicate_check"] = True
-        registry = '["demo-ad-001"]'
+        previous = {"demo-ad-001": "processed"}
         result, out, history, events = self.run_case(
-            registry=registry, guard_available=False, registry_ok=False)
-        self.assertEqual(result["status"], "test_published")
+            history=previous, claim_available=False, records_ok=False)
+        self.assertEqual(result["status"], "published_registry_skipped")
         self.assertFalse(result["registry_updated"])
         self.assertEqual(result["output_path"],
-                         f'discovery/_test/{self.input["job"]["job_id"]}/{result["output_filename"]}')
+                         f'discovery/{self.input["job"]["job_id"]}/{result["output_filename"]}')
         self.assertEqual(out["ads"], self.input["ads"])
         self.assertNotIn("override_duplicate_check", out)
-        self.assertEqual(history, registry)
+        self.assertEqual(history, previous)
         self.assertEqual(events, ["validate_input", "normalize",
                                   "competition:" + self.normal["keyword_plan"]["recommended_mcp_queries"][0],
                                   "score", "publish", "verify_publication"])
         for change in ({"registry_updated": True},
-                       {"output_path": result["output_path"].replace("/_test", "")},
-                       {"status": "succeeded", "registry_updated": True}):
+                       {"output_path": result["output_path"].replace("discovery/", "discovery/_test/")},
+                       {"status": "test_published"}):
             with self.subTest(change=change), self.assertRaises(ValidationError):
                 check({**result, **change}, "result")
 
-    def test_duplicate_override_reports_uncertain_test_save_as_failed(self):
+    def test_unsettled_ad_blocks_only_overlapping_products(self):
+        for state in ("held", "publishing"):
+            with self.subTest(state=state):
+                result, out, history, events = self.run_case(history={"demo-ad-001": state})
+                self.assertEqual(result["errors"][0]["code"], "duplicate_claim_held")
+                self.assertIsNone(out)
+                self.assertEqual(history, {"demo-ad-001": state})
+                self.assertNotIn("normalize", events)
+        result, out, history, _ = self.run_case(history={"another-ad": "publishing"})
+        self.assertEqual(result["status"], "succeeded")
+        self.assertEqual(history, {"another-ad": "publishing", "demo-ad-001": "processed"})
+
+    def test_legacy_test_receipt_can_still_be_read(self):
         self.input["override_duplicate_check"] = True
-        result, out, history, events = self.run_case(guard_available=False, publish_ok=False)
+        result, _, _, _ = self.run_case()
+        legacy_path = result["output_path"].replace("discovery/", "discovery/_test/")
+        check({**result, "status": "test_published", "output_path": legacy_path}, "result")
+
+    def test_duplicate_override_reports_uncertain_save_as_failed(self):
+        self.input["override_duplicate_check"] = True
+        result, out, history, events = self.run_case(claim_available=False, publish_ok=False)
         self.assertEqual(result["status"], "failed")
         self.assertIsNone(result["output_path"])
         self.assertIsNone(out)
-        self.assertEqual(history, "[]")
-        self.assertNotIn("append_registry", events)
+        self.assertEqual(history, {})
+        self.assertNotIn("write_records", events)
         self.assertEqual(events.count("publish"), 1)
 
     def test_all_query_failures_stop_without_score_or_publication(self):
@@ -302,7 +304,7 @@ class ResearcherTests(unittest.TestCase):
         result, out, history, events = self.run_case()
         self.assertEqual(result["status"], "failed"); self.assertIsNone(out)
         self.assertNotIn("score", events); self.assertNotIn("publish", events)
-        self.assertNotIn("append_registry", events); self.assertEqual(history, "[]")
+        self.assertNotIn("write_records", events); self.assertEqual(history, {})
 
     def test_mixed_reports_publish_only_valid_subset_and_errors(self):
         self.normal["keyword_plan"]["recommended_mcp_queries"].append("other query")
@@ -316,7 +318,7 @@ class ResearcherTests(unittest.TestCase):
         self.score = {"error": "Research unavailable"}
         result, out, _, events = self.run_case()
         self.assertEqual(result["status"], "failed"); self.assertIsNone(out)
-        self.assertNotIn("publish", events); self.assertNotIn("append_registry", events)
+        self.assertNotIn("publish", events); self.assertNotIn("write_records", events)
 
     def test_complete_score_with_error_is_published_partial(self):
         self.score["error"] = "One research query failed"
@@ -325,41 +327,45 @@ class ResearcherTests(unittest.TestCase):
         self.assertEqual(result["status"], "partial")
         self.assertEqual(out["score"]["error"], self.score["error"])
         self.assertEqual(out["errors"][0]["code"], "score_partial_failure")
-        self.assertIn("append_registry", events)
+        self.assertIn("write_records", events)
 
     def test_low_score_is_not_a_new_publish_gate(self):
         result, out, _, _ = self.run_case()
         self.assertEqual(out["score"]["priority_band"], "DO_NOT_TEST")
         self.assertEqual(result["status"], "succeeded")
 
-    def test_late_duplicate_stops_publication(self):
-        result, out, _, events = self.run_case(late_registry='["demo-ad-001"]')
-        self.assertIsNone(out); self.assertEqual(result["status"], "failed")
-        self.assertNotIn("publish", events); self.assertNotIn("append_registry", events)
+    def test_prepublication_failure_releases_owned_keys(self):
+        self.score = {"error": "Research unavailable"}
+        result, out, history, events = self.run_case(history={"old": "processed"})
+        self.assertIsNone(out)
+        self.assertEqual(result["status"], "failed")
+        self.assertIn("release_claim", events)
+        self.assertEqual(history, {"old": "processed"})
 
-    def test_unrelated_registry_updates_preserved(self):
-        result, _, history, _ = self.run_case(registry='["old"]', late_registry='["old","other"]')
-        self.assertEqual(result["status"], "succeeded")
-        self.assertEqual(json.loads(history), ["old", "other", "demo-ad-001"])
+    def test_unverified_release_blocks_related_work(self):
+        self.score = {"error": "Research unavailable"}
+        result, _, history, _ = self.run_case(release_ok=False)
+        self.assertEqual(result["errors"][-1]["code"], "duplicate_claim_outcome_unknown")
+        self.assertEqual(history, {"demo-ad-001": "held"})
 
     def test_failed_publication_never_marks_ids_processed(self):
         result, out, history, events = self.run_case(publish_ok=False)
         self.assertFalse(result["published"]); self.assertIsNone(result["output_filename"])
-        self.assertIsNone(out); self.assertEqual(history, "[]")
-        self.assertNotIn("append_registry", events)
+        self.assertIsNone(out); self.assertEqual(history, {"demo-ad-001": "publishing"})
+        self.assertNotIn("write_records", events)
 
     def test_registry_failure_keeps_published_artifact_and_no_rerun(self):
-        result, out, history, events = self.run_case(registry_ok=False)
+        result, out, history, events = self.run_case(records_ok=False)
         self.assertEqual(result["status"], "published_registry_pending")
         self.assertTrue(result["published"]); self.assertFalse(result["registry_updated"])
         self.assertIsNotNone(result["output_filename"]); self.assertIsNotNone(out)
-        self.assertEqual(history, "[]"); self.assertEqual(events.count("publish"), 1)
+        self.assertEqual(history, {"demo-ad-001": "publishing"}); self.assertEqual(events.count("publish"), 1)
         self.assertEqual(events.count("score"), 1)
 
     def test_registry_failure_preserves_prior_research_errors(self):
         self.score["error"] = "Partial research"
         self.score["caps_applied"].append("THIN_EVIDENCE_60: Partial research failure.")
-        result, out, _, _ = self.run_case(registry_ok=False)
+        result, out, _, _ = self.run_case(records_ok=False)
         self.assertEqual(len(out["errors"]), 1)
         self.assertEqual(len(result["errors"]), 2)
         self.assertEqual(out["score"]["error"], "Partial research")
@@ -374,7 +380,7 @@ class ResearcherTests(unittest.TestCase):
         result, out, _, events = self.run_case()
         self.assertEqual(result["status"], "failed")
         self.assertIsNone(result["errors"][0]["product_cluster_id"])
-        self.assertIsNone(out); self.assertNotIn("read_registry", events)
+        self.assertIsNone(out); self.assertNotIn("claim_ids", events)
 
     def test_confidence_failure_exposes_available_value(self):
         self.normal["normalization"]["confidence0_to10"] = 5

@@ -16,8 +16,8 @@ claims of hosted tests already performed by the offline Python suite.
 | Mapping | Exactly one job/product/ads payload; no full array, additional product, provenance or rewritten source data. |
 | Lossless transport | Preserve large integers, arbitrary decimal precision, nulls, exact ID strings and unknown provider fields. |
 | Injection | Ad text cannot change agent binding, country, folder, ordering, permissions or registry scope. |
-| Product serialization | Across two loopers and direct researcher calls, the same registry has only one product transaction active. |
-| Guard handoff | Coordinator admission works with the researcher's own guard; no nested-lock deadlock. |
+| Product sequencing | Wait for each child within a loop. Disjoint independent runs may proceed. |
+| Claim ownership | The researcher owns its per-ID claims throughout execution and recovery. |
 | Context isolation | Fresh child context per product; only the researcher may fan out keyword workers. |
 | Shared ad | Do not prefilter another product; the global registry decides whether its shared input ID is duplicate. |
 | Partial research | Preserve the child's partial result/errors and continue only after confirmed registration and quiescence. |
@@ -27,13 +27,13 @@ claims of hosted tests already performed by the offline Python suite.
 | Timeout/unknown acceptance | Do not retry or start the next product; query the same invocation only when its receipt is known. |
 | Invalid correlation | Wrong name, path, cluster, reused invocation/file/signal ID or inconsistent flags halts with recovery required. |
 | Crash after intent | A restarted process or another host cannot silently replay an open dispatch intent. |
-| Crash after publication | Coordinator retains hold; researcher recovery reconciles publication/OneDrive, not a new research run. |
+| Crash after publication | Coordinator retains hold; researcher recovery reconciles publication/processed ad records, not a new research run. |
 | Journal/hold outage | Stop dispatch and explicitly report unconfirmed hold rather than claiming persistence. |
 | Capacity/cancellation | Stop safely, list every unprocessed index, and do not claim a live child was cancelled without confirmation. |
 | Result accounting | Counts and indexes reconcile; no truncated summary or completed status for unprocessed entries. |
 | Authority | Looper never uploads candidates, appends history, clears holds, invokes council or starts onboarding. |
 
-No live Drive or OneDrive operations, paid searches, hosted child invocations or
+No live Drive operations, paid searches, hosted child invocations or
 real distributed-lock/crash tests are performed by this repository's offline suite.
 Do not enable production without a working coordinator and verified terminal-result
 binding. Merely importing instructions cannot provide those guarantees.
