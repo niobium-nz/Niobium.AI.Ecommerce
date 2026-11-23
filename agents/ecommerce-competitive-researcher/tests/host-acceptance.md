@@ -15,7 +15,7 @@ No paid searches or live cloud writes are authorized by this checklist.
 | Missing capabilities | Fail before research if the Drive registry's identity, full read, in-place update and verification, skill resources or serialization cannot be established. |
 | Registry format | Use declared JSON-string-array or newline format; reject unsupported/malformed content, never infer an empty history from a snippet. |
 | Global duplicate | Any exact stored ID rejects the whole input, even under another cluster/job/market; no substring matching. |
-| Test override | Explicit true uses the same research and verification path with no registry or guard calls. A verified test artifact lives under discovery/_test/{job_id}/, returns test_published and carries any research errors. Omission and false use normal preflight. |
+| Duplicate-check override | Explicit true does no registry I/O. Both modes save and verify the candidate in discovery/{job_id}/{signal_id}.json. Explicit true returns published_registry_skipped and carries any research errors. Omission and false use normal registry preflight. |
 | Test upload uncertainty | Report failed and reconcile the attempted test path before retrying. The shared registry and production recovery hold remain untouched. |
 | Shared registry concurrency | Two overlapping product calls cannot both pass the guarded check; the coordinator serializes across hosts. A config flag alone is not proof. |
 | Normalization mapping | Source country, original name/category/features reach the unchanged normalizer. |
