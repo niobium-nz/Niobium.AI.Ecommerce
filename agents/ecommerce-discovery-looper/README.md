@@ -17,13 +17,13 @@ discovery -> competitive research -> candidate -> product council approval -> li
 The looper looks up `discovery/{job_id}.json` by exact name under the configured
 folder ID. It passes only `{job, product, ads}` for one entry to the researcher.
 The source file stays unchanged. The researcher still owns candidate publication
-at `discovery/{job_id}/{signal_id}.json` and the subsequent OneDrive ID append.
+at `discovery/{job_id}/{signal_id}.json` and the subsequent verification of per-ad records.
 The looper does not rename signal_id, add candidate fields or run product council.
 
 Products run sequentially in source order. Per-query parallelism remains inside
 the researcher. This preserves its global ad-ID duplicate policy, including the
 case where two different products share an ad: both entries are considered in
-order and the researcher's registry decides whether the later one is a duplicate.
+order and the researcher's duplicate claim decides whether the later one is a duplicate.
 No preemptive cross-product deduplication or alternative market-scoped policy is added.
 
 A definitive item failure can be reported while later entries continue. A pending
@@ -42,7 +42,7 @@ The looper has NO directly invoked skills and its kit contains no skill ZIPs.
 The build supplies a generated closure of its canonical input/child schemas in
 `contract-resources`, resolved by `contract-bindings.json`. These resources do not
 install the child agent. Provision the complete researcher separately with its
-three independently selected skills and real registry/coordinator bindings. See
+three independently selected skills and real claim-store and coordinator bindings. See
 [portable deployment](references/deployment.md); a sibling repository checkout is
 no longer required merely to validate a deployed looper's schemas.
 
@@ -51,8 +51,8 @@ no longer required merely to validate a deployed looper's schemas.
 Configure discovery_folder_id, researcher_binding and coordinator_binding using
 config.example.json. Null placeholders intentionally prevent an unconfigured run.
 The bindings are trusted host handles, not API keys, URLs or public input fields.
-The coordinator must supply actual globally shared serialization, durable dispatch
-records, terminal-result retrieval and recovery holds for the researcher's registry.
+The coordinator must supply durable dispatch records, terminal-result retrieval and
+recovery for open dispatches. The child owns its per-ID claims.
 Sequential calls within one chat alone cannot protect other concurrent writers.
 
 The looper needs read-only Google Drive access. Storage writes belong only to the

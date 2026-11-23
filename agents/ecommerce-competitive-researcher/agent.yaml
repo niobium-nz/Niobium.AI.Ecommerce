@@ -1,10 +1,10 @@
 # Descriptive platform-neutral manifest, not a native vendor import format.
 name: ecommerce-competitive-researcher
-version: 2.2.0
+version: 2.3.0
 entrypoint: AGENT.md
 description: Research one discovery into a scored target-market candidate.
 input_schema: schemas/contracts.schema.json#/$defs/input
-configuration_schema: schemas/contracts.schema.json#/$defs/config
+configuration_schema: schemas/contracts.schema.json#/$defs/claim_config_v1
 artifact_schema: schemas/contracts.schema.json#/$defs/artifact
 result_schema: schemas/contracts.schema.json#/$defs/result
 skills:
@@ -27,18 +27,20 @@ storage:
   overwrite: false
 duplicate_history:
   provider: google_drive
-  registry_path: "discovery/processed-ad-ids.json"
-  parent_folder_id_configuration_key: discovery_folder_id
-  new_registry_format: json_string_array
-  file_id_configuration_key: registry_file_id
+  record_folder_name: processed-ad-ids
+  record_folder_id_configuration_key: processed_ad_folder_id
+  claim_index_title: Claim index
+  claim_index_id_configuration_key: claim_spreadsheet_id
+  claim_tab_id_configuration_key: claim_sheet_id
+  namespace: researcher_ads
   key: ad_archive_id
   scope: global
-  update_after: verified_publication
-  require_serialized_product_jobs: true
+  acquire: atomic_claim_of_all_input_ids
+  finalize_after: verified_candidate_and_individual_records
   duplicate_check_override:
     input_field: override_duplicate_check
     default: false
-    registry_access: none
+    duplicate_store_access: none
 fanout:
   unit: recommended_mcp_query
   fallback: sequential

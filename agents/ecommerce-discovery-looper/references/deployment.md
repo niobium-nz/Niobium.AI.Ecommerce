@@ -12,7 +12,7 @@ The looper has no directly invoked skills. Its kit contains no skill ZIPs.
 their complete local reference closure into `contract-resources`, with a schema map
 and provenance checks. These generated schemas are data, not another skill or an
 installed child agent. Provision the complete researcher separately and bind it
-through researcher_binding; its registry guard and durable coordinator remain required.
+through researcher_binding; its per-ID claims and the loop's durable dispatch journal remain required.
 
 Resolve current resources on each execution. Persist logical bindings, not host
 mount paths. The host selects the configured skill/child version; no additional
@@ -43,7 +43,7 @@ the same resource bindings for a runtime JSON Schema check.
 Record package checks, schema/unit tests, host mock traces, authenticated read-only
 checks and live execution separately. If the host cannot inject mocks, record
 `host_orchestration_acceptance: not_executed`; that alone does not block installing
-the resources. Actual required capabilities, including browser/registry locks or
+the resources. Actual required capabilities, including terminal-result retrieval and
 child/coordinator guarantees where specified, must exist before live work. Do not
 claim those guarantees from a config flag or passing source tests.
 

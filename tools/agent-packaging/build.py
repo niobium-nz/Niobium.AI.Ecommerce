@@ -76,7 +76,8 @@ def build(name, output, cache, offline=False, adapter=None):
         (support / lock["archive"]).write_bytes(archive)
         lock["archive_sha256"] = digest(archive)
         write_json(support / "dependency-lock.json", lock)
-        for file in ("validate.py", "runtime.py", "resource_bindings.py", "metadata_policy.py", "README.md"):
+        for file in ("validate.py", "runtime.py", "resource_bindings.py", "metadata_policy.py",
+                     "duplicate_claims.py", "README.md"):
             shutil.copyfile(SUPPORT / file, support / file)
         aliases, contracts = contract_closure(agent)
         contract_inventory = []

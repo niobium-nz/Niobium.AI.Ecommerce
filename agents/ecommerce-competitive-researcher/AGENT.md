@@ -10,7 +10,8 @@ Accept one object with `job`, `product`, `ads` and the optional boolean
 `override_duplicate_check`, which defaults to false. Reject URLs and arrays.
 The caller/looper maps one upstream entry as described in
 [contracts](references/contracts.md). Load that reference and
-[storage protocol](references/storage.md) before starting. Use the three complete
+[storage protocol](references/storage.md) and [duplicate records](references/duplicate-records.md)
+before starting. Use the three complete
 host-selected skills below for their substantive logic; do not reimplement their
 normalization, search policy, research or scoring rubrics in this agent.
 
@@ -29,19 +30,13 @@ and reject duplicate IDs within the input. Preserve original job, product and ad
 Any validation failure stops with cluster-correlated errors. Do not infer missing
 values, strip IDs, repair input or fetch URLs to make it pass.
 
-Preflight deployment configuration, all skill resources, research tools, trusted
-clock/UUID and Google Drive publication in every run. When
-`override_duplicate_check` is false or omitted, preflight full-file registry
-read/append verification and acquire the shared-registry serialization guard.
-Under the guard, confirm production recovery clearance before reading the Google
-Drive registry completely using its declared format. Reject the
-WHOLE product if ANY input ad_archive_id exactly matches any stored ID, globally
-across jobs, products and markets. Fail closed on unavailable, incomplete or
-malformed registry data.
-
-When the validated input explicitly supplies `override_duplicate_check: true`,
-use the registry override in storage.md. Skip the registry guard and all registry I/O, including the last duplicate check and the append.
-Confirm production recovery clearance independently of registry I/O. Apply all other checks.
+Preflight deployment, selected skills, research, trusted UUIDs and Drive publication.
+When duplicate checking is enabled, claim ALL exact input ad IDs atomically before
+research, globally across jobs and markets. Proceed only with a verified owned
+claim. A processed ID rejects the whole product. An active claim, unknown write,
+or provider failure is a separate failure and must never be labeled a duplicate.
+Explicit `override_duplicate_check: true` skips the duplicate store by request.
+Perform the same candidate path, collision and readback checks in either mode.
 
 ## 2. Normalize with the existing skill
 
@@ -101,15 +96,13 @@ competition_signals, score, errors`.
 Job fields, product and ads are unchanged originals; competition_signals is only
 the ordered valid subset passed to scoring; score is the entire validated result.
 Do not add normalized_product, a lifecycle field, or an alternative envelope.
-Validate `#/$defs/artifact` and cross-field equality before writing. Confirm
-recovery clearance again at publication and keep it valid through the write.
-
-After verifying normal publication, append only input ad IDs to the registry.
-Verify persistence and preserve existing entries. A failed or uncertain update
-returns published_registry_pending with verified file identifiers and the recovery
-error. Follow storage.md for reconciliation. Release the guard on every exit.
-Keep all further production runs on hold during unresolved recovery. End an override run
-after verifying its candidate file and leave the registry and any hold untouched.
+Validate `#/$defs/artifact` and cross-field equality before writing. In normal mode,
+verify the claim's publishing state and recorded artifact hash before upload.
+After verifying the candidate, write and verify one processed record per input
+ad ID, then finalize all claims atomically. Keep related claims on hold if an
+upload or finalization is uncertain. Release owned claims on known failures
+before publication. Follow duplicate-records.md for readback and recovery.
+End an override run after verifying its candidate file.
 
 ## 6. Return JSON only
 

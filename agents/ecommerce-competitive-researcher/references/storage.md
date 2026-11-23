@@ -1,95 +1,11 @@
-# Storage, registry and recovery protocol
+# Candidate storage and verification
 
-## Provision one canonical registry
-
-The `duplicate_history` section of [agent.yaml](../agent.yaml) pins the file
-`processed-ad-ids.json` directly inside the configured Google Drive discovery
-folder. On initial setup, search direct children for that exact name across all
-file types and apply the search completeness rules below. If there are no matches,
-upload UTF-8 `[]` as `application/json` once. Verify the ID, exact name, parent,
-MIME type and full contents. Stop on an observed collision or known incomplete
-search. Reconcile uncertain writes without uploading another copy.
-
-Reuse a verified existing registry and retain all its entries. Record its Drive
-file ID as `registry_file_id` in the private `deployment-config.json`. Keep that
-ID across installs and updates that share this history. If a binding goes missing
-during redeployment, resolve the file under the configured discovery folder and
-verify it before restoring the binding. Keep live IDs, sharing links, registry
-contents and credentials out of Git. An explicitly bound existing registry can
-keep its verified format, including legacy UTF-8 newline-separated IDs.
-
-## Preflight and permissions
-
-Apply the discovery folder, publication checks and recovery hold to every run.
-Confirm through the coordinator or the authorized operator that the production
-destination has no unresolved write or pending recovery before research.
-If held or unconfirmed, stop before research. Registry reads, writes and
-exclusive registry serialization apply when duplicate checking is enabled,
-including when `override_duplicate_check` is omitted or false.
-
-Bind Google Drive to an existing discovery folder by `discovery_folder_id`.
-Confirm its exact ID/name and folder MIME. Bind the registry by `registry_file_id`
-and verify its exact pinned name, discovery parent and raw-file MIME matching the
-declared format (`application/json` for JSON or `text/plain` for legacy newline
-data). Apply the optional metadata policy below to both resources and stop on an
-observed exact-name registry collision. Do not replace the configured ID with a
-search result, use root, create a missing registry during a job or change sharing.
-
-Read the registry's complete raw bytes. Inspect actual action schemas for full
-readback and safe append or in-place raw-content replacement by file ID. Resolve
-those capabilities and the shared-registry serialization guarantee before research.
-Use any version condition supported by the selected write tool as additional
-protection. The condition alone does not serialize product jobs.
-
-## Registry format and duplicate semantics
-
-registry_format is REQUIRED deployment configuration, never inferred from bytes:
-
-- json_string_array: one JSON array of nonblank string ad IDs; [] is empty. Preserve
-  existing order/values; numeric IDs, nested objects, nulls and malformed JSON fail.
-- newline_ids: UTF-8, one exact ID per LF or CRLF line. Empty file is empty. Ignore
-  blank-only lines; do not trim nonblank IDs or split by punctuation. Appended IDs
-  may not contain CR/LF. Preserve existing bytes and newline style when appending.
-
-These supported bindings do not claim an unknown existing file already has a
-particular format. Configure the actual format before deployment or provide an
-explicit adapter; never guess or overwrite an unsupported registry structure.
-
-Compare complete string IDs exactly, case-sensitively, across ALL stored records.
-No substring matching, numeric conversion, country scoping or per-job reset.
-Existing repeated IDs are harmless for lookup; preserve them. ANY hit rejects the
-whole product. An unreadable/truncated registry never counts as empty. A resource
-limit is a failure, not permission to check only a prefix of the file.
-
-## Serialize product jobs, not keyword workers
-
-The host/coordinator must enforce exclusive processing per configured registry
-from the initial duplicate check through publication and registry verification.
-This may be a serialized execution queue or a shared lock respected by EVERY writer,
-including other hosts. A config value alone is not a lock. No such mechanism means
-capability_unavailable before research. Never create ad hoc registry reservation
-records or mark IDs processed before publication. Keyword subagents within the one
-job may still run in parallel and may not access storage.
-
-After acquiring the guard, recheck the production recovery hold before reading
-the registry. A preceding job can set a hold while this job waits for the guard.
-Re-read the registry before publication. If newly recorded matching IDs appear,
-stop duplicate_found without output. If unrelated contents changed, preserve them
-and use that current snapshot; investigate any loss of the serialization guarantee.
-Candidate upload and registry update are separate Drive operations. On interrupted
-or uncertain commits, the host must hold subsequent jobs for operator reconciliation.
-Release an acquired guard on every exit; a durable recovery hold survives release.
-
-## Publication with duplicate checking overridden
-
-With an explicit boolean `override_duplicate_check: true`, skip all registry
-operations and the shared registry guard. Confirm production recovery clearance.
-Run the usual normalization,
-competition research, scoring and artifact validation. Write the candidate to
-`discovery/{job_id}/{signal_id}.json`, the same destination used with duplicate
-checking enabled. Return `published_registry_skipped` only after verification.
-Leave the registry untouched. On an uncertain upload, hold future writes and
-reconcile the exact path and content read-only before attempting another run.
+Bind the configured `commerce_folder_id` and its direct child `discovery` by ID.
+Require folder MIME and exact identity. Apply the optional metadata policy below.
+Use no root or name fallback. Before research when duplicate checking is enabled,
+bind the sibling records folder and claim index described in duplicate-records.md.
+Explicit duplicate-check override skips that index and the per-ID records.
+Both modes enforce the same destination and readback rules.
 
 ## Google Drive publication
 
@@ -103,52 +19,35 @@ known incomplete lookup is an error.
 Do not overwrite discovery/{job_id}.json: it is the upstream ARRAY file, while
 this agent writes inside a job_id FOLDER.
 
-Create a missing job folder only when ready to publish. Verify its metadata and
-one observed exact-name match. When concurrent jobs can create the same folder,
-coordinate creation per parent and name, including runs that override duplicate
-checking. Reconcile an uncertain create by listing. Never blindly retry or
-create job_id (1). Never change an existing folder's sharing.
+Create a missing job folder only when ready to publish. In normal mode, use
+the duplicate adapter's `claim_job_folder` operation with the same claim ID
+and input. One index entry per job authorizes one create attempt. Verify the
+exact owner's receipt and recheck exact folder absence before creating. If another run already holds it, look
+up the expected folder again and reuse it only after verification. Stop if
+it remains unresolved. Preserve the entry across interruption and resolve a
+failed or uncertain create before an operator clears it. In override mode
+reuse a verified folder or use a pre-provisioned destination when concurrent
+creation is possible. Verify new folder metadata and one observed exact-name
+match. Reconcile an uncertain create by listing. Never retry the create blindly,
+use a numbered folder or change an existing folder's sharing.
 
 Check exact {signal_id}.json absence, all MIME types, before writing. Any collision
 stops; do not regenerate IDs or overwrite. Serialize the validated artifact as raw
-UTF-8 application/json. At upload, confirm recovery clearance under the coordinator
-or with the authorized operator who can keep it valid through the write. If held
-or unconfirmed, stop without uploading. Upload once to the verified folder. Verify returned ID,
+UTF-8 application/json. In normal mode, atomically enter publishing and verify
+the claim receipt with the exact path identifiers and artifact SHA-256 before
+any upload. Upload once to the verified folder. Verify returned ID,
 name, parent, MIME, trash state when exposed, full content/checksum and no observed
 competing exact-name match. A snippet or success response alone is insufficient. On ambiguous upload,
 reconcile read-only using the same ID/name/bytes; never retry the write. If still
-uncertain, return failed with publication_outcome_unknown, do not append registry
-IDs, and hold subsequent production runs until recovery. Do not automatically delete files/folders.
+uncertain, return failed with publication_outcome_unknown and the attempted path,
+signal ID, observed file ID if available and claim ID if applicable. Keep the
+publishing claim for the affected ad IDs. Do not delete or recreate the file.
 Drive names are not unique; list-then-create is not an atomic uniqueness guarantee.
-
-## Append only after verified publication
-
-Re-read the latest complete Google Drive registry under the serialization guard. Construct
-its original content plus missing INPUT ad IDs in input order, adding each once.
-Do not add target-market IDs from competition reports. Use a supported safe append
-or full-content replacement by the SAME Drive file ID, preserving every existing
-record; verify full readback contains the original sequence plus all expected IDs.
-For newline format preserve the original byte prefix as well. Never truncate,
-reinitialize, rename or delete the registry, even when it is missing or malformed.
-
-If the binding supports an enforced version precondition, apply it to the read
-version. On a conflict or uncertain write, read again and reconcile; no blind
-retry of stale bytes. If the whole expected update is verified, registration can
-complete. Otherwise return published_registry_pending with registry_update_failed
-or registry_outcome_unknown. Keep the verified Drive artifact identifiers and all
-research errors. Do not roll back the artifact or repeat scoring/publication.
-
-Recovery is outside normal invocation: an operator/host uses the saved artifact,
-input IDs and error details to verify publication and append ONLY missing IDs under
-the same guard. It must resolve the hold before another job can reuse those IDs.
-No new signal_id, artifact, research or paid call is needed. This package does not
-pretend a plain ID-history file is a distributed transaction log.
 
 ## Binding references
 
-Logical capabilities above must map to actual authorized host tools. The following
-are API references. Check that the installed tool exposes the precise read and
-in-place content update operations.
+Bind the actual authorized host tools for exact metadata/search, raw upload
+and byte readback. These references describe the provider operations.
 
 - https://developers.google.com/workspace/drive/api/reference/rest/v3/files/get
 - https://developers.google.com/workspace/drive/api/reference/rest/v3/files/update
@@ -170,7 +69,7 @@ Reapply the policy before a write and when verifying returned resources. Exact
 ID/name/type/parent, all-type collision lookup with no observed competing match and full
 content verification remain mandatory. A real denial or unverified save is a
 failure; never retry an ambiguous write. Missing optional flags do not authorize
-skipping stable-version reads, serialization, child settlement or recovery holds.
+skipping exact identity, full readback or claim verification.
 Keep warnings in the host run notes when the unchanged result contract has no
 warning field; do not disguise them as research errors or alter business payloads.
 
@@ -187,5 +86,5 @@ one observed valid match. Reject observed competing matches and fully verify IDs
 parents and bytes. For a new artifact whose returned ID and full bytes verify,
 an empty post-upload search warns `drive_created_file_not_listed`; never re-upload.
 An uncertain create/upload without an ID requires one observed verified match.
-This exception concerns search enumeration only, never registry completeness,
-serialization, recovery holds, folder identity or complete file contents.
+This exception concerns search enumeration only. Folder identity, full file
+contents and authoritative claim results still require verification.
