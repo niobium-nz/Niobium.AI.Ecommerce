@@ -71,6 +71,8 @@ capability_unavailable before research. Never create ad hoc registry reservation
 records or mark IDs processed before publication. Keyword subagents within the one
 job may still run in parallel and may not access storage.
 
+After acquiring the guard, recheck the production recovery hold before reading
+the registry. A preceding job can set a hold while this job waits for the guard.
 Re-read the registry before publication. If newly recorded matching IDs appear,
 stop duplicate_found without output. If unrelated contents changed, preserve them
 and use that current snapshot; investigate any loss of the serialization guarantee.
@@ -109,7 +111,9 @@ create job_id (1). Never change an existing folder's sharing.
 
 Check exact {signal_id}.json absence, all MIME types, before writing. Any collision
 stops; do not regenerate IDs or overwrite. Serialize the validated artifact as raw
-UTF-8 application/json. Upload once to the verified folder. Verify returned ID,
+UTF-8 application/json. At upload, confirm recovery clearance under the coordinator
+or with the authorized operator who can keep it valid through the write. If held
+or unconfirmed, stop without uploading. Upload once to the verified folder. Verify returned ID,
 name, parent, MIME, trash state when exposed, full content/checksum and no observed
 competing exact-name match. A snippet or success response alone is insufficient. On ambiguous upload,
 reconcile read-only using the same ID/name/bytes; never retry the write. If still

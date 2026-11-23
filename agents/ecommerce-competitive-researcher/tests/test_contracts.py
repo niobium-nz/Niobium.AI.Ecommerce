@@ -306,6 +306,23 @@ class ResearcherTests(unittest.TestCase):
         legacy_path = result["output_path"].replace("discovery/", "discovery/_test/")
         check({**result, "status": "test_published", "output_path": legacy_path}, "result")
 
+    def test_recovery_hold_established_while_waiting_for_guard(self):
+        result, out, history, events = self.run_case(recovery_clear_after_guard=False)
+        self.assertEqual(result["status"], "failed")
+        self.assertIsNone(out)
+        self.assertEqual(history, "[]")
+        self.assertEqual(events, ["validate_input", "acquire_guard", "release_guard"])
+
+    def test_recovery_hold_established_before_upload(self):
+        for override in (False, True):
+            with self.subTest(override=override):
+                self.input["override_duplicate_check"] = override
+                result, out, history, events = self.run_case(recovery_clear_at_publish=False)
+                self.assertEqual(result["errors"][0]["stage"], "publication")
+                self.assertIsNone(out)
+                self.assertEqual(history, "[]")
+                self.assertNotIn("publish", events)
+
     def test_duplicate_override_reports_uncertain_save_as_failed(self):
         self.input["override_duplicate_check"] = True
         result, out, history, events = self.run_case(guard_available=False, publish_ok=False)
@@ -315,6 +332,7 @@ class ResearcherTests(unittest.TestCase):
         self.assertEqual(history, "[]")
         self.assertNotIn("append_registry", events)
         self.assertEqual(events.count("publish"), 1)
+        self.assertLess(events.index("publish"), events.index("hold_production"))
 
     def test_all_query_failures_stop_without_score_or_publication(self):
         self.report = {"error": "search unavailable"}

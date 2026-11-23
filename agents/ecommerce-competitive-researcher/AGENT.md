@@ -33,15 +33,15 @@ Preflight deployment configuration, all skill resources, research tools, trusted
 clock/UUID and Google Drive publication in every run. When
 `override_duplicate_check` is false or omitted, preflight full-file registry
 read/append verification and acquire the shared-registry serialization guard.
-Read the Google Drive registry completely using its declared format. Reject the
+Under the guard, confirm production recovery clearance before reading the Google
+Drive registry completely using its declared format. Reject the
 WHOLE product if ANY input ad_archive_id exactly matches any stored ID, globally
 across jobs, products and markets. Fail closed on unavailable, incomplete or
 malformed registry data.
 
 When the validated input explicitly supplies `override_duplicate_check: true`,
 use the registry override in storage.md. Skip the registry guard and all registry I/O, including the last duplicate check and the append.
-Honor the same production recovery hold before running or publishing. Confirm recovery clearance independently of registry I/O. Apply all other input, skill,
-research and publication checks.
+Confirm production recovery clearance independently of registry I/O. Apply all other checks.
 
 ## 2. Normalize with the existing skill
 
@@ -101,7 +101,8 @@ competition_signals, score, errors`.
 Job fields, product and ads are unchanged originals; competition_signals is only
 the ordered valid subset passed to scoring; score is the entire validated result.
 Do not add normalized_product, a lifecycle field, or an alternative envelope.
-Validate `#/$defs/artifact` and cross-field equality before writing.
+Validate `#/$defs/artifact` and cross-field equality before writing. Confirm
+recovery clearance again at publication and keep it valid through the write.
 
 After verifying normal publication, append only input ad IDs to the registry.
 Verify persistence and preserve existing entries. A failed or uncertain update

@@ -16,8 +16,9 @@ No paid searches or live cloud writes are authorized by this checklist.
 | Registry format | Use declared JSON-string-array or newline format; reject unsupported/malformed content, never infer an empty history from a snippet. |
 | Global duplicate | Any exact stored ID rejects the whole input, even under another cluster/job/market; no substring matching. |
 | Duplicate-check override | Explicit true does no registry I/O. An active or unconfirmed production recovery hold stops both modes before research. With recovery clearance, both modes save and verify the candidate in discovery/{job_id}/{signal_id}.json. Explicit true returns published_registry_skipped and carries any research errors. Omission and false use normal registry preflight. |
-| Test upload uncertainty | Report failed and reconcile the attempted test path before retrying. The shared registry and production recovery hold remain untouched. |
+| Override upload uncertainty | Reconcile the attempted production path read-only. If still uncertain, report failed and establish a durable production recovery hold before any subsequent write. Leave the registry unchanged. |
 | Shared registry concurrency | Two overlapping product calls cannot both pass the guarded check; the coordinator serializes across hosts. A config flag alone is not proof. |
+| Recovery hold while a job is active | If a hold arises while a normal job waits for the guard, stop under the guard before reading the registry or starting research. If a hold arises during research, stop either mode before candidate upload. |
 | Normalization mapping | Source country, original name/category/features reach the unchanged normalizer. |
 | Normalization gate | Confidence 5 fails, 6 passes; null sections, empty query plan or error-only output stop before competition. |
 | Query fan-out | Each planned query is dispatched once with the exact target-country mapping and normalization context. |

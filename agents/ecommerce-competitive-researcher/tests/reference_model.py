@@ -226,7 +226,8 @@ def artifact(value, reports, score, errors, signal_id):
 
 
 def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=True,
-             registry_ok=True, late_registry=None, guard_available=True, recovery_clear=True):
+             registry_ok=True, late_registry=None, guard_available=True, recovery_clear=True,
+             recovery_clear_after_guard=True, recovery_clear_at_publish=True):
     """Deterministic expected-order model; not the real hosted agent or a skill implementation."""
     value = deepcopy(value)
     events, errors = [], []
@@ -248,8 +249,11 @@ def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=T
         if not skip_registry:
             if not guard_available:
                 raise ValueError("capability_unavailable")
+            events.append("acquire_guard")
+            if recovery_clear_after_guard is not True:
+                raise ValueError("publication_recovery_not_cleared")
             stage = "duplicate_check"
-            events.extend(["acquire_guard", "read_registry"])
+            events.append("read_registry")
             ids = [ad["ad_archive_id"] for ad in value["ads"]]
             if set(ids) & set(parse_registry(registry, "json_string_array")):
                 raise ValueError("duplicate_found")
@@ -280,8 +284,11 @@ def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=T
                 raise ValueError("duplicate_found")
         sid = "15ae17b3-f461-4eba-8712-a10c7e691637"  # Fixed mock UUID, NEVER a runtime allocator.
         pending = artifact(value, reports, score, errors, sid)
+        if recovery_clear_at_publish is not True:
+            raise ValueError("publication_recovery_not_cleared")
         events.append("publish")
         if not publish_ok:
+            events.append("hold_production")
             raise ValueError("publication_outcome_unknown")
         events.append("verify_publication")
         published_artifact = pending
@@ -291,6 +298,7 @@ def run_mock(value, normalized, responses, score, registry='[]', *, publish_ok=T
             stage = "registry"
             events.extend(["reread_registry", "append_registry"])
             if not registry_ok:
+                events.append("hold_production")
                 raise ValueError("registry_update_failed")
             registry = append_registry(current, "json_string_array", ids)
             events.append("verify_registry")
