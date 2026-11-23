@@ -75,23 +75,22 @@ Candidate upload and registry update are separate Drive operations. On interrupt
 or uncertain commits, the host must hold subsequent jobs for operator reconciliation.
 Release an acquired guard on every exit; a durable recovery hold survives release.
 
-## Supervised test publication
+## Publication with duplicate checking overridden
 
 With an explicit boolean `override_duplicate_check: true`, skip all registry
 operations and the shared guard and recovery hold. Run the usual normalization,
-competition research, scoring and artifact validation. Route the resulting JSON
-to `discovery/_test/{job_id}/{signal_id}.json` and return `test_published` only
-after verifying it. Keep test files out of council intake and leave any production
-hold in place. If a test upload has an uncertain outcome, reconcile its exact
-path and content before retrying the test. The test creates no registry entry.
+competition research, scoring and artifact validation. Write the candidate to
+`discovery/{job_id}/{signal_id}.json`, the same destination used with duplicate
+checking enabled. Return `published_registry_skipped` only after verification.
+Leave the registry and any existing hold untouched. On an uncertain upload,
+reconcile the exact path and content read-only before attempting another run.
 
 ## Google Drive publication
 
 After a valid score, generate one UUIDv4 signal_id with a trusted host facility.
 Use the validated upstream UUID as the exact job folder name. Search direct
-children of discovery for normal runs. For test runs, resolve the exact `_test`
-folder under discovery first, then resolve the job folder under it. For each
-folder, check the exact child name across all file types and every exposed page.
+children of the configured discovery folder in either mode. Check the exact
+child name across all file types and every exposed page.
 Reuse one verified folder with no explicit trash indication. Zero matches
 permits creation of the exact folder. A nonfolder match, multiple matches or
 known incomplete lookup is an error.
@@ -99,8 +98,10 @@ Do not overwrite discovery/{job_id}.json: it is the upstream ARRAY file, while
 this agent writes inside a job_id FOLDER.
 
 Create a missing job folder only when ready to publish. Verify its metadata and
-one observed exact-name match. Reconcile an uncertain create by listing; never blindly
-retry or create job_id (1). Never change an existing folder's sharing.
+one observed exact-name match. When concurrent jobs can create the same folder,
+coordinate creation per parent and name, including runs that override duplicate
+checking. Reconcile an uncertain create by listing. Never blindly retry or
+create job_id (1). Never change an existing folder's sharing.
 
 Check exact {signal_id}.json absence, all MIME types, before writing. Any collision
 stops; do not regenerate IDs or overwrite. Serialize the validated artifact as raw
