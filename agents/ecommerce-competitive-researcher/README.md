@@ -55,11 +55,10 @@ read a configuration flag. Drive writes to the two files are independent. If the
 candidate is saved and the append is incomplete, published_registry_pending keeps
 its identifiers and blocks automatic reruns until reconciliation.
 
-For a supervised test, set the optional top-level boolean
-`override_duplicate_check` to true. The researcher performs its normal research
-and saves the verified test candidate under `discovery/_test/{job_id}/`. It
-skips the shared registry and returns `test_published`. Omit the flag or pass
-false to run the regular registered workflow.
+Set the optional top-level boolean `override_duplicate_check` to true to skip
+registry reads and writes. Candidate research and publication still use
+`discovery/{job_id}/{signal_id}.json`. A verified override publication returns
+`published_registry_skipped`. Omit the flag or pass false to use the registry.
 
 ## Deployment and tests
 
