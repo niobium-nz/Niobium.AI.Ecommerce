@@ -39,7 +39,7 @@ across jobs, products and markets. Fail closed on unavailable, incomplete or
 malformed registry data.
 
 When the validated input explicitly supplies `override_duplicate_check: true`,
-use the supervised test path in storage.md. Skip the registry guard, recovery
+use the registry override in storage.md. Skip the registry guard, recovery
 hold and all registry I/O, including the last duplicate check and the append.
 Apply all other input, skill, research and publication checks.
 
@@ -94,8 +94,8 @@ Do not filter candidates by a new score threshold or change the score to hide er
 
 Generate one trusted UUIDv4 signal_id distinct from job_id and cluster_id.
 Follow storage.md to save one UTF-8 application/json object at
-`discovery/{job.job_id}/{signal_id}.json` for a normal run or
-`discovery/_test/{job.job_id}/{signal_id}.json` for an override run. Use these fields:
+`discovery/{job.job_id}/{signal_id}.json` whether duplicate checking is enabled
+or overridden. Use these fields:
 `job_id, signal_id, keyword, source_country, target_country, product, ads,
 competition_signals, score, errors`.
 Job fields, product and ads are unchanged originals; competition_signals is only
@@ -108,7 +108,7 @@ Verify persistence and preserve existing entries. A failed or uncertain update
 returns published_registry_pending with verified file identifiers and the recovery
 error. Follow storage.md for reconciliation. Release the guard on every exit.
 Keep further normal runs on hold during unresolved recovery. End an override run
-after verifying its test file and leave the registry and any hold untouched.
+after verifying its candidate file and leave the registry and any hold untouched.
 
 ## 6. Return JSON only
 
@@ -116,7 +116,7 @@ Return `#/$defs/result`, including likely_product_name, signal_id,
 output_filename and errors. Use failed before verified publication, succeeded
 for fully verified error-free completion, partial for published/registered output
 with research errors, and published_registry_pending for incomplete registration.
-For a verified test file, return test_published with registry_updated=false
+For a verified override publication, return published_registry_skipped with registry_updated=false
 and retain any research errors. Verification failures still return failed.
 No filename/file ID is a success claim until verified. Preserve earlier errors.
 When input is too malformed to recover a cluster ID/name, use null rather than
