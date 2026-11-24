@@ -26,6 +26,14 @@ Supplier sourcing consumes the selected product ID and complete council dossier,
 
 Rejection retains the audit trail. A new selection cycle may consider remaining candidates using updated evidence, rather than automatically promoting the runner-up or retrying rejected products indefinitely.
 
+## Durable review boundary
+
+The [Drive-backed review store](product-council-drive-persistence.md) persists an immutable sourcing manifest and append-only human decision events. JSON content is authoritative; compact Drive properties are only an index. Evidence, record checksums, decision identities and causal links are validated on reads. Identical retry files represent one logical event.
+
+A reviewer submits the displayed `expected_head_event_id` along with the evidence version. Stale heads are rejected. Distinct competing decisions block `get()` and onboarding authorization; timestamp order never chooses a winner. An authorized human must inspect all competing decisions and append a resolution referencing the exact current heads. Conflicted reviews remain visible in the pending queue.
+
+The host owns reviewer authentication, Drive credentials and permissions, retention, and the real onboarding side effect. Drive supplies neither a multi-object transaction nor protection against privileged modification/deletion. Hosts needing strict ordering must serialize writes and onboarding outside Drive. Always re-run `authorize(review_id, current_handoff)` immediately before onboarding; never authorize from `inspect()`, a cached result or a caller-supplied actor string.
+
 ## Acceptance criteria
 
 - Nonempty valid batch yields exactly one winner, including an all-bad batch.
@@ -34,5 +42,7 @@ Rejection retains the audit trail. A new selection cycle may consider remaining 
 - Sourcing operates only on selected ID and preserves evidence.
 - Approval requires human actor, rationale, evidence version and explicit approve action.
 - Pending/rejected/stale decisions block onboarding.
+- Conflicted, corrupt, orphaned or incompletely read histories block onboarding.
 - All transitions are auditable and idempotent for repeated identical human decisions.
+- Conflict resolution retains every competing event and requires a fresh human action.
 - The reference implementation is not a live supplier lookup, user interface or production orchestrator.
